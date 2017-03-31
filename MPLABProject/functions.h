@@ -43,40 +43,32 @@ typedef unsigned int uint16;
 
 #define ERROR_BUFFLEN 1500
 
-//Make all these compatible with PSLab schematic
 /*-----PPS and PIN DEFINITIONS-----*/
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_OUT _LATB4
 #define SDA_OUT _RA8
 
-#define PDC1_PPS  _RP55R
-#define PDC1_OUT _LATC7
-#define PDC1_TRIS _TRISC7
 
-#define PDC2_PPS  _RP56R
-#define PDC2_OUT _LATC8
-#define PDC2_TRIS _TRISC8
-
-//100mV
+//W1 C9 RP57
 #define W1_PPS  _RP57R
 #define W1_OUT _LATC9
 #define W1_TRIS _TRISC9
-//1V
-#define W2_PPS  _RP42R
-#define W2_OUT _LATB10
-#define W2_TRIS _TRISB10
-//3V
-#define W3_PPS  _RP43R
-#define W3_OUT _LATB11
-#define W3_TRIS _TRISB11
+
+//W2 C8 RP56
+#define W2_PPS  _RP56R
+#define W2_OUT _LATC8
+#define W2_TRIS _TRISC8
 
 
 
-//status LED
-#define LED_TRIS _TRISC2
-#define LED_OUT _LATC2  
-#define LED_ANS _ANSC2  
+//status LED B15 / RPI47
+#define LED_TRIS _TRISB15
+#define LED_OUT _LATB15  
+#define LED_ANS _ANSB15  
+
+
+//Make the following compatible with PSLab schematic
 
 //sqr1 RP41, B9
 #define SQR1_PPS _RP41R
