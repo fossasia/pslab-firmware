@@ -81,27 +81,25 @@ typedef unsigned int uint16;
 #define SQR1_OUT _LATC6
 #define SQR1_TRIS _TRISC6
 #define SQR1_IN _RC6
-#define SQR1_PPS_IN 0x36
+#define SQR1_PPS_IN 54
 //sqr2 RP55, C7
 #define SQR2_PPS _RP55R
 #define SQR2_OUT _LATC7
 #define SQR2_TRIS _TRISC7
 #define SQR2_IN _RC7
-#define SQR2_PPS_IN 0x37
+#define SQR2_PPS_IN 55
 //sqr3 RP56, C8
 #define SQR3_PPS _RP56R
 #define SQR3_OUT _LATC8
 #define SQR3_TRIS _TRISC8
 #define SQR3_IN _RC8
-#define SQR3_PPS_IN 0x38
+#define SQR3_PPS_IN 56
 //sqr4 RP57, C9
 #define SQR4_PPS _RP57R
 #define SQR4_OUT _LATC9
 #define SQR4_TRIS _TRISC9
 #define SQR4_IN _RC9
-#define SQR4_PPS_IN 0x39
-
-
+#define SQR4_PPS_IN 57
 
 
 //ID1 B10 , RP42
@@ -125,11 +123,10 @@ typedef unsigned int uint16;
 #define ID4_PULLDOWN _CNPDB13
 #define ID4_PPS_IN 0x2D
 
-
-//Make the following compatible with PSLab schematic
-
-
-
+//COMPARATOR4 on SEN
+#define COMP4_PPS_IN 0x4
+//Additional Input states for reading (Comparator 4 on SEN)
+#define COMP4_READ _C4OUT
 
 
 
@@ -139,31 +136,20 @@ typedef unsigned int uint16;
 #define TX_TRIS _TRISB7
 #define TX_PPS _RP39R
 
-#define CAP_CHARGE_TRIS _TRISB15      
-#define CAP_CHARGE_OUT _LATB15
-#define CAP_CHARGE_PULLUP _CNPUB15
-#define CAP_CHARGE_PULLDOWN _CNPDB15
 
-
-
-//COMPARATOR4 on SEN
-#define COMP4_PPS_IN 0x4
-
-
-#define SQ1_REMAP 41
-#define OD1_REMAP 54
-#define SQ2_REMAP 55
-#define SQ3_REMAP 56
-
-
-#define ID1_READ _RB2
-#define SQR1_READ _RB11
-#define OD1_READ  _RB10
-#define COMP4_READ _C4OUT
+//Capacitance measurement in constant voltage mode. C0, AN6 charges via 20K resistor
+#define CAP_CHARGE_TRIS _TRISC0      
+#define CAP_CHARGE_OUT _LATC0
+#define CAP_CHARGE_ANS _ANSC0
+#define CAP_CHARGE_PULLUP _CNPUC0
+#define CAP_CHARGE_PULLDOWN _CNPDC0
 
 
 #define NO_REMAP_USE_FP 254
 
+//Make the following compatible with PSLab schematic
+
+//Definitions for ADC & PGAs
 #define CSNUM_A1 1
 #define CSNUM_A2 2
 
