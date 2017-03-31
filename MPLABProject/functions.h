@@ -44,6 +44,13 @@ typedef unsigned int uint16;
 #define ERROR_BUFFLEN 1500
 
 /*-----PPS and PIN DEFINITIONS-----*/
+// suffixes and their meanings :
+// _PPS : Remappable pin number. This is used to assign the pin to outputs such as OCR1 , PWMOUT etc
+// _OUT : The output latch used to write a state to the pin
+// _TRIS : Used to set the state of the pin (In / output / tristate)
+// _ANS : Analog feature. Only available on select pins
+// _IN : Digital input. Used for reading the state of the port
+
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_OUT _LATB4
@@ -70,36 +77,31 @@ typedef unsigned int uint16;
 
 //Make the following compatible with PSLab schematic
 
-//sqr1 RP41, B9
-#define SQR1_PPS _RP41R
-#define SQR1_OUT _LATB9
-#define SQR1_TRIS _TRISB9
-#define SQR1_IN _RB9
-#define SQR1_PPS_IN 0x29
-//sqr2 readback
-#define SQR1_READBACK_TRIS _TRISB11
-#define SQR1_READBACK_PPS 43
+//sqr1 RP54, C6
+#define SQR1_PPS _RP54R
+#define SQR1_OUT _LATC6
+#define SQR1_TRIS _TRISC6
+#define SQR1_IN _RC6
+#define SQR1_PPS_IN 0x36
+//sqr2 RP55, C7
+#define SQR2_PPS _RP55R
+#define SQR2_OUT _LATC7
+#define SQR2_TRIS _TRISC7
+#define SQR2_IN _RC7
+#define SQR2_PPS_IN 0x37
+//sqr3 RP56, C8
+#define SQR3_PPS _RP56R
+#define SQR3_OUT _LATC8
+#define SQR3_TRIS _TRISC8
+#define SQR3_IN _RC8
+#define SQR3_PPS_IN 0x38
+//sqr4 RP57, C9
+#define SQR4_PPS _RP57R
+#define SQR4_OUT _LATC9
+#define SQR4_TRIS _TRISC9
+#define SQR4_IN _RC9
+#define SQR4_PPS_IN 0x39
 
-
-//SQR2 RP28, B6
-#define SQR2_PPS  _RP38R
-#define SQR2_OUT _LATB6
-#define SQR2_TRIS _TRISB6
-#define SQR2_IN  _RB6
-#define SQR2_PPS_IN 0x26
-
-//SQR3 RP28, B6
-#define SQR2_PPS  _RP38R
-#define SQR2_OUT _LATB6
-#define SQR2_TRIS _TRISB6
-#define SQR2_IN  _RB6
-#define SQR2_PPS_IN 0x26
-//SQR4 RP28, B6
-#define SQR2_PPS  _RP38R
-#define SQR2_OUT _LATB6
-#define SQR2_TRIS _TRISB6
-#define SQR2_IN  _RB6
-#define SQR2_PPS_IN 0x26
 
 
 
