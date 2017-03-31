@@ -31,22 +31,29 @@ Programming Requirements
 MPLABX IDE (Tested on v3.35)
 XC16 compiler
 PICKIT programmer (Tested with Pickit3)
-PSLab hardware/PIC24EP256GP204 breakout board
+
+Hardware requirements
+---------------------
+PSLab hardware/PIC24EP256GP204 breakout board.
+
+Kits and accessories are available with praveenkumar103 [at] gmail, or jithinbp [at] gmail.com . 
 
 Parts list
 ----------
-PIC24EP256GP204 - Main uC
-MCP6S21 - Programmable Gain Amplifier
-MCP4728 - 4 channel DAC
-TC7660  - Charge Pump voltage invertor
-TC1240A - Charge Pump voltage doubler
-TL082   - 2 channel Op-Amp
-LM324   - 4 channel Op-Amp
-LM1117 3.3 - 3.3Volt regulator
+- PIC24EP256GP204 - Main uC
+- MCP6S21 - Programmable Gain Amplifier
+- MCP4728 - 4 channel DAC
+- TC7660  - Charge Pump voltage invertor
+- TC1240A - Charge Pump voltage doubler
+- TL082   - 2 channel Op-Amp
+- LM324   - 4 channel Op-Amp
+- LM1117 3.3 - 3.3Volt regulator
 
-MCP2200 - USB-UART Bridge
-or ESP8266 (ESP-12E) - UART-TCP bridge
+- MCP2200 - USB-UART Bridge
+- or ESP8266 (ESP-12E) - UART-TCP bridge
 
-0.5A Fuse
-100K Potentiometer
-Assorted resistors, capacitors, & diodes.
+- 0.5A Fuse
+- 100K Potentiometer
+- Assorted resistors, capacitors, & diodes.
+
+Complete parts list pdf is included in the repo
