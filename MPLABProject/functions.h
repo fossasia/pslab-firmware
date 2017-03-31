@@ -43,90 +43,92 @@ typedef unsigned int uint16;
 
 #define ERROR_BUFFLEN 1500
 
-//Make all these compatible with PSLab schematic
 /*-----PPS and PIN DEFINITIONS-----*/
+// suffixes and their meanings :
+// _PPS : Remappable pin number. This is used to assign the pin to outputs such as OCR1 , PWMOUT etc
+// _OUT : The output latch used to write a state to the pin
+// _TRIS : Used to set the state of the pin (In / output / tristate)
+// _ANS : Analog feature. Only available on select pins
+// _IN : Digital input. Used for reading the state of the port
+
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_OUT _LATB4
 #define SDA_OUT _RA8
 
-#define PDC1_PPS  _RP55R
-#define PDC1_OUT _LATC7
-#define PDC1_TRIS _TRISC7
 
-#define PDC2_PPS  _RP56R
-#define PDC2_OUT _LATC8
-#define PDC2_TRIS _TRISC8
-
-//100mV
+//W1 C9 RP57
 #define W1_PPS  _RP57R
 #define W1_OUT _LATC9
 #define W1_TRIS _TRISC9
-//1V
-#define W2_PPS  _RP42R
-#define W2_OUT _LATB10
-#define W2_TRIS _TRISB10
-//3V
-#define W3_PPS  _RP43R
-#define W3_OUT _LATB11
-#define W3_TRIS _TRISB11
+
+//W2 C8 RP56
+#define W2_PPS  _RP56R
+#define W2_OUT _LATC8
+#define W2_TRIS _TRISC8
 
 
 
-//status LED
-#define LED_TRIS _TRISC2
-#define LED_OUT _LATC2  
-#define LED_ANS _ANSC2  
-
-//sqr1 RP41, B9
-#define SQR1_PPS _RP41R
-#define SQR1_OUT _LATB9
-#define SQR1_TRIS _TRISB9
-#define SQR1_IN _RB9
-#define SQR1_PPS_IN 0x29
-//sqr2 readback
-#define SQR1_READBACK_TRIS _TRISB11
-#define SQR1_READBACK_PPS 43
-
-
-//SQR2 RP28, B6
-#define SQR2_PPS  _RP38R
-#define SQR2_OUT _LATB6
-#define SQR2_TRIS _TRISB6
-#define SQR2_IN  _RB6
-#define SQR2_PPS_IN 0x26
-
-//SQR3 RP28, B6
-#define SQR2_PPS  _RP38R
-#define SQR2_OUT _LATB6
-#define SQR2_TRIS _TRISB6
-#define SQR2_IN  _RB6
-#define SQR2_PPS_IN 0x26
-//SQR4 RP28, B6
-#define SQR2_PPS  _RP38R
-#define SQR2_OUT _LATB6
-#define SQR2_TRIS _TRISB6
-#define SQR2_IN  _RB6
-#define SQR2_PPS_IN 0x26
+//status LED B15 / RPI47
+#define LED_TRIS _TRISB15
+#define LED_OUT _LATB15  
+#define LED_ANS _ANSB15  
 
 
 
-//OD1 readback
-#define OD1_READBACK_TRIS _TRISB10
-#define OD1_READBACK_PPS 42
+//sqr1 RP54, C6
+#define SQR1_PPS _RP54R
+#define SQR1_OUT _LATC6
+#define SQR1_TRIS _TRISC6
+#define SQR1_IN _RC6
+#define SQR1_PPS_IN 54
+//sqr2 RP55, C7
+#define SQR2_PPS _RP55R
+#define SQR2_OUT _LATC7
+#define SQR2_TRIS _TRISC7
+#define SQR2_IN _RC7
+#define SQR2_PPS_IN 55
+//sqr3 RP56, C8
+#define SQR3_PPS _RP56R
+#define SQR3_OUT _LATC8
+#define SQR3_TRIS _TRISC8
+#define SQR3_IN _RC8
+#define SQR3_PPS_IN 56
+//sqr4 RP57, C9
+#define SQR4_PPS _RP57R
+#define SQR4_OUT _LATC9
+#define SQR4_TRIS _TRISC9
+#define SQR4_IN _RC9
+#define SQR4_PPS_IN 57
 
 
-//OD1 RP54, C6
-#define OD1_PPS _RP54R
-#define OD1_OUT _LATC6
-#define OD1_TRIS _TRISC6
-#define OD1_IN _RC6
-#define OD1_PPS_IN 0x36
+//ID1 B10 , RP42
+#define ID1_TRIS _TRISB10
+#define ID1_IN _RB10
+#define ID1_PULLDOWN _CNPDB10
+#define ID1_PPS_IN 0x2A
+//ID1 B11 , RP43
+#define ID2_TRIS _TRISB11
+#define ID2_IN _RB11
+#define ID2_PULLDOWN _CNPDB11
+#define ID2_PPS_IN 0x2B
+//ID1 B12 , RP44
+#define ID3_TRIS _TRISB12
+#define ID3_IN _RB12
+#define ID3_PULLDOWN _CNPDB12
+#define ID3_PPS_IN 0x2C
+//ID1 B13 , RP45
+#define ID4_TRIS _TRISB13
+#define ID4_IN _RB13
+#define ID4_PULLDOWN _CNPDB13
+#define ID4_PPS_IN 0x2D
 
-#define CCS_PPS _RPI46R
-#define CCS_OUT _LATB14
-#define CCS_TRIS _TRISB14
-#define CCS_IN  _RB14
+//COMPARATOR4 on SEN
+#define COMP4_PPS_IN 0x4
+//Additional Input states for reading (Comparator 4 on SEN)
+#define COMP4_READ _C4OUT
+
+
 
 #define RX_TRIS _TRISB8
 #define RX_PPS_IN 0x28
@@ -134,59 +136,18 @@ typedef unsigned int uint16;
 #define TX_TRIS _TRISB7
 #define TX_PPS _RP39R
 
-#define CAP_CHARGE_TRIS _TRISB15      
-#define CAP_CHARGE_OUT _LATB15
-#define CAP_CHARGE_PULLUP _CNPUB15
-#define CAP_CHARGE_PULLDOWN _CNPDB15
 
-//ID1
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-
-//ID2
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-//ID3
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-//ID4
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-
-//COMPARATOR4 on SEN
-#define COMP4_PPS_IN 0x4
-
-
-#define SQ1_REMAP 41
-#define OD1_REMAP 54
-#define SQ2_REMAP 55
-#define SQ3_REMAP 56
-
-
-#define ID1_READ _RB2
-#define SQR1_READ _RB11
-#define OD1_READ  _RB10
-#define COMP4_READ _C4OUT
+//Capacitance measurement in constant voltage mode. C0, AN6 charges via 20K resistor
+#define CAP_CHARGE_TRIS _TRISC0      
+#define CAP_CHARGE_OUT _LATC0
+#define CAP_CHARGE_ANS _ANSC0
+#define CAP_CHARGE_PULLUP _CNPUC0
+#define CAP_CHARGE_PULLDOWN _CNPDC0
 
 
 #define NO_REMAP_USE_FP 254
 
+//Definitions for ADC & PGAs
 #define CSNUM_A1 1
 #define CSNUM_A2 2
 

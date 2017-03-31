@@ -50,7 +50,7 @@ int main() {
     
     // Initialize everything from pin mappings to I2C & SPI ports.
     init(); 
-    initUART(BRGVAL500000);
+    initUART(BRGVAL1000000);
 
     LED_OUT=1;
     /*
