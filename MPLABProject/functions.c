@@ -81,8 +81,6 @@ void init() {
 
     PTGCONbits.PTGWDT = 0; //disable peripheral trigger generator watchdog timer
 
-    // TODO : define correct pin mappings for PSLab
-    /*
     //change to I2C DAC
     CCS_TRIS = 0; CCS_OUT=1; //1 means off. 0 is on.
     
@@ -123,7 +121,7 @@ void init() {
     _TRISC1=1; _ANSC1=1;           //SEN monitoring
 
 
-     */
+     
 
     //initI2C();
     //initSPI();

@@ -147,8 +147,6 @@ typedef unsigned int uint16;
 
 #define NO_REMAP_USE_FP 254
 
-//Make the following compatible with PSLab schematic
-
 //Definitions for ADC & PGAs
 #define CSNUM_A1 1
 #define CSNUM_A2 2

@@ -3,8 +3,17 @@ Repository for PSLab Firmware
 
 uC Platform : PIC24EP256GP204
 
+Existing Firmware
+-----------------
+The original library and main code for PSLab version 1 are located in directories 'PSLab_Original' and 'PSLab_Original_library'\\
+Please note that they must be located in the same directory during compilation via MPLABX because the former relatively imports the latter.
 
-Implemented feature list
+This code is elaborately written , and SFR bit settings are done in separate lines of code for easily tweaking. The code can be shrunk if firmware efficiency becomes a concern at any point. 
+
+
+New Firmware
+------------
+Implemented feature list in new project called 'MPLab Project'
 -Byte Headers 
 
 - Flash R/W . One page at a time (2048 bytes)
