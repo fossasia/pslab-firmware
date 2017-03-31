@@ -75,7 +75,6 @@ typedef unsigned int uint16;
 #define LED_ANS _ANSB15  
 
 
-//Make the following compatible with PSLab schematic
 
 //sqr1 RP54, C6
 #define SQR1_PPS _RP54R
@@ -105,22 +104,34 @@ typedef unsigned int uint16;
 
 
 
-//OD1 readback
-#define OD1_READBACK_TRIS _TRISB10
-#define OD1_READBACK_PPS 42
+//ID1 B10 , RP42
+#define ID1_TRIS _TRISB10
+#define ID1_IN _RB10
+#define ID1_PULLDOWN _CNPDB10
+#define ID1_PPS_IN 0x2A
+//ID1 B11 , RP43
+#define ID2_TRIS _TRISB11
+#define ID2_IN _RB11
+#define ID2_PULLDOWN _CNPDB11
+#define ID2_PPS_IN 0x2B
+//ID1 B12 , RP44
+#define ID3_TRIS _TRISB12
+#define ID3_IN _RB12
+#define ID3_PULLDOWN _CNPDB12
+#define ID3_PPS_IN 0x2C
+//ID1 B13 , RP45
+#define ID4_TRIS _TRISB13
+#define ID4_IN _RB13
+#define ID4_PULLDOWN _CNPDB13
+#define ID4_PPS_IN 0x2D
 
 
-//OD1 RP54, C6
-#define OD1_PPS _RP54R
-#define OD1_OUT _LATC6
-#define OD1_TRIS _TRISC6
-#define OD1_IN _RC6
-#define OD1_PPS_IN 0x36
+//Make the following compatible with PSLab schematic
 
-#define CCS_PPS _RPI46R
-#define CCS_OUT _LATB14
-#define CCS_TRIS _TRISB14
-#define CCS_IN  _RB14
+
+
+
+
 
 #define RX_TRIS _TRISB8
 #define RX_PPS_IN 0x28
@@ -133,34 +144,6 @@ typedef unsigned int uint16;
 #define CAP_CHARGE_PULLUP _CNPUB15
 #define CAP_CHARGE_PULLDOWN _CNPDB15
 
-//ID1
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-
-//ID2
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-//ID3
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
-
-//ID4
-#define ID1_TRIS _TRISB2
-#define ID1_IN _RB2
-#define ID1_ANS _ANSB2
-#define ID1_PULLDOWN _CNPDB2
-#define ID1_PPS_IN 0x22
 
 
 //COMPARATOR4 on SEN
