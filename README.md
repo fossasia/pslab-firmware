@@ -11,7 +11,7 @@ Repository for PSLab Firmware
 
 Existing Firmware
 -----------------
-The original library and main code for PSLab version 1 are located in directories 'PSLab_Original' and 'PSLab_Original_library'\\
+The original library and main code for PSLab version 1 are located in directories 'PSLab_Original' and 'PSLab_Original_library'.
 Please note that they must be located in the same directory during compilation via MPLABX because the former relatively imports the latter.
 
 This code is elaborately written , and SFR bit settings are done in separate lines of code for easily tweaking. The code can be shrunk if firmware efficiency becomes a concern at any point. 
@@ -66,8 +66,6 @@ PICKIT programmer (Tested with Pickit3)
 
 Hardware requirements
 ---------------------
-[PSLab hardware](https://github.com/fossasia/pslab-hardware)/PIC24EP256GP204 breakout board.
+[PSLab hardware](https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board.
 
 Kits and accessories are available with praveenkumar103 [at] gmail, or jithinbp [at] gmail.com . 
-
-Complete parts list pdf is included in the repo
