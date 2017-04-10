@@ -1,8 +1,12 @@
 # pslab-firmware
-Repository for PSLab Firmware
+Repository for PSLab Firmware.
+
+PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides an array of necessary test and measurement equipment for doing science and engineering experiments. It can function like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. The [hardware schematics](https://github.com/fossasia/pslab-hardware/) and [Desktop applications](https://github.com/fossasia/pslab-desktop-apps) are hosted in separate repositories. Android [application](https://github.com/fossasia/pslab-android) development is underway
+
+
 
 ## Basic requirements 
-- microcontroller Platform : [ PIC24EP256GP204 ](http://www.microchip.com/wwwproducts/en/PIC24EP256GP204)
+- Microcontroller Platform : [ PIC24EP256GP204 ](http://www.microchip.com/wwwproducts/en/PIC24EP256GP204)
 - IDE : [MPLABX IDE v3.35](http://www.microchip.com/mplab/mplab-x-ide) . Supported on Linux/Windows/Mac
 - Compiler : [MPLAB® XC16 Compiler](http://www.microchip.com/mplab/compilers)
 - Programming Tool : [PICkit™ 3 In-Circuit Debugger/PICkit2](http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130)
@@ -14,7 +18,7 @@ Existing Firmware
 The original library and main code for PSLab version 1 are located in directories 'PSLab_Original' and 'PSLab_Original_library'.
 Please note that they must be located in the same directory during compilation via MPLABX because the former relatively imports the latter.
 
-This code is elaborately written , and SFR bit settings are done in separate lines of code for easily tweaking. The code can be shrunk if firmware efficiency becomes a concern at any point. 
+This code is elaborately written , and special function register(SFR) bit settings are done in separate lines of code for easily tweaking. The code can be shrunk if firmware efficiency becomes a concern at any point. 
 
 ### Compilation and testing instructions
 ------------------------------------
@@ -24,8 +28,8 @@ This code is elaborately written , and SFR bit settings are done in separate lin
 4. Also ensure that the PSLab is powered on by connecting it via USB . The PICkit has a software controllable option to supply power (3.3V) to the uC while programming, but this may be avoided since many other peripherals also rely on the same power source
 5. Build and Download the code ( menu->run->build and program , or the Downward facing green arrow in the toolbar)
 
-### Check if program was downloaded successfully
-------------------------------------------------
+### Preliminary tests after program download
+--------------------------------------------
 - Connect the device via USB , and issue an `lsusb command via the terminal (On Linux)
 - The output should have an entry `Bus 003 Device 003: ID 04d8:00df Microchip Technology, Inc.` . This indicates that the USB-UART chip was detected 
 - To locate its handler , check /dev for ttyACM devices. The desktop app automatically locates and connects to the handler.
@@ -48,15 +52,15 @@ New Firmware
 Implemented feature list in new project called 'MPLab Project'
 -Byte Headers 
 
-- Flash R/W . One page at a time (2048 bytes)
-- I2C Sensors :
--- Start , Stop, BulkTransfers, config
++ Flash R/W . One page at a time (2048 bytes)
++ I2C Sensors :
+  + Start , Stop, BulkTransfers, config
 
-- ADC :
--- Read buffer , clear buffer
++ ADC :
+  + Read buffer , clear buffer
 
-- Sine wave :
--- Wave tables 
++ Sine wave :
+  + Wave tables 
 
 Programming Requirements
 ------------------------
