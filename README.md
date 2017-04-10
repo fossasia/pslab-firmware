@@ -1,11 +1,11 @@
 # pslab-firmware
 Repository for PSLab Firmware
 
-## Basic requirements
-- microcontroller Platform : [PIC24EP256GP204 (http://www.microchip.com/wwwproducts/en/PIC24EP256GP204)]
-- IDE : [MPLABX IDE v3.35 (http://www.microchip.com/mplab/mplab-x-ide)] . Supported on Linux/Windows/Mac
-- Compiler : [MPLAB® XC16 Compiler (http://www.microchip.com/mplab/compilers)]
-- Programming Tool : [PICkit™ 3 In-Circuit Debugger/PICkit2 (http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130)]
+## Basic requirements 
+- microcontroller Platform : [ PIC24EP256GP204 ](http://www.microchip.com/wwwproducts/en/PIC24EP256GP204)
+- IDE : [MPLABX IDE v3.35](http://www.microchip.com/mplab/mplab-x-ide) . Supported on Linux/Windows/Mac
+- Compiler : [MPLAB® XC16 Compiler](http://www.microchip.com/mplab/compilers)
+- Programming Tool : [PICkit™ 3 In-Circuit Debugger/PICkit2](http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130)
 
 
 
@@ -40,7 +40,7 @@ This code is elaborately written , and SFR bit settings are done in separate lin
 [128189.929873] cdc_acm 3-2:1.0: ttyACM0: USB ACM device
 [128189.933262] hid-generic 0003:04D8:00DF.0032: hiddev0,hidraw0: USB HID v1.11 Device [Microchip Technology Inc. MCP2200 USB Serial Port Emulator] on usb-0000:00:14.0-2/input2
 ```
-- Install and launch the [PSLab desktop app (https://github.com/fossasia/pslab-desktop-apps)] by following its README
+- Install and launch the [PSLab desktop app](https://github.com/fossasia/pslab-desktop-apps) by following its README
 
 
 New Firmware
@@ -66,26 +66,8 @@ PICKIT programmer (Tested with Pickit3)
 
 Hardware requirements
 ---------------------
-PSLab hardware/PIC24EP256GP204 breakout board.
+[PSLab hardware](https://github.com/fossasia/pslab-hardware)/PIC24EP256GP204 breakout board.
 
 Kits and accessories are available with praveenkumar103 [at] gmail, or jithinbp [at] gmail.com . 
-
-Parts list
-----------
-- PIC24EP256GP204 - Main uC
-- MCP6S21 - Programmable Gain Amplifier
-- MCP4728 - 4 channel DAC
-- TC7660  - Charge Pump voltage invertor
-- TC1240A - Charge Pump voltage doubler
-- TL082   - 2 channel Op-Amp
-- LM324   - 4 channel Op-Amp
-- LM1117 3.3 - 3.3Volt regulator
-
-- MCP2200 - USB-UART Bridge
-- or ESP8266 (ESP-12E) - UART-TCP bridge
-
-- 0.5A Fuse
-- 100K Potentiometer
-- Assorted resistors, capacitors, & diodes.
 
 Complete parts list pdf is included in the repo
