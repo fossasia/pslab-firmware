@@ -1,4 +1,8 @@
 # pslab-firmware
+
+[![Build Status](https://travis-ci.org/fossasia/pslab-firmware.svg?branch=master)](https://travis-ci.org/fossasia/pslab-firmware)
+[![Gitter](https://badges.gitter.im/fossasia/pslab.svg)](https://gitter.im/fossasia/pslab?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
+
 Repository for PSLab Firmware.
 
 PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides an array of necessary test and measurement equipment for doing science and engineering experiments. It can function like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. The [hardware schematics](https://github.com/fossasia/pslab-hardware/) and [Desktop applications](https://github.com/fossasia/pslab-desktop-apps) are hosted in separate repositories. Android [application](https://github.com/fossasia/pslab-android) development is underway
