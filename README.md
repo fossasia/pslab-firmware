@@ -5,27 +5,30 @@
 
 Repository for PSLab Firmware.
 
-PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides an array of necessary test and measurement equipment for doing science and engineering experiments. It can function like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. The [hardware schematics](https://github.com/fossasia/pslab-hardware/) and [Desktop applications](https://github.com/fossasia/pslab-desktop-apps) are hosted in separate repositories. Android [application](https://github.com/fossasia/pslab-android) development is underway
+PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides an array of necessary test and measurement equipment for doing science and engineering experiments. It can function like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. The [hardware schematics](https://github.com/fossasia/pslab-hardware/) and [Desktop applications](https://github.com/fossasia/pslab-desktop-apps) are hosted in separate repositories. Android [application](https://github.com/fossasia/pslab-android) development is underway. Our website is at: http://pslab.fossasia.org
 
+### Communication
 
+Please join us on the following channels:
+* [Pocket Science Channel](https://gitter.im/fossasia/pslab)
+* [Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia)
 
 ## Basic requirements 
+
 - Microcontroller Platform : [ PIC24EP256GP204 ](http://www.microchip.com/wwwproducts/en/PIC24EP256GP204)
 - IDE : [MPLABX IDE v3.35](http://www.microchip.com/mplab/mplab-x-ide) . Supported on Linux/Windows/Mac
 - Compiler : [MPLAB® XC16 Compiler](http://www.microchip.com/mplab/compilers)
 - Programming Tool : [PICkit™ 3 In-Circuit Debugger/PICkit2](http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130)
 
+## Existing Firmware
 
-
-Existing Firmware
------------------
 The original library and main code for PSLab version 1 are located in directories 'PSLab_Original' and 'PSLab_Original_library'.
 Please note that they must be located in the same directory during compilation via MPLABX because the former relatively imports the latter.
 
 This code is elaborately written , and special function register(SFR) bit settings are done in separate lines of code for easily tweaking. The code can be shrunk if firmware efficiency becomes a concern at any point. 
 
 ### Compilation and testing instructions
-------------------------------------
+
 1. Download and install the MPLab IDE & XC16 compiler from the links given above
 2. From the IDE , navigate to the folder containing `PSLab_Original` & `PSLab_Original_library` , and open `PSLab_Original` .
 3. Connect the Pickit3 to the 5 pin programming header on the bottom side of the PSLab hardware (attach reference image here).
@@ -33,7 +36,7 @@ This code is elaborately written , and special function register(SFR) bit settin
 5. Build and Download the code ( menu->run->build and program , or the Downward facing green arrow in the toolbar)
 
 ### Preliminary tests after program download
---------------------------------------------
+
 - Connect the device via USB , and issue an `lsusb command via the terminal (On Linux)
 - The output should have an entry `Bus 003 Device 003: ID 04d8:00df Microchip Technology, Inc.` . This indicates that the USB-UART chip was detected 
 - To locate its handler , check /dev for ttyACM devices. The desktop app automatically locates and connects to the handler.
@@ -51,8 +54,8 @@ This code is elaborately written , and special function register(SFR) bit settin
 - Install and launch the [PSLab desktop app](https://github.com/fossasia/pslab-desktop-apps) by following its README
 
 
-New Firmware
-------------
+### New Firmware
+
 Implemented feature list in new project called 'MPLab Project'
 -Byte Headers 
 
@@ -66,14 +69,14 @@ Implemented feature list in new project called 'MPLab Project'
 + Sine wave :
   + Wave tables 
 
-Programming Requirements
-------------------------
+## Programming Requirements
+
 MPLABX IDE (Tested on v3.35)
 XC16 compiler
 PICKIT programmer (Tested with Pickit3)
 
-Hardware requirements
----------------------
+## Hardware requirements
+
 [PSLab hardware](https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board.
 
 Kits and accessories are available with praveenkumar103 [at] gmail, or jithinbp [at] gmail.com . 
