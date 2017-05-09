@@ -61,22 +61,23 @@ Implemented feature list in new project called 'MPLab Project'
 
 + Flash R/W . One page at a time (2048 bytes)
 + I2C Sensors :
-  + Start , Stop, BulkTransfers, config
+  + Start, Stop, BulkTransfers, Config
 
 + ADC :
-  + Read buffer , clear buffer
+  + Read buffer, Clear buffer
 
 + Sine wave :
   + Wave tables 
 
 ## Programming Requirements
 
-MPLABX IDE (Tested on v3.35)
-XC16 compiler
-PICKIT programmer (Tested with Pickit3)
++ MPLABX IDE (Tested on v3.35)
++ MPLAB® XC16 Compiler
++ PICkit™ Programmer (Tested with Pickit3)
 
 ## Hardware requirements
 
-[PSLab hardware](https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board.
+[PSLab Hardware](https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board.
 
-Kits and accessories are available with praveenkumar103 [at] gmail, or jithinbp [at] gmail.com . 
+Kits and accessories are available with <praveenkumar103@gmail.com> or <jithinbp@gmail.com>
+
