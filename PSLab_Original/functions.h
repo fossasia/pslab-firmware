@@ -16,8 +16,8 @@
  */
 
 #include <p24EP256GP204.h>
-#include<libpic30.h>
-#include"COMMANDS.h"
+#include <libpic30.h>
+#include "COMMANDS.h"
 
 #define FP 64000000
 #define BAUDRATE 1000000    //1M
@@ -37,8 +37,6 @@
 #define BRGVAL1000000 ((FP/1000000)/4)-1
 #define BRGVAL2000000 ((FP/2000000)/4)-1
 #define BRGVAL4000000 ((FP/4000000)/4)-1
-
-
 
 #define BRGVAL2 ((FP/BAUDRATE2)/16)-1
 
