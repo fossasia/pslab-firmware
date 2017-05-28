@@ -2,7 +2,6 @@
  * File:   proto2_main.c
  * Author: jithin
  *
- *
  */
 
 // FICD
@@ -16,7 +15,7 @@
 #include <stdlib.h>
 #include <libpic30.h>
 #include "functions.c"
-#include "PSLAB_UART.c"
+#include "PSLAB_UART.h"
 //_FICD(ICS_PGD2 & JTAGEN_OFF) //Programmming pins  ..PGED2
 
 

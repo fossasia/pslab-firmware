@@ -42,9 +42,7 @@
 
 #define Fs   		4000
 #define SAMPPRD		(FP/Fs)-1
-#define BYTE unsigned char
 
-typedef BYTE bool;
 typedef unsigned int uint16;
 #define true 1
 #define false 0
@@ -113,7 +111,7 @@ unsigned int I2C_BRGVAL = 0x272,TCD = 1000;
 
 /*------LOGIC ANALYZER VARIABLES-----*/
 BYTE INITIAL_DIGITAL_STATES=0,INITIAL_DIGITAL_STATES_ERR=0,DIGITAL_TRIGGER_CHANNEL=32,DIGITAL_TRIGGER_STATE=0,b1,b2,COMPARATOR_CONFIG=7|(3<<4),conversion_done = 1,I2CConvDone = 1;
-unsigned int i, lsb, msb, blk[8], c1, c2,adval,tmp_int1,tmp_int2,tmp_int3,tmp_int4,tmp_int5,tmp_int6;
+unsigned int i, lsb, msb, blk[8], adval,tmp_int1,tmp_int2,tmp_int3,tmp_int4,tmp_int5,tmp_int6;
 
 unsigned int LAFinished = 1, LASamples;
 unsigned int samples_to_fetch = BUFFER_SIZE, I2CTotalSamples = BUFFER_SIZE;
@@ -222,28 +220,6 @@ void enableADCDMA();
 
 void enableLogicAnalyser(void);
 void disableLogicAnalyser(void);
-
-
-
-void initUART(unsigned int);
-bool hasChar();
-void sendChar(BYTE val);
-void sendInt(unsigned int val);
-void sendLong(unsigned int lsb,unsigned int msb);
-char getChar();
-unsigned int getInt();
-void ack(BYTE);
-
-
-void configUART2(unsigned int BAUD);
-bool hasChar2(void);
-char getChar2(void);
-unsigned int getInt2(void);
-void sendAddress2(char address) ;
-void initUART2(void);
-void sendChar2(char val);
-void sendInt2(unsigned int val);
-void initUART2_passthrough(unsigned int);
 
 void setSPIMode(BYTE);
 void initSPI();

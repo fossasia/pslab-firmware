@@ -1,7 +1,7 @@
 /******************************************************************************/
 /******** This file contains UART control modules of function.c file **********/
 /******************************************************************************/
-#include "functions.h"
+#include "PSLAB_UART.h"
 
 void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
     asm("CLRWDT");
@@ -15,6 +15,15 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     while (U2STAbits.UTXBF); //wait for transmit buffer empty
     U2TXREG = U1RXREG;
     _U1RXIF = 0;
+}
+
+unsigned char hasChar() {
+    return U1STAbits.URXDA;
+}
+
+void sendChar(unsigned char val) {
+    while (U1STAbits.UTXBF); //wait for transmit buffer empty
+    U1TXREG = val;
 }
 
 void initUART(unsigned int BAUD) {
@@ -48,15 +57,6 @@ void initUART(unsigned int BAUD) {
 
 }
 
-bool hasChar() {
-    return U1STAbits.URXDA;
-}
-
-void sendChar(BYTE val) {
-    while (U1STAbits.UTXBF); //wait for transmit buffer empty
-    U1TXREG = val;
-}
-
 void sendInt(unsigned int val) {
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
     U1TXREG = val & 0xff;
@@ -72,10 +72,10 @@ void sendLong(unsigned int lsb, unsigned int msb) {
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
     U1TXREG = msb & 0xff;
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
-    U1TXREG = (msb >> 8)&0xff;
+    U1TXREG = (msb >> 8) & 0xff;
 }
 
-void ack(BYTE response) {
+void ack(unsigned char response) {
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
     U1TXREG = response;
 }
@@ -91,9 +91,7 @@ char getChar() {
 }
 
 unsigned int getInt() {
-    c1 = getChar()&0xFF;
-    c2 = getChar()&0xFF;
-    return (c2 << 8) | c1;
+    return ((getChar()&0xFF << 8) | (getChar()&0xFF));
 }
 
 void configUART2(unsigned int BAUD) {
@@ -121,7 +119,7 @@ void configUART2(unsigned int BAUD) {
     while (U2STAbits.URXDA) U2RXREG;
 }
 
-bool hasChar2(void) {
+unsigned char hasChar2(void) {
     return U2STAbits.URXDA;
 }
 
@@ -137,9 +135,7 @@ char getChar2(void) {
 }
 
 unsigned int getInt2(void) {
-    c1 = getChar2()&0xFF;
-    c2 = getChar2()&0xFF;
-    return (c2 << 8) | c1;
+    return ((getChar2()&0xFF << 8) | (getChar2()&0xFF));
 }
 
 void sendChar2(char val) {
