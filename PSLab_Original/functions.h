@@ -275,6 +275,13 @@ void WriteCommand(BYTE command);
 void WritePayload(BYTE,BYTE num, BYTE* data);
 void ReadPayload(BYTE num, BYTE* data);
 
+void preciseDelay(int t);
+void set_CS(BYTE channel,BYTE status);
+void sineWave1(unsigned int wavelength,BYTE highres);
+void sineWave2(unsigned int wavelength,BYTE highres);
+void setSineWaves(unsigned int wavelength1,unsigned int wavelength2,unsigned int pos,unsigned int tmr_delay,BYTE highres);
+void alternate_get_high_frequency(BYTE channel,BYTE scale);
+
 
 #endif	/* FUNCTIONS_H */
 
