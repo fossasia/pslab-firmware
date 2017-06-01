@@ -47,8 +47,6 @@ typedef unsigned int uint16;
 #define true 1
 #define false 0
 
-#define ERROR_BUFFLEN 1500
-
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_PIN _LATB4
@@ -107,11 +105,11 @@ BYTE location, value,ADC_MODE=NOT_READY,SPI_MODE=NOT_READY,MULTIFUNC_PORT = NOT_
 BYTE SPI_PPRE=0,SPI_SPRE=2,SPI_CKE=1,SPI_CKP=0,SPI_SMP=1;
 
 /*------UART VARIABLES-----*/
-unsigned int I2C_BRGVAL = 0x272,TCD = 1000;
+unsigned int TCD = 1000;
 
 /*------LOGIC ANALYZER VARIABLES-----*/
 BYTE INITIAL_DIGITAL_STATES=0,INITIAL_DIGITAL_STATES_ERR=0,DIGITAL_TRIGGER_CHANNEL=32,DIGITAL_TRIGGER_STATE=0,b1,b2,COMPARATOR_CONFIG=7|(3<<4),conversion_done = 1,I2CConvDone = 1;
-unsigned int i, lsb, msb, blk[8], adval,tmp_int1,tmp_int2,tmp_int3,tmp_int4,tmp_int5,tmp_int6;
+unsigned int i, lsb, msb, blk[8], adval,tmp_int2,tmp_int3,tmp_int4,tmp_int5,tmp_int6;
 
 unsigned int LAFinished = 1, LASamples;
 unsigned int samples_to_fetch = BUFFER_SIZE, I2CTotalSamples = BUFFER_SIZE;
@@ -134,8 +132,7 @@ BYTE motor_phases[] = {12,6,3,9},current_motor_phase = 0;
 
 
 /*--------Error handling definitions------*/
-char errors[ERROR_BUFFLEN],tmpstr[25];
-char *error_readpos=&errors[0],*error_writepos=&errors[0];
+char tmpstr[25];
 
 
 /*------------Sine Table--------------*/
@@ -243,20 +240,6 @@ void read_all_from_flash(_prog_addressT pointer);
 void load_to_flash(_prog_addressT pointer, BYTE location, unsigned int * blk);
 void read_flash(_prog_addressT pointer, BYTE location);
 
-void initI2C(void);
-
-
-void I2CStart();
-void I2CStop();
-void I2CRestart();
-void I2CAck();
-void I2CNak();
-void I2CWait();
-void I2CSend(BYTE dat);
-BYTE I2CRead(BYTE ack);
-
-
-
 /*Command set for the NRFL01+ radio*/
 void nRF_Setup();
 void RXMode();
@@ -280,7 +263,6 @@ void sineWave1(unsigned int wavelength,BYTE highres);
 void sineWave2(unsigned int wavelength,BYTE highres);
 void setSineWaves(unsigned int wavelength1,unsigned int wavelength2,unsigned int pos,unsigned int tmr_delay,BYTE highres);
 void alternate_get_high_frequency(BYTE channel,BYTE scale);
-void logit(char *str);
 
 #endif	/* FUNCTIONS_H */
 
