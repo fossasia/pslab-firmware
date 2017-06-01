@@ -8,11 +8,9 @@
 #ifndef PSLAB_UART_H
 #define	PSLAB_UART_H
 
-#include <p24EP256GP204.h>
-#include <libpic30.h>
+#include <xc.h>
+#include "Common_Methods.h"
 #include "COMMANDS.h"
-
-#define DELAY_105uS asm volatile ("REPEAT, #6721"); Nop(); // 105uS delay
 
 void initUART(unsigned int);
 bool hasChar();

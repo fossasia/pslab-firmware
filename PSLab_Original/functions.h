@@ -15,8 +15,8 @@
  * Created on October 17, 2014, 11:48 AM
  */
 
-#include <p24EP256GP204.h>
 #include <libpic30.h>
+#include "Common_Methods.h"
 #include "COMMANDS.h"
 
 #define FP 64000000
@@ -234,7 +234,6 @@ void sqr2(unsigned int,unsigned int,BYTE);
 void sqr4(uint16,uint16 ,uint16,uint16,uint16,uint16,uint16,uint16,BYTE);
 
 void mapReferenceOscillator(BYTE ,BYTE );
-void Delay_us(unsigned int);
 void Delay_with_pulse(unsigned int);
 
 void setPGA(char, char);
@@ -281,7 +280,7 @@ void sineWave1(unsigned int wavelength,BYTE highres);
 void sineWave2(unsigned int wavelength,BYTE highres);
 void setSineWaves(unsigned int wavelength1,unsigned int wavelength2,unsigned int pos,unsigned int tmr_delay,BYTE highres);
 void alternate_get_high_frequency(BYTE channel,BYTE scale);
-
+void logit(char *str);
 
 #endif	/* FUNCTIONS_H */
 

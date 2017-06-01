@@ -7,6 +7,7 @@
       <itemPath>COMMANDS.h</itemPath>
       <itemPath>functions.h</itemPath>
       <itemPath>PSLAB_UART.h</itemPath>
+      <itemPath>Common_Methods.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -17,6 +18,7 @@
                    projectFiles="true">
       <itemPath>proto2_main.c</itemPath>
       <itemPath>PSLAB_UART.c</itemPath>
+      <itemPath>Common_Methods.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

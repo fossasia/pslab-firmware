@@ -22,6 +22,7 @@
  */
 
 #include "functions.h"
+#include "Common_Methods.h"
 
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
     _AD1IF = 0;
@@ -1162,6 +1163,7 @@ void setupADC10() {
     T5CONbits.TON = 1;
 
 }
+
 void preciseDelay(int t){
     T5CONbits.TON = 0;
     T5CONbits.TCKPS = 2;
@@ -1396,35 +1398,6 @@ void configureADC() {
     ANSELBbits.ANSB3 = 1;
     ANSELCbits.ANSC1 = 1;
     ANSELCbits.ANSC2 = 1;  //URGENT!
-}
-
-void Delay_us(unsigned int delay) {
-    unsigned int i;
-    for ( i = 0; i < delay; i++) {
-        __asm__ volatile ("repeat #63");
-        __asm__ volatile ("nop");
-    }
-}
-
-void Delay_us_by8(unsigned int delay) {
-    unsigned int i;
-    for ( i = 0; i < delay; i++) {
-        __asm__ volatile ("repeat #7");
-        __asm__ volatile ("nop");
-    }
-}
-
-
-
-void Delay_ms(unsigned int delay) {
-    unsigned int i,i2;
-    for ( i2 = 0; i2 < delay; i2++){
-        for ( i = 0; i < 860; i++) {
-            __asm__ volatile ("repeat #63");
-            __asm__ volatile ("nop");
-        }
-    __asm__ volatile ("CLRWDT");
-    }
 }
 
 void read_all_from_flash(_prog_addressT pointer) {

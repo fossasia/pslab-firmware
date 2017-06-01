@@ -57,17 +57,17 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=proto2_main.c PSLAB_UART.c
+SOURCEFILES_QUOTED_IF_SPACED=proto2_main.c PSLAB_UART.c Common_Methods.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/proto2_main.o.d ${OBJECTDIR}/PSLAB_UART.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o ${OBJECTDIR}/Common_Methods.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/proto2_main.o.d ${OBJECTDIR}/PSLAB_UART.o.d ${OBJECTDIR}/Common_Methods.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o
+OBJECTFILES=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o ${OBJECTDIR}/Common_Methods.o
 
 # Source Files
-SOURCEFILES=proto2_main.c PSLAB_UART.c
+SOURCEFILES=proto2_main.c PSLAB_UART.c Common_Methods.c
 
 
 CFLAGS=
@@ -108,6 +108,13 @@ ${OBJECTDIR}/PSLAB_UART.o: PSLAB_UART.c  nbproject/Makefile-${CND_CONF}.mk
 	${MP_CC} $(MP_EXTRA_CC_PRE)  PSLAB_UART.c  -o ${OBJECTDIR}/PSLAB_UART.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PSLAB_UART.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/PSLAB_UART.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
+${OBJECTDIR}/Common_Methods.o: Common_Methods.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Common_Methods.o.d 
+	@${RM} ${OBJECTDIR}/Common_Methods.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Common_Methods.c  -o ${OBJECTDIR}/Common_Methods.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Common_Methods.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/Common_Methods.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
 else
 ${OBJECTDIR}/proto2_main.o: proto2_main.c  nbproject/Makefile-${CND_CONF}.mk
 	@${MKDIR} "${OBJECTDIR}" 
@@ -122,6 +129,13 @@ ${OBJECTDIR}/PSLAB_UART.o: PSLAB_UART.c  nbproject/Makefile-${CND_CONF}.mk
 	@${RM} ${OBJECTDIR}/PSLAB_UART.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  PSLAB_UART.c  -o ${OBJECTDIR}/PSLAB_UART.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/PSLAB_UART.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off  
 	@${FIXDEPS} "${OBJECTDIR}/PSLAB_UART.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
+	
+${OBJECTDIR}/Common_Methods.o: Common_Methods.c  nbproject/Makefile-${CND_CONF}.mk
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Common_Methods.o.d 
+	@${RM} ${OBJECTDIR}/Common_Methods.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Common_Methods.c  -o ${OBJECTDIR}/Common_Methods.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MMD -MF "${OBJECTDIR}/Common_Methods.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off  
+	@${FIXDEPS} "${OBJECTDIR}/Common_Methods.o.d" $(SILENT)  -rsi ${MP_CC_DIR}../ 
 	
 endif
 
