@@ -22,6 +22,8 @@
  */
 
 #include "functions.h"
+#include "Common_Methods.h"
+#include "PSLAB_I2C.h"
 
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
     _AD1IF = 0;
@@ -1162,6 +1164,7 @@ void setupADC10() {
     T5CONbits.TON = 1;
 
 }
+
 void preciseDelay(int t){
     T5CONbits.TON = 0;
     T5CONbits.TCKPS = 2;
@@ -1398,35 +1401,6 @@ void configureADC() {
     ANSELCbits.ANSC2 = 1;  //URGENT!
 }
 
-void Delay_us(unsigned int delay) {
-    unsigned int i;
-    for ( i = 0; i < delay; i++) {
-        __asm__ volatile ("repeat #63");
-        __asm__ volatile ("nop");
-    }
-}
-
-void Delay_us_by8(unsigned int delay) {
-    unsigned int i;
-    for ( i = 0; i < delay; i++) {
-        __asm__ volatile ("repeat #7");
-        __asm__ volatile ("nop");
-    }
-}
-
-
-
-void Delay_ms(unsigned int delay) {
-    unsigned int i,i2;
-    for ( i2 = 0; i2 < delay; i2++){
-        for ( i = 0; i < 860; i++) {
-            __asm__ volatile ("repeat #63");
-            __asm__ volatile ("nop");
-        }
-    __asm__ volatile ("CLRWDT");
-    }
-}
-
 void read_all_from_flash(_prog_addressT pointer) {
     unsigned int bytes_to_read = _FLASH_ROW * 16; // _FLASH_ROW*8 integers = twice as many bytes
     _prog_addressT p1, p2;
@@ -1477,112 +1451,6 @@ void read_flash(_prog_addressT pointer, BYTE location) {
         while (U1STAbits.UTXBF); //wait for transmit buffer empty
         U1TXREG = (dest[location * 8 + i] >> 8)&0xff;
 */
-    }
-}
-
-void initI2C(void) {
-
-    _TRISB4 = 1; // set SCL and SDA pins as inputs.
-    _TRISA8 = 1;
-    ODCBbits.ODCB4=1;
-    ODCAbits.ODCA8=1;
-    CNPUBbits.CNPUB4 = 1;
-    CNPUAbits.CNPUA8 = 1;
-    I2C2CON=0;
-    
-    Delay_us(1000);
-    I2C2CONbits.I2CEN = 0;
-    //I2C bus clock => I2CxBRG = ( Fcy/Fscl - Fcy/10.000.000 ) - 1
-    //I2C bus clock => Fscl = 1/( (I2CxBRG+1)/Fcy + (1/10.000.000) )
-    //I2C2BRG=0x0092;     //392kHz @ 60MHz // 1/((0x92+1.0)/fcy+1.0/1e7)
-    //I2C2BRG=0x00ff;     //229kHz @ 60MHz // 1/((0xff+1.0)/fcy+1.0/1e7)
-    I2C2BRG = I2C_BRGVAL;
-
-    I2C2STAT = 0b0000000000000000;
-    //Clear BCL: Master Bus Collision Detect bit
-    //Clear IWCOL: Write Collision Detect bit
-    //Clear I2CPOV: Receive Overflow Flag bit
-
-    I2C2CONbits.DISSLW = 0; //disable slew rate
-    I2C2CONbits.I2CEN = 1; //enable. configure SDA, SCL as serial
-    Delay_us(1000);
-
-}
-
-void I2CStart() {
-    I2C2CONbits.SEN = 1; /* Start condition enabled */
-    tmp_int1=1000;
-    while (I2C2CONbits.SEN && tmp_int1--)Delay_us(1); /* wait for ack data to send on bus */
-    /* wait for start condition to finish */
-}
-
-void I2CStop() {
-    I2C2CONbits.PEN = 1; /* Stop condition enabled */
-    tmp_int1=1000;
-    while (I2C2CONbits.PEN && tmp_int1--)Delay_us(1); /* wait for stop cond to finish */
-
-    /* PEN automatically cleared by hardware */
-}
-
-void I2CRestart() {
-    I2C2CONbits.RSEN = 1; /* Repeated start enabled */
-    tmp_int1=1000;
-    while (I2C2CONbits.RSEN && tmp_int1--)Delay_us(1); /* wait for condition to finish */
-
-}
-
-void I2CAck() {
-    I2C2CONbits.ACKDT = 0; /* Acknowledge data bit, 0 = ACK */
-    I2C2CONbits.ACKEN = 1; /* Ack data enabled */
-
-    tmp_int1=1000;
-    while (I2C2CONbits.ACKEN && tmp_int1--)Delay_us(1); /* wait for ack data to send on bus */
-}
-
-void I2CNak() {
-    I2C2CONbits.ACKDT = 1; /* Acknowledge data bit, 1 = NAK */
-    I2C2CONbits.ACKEN = 1; /* Ack data enabled */
-    tmp_int1=1000;
-    while (I2C2CONbits.ACKEN && tmp_int1--)Delay_us(1); /* wait for ack data to send on bus */
-
-}
-
-void I2CWait() {
-    tmp_int1=1000;
-    while (I2C2STATbits.TBF && tmp_int1--)Delay_us(1);
-    /* wait for any pending transfer */
-}
-
-void I2CSend(BYTE dat) {
-    I2C2TRN = dat; /* Move data to SSPBUF */
-    tmp_int1=1000;
-    while (I2C2STATbits.TRSTAT && tmp_int1--)Delay_us(1);/* wait till complete data is sent from buffer */
-
-    I2CWait(); /* wait for any pending transfer */
-}
-
-BYTE I2CRead(BYTE ack){
-    BYTE retval;
-    I2CWait();
-    I2C2CONbits.RCEN=1;
-
-    tmp_int1=1000;
-    while (I2C2CONbits.RCEN && tmp_int1--)Delay_us(1);
-    while ((!I2C2STATbits.RBF) && tmp_int1--)Delay_us(1);
-
-    retval = I2C2RCV;
-    if(ack)I2CAck();
-    else I2CNak();
-    return retval;
-    
-}
-
-
-void logit(char *str){
-    while(*str!='\0'){
-        *error_writepos++=*str++;
-        if(error_writepos==&errors[ERROR_BUFFLEN])
-            error_writepos=&errors[0];
     }
 }
 

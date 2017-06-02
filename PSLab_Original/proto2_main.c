@@ -2,7 +2,6 @@
  * File:   proto2_main.c
  * Author: jithin
  *
- *
  */
 
 // FICD
@@ -11,12 +10,12 @@
 #pragma config ICS = NONE               // ICD Communication Channel Select bits (Reserved, do not use)
 #pragma config JTAGEN = OFF             // JTAG Enable bit (JTAG is disabled)
 
-#include <xc.h>
-#include <p24EP256GP204.h>
 #include <stdlib.h>
-#include <libpic30.h>
+#include "Common_Methods.h"
 #include "functions.c"
-#include "PSLAB_UART.c"
+#include "PSLAB_UART.h"
+#include "PSLAB_I2C.h"
+
 //_FICD(ICS_PGD2 & JTAGEN_OFF) //Programmming pins  ..PGED2
 
 
