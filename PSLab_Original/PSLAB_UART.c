@@ -1,7 +1,10 @@
 /******************************************************************************/
 /******** This file contains UART control modules of function.c file **********/
 /******************************************************************************/
-#include "functions.h"
+#include <p24EP256GP204.h>
+#include <libpic30.h>
+#include "COMMANDS.h"
+#include "PSLAB_UART.h"
 
 void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
     asm("CLRWDT");
@@ -91,9 +94,7 @@ char getChar() {
 }
 
 unsigned int getInt() {
-    c1 = getChar()&0xFF;
-    c2 = getChar()&0xFF;
-    return (c2 << 8) | c1;
+    return ((getChar()&0xFF << 8) | (getChar()&0xFF));
 }
 
 void configUART2(unsigned int BAUD) {
@@ -137,9 +138,7 @@ char getChar2(void) {
 }
 
 unsigned int getInt2(void) {
-    c1 = getChar2()&0xFF;
-    c2 = getChar2()&0xFF;
-    return (c2 << 8) | c1;
+    return ((getChar2()&0xFF << 8) | (getChar2()&0xFF));
 }
 
 void sendChar2(char val) {

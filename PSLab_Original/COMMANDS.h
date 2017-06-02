@@ -11,6 +11,9 @@
 //Define for OLED Compilation
 //#define OLED 1
 
+#define BYTE unsigned char
+typedef BYTE bool;
+
 #define ACKNOWLEDGE 254
 /*----flash memory----*/
 #define FLASH 1
