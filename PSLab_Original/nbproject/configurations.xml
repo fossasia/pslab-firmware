@@ -4,6 +4,14 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+<<<<<<< HEAD
+=======
+      <itemPath>COMMANDS.h</itemPath>
+      <itemPath>functions.h</itemPath>
+      <itemPath>PSLAB_UART.h</itemPath>
+      <itemPath>Common_Methods.h</itemPath>
+      <itemPath>PSLAB_I2C.h</itemPath>
+>>>>>>> c97b0e5... Fix #15 : Added I2C Functions
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -13,6 +21,12 @@
                    displayName="Source Files"
                    projectFiles="true">
       <itemPath>proto2_main.c</itemPath>
+<<<<<<< HEAD
+=======
+      <itemPath>PSLAB_UART.c</itemPath>
+      <itemPath>Common_Methods.c</itemPath>
+      <itemPath>PSLAB_I2C.c</itemPath>
+>>>>>>> c97b0e5... Fix #15 : Added I2C Functions
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

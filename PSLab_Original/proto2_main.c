@@ -14,8 +14,16 @@
 #include<xc.h>
 #include <p24EP256GP204.h>
 #include <stdlib.h>
+<<<<<<< HEAD
 #include<libpic30.h>
 #include"../PSLab_Original_Library/functions.c"
+=======
+#include "Common_Methods.h"
+#include "functions.c"
+#include "PSLAB_UART.h"
+#include "PSLAB_I2C.h"
+
+>>>>>>> c97b0e5... Fix #15 : Added I2C Functions
 //_FICD(ICS_PGD2 & JTAGEN_OFF) //Programmming pins  ..PGED2
 
 

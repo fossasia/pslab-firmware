@@ -3,6 +3,17 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/1"/>
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
+<<<<<<< HEAD
         <group/>
+=======
+        <group>
+            <file>file:/home/padmal/Documents/FossAsia/pslab-firmware/PSLab_Original/Common_Methods.h</file>
+            <file>file:/home/padmal/Documents/FossAsia/pslab-firmware/PSLab_Original/functions.c</file>
+            <file>file:/home/padmal/Documents/FossAsia/pslab-firmware/PSLab_Original/functions.h</file>
+            <file>file:/home/padmal/Documents/FossAsia/pslab-firmware/PSLab_Original/proto2_main.c</file>
+            <file>file:/home/padmal/Documents/FossAsia/pslab-firmware/PSLab_Original/COMMANDS.h</file>
+            <file>file:/home/padmal/Documents/FossAsia/pslab-firmware/PSLab_Original/PSLAB_UART.c</file>
+        </group>
+>>>>>>> c97b0e5... Fix #15 : Added I2C Functions
     </open-files>
 </project-private>

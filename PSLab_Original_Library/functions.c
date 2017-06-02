@@ -681,18 +681,6 @@ void start_4chan_LA(unsigned int data_points,unsigned int modes , BYTE scale){
     
 }
 
-void setMultiFuncPortMode(BYTE mode){
-    if(MULTIFUNC_PORT == mode)return;
-    else{
-        MULTIFUNC_PORT = mode;
-        if(mode == MULTIFUNC_I2C){initI2C();}
-        else if(mode == MULTIFUNC_UART){}
-        else if(mode == MULTIFUNC_NONSTANDARD){_TRISB4=0;_TRISA8=1;RPINR8bits.IC3R = 0;RPINR8bits.IC4R = 0;}
-
-
-    }
-}
-
 void disable_input_capture(){
     IC1CON2bits.TRIGSTAT = 0;  IC2CON2bits.TRIGSTAT = 0;IC3CON2bits.TRIGSTAT = 0;  IC4CON2bits.TRIGSTAT = 0;
     IC1CON1bits.ICM=0;  IC2CON1bits.ICM=0;IC3CON1bits.ICM=0;  IC4CON1bits.ICM=0; //disable the module
@@ -1604,6 +1592,7 @@ void read_flash(_prog_addressT pointer, BYTE location) {
     }
 }
 
+<<<<<<< HEAD:PSLab_Original_Library/functions.c
 
 bool hasChar() {
     return U1STAbits.URXDA;
@@ -1751,6 +1740,8 @@ BYTE I2CRead(BYTE ack){
 }
 
 
+=======
+>>>>>>> c97b0e5... Fix #15 : Added I2C Functions:PSLab_Original/functions.c
 void logit(char *str){
     while(*str!='\0'){
         *error_writepos++=*str++;
