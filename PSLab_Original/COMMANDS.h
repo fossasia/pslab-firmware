@@ -11,6 +11,9 @@
 //Define for OLED Compilation
 //#define OLED 1
 
+#define BYTE unsigned char
+typedef BYTE bool;
+
 #define ACKNOWLEDGE 254
 /*----flash memory----*/
 #define FLASH 1
@@ -18,7 +21,6 @@
 #define WRITE_FLASH  2
 #define WRITE_BULK_FLASH  3
 #define READ_BULK_FLASH  4
-
 
 /*-----ADC------*/
 #define ADC 2
@@ -93,7 +95,6 @@
 #define DAC 6
 #define SET_DAC 1
 #define SET_CALIBRATED_DAC 2
-
 
 /*--------WAVEGEN-----*/
 #define WAVEGEN 7
@@ -196,7 +197,6 @@
 #define BAUD2000000			10
 #define BAUD4000000			11
 
-
 /*-----NRFL01+ radio module for wireless sensors*/
 #define NRFL01  13
 #define NRF_SETUP 1
@@ -228,15 +228,11 @@
 #define HCSR04 2
 #define AM2302 3
 
-
 #define PASSTHROUGHS 15
 
 #define PASS_UART   1
 #define PASS_SPI    2
 #define PASS_UART_DMA   3
-
-
-
 
 #define ESP_HEADER 254
 #define BUFFER_SIZE 10000
@@ -281,19 +277,16 @@
 #define RP41_REMAP 41
 #define FREQ_REMAP 46 // RPI 46 ,RB14
 
-
 /*---------DMA_MODES--------*/
 #define DMA_LA_ONE_CHAN 1
 #define DMA_LA_TWO_CHAN 2
 #define DMA_LA_FOUR_CHAN 3
-
 
 /*-------ACKNOWLEDGE BYTES-----*/
 #define DO_NOT_BOTHER 0
 #define SUCCESS 1
 #define ARGUMENT_ERROR 2
 #define FAILED  3
-
 
 /*-------THIS SECTION IS FOR THE RF TRANSMITTER/RECEIVER MODULE----------*/
 
@@ -336,12 +329,7 @@
 #define DYNPD  0x1C
 #define FEATURE  0x1D
 
-
-
 #define NRF_REPORT_ROWS 15
 #define NRF_ROW_LENGTH 20
 
-
-
 #endif	/* COMMANDS_H */
-
