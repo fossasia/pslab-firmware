@@ -100,10 +100,6 @@ BYTE *bytebuff1,*bytebuff2;
 unsigned int dest[_FLASH_ROW * 8];
 int ulsb,umsb; //DAC_OFFSETS[4],
 
-/*-----SPI VARIABLES-------*/
-BYTE location, value,ADC_MODE=NOT_READY,SPI_MODE=NOT_READY,MULTIFUNC_PORT = NOT_READY,DMA_MODE=NOT_READY,ADC_STREAMING=false;
-BYTE SPI_PPRE=0,SPI_SPRE=2,SPI_CKE=1,SPI_CKP=0,SPI_SMP=1;
-
 /*------UART VARIABLES-----*/
 unsigned int TCD = 1000;
 
@@ -130,11 +126,6 @@ _prog_addressT p,pProg;
 /*--------Stepper Motor--------*/
 BYTE motor_phases[] = {12,6,3,9},current_motor_phase = 0;
 
-
-/*--------Error handling definitions------*/
-char tmpstr[25];
-
-
 /*------------Sine Table--------------*/
 
 #define WAVE_TABLE_FULL_LENGTH 512
@@ -159,14 +150,10 @@ int  __attribute__((section("sine_table2_short"))) sineTable2_short[]  ={
 
 //definitions for NRFL01+ radio
 
-BYTE RXTX_ADDR[3] = { 0x01, 0xAA, 0xAA }; //Randomly chosen address
-BYTE TOKEN_ADDR[3] = { 0xFF, 0xAA, 0xAA }; //Fixed address on pipe 2.
-BYTE i2c_list[NRF_REPORT_ROWS][NRF_ROW_LENGTH];
-BYTE rfCardPresent = FALSE,chan=1;
+BYTE chan=1;
 BYTE data[32];
-BYTE ca,cb,cc;
+BYTE cb,cc;
 long addr_count = 0xAAAA01;
-BYTE nodecount;
 
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) ;
 void __attribute__((__interrupt__, no_auto_psv)) _T5Interrupt(void); //For frequency counter
@@ -218,13 +205,6 @@ void enableADCDMA();
 void enableLogicAnalyser(void);
 void disableLogicAnalyser(void);
 
-void setSPIMode(BYTE);
-void initSPI();
-BYTE spi_write8(BYTE);
-unsigned int spi_write16(unsigned int value);
-void start_spi();
-void stop_spi();
-
 void sqr1(unsigned int,unsigned int,BYTE);
 void sqr2(unsigned int,unsigned int,BYTE);
 
@@ -239,23 +219,6 @@ void setSensorChannel(char);
 void read_all_from_flash(_prog_addressT pointer);
 void load_to_flash(_prog_addressT pointer, BYTE location, unsigned int * blk);
 void read_flash(_prog_addressT pointer, BYTE location);
-
-/*Command set for the NRFL01+ radio*/
-void nRF_Setup();
-void RXMode();
-void TXMode();
-void PowerDown();
-BYTE RXChar();
-void TXChar(BYTE ch);
-BYTE ReadDataAvailable();
-void FlushTXRX();
-void WriteRegister(BYTE reg, BYTE val);
-void WriteAddress(BYTE reg, BYTE num, BYTE* addr);
-BYTE ReadRegister(BYTE reg);
-BYTE ReadStatus();
-void WriteCommand(BYTE command);
-void WritePayload(BYTE,BYTE num, BYTE* data);
-void ReadPayload(BYTE num, BYTE* data);
 
 void preciseDelay(int t);
 void set_CS(BYTE channel,BYTE status);

@@ -1,13 +1,5 @@
 #include "Common_Methods.h"
 
-void logit(char *str){
-    while(*str!='\0'){
-        *error_writepos++=*str++;
-        if(error_writepos==&errors[ERROR_BUFFLEN])
-            error_writepos=&errors[0];
-    }
-}
-
 void Delay_us(unsigned int delay) {
     unsigned int i;
     for (i = 0; i < delay; i++) {
