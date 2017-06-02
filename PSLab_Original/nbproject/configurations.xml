@@ -8,6 +8,7 @@
       <itemPath>functions.h</itemPath>
       <itemPath>PSLAB_UART.h</itemPath>
       <itemPath>Common_Methods.h</itemPath>
+      <itemPath>PSLAB_I2C.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,6 +20,7 @@
       <itemPath>proto2_main.c</itemPath>
       <itemPath>PSLAB_UART.c</itemPath>
       <itemPath>Common_Methods.c</itemPath>
+      <itemPath>PSLAB_I2C.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
