@@ -42,7 +42,6 @@
 
 #define Fs   		4000
 #define SAMPPRD		(FP/Fs)-1
-
 typedef unsigned int uint16;
 #define true 1
 #define false 0
@@ -240,6 +239,7 @@ void read_all_from_flash(_prog_addressT pointer);
 void load_to_flash(_prog_addressT pointer, BYTE location, unsigned int * blk);
 void read_flash(_prog_addressT pointer, BYTE location);
 
+
 /*Command set for the NRFL01+ radio*/
 void nRF_Setup();
 void RXMode();
@@ -265,4 +265,3 @@ void setSineWaves(unsigned int wavelength1,unsigned int wavelength2,unsigned int
 void alternate_get_high_frequency(BYTE channel,BYTE scale);
 
 #endif	/* FUNCTIONS_H */
-

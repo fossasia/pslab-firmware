@@ -15,7 +15,6 @@
 typedef BYTE bool;
 
 #define ACKNOWLEDGE 254
-
 /*----flash memory----*/
 #define FLASH 1
 #define READ_FLASH   1
@@ -234,10 +233,6 @@ typedef BYTE bool;
 #define PASS_UART   1
 #define PASS_SPI    2
 #define PASS_UART_DMA   3
-
-#define ESP_HEADER 254
-#define BUFFER_SIZE 10000
-#define NOT_READY 0
 
 /*---------ADC definitions---------*/
 #define ADC_10BIT_SIMULTANEOUS 1
