@@ -42,11 +42,9 @@
 
 #define Fs   		4000
 #define SAMPPRD		(FP/Fs)-1
-
 typedef unsigned int uint16;
 #define true 1
 #define false 0
-
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_PIN _LATB4
@@ -228,4 +226,3 @@ void setSineWaves(unsigned int wavelength1,unsigned int wavelength2,unsigned int
 void alternate_get_high_frequency(BYTE channel,BYTE scale);
 
 #endif	/* FUNCTIONS_H */
-
