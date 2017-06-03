@@ -1,7 +1,13 @@
 /******************************************************************************/
 /******** This file contains UART control modules of function.c file **********/
 /******************************************************************************/
-#include "functions.h"
+#include <p24EP256GP204.h>
+#include <libpic30.h>
+#include "COMMANDS.h"
+#include "PSLAB_UART.h"
+
+unsigned char c1 = 0;
+unsigned char c2 = 0;
 
 void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
     asm("CLRWDT");
