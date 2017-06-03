@@ -6,6 +6,9 @@
 #include "COMMANDS.h"
 #include "PSLAB_UART.h"
 
+unsigned char c1 = 0;
+unsigned char c2 = 0;
+
 void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
     asm("CLRWDT");
     //while (U1STAbits.UTXBF); //wait for transmit buffer empty
@@ -94,7 +97,9 @@ char getChar() {
 }
 
 unsigned int getInt() {
-    return ((getChar()&0xFF << 8) | (getChar()&0xFF));
+    c1 = getChar()&0xFF;
+    c2 = getChar()&0xFF;
+    return (c2 << 8) | c1;
 }
 
 void configUART2(unsigned int BAUD) {
@@ -138,7 +143,9 @@ char getChar2(void) {
 }
 
 unsigned int getInt2(void) {
-    return ((getChar2()&0xFF << 8) | (getChar2()&0xFF));
+    c1 = getChar2()&0xFF;
+    c2 = getChar2()&0xFF;
+    return (c2 << 8) | c1;
 }
 
 void sendChar2(char val) {
