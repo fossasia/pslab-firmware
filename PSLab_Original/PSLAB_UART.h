@@ -10,6 +10,9 @@
 
 #define DELAY_105uS asm volatile ("REPEAT, #6721"); Nop(); // 105uS delay
 
+extern unsigned char c1;
+extern unsigned char c2;
+
 void initUART(unsigned int);
 bool hasChar();
 void sendChar(BYTE val);
