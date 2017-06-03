@@ -109,7 +109,7 @@ unsigned int I2C_BRGVAL = 0x272, TCD = 1000;
 
 /*------LOGIC ANALYZER VARIABLES-----*/
 BYTE INITIAL_DIGITAL_STATES = 0, INITIAL_DIGITAL_STATES_ERR = 0, DIGITAL_TRIGGER_CHANNEL = 32, DIGITAL_TRIGGER_STATE = 0, b1, b2, COMPARATOR_CONFIG = 7 | (3 << 4), conversion_done = 1, I2CConvDone = 1;
-unsigned int i, lsb, msb, blk[8], c1, c2, adval, tmp_int1, tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
+unsigned int i, lsb, msb, blk[8], adval, tmp_int1, tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
 
 unsigned int LAFinished = 1, LASamples;
 unsigned int samples_to_fetch = BUFFER_SIZE, I2CTotalSamples = BUFFER_SIZE;
