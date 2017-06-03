@@ -34,4 +34,3 @@ void sendInt2(unsigned int val);
 void initUART2_passthrough(unsigned int);
 
 #endif	/* PSLAB_UART_H */
-

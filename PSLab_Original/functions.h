@@ -47,8 +47,6 @@ typedef unsigned int uint16;
 #define true 1
 #define false 0
 
-#define ERROR_BUFFLEN 1500
-
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_PIN _LATB4
@@ -70,12 +68,6 @@ typedef unsigned int uint16;
 #define CSNUM_WG 8
 #define CSNUM_OUT1 9
 #define CSNUM_OUT2 10
-
-
-#define CE_HIGH _LATC5=1
-#define CE_LOW  _LATC5=0
-#define CSN_HIGH _LATC4=1;Nop();
-#define CSN_LOW  _LATC4=0;Nop();
 
 #define COUT1_HIGH _LATB5=1
 #define COUT1_LOW  _LATB5=0
@@ -100,16 +92,12 @@ BYTE *bytebuff1, *bytebuff2;
 unsigned int dest[_FLASH_ROW * 8];
 int ulsb, umsb; //DAC_OFFSETS[4],
 
-/*-----SPI VARIABLES-------*/
-BYTE location, value, ADC_MODE = NOT_READY, SPI_MODE = NOT_READY, MULTIFUNC_PORT = NOT_READY, DMA_MODE = NOT_READY, ADC_STREAMING = false;
-BYTE SPI_PPRE = 0, SPI_SPRE = 2, SPI_CKE = 1, SPI_CKP = 0, SPI_SMP = 1;
-
 /*------UART VARIABLES-----*/
-unsigned int I2C_BRGVAL = 0x272, TCD = 1000;
+unsigned int TCD = 1000;
 
 /*------LOGIC ANALYZER VARIABLES-----*/
 BYTE INITIAL_DIGITAL_STATES = 0, INITIAL_DIGITAL_STATES_ERR = 0, DIGITAL_TRIGGER_CHANNEL = 32, DIGITAL_TRIGGER_STATE = 0, b1, b2, COMPARATOR_CONFIG = 7 | (3 << 4), conversion_done = 1, I2CConvDone = 1;
-unsigned int i, lsb, msb, blk[8], adval, tmp_int1, tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
+unsigned int lsb, msb, blk[8], adval, tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
 
 unsigned int LAFinished = 1, LASamples;
 unsigned int samples_to_fetch = BUFFER_SIZE, I2CTotalSamples = BUFFER_SIZE;
@@ -129,12 +117,6 @@ _prog_addressT p, pProg;
 
 /*--------Stepper Motor--------*/
 BYTE motor_phases[] = {12, 6, 3, 9}, current_motor_phase = 0;
-
-
-/*--------Error handling definitions------*/
-char errors[ERROR_BUFFLEN], tmpstr[25];
-char *error_readpos = &errors[0], *error_writepos = &errors[0];
-
 
 /*------------Sine Table--------------*/
 
@@ -164,14 +146,10 @@ int __attribute__((section("sine_table2_short"))) sineTable2_short[] = {
 
 //definitions for NRFL01+ radio
 
-BYTE RXTX_ADDR[3] = {0x01, 0xAA, 0xAA}; //Randomly chosen address
-BYTE TOKEN_ADDR[3] = {0xFF, 0xAA, 0xAA}; //Fixed address on pipe 2.
-BYTE i2c_list[NRF_REPORT_ROWS][NRF_ROW_LENGTH];
-BYTE rfCardPresent = FALSE, chan = 1;
+BYTE chan = 1;
 BYTE data[32];
-BYTE ca, cb, cc;
+BYTE cb, cc;
 long addr_count = 0xAAAA01;
-BYTE nodecount;
 
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void);
 void __attribute__((__interrupt__, no_auto_psv)) _T5Interrupt(void); //For frequency counter
@@ -223,20 +201,12 @@ void enableADCDMA();
 void enableLogicAnalyser(void);
 void disableLogicAnalyser(void);
 
-void setSPIMode(BYTE);
-void initSPI();
-BYTE spi_write8(BYTE);
-unsigned int spi_write16(unsigned int value);
-void start_spi();
-void stop_spi();
-
 void sqr1(unsigned int, unsigned int, BYTE);
 void sqr2(unsigned int, unsigned int, BYTE);
 
 void sqr4(uint16, uint16, uint16, uint16, uint16, uint16, uint16, uint16, BYTE);
 
 void mapReferenceOscillator(BYTE, BYTE);
-void Delay_us(unsigned int);
 void Delay_with_pulse(unsigned int);
 
 void setPGA(char, char);
@@ -245,38 +215,6 @@ void setSensorChannel(char);
 void read_all_from_flash(_prog_addressT pointer);
 void load_to_flash(_prog_addressT pointer, BYTE location, unsigned int * blk);
 void read_flash(_prog_addressT pointer, BYTE location);
-
-void initI2C(void);
-
-
-void I2CStart();
-void I2CStop();
-void I2CRestart();
-void I2CAck();
-void I2CNak();
-void I2CWait();
-void I2CSend(BYTE dat);
-BYTE I2CRead(BYTE ack);
-
-
-
-/*Command set for the NRFL01+ radio*/
-void nRF_Setup();
-void RXMode();
-void TXMode();
-void PowerDown();
-BYTE RXChar();
-void TXChar(BYTE ch);
-BYTE ReadDataAvailable();
-void FlushTXRX();
-void WriteRegister(BYTE reg, BYTE val);
-void WriteAddress(BYTE reg, BYTE num, BYTE* addr);
-BYTE ReadRegister(BYTE reg);
-BYTE ReadStatus();
-void WriteCommand(BYTE command);
-void WritePayload(BYTE, BYTE num, BYTE* data);
-void ReadPayload(BYTE num, BYTE* data);
-
 
 #endif	/* FUNCTIONS_H */
 
