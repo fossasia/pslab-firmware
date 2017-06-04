@@ -14,6 +14,8 @@
 #define BYTE unsigned char
 typedef BYTE bool;
 
+#define LEDPIN _LATB15   //status LED
+
 #define ACKNOWLEDGE 254
 /*----flash memory----*/
 #define FLASH 1

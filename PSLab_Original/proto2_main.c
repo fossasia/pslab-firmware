@@ -21,6 +21,7 @@
 #include "PSLAB_I2C.h"
 #include "PSLAB_NRF.h"
 #include "PSLAB_SPI.h"
+#include "PSLAB_ADC.h"
 //_FICD(ICS_PGD2 & JTAGEN_OFF) //Programmming pins  ..PGED2
 
 

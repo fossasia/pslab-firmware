@@ -52,9 +52,6 @@ typedef unsigned int uint16;
 #define SCL_PIN _LATB4
 #define SDA_PIN _RA8
 
-#define LEDPIN _LATB15   //status LED
-
-
 #define CS1 _LATC5
 #define CS2 _LATC4
 
@@ -85,8 +82,8 @@ __prog__ unsigned int __attribute__((section("CALIBS"), space(prog), aligned(_FL
 
 //__eds__ unsigned int ADCbuffer[BUFFER_SIZE] __attribute__((space(eds))); 
 int __attribute__((section("adcbuff"), far)) ADCbuffer[BUFFER_SIZE];
-int *buff0, *buff1, *endbuff, *buff2, *buff3;
-int *buffpointer, *endpointer, dma_channel_length = 10, samples = 0, I2CSamples = 0;
+int *endbuff;
+int *buffpointer, *endpointer, dma_channel_length = 10, I2CSamples = 0;
 BYTE *bytebuff1, *bytebuff2;
 
 unsigned int dest[_FLASH_ROW * 8];
@@ -96,20 +93,16 @@ int ulsb, umsb; //DAC_OFFSETS[4],
 unsigned int TCD = 1000;
 
 /*------LOGIC ANALYZER VARIABLES-----*/
-BYTE INITIAL_DIGITAL_STATES = 0, INITIAL_DIGITAL_STATES_ERR = 0, DIGITAL_TRIGGER_CHANNEL = 32, DIGITAL_TRIGGER_STATE = 0, b1, b2, COMPARATOR_CONFIG = 7 | (3 << 4), conversion_done = 1, I2CConvDone = 1;
-unsigned int lsb, msb, blk[8], adval, tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
+BYTE INITIAL_DIGITAL_STATES = 0, INITIAL_DIGITAL_STATES_ERR = 0, DIGITAL_TRIGGER_CHANNEL = 32, DIGITAL_TRIGGER_STATE = 0, b1, b2, COMPARATOR_CONFIG = 7 | (3 << 4), I2CConvDone = 1;
+unsigned int lsb, msb, blk[8], tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
 
 unsigned int LAFinished = 1, LASamples;
-unsigned int samples_to_fetch = BUFFER_SIZE, I2CTotalSamples = BUFFER_SIZE;
+unsigned int I2CTotalSamples = BUFFER_SIZE;
 unsigned long val, l1, l2;
 BYTE DIN_REMAPS[] = {ID1_REMAP, ID2_REMAP, ID3_REMAP, ID4_REMAP, COMP4_REMAP, RP41_REMAP, FREQ_REMAP}, LAM1 = 0, LAM2 = 0, LAM3 = 0, LAM4 = 0;
 
 /*-----OSCILLOSCOPE VARIABLES-------*/
-
-BYTE ADC_CHANNELS = 0, CH123SA = 0, CHOSA = 3; // CH1 only
-BYTE TRIGGER_CHANNEL = 0, TRIGGERED = 0, TRIGGER_READY = 0, SH = 5, ICG = 15, I2C_TRIGGER_CHANNEL = 0, I2C_TRIGGERED = 0, I2C_TRIGGER_READY = 0, I2C_SCOPE_LOCATION = 0x00, I2C_SCOPE_ADDRESS = 0x00, I2C_SCOPE_BYTES = 0;
-unsigned int TRIGGER_TIMEOUT = 100, TRIGGER_WAITING = 0, TRIGGER_LEVEL = 0, TRIGGER_PRESCALER = 0;
-unsigned int ADC_DELAY = 5;
+BYTE SH = 5, ICG = 15, I2C_TRIGGER_CHANNEL = 0, I2C_TRIGGERED = 0, I2C_TRIGGER_READY = 0, I2C_SCOPE_LOCATION = 0x00, I2C_SCOPE_ADDRESS = 0x00, I2C_SCOPE_BYTES = 0;
 
 BYTE frequency_scaling = 1, frequency_ready = false;
 unsigned int freq_lsb, freq_msb, freq2_lsb, freq2_msb;
@@ -165,8 +158,6 @@ void init_IC_for_frequency(BYTE capture_pin, BYTE capture_mode, BYTE captures_pe
 void startCounting(BYTE channel);
 void TimingMeasurements(BYTE, BYTE, BYTE, BYTE, BYTE, BYTE);
 void Interval(BYTE, BYTE, BYTE, BYTE);
-void EnableComparator();
-void DisableComparator();
 void disableCTMUSource(void);
 void start_1chan_LA(unsigned int, BYTE, BYTE, BYTE);
 void start_2chan_LA(unsigned int, BYTE, BYTE);
@@ -182,21 +173,6 @@ void delayTMR4(int);
 void set_RGB(unsigned long);
 void set_RGB_now(unsigned long);
 void PrepareTrigger(void);
-void initADC10(void);
-void initADCDMA(BYTE);
-void initADC12bit_scope(void);
-void initADC12(void);
-void initADCCTMU(void);
-void initADC12_averaging16();
-
-void setADCMode(BYTE, BYTE, BYTE);
-unsigned int get_voltage_summed(BYTE channel);
-unsigned int get_voltage(BYTE channel);
-void setupADC10();
-void configureADC();
-void disableADCDMA();
-void enableADCDMA();
-
 
 void enableLogicAnalyser(void);
 void disableLogicAnalyser(void);
