@@ -13,6 +13,15 @@
 
 #define BYTE unsigned char
 typedef BYTE bool;
+typedef unsigned int uint16;
+
+#define HIGH_RES_WAVE 512
+#define LOW_RES_WAVE  64
+
+/*------------Sine Table--------------*/
+
+#define WAVE_TABLE_FULL_LENGTH 512
+#define WAVE_TABLE_SHORT_LENGTH 32
 
 #define LEDPIN _LATB15   //status LED
 
