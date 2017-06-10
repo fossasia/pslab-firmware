@@ -11,6 +11,8 @@
       <itemPath>Common_Functions.h</itemPath>
       <itemPath>PSLAB_NRF.h</itemPath>
       <itemPath>PSLAB_SPI.h</itemPath>
+      <itemPath>PSLAB_ADC.h</itemPath>
+      <itemPath>Wave_Generator.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -25,6 +27,8 @@
       <itemPath>Common_Functions.c</itemPath>
       <itemPath>PSLAB_NRF.c</itemPath>
       <itemPath>PSLAB_SPI.c</itemPath>
+      <itemPath>PSLAB_ADC.c</itemPath>
+      <itemPath>Wave_Generator.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
