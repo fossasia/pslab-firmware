@@ -50,11 +50,11 @@ const BYTE version[] = "CSpark-SE.P.1.0"; //Change to 'PSLab' after communicatin
 int main() {
     LEDPIN = 0;
     RCONbits.SWDTEN = 1;
-    unsigned char main_command, sub_command, RESPONSE;
-    unsigned int i = 0, n = 0;
-    unsigned int ADLOC;
+    BYTE main_command, sub_command, RESPONSE;
+    uint16 i = 0, n = 0;
+    uint16 ADLOC;
     pProg = 0x0;
-    unsigned int *pData;
+    uint16 *pData;
     init();
     initUART(BRGVAL1000000);
     setMultiFuncPortMode(MULTIFUNC_I2C);
@@ -137,7 +137,7 @@ int main() {
                         setADCMode(ADC_12BIT_SCOPE, value & 0x7F, 0);
 
                         if (value & 0x80)PrepareTrigger(); //bit 6 of value.
-                        else TRIGGERED = true;
+                        else TRIGGERED = TRUE;
                         conversion_done = 0;
                         samples = 0;
                         buff0 = &ADCbuffer[0];
@@ -160,7 +160,7 @@ int main() {
                         AD1CON2bits.CHPS = 0;
 
                         if (value & 0x80)PrepareTrigger(); //bit 6 of value.
-                        else TRIGGERED = true;
+                        else TRIGGERED = TRUE;
                         conversion_done = 0;
                         samples = 0;
                         buff0 = &ADCbuffer[0];
@@ -183,7 +183,7 @@ int main() {
                         buff1 = &ADCbuffer[samples_to_fetch];
                         endbuff = &ADCbuffer[samples_to_fetch];
                         if (value & 0x80)PrepareTrigger(); //bit 6 of value.
-                        else TRIGGERED = true;
+                        else TRIGGERED = TRUE;
                         conversion_done = 0;
                         samples = 0;
                         setupADC10();
@@ -206,7 +206,7 @@ int main() {
                         buff3 = &ADCbuffer[3 * samples_to_fetch];
                         endbuff = &ADCbuffer[samples_to_fetch];
                         if (value & 0x80)PrepareTrigger(); //bit 8 of value.
-                        else TRIGGERED = true;
+                        else TRIGGERED = TRUE;
                         conversion_done = 0;
                         samples = 0;
                         setupADC10();
@@ -1078,7 +1078,7 @@ int main() {
                         pProg = 0x0;
                         l1 = getInt()&0xFFFF;
                         l2 = getInt()&0xFFFF;
-                        _memcpy_p2d16(&ADLOC, pProg + (l1 | (l2 << 16)), sizeof (unsigned int));
+                        _memcpy_p2d16(&ADLOC, pProg + (l1 | (l2 << 16)), sizeof (uint16));
                         sendInt(ADLOC);
                         break;
 
@@ -1090,7 +1090,7 @@ int main() {
                         ADLOC = getInt();
                         //__builtin_tbladdress(p,(l1|(l2<<16)) );  //initialize flash pointer
                         //load_to_flash(p, location, &blk[0]);
-                        //_memcpy_p2d16(p,ADLOC ,sizeof(unsigned int));
+                        //_memcpy_p2d16(p,ADLOC ,sizeof(uint16));
                         break;
 
                     case READ_DATA_ADDRESS: //read SFRs from python

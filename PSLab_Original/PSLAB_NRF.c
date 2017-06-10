@@ -1,5 +1,6 @@
-#include <p24EP256GP204.h>
-#include <libpic30.h>
+/******************************************************************************/
+/******** This file contains NRF control modules of function.c file ***********/
+/******************************************************************************/
 #include "COMMANDS.h"
 #include "Common_Functions.h"
 #include "PSLAB_NRF.h"

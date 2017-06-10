@@ -1,5 +1,6 @@
-#include <p24EP256GP204.h>
-#include <libpic30.h>
+/******************************************************************************/
+/******** This file contains ADC control modules of function.c file ***********/
+/******************************************************************************/
 #include "COMMANDS.h"
 #include "Common_Functions.h"
 #include "PSLAB_SPI.h"
@@ -12,12 +13,12 @@ BYTE TRIGGERED = 0;
 BYTE TRIGGER_READY = 0;
 BYTE TRIGGER_CHANNEL = 0;
 BYTE ADC_CHANNELS = 0;
-unsigned int TRIGGER_TIMEOUT = 100, TRIGGER_WAITING = 0, TRIGGER_LEVEL = 0, TRIGGER_PRESCALER = 0;
-unsigned int adval;
-unsigned int ADC_DELAY = 5;
+uint16 TRIGGER_TIMEOUT = 100, TRIGGER_WAITING = 0, TRIGGER_LEVEL = 0, TRIGGER_PRESCALER = 0;
+uint16 adval;
+uint16 ADC_DELAY = 5;
 int *buff0, *buff1, *buff2, *buff3;
 int samples = 0;
-unsigned int samples_to_fetch = BUFFER_SIZE;
+uint16 samples_to_fetch = BUFFER_SIZE;
 
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
     _AD1IF = 0;
@@ -295,7 +296,7 @@ void setADCMode(BYTE mode, BYTE chosa, BYTE ch123sa) {
     }
 }
 
-unsigned int get_voltage_summed(BYTE channel) {
+uint16 get_voltage_summed(BYTE channel) {
     setADCMode(ADC_12BIT_AVERAGING, channel, 0);
     AD1CON1bits.ADON = 1;
     Delay_us(20); //Turn on the ADC
@@ -312,7 +313,7 @@ unsigned int get_voltage_summed(BYTE channel) {
 
 }
 
-unsigned int get_voltage(BYTE channel) {
+uint16 get_voltage(BYTE channel) {
     AD1CHS0bits.CH0SA = channel; //AN<channel> connected to CH0
     AD1CON1bits.SAMP = 1; //start sampling
     while (!AD1CON1bits.DONE);

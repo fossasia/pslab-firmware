@@ -13,9 +13,9 @@ extern char errors[ERROR_BUFFLEN];
 extern char *error_readpos, *error_writepos;
 extern unsigned int i;
 
-extern void Delay_us(unsigned int);
-extern void Delay_us_by8(unsigned int delay);
-extern void Delay_ms(unsigned int delay);
+extern void Delay_us(uint16);
+extern void Delay_us_by8(uint16 delay);
+extern void Delay_ms(uint16 delay);
 extern void logit(char *str);
 
 #endif	/* COMMON_FUNCTIONS_H */

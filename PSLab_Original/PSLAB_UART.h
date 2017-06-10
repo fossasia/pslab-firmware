@@ -8,29 +8,27 @@
 #ifndef PSLAB_UART_H
 #define	PSLAB_UART_H
 
-#define DELAY_105uS asm volatile ("REPEAT, #6721"); Nop(); // 105uS delay
+extern BYTE c1;
+extern BYTE c2;
 
-extern unsigned char c1;
-extern unsigned char c2;
-
-void initUART(unsigned int);
+void initUART(uint16);
 bool hasChar();
 void sendChar(BYTE val);
-void sendInt(unsigned int val);
-void sendLong(unsigned int lsb, unsigned int msb);
+void sendInt(uint16 val);
+void sendLong(uint16 lsb, uint16 msb);
 char getChar();
-unsigned int getInt();
+uint16 getInt();
 void ack(BYTE);
 
 
-void configUART2(unsigned int BAUD);
+void configUART2(uint16 BAUD);
 bool hasChar2(void);
 char getChar2(void);
-unsigned int getInt2(void);
+uint16 getInt2(void);
 void sendAddress2(char address);
 void initUART2(void);
 void sendChar2(char val);
-void sendInt2(unsigned int val);
-void initUART2_passthrough(unsigned int);
+void sendInt2(uint16 val);
+void initUART2_passthrough(uint16);
 
 #endif	/* PSLAB_UART_H */
