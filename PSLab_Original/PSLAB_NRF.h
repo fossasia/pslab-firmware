@@ -26,17 +26,16 @@ extern void nRF_Setup();
 extern void RXMode();
 extern void TXMode();
 extern void PowerDown();
-extern unsigned char RXChar();
-extern void TXChar(unsigned char ch);
-extern unsigned char ReadDataAvailable();
+extern BYTE RXChar();
+extern void TXChar(BYTE ch);
+extern BYTE ReadDataAvailable();
 extern void FlushTXRX();
-extern void WriteRegister(unsigned char reg, unsigned char val);
-extern void WriteAddress(unsigned char reg, unsigned char num, unsigned char* addr);
-extern unsigned char ReadRegister(unsigned char reg);
-extern unsigned char ReadStatus();
-extern void WriteCommand(unsigned char command);
-extern void WritePayload(unsigned char, unsigned char num, unsigned char* data);
-extern void ReadPayload(unsigned char num, unsigned char* data);
+extern void WriteRegister(BYTE reg, BYTE val);
+extern void WriteAddress(BYTE reg, BYTE num, BYTE* addr);
+extern BYTE ReadRegister(BYTE reg);
+extern BYTE ReadStatus();
+extern void WriteCommand(BYTE command);
+extern void WritePayload(BYTE, BYTE num, BYTE* data);
+extern void ReadPayload(BYTE num, BYTE* data);
 
 #endif	/* PSLAB_NRF_H */
-

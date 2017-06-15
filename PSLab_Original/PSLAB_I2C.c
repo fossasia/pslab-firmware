@@ -1,12 +1,14 @@
-#include <p24EP256GP204.h>
+/******************************************************************************/
+/******** This file contains I2C control modules of function.c file ***********/
+/******************************************************************************/
 #include "COMMANDS.h"
 #include "PSLAB_I2C.h"
 #include "Common_Functions.h"
 
 
-unsigned int I2C_BRGVAL = 0x272;
-unsigned char MULTIFUNC_PORT = 0;
-unsigned int tmp_int1 = 0;
+uint16 I2C_BRGVAL = 0x272;
+BYTE MULTIFUNC_PORT = 0;
+uint16 tmp_int1 = 0;
 
 void initI2C(void) {
 
@@ -81,7 +83,7 @@ void I2CWait() {
     /* wait for any pending transfer */
 }
 
-void I2CSend(unsigned char dat) {
+void I2CSend(BYTE dat) {
     I2C2TRN = dat; /* Move data to SSPBUF */
     tmp_int1=1000;
     while (I2C2STATbits.TRSTAT && tmp_int1--)Delay_us(1);/* wait till complete data is sent from buffer */
@@ -89,8 +91,8 @@ void I2CSend(unsigned char dat) {
     I2CWait(); /* wait for any pending transfer */
 }
 
-unsigned char I2CRead(unsigned char ack) {
-    unsigned char retval;
+BYTE I2CRead(BYTE ack) {
+    BYTE retval;
     I2CWait();
     I2C2CONbits.RCEN=1;
 
@@ -105,7 +107,7 @@ unsigned char I2CRead(unsigned char ack) {
     
 }
 
-void setMultiFuncPortMode(unsigned char mode) {
+void setMultiFuncPortMode(BYTE mode) {
     if(MULTIFUNC_PORT == mode)return;
     else{
         MULTIFUNC_PORT = mode;

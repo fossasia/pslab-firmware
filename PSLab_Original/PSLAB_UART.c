@@ -1,13 +1,11 @@
 /******************************************************************************/
 /******** This file contains UART control modules of function.c file **********/
 /******************************************************************************/
-#include <p24EP256GP204.h>
-#include <libpic30.h>
 #include "COMMANDS.h"
 #include "PSLAB_UART.h"
 
-unsigned char c1 = 0;
-unsigned char c2 = 0;
+BYTE c1 = 0;
+BYTE c2 = 0;
 
 void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
     asm("CLRWDT");
@@ -23,7 +21,7 @@ void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     _U1RXIF = 0;
 }
 
-void initUART(unsigned int BAUD) {
+void initUART(uint16 BAUD) {
     /*---------UART------------*/
     TRISBbits.TRISB8 = 1; // B8 set as input(RX). connected to TX of MCP2200
     ANSELBbits.ANSB8 = 0; // set B8 as digital input.
@@ -63,14 +61,14 @@ void sendChar(BYTE val) {
     U1TXREG = val;
 }
 
-void sendInt(unsigned int val) {
+void sendInt(uint16 val) {
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
     U1TXREG = val & 0xff;
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
     U1TXREG = (val >> 8)&0xff;
 }
 
-void sendLong(unsigned int lsb, unsigned int msb) {
+void sendLong(uint16 lsb, uint16 msb) {
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
     U1TXREG = lsb & 0xff;
     while (U1STAbits.UTXBF); //wait for transmit buffer empty
@@ -96,13 +94,13 @@ char getChar() {
     return U1RXREG;
 }
 
-unsigned int getInt() {
+uint16 getInt() {
     c1 = getChar()&0xFF;
     c2 = getChar()&0xFF;
     return (c2 << 8) | c1;
 }
 
-void configUART2(unsigned int BAUD) {
+void configUART2(uint16 BAUD) {
     _TRISB5 = 0;
     _TRISB6 = 1;
     RPOR1bits.RP37R = 0x03;
@@ -142,7 +140,7 @@ char getChar2(void) {
     return U2RXREG;
 }
 
-unsigned int getInt2(void) {
+uint16 getInt2(void) {
     c1 = getChar2()&0xFF;
     c2 = getChar2()&0xFF;
     return (c2 << 8) | c1;
@@ -153,7 +151,7 @@ void sendChar2(char val) {
     U2TXREG = val;
 }
 
-void sendInt2(unsigned int val) {
+void sendInt2(uint16 val) {
     while (U2STAbits.UTXBF); //wait for transmit buffer empty
     U2TXREG = val & 0xff;
     while (U2STAbits.UTXBF); //wait for transmit buffer empty
@@ -166,7 +164,7 @@ void sendAddress2(char address) { //9-bit mode only
 }
 
 /*----UART 2 on SCL, SDA----------------*/
-void initUART2_passthrough(unsigned int BAUD) {
+void initUART2_passthrough(uint16 BAUD) {
     /*---------UART2 pass through------------*/
     configUART2(BAUD);
     _U1RXIE = 1; //enable receive interrupt for UART1

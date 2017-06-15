@@ -8,6 +8,37 @@
 #ifndef COMMANDS_H
 #define	COMMANDS_H
 
+#include <p24EP256GP204.h>
+#include <libpic30.h>
+
+#define DELAY_105uS asm volatile ("REPEAT, #6721"); Nop(); // 105uS delay
+
+#define FP 64000000
+#define BAUDRATE 1000000    //1M
+#define BAUDRATE2 10000    //10K
+//If BRGH=0 (16 clocks per BAUD), replace '/4' with '/16'
+#define BRGVAL ((FP/BAUDRATE)/4)-1
+#define BRGVAL9600 ((FP/9600)/4)-1
+#define BRGVAL14400 ((FP/14400)/4)-1
+#define BRGVAL19200 ((FP/19200)/4)-1
+#define BRGVAL28800 ((FP/28800)/4)-1
+#define BRGVAL38400 ((FP/38400)/4)-1
+#define BRGVAL57600 ((FP/57600)/4)-1
+#define BRGVAL115200 ((FP/115200)/4)-1
+#define BRGVAL230400 ((FP/230400)/4)-1
+#define BRGVAL460800 ((FP/460800)/4)-1
+#define BRGVAL500000 ((FP/500000)/4)-1
+#define BRGVAL1000000 ((FP/1000000)/4)-1
+#define BRGVAL2000000 ((FP/2000000)/4)-1
+#define BRGVAL4000000 ((FP/4000000)/4)-1
+#define BRGVAL2 ((FP/BAUDRATE2)/16)-1
+
+#define Fs   		4000
+#define SAMPPRD		(FP/Fs)-1
+
+#define TRUE 1
+#define FALSE 0
+
 //Define for OLED Compilation
 //#define OLED 1
 
@@ -350,12 +381,7 @@ typedef unsigned int uint16;
 #define DYNPD  0x1C
 #define FEATURE  0x1D
 
-
-
 #define NRF_REPORT_ROWS 15
 #define NRF_ROW_LENGTH 20
 
-
-
 #endif	/* COMMANDS_H */
-

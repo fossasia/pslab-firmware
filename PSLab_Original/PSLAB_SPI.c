@@ -1,6 +1,8 @@
-#include <p24EP256GP204.h>
-#include "PSLAB_SPI.h"
+/******************************************************************************/
+/******** This file contains SPI control modules of function.c file ***********/
+/******************************************************************************/
 #include "COMMANDS.h"
+#include "PSLAB_SPI.h"
 
 BYTE location, value, ADC_MODE = NOT_READY, SPI_MODE = NOT_READY, DMA_MODE = NOT_READY, ADC_STREAMING = 0;
 BYTE SPI_PPRE = 0, SPI_SPRE = 2, SPI_CKE = 1, SPI_CKP = 0, SPI_SMP = 1;
@@ -47,7 +49,7 @@ BYTE spi_write8(BYTE value) {
     return SPI1BUF&0xFF;
 }
 
-unsigned int spi_write16(unsigned int value) {
+uint16 spi_write16(uint16 value) {
     setSPIMode(SPI_16);
     SPI1STATbits.SPIROV = 0;
     SPI1BUF = value;

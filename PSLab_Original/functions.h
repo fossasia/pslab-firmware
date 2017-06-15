@@ -19,33 +19,6 @@
 #include <libpic30.h>
 #include "COMMANDS.h"
 
-#define FP 64000000
-#define BAUDRATE 1000000    //1M
-#define BAUDRATE2 10000    //10K
-//If BRGH=0 (16 clocks per BAUD), replace '/4' with '/16'
-#define BRGVAL ((FP/BAUDRATE)/4)-1
-#define BRGVAL9600 ((FP/9600)/4)-1
-#define BRGVAL14400 ((FP/14400)/4)-1
-#define BRGVAL19200 ((FP/19200)/4)-1
-#define BRGVAL28800 ((FP/28800)/4)-1
-#define BRGVAL38400 ((FP/38400)/4)-1
-#define BRGVAL57600 ((FP/57600)/4)-1
-#define BRGVAL115200 ((FP/115200)/4)-1
-#define BRGVAL230400 ((FP/230400)/4)-1
-#define BRGVAL460800 ((FP/460800)/4)-1
-#define BRGVAL500000 ((FP/500000)/4)-1
-#define BRGVAL1000000 ((FP/1000000)/4)-1
-#define BRGVAL2000000 ((FP/2000000)/4)-1
-#define BRGVAL4000000 ((FP/4000000)/4)-1
-
-#define BRGVAL2 ((FP/BAUDRATE2)/16)-1
-
-#define Fs   		4000
-#define SAMPPRD		(FP/Fs)-1
-
-#define true 1
-#define false 0
-
 #define CSCH1 _LATA10
 #define CSCH2 _LATA7
 #define SCL_PIN _LATB4
@@ -69,12 +42,6 @@
 #define COUT1_LOW  _LATB5=0
 #define COUT2_HIGH _LATB6=1;Nop();
 #define COUT2_LOW  _LATB6=0;Nop();
-
-
-
-
-#define TRUE 1
-#define FALSE 0
 
 __prog__ unsigned int __attribute__((section("CALIBS"), space(prog), aligned(_FLASH_PAGE * 2))) dat1[15][_FLASH_PAGE];
 
@@ -103,7 +70,7 @@ BYTE DIN_REMAPS[] = {ID1_REMAP, ID2_REMAP, ID3_REMAP, ID4_REMAP, COMP4_REMAP, RP
 /*-----OSCILLOSCOPE VARIABLES-------*/
 BYTE SH = 5, ICG = 15, I2C_TRIGGER_CHANNEL = 0, I2C_TRIGGERED = 0, I2C_TRIGGER_READY = 0, I2C_SCOPE_LOCATION = 0x00, I2C_SCOPE_ADDRESS = 0x00, I2C_SCOPE_BYTES = 0;
 
-BYTE frequency_scaling = 1, frequency_ready = false;
+BYTE frequency_scaling = 1, frequency_ready = FALSE;
 unsigned int freq_lsb, freq_msb, freq2_lsb, freq2_msb;
 _prog_addressT p, pProg;
 
