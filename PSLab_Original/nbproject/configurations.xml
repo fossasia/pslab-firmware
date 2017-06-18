@@ -5,7 +5,6 @@
                    displayName="Header Files"
                    projectFiles="true">
       <itemPath>COMMANDS.h</itemPath>
-      <itemPath>functions.h</itemPath>
       <itemPath>PSLAB_UART.h</itemPath>
       <itemPath>PSLAB_I2C.h</itemPath>
       <itemPath>Common_Functions.h</itemPath>
@@ -13,6 +12,7 @@
       <itemPath>PSLAB_SPI.h</itemPath>
       <itemPath>PSLAB_ADC.h</itemPath>
       <itemPath>Wave_Generator.h</itemPath>
+      <itemPath>Function.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -29,6 +29,7 @@
       <itemPath>PSLAB_SPI.c</itemPath>
       <itemPath>PSLAB_ADC.c</itemPath>
       <itemPath>Wave_Generator.c</itemPath>
+      <itemPath>Function.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
