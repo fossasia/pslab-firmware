@@ -44,14 +44,13 @@ extern int ulsb, umsb; //DAC_OFFSETS[4],
 extern unsigned int TCD;
 
 /*------LOGIC ANALYZER VARIABLES-----*/
-extern BYTE INITIAL_DIGITAL_STATES, INITIAL_DIGITAL_STATES_ERR, DIGITAL_TRIGGER_CHANNEL;
+extern BYTE INITIAL_DIGITAL_STATES_ERR, DIGITAL_TRIGGER_CHANNEL;
 extern BYTE DIGITAL_TRIGGER_STATE, b1, b2, COMPARATOR_CONFIG, I2CConvDone;
 extern unsigned int lsb, msb, blk[8], tmp_int2, tmp_int3, tmp_int4, tmp_int5, tmp_int6;
 
 extern unsigned int LAFinished, LASamples;
 extern unsigned int I2CTotalSamples;
 extern unsigned long val, l1, l2;
-extern BYTE DIN_REMAPS[], LAM1, LAM2, LAM3, LAM4;
 
 /*-----OSCILLOSCOPE VARIABLES-------*/
 extern BYTE SH, ICG, I2C_TRIGGER_CHANNEL, I2C_TRIGGERED, I2C_TRIGGER_READY;
@@ -73,32 +72,12 @@ extern __prog__ unsigned int __attribute__((section("CALIBS"), space(prog), alig
 extern void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void);
 extern void __attribute__((__interrupt__, no_auto_psv)) _T5Interrupt(void); //For frequency counter
 
-extern void set_cap_voltage(BYTE v, unsigned int time);
-extern unsigned int get_cc_capacitance(BYTE, BYTE, unsigned int);
-extern unsigned int get_cap_range(unsigned int);
-extern unsigned int get_ctmu_voltage(BYTE, BYTE, BYTE);
-extern void get_high_frequency(BYTE, BYTE);
-extern void init_IC_for_frequency(BYTE capture_pin, BYTE capture_mode, BYTE captures_per_interrupt);
-extern void startCounting(BYTE channel);
-extern void TimingMeasurements(BYTE, BYTE, BYTE, BYTE, BYTE, BYTE);
-extern void Interval(BYTE, BYTE, BYTE, BYTE);
-extern void disableCTMUSource(void);
-extern void start_1chan_LA(unsigned int, BYTE, BYTE, BYTE);
-extern void start_2chan_LA(unsigned int, BYTE, BYTE);
-extern void start_3chan_LA(unsigned int, unsigned int, BYTE);
-extern void start_4chan_LA(unsigned int, unsigned int, BYTE);
-extern void disable_input_capture();
-extern void setMultiFuncPortMode(BYTE);
-
 extern void init(void);
 extern void setFlashPointer(BYTE);
 extern void delayTMR4(int);
 extern void set_RGB(unsigned long);
 extern void set_RGB_now(unsigned long);
 extern void PrepareTrigger(void);
-
-extern void enableLogicAnalyser(void);
-extern void disableLogicAnalyser(void);
 
 extern void mapReferenceOscillator(BYTE, BYTE);
 extern void Delay_with_pulse(unsigned int);

@@ -25,6 +25,7 @@
 #include "PSLAB_SPI.h"
 #include "PSLAB_ADC.h"
 #include "Wave_Generator.h"
+#include "Measurements.h"
 //_FICD(ICS_PGD2 & JTAGEN_OFF) //Programmming pins  ..PGED2
 
 

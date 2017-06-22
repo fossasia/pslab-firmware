@@ -13,6 +13,7 @@
       <itemPath>PSLAB_ADC.h</itemPath>
       <itemPath>Wave_Generator.h</itemPath>
       <itemPath>Function.h</itemPath>
+      <itemPath>Measurements.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -30,6 +31,7 @@
       <itemPath>PSLAB_ADC.c</itemPath>
       <itemPath>Wave_Generator.c</itemPath>
       <itemPath>Function.c</itemPath>
+      <itemPath>Measurements.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
