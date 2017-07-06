@@ -15,8 +15,10 @@
 #include <p24EP256GP204.h>
 #include <stdlib.h>
 #include <libpic30.h>
-#include "functions.c"
+//#include "functions.c"
+#include "COMMANDS.h"
 #include "Common_Functions.h"
+#include "Function.h"
 #include "PSLAB_UART.h"
 #include "PSLAB_I2C.h"
 #include "PSLAB_NRF.h"

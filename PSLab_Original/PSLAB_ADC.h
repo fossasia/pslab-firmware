@@ -8,6 +8,8 @@
 #ifndef PSLAB_ADC_H
 #define	PSLAB_ADC_H
 
+extern int __attribute__((section("adcbuff"), far)) ADCbuffer[BUFFER_SIZE];
+
 extern BYTE CHOSA, CH123SA;
 extern uint16 ADC_DELAY;
 extern BYTE conversion_done;
@@ -21,6 +23,7 @@ extern uint16 samples_to_fetch;
 extern uint16 adval;
 extern uint16 TRIGGER_TIMEOUT, TRIGGER_WAITING, TRIGGER_LEVEL, TRIGGER_PRESCALER;
 
+extern void initADCCTMU(void);
 extern void EnableComparator();
 extern void DisableComparator();
 extern void initADC10(void);

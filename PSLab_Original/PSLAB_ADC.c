@@ -20,6 +20,8 @@ int *buff0, *buff1, *buff2, *buff3;
 int samples = 0;
 uint16 samples_to_fetch = BUFFER_SIZE;
 
+int __attribute__((section("adcbuff"), far)) ADCbuffer[BUFFER_SIZE];
+
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
     _AD1IF = 0;
     if (conversion_done) {
@@ -62,6 +64,28 @@ void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
         }
     }
 
+}
+
+void initADCCTMU(void){
+    _AD1IF = 0; _AD1IE = 0;                                             //disable ADC interrupts
+    disableADCDMA();DisableComparator();
+    AD1CON1bits.ADON = 0;                                               //turn off ADC
+    AD1CON2 = 0;
+    AD1CON4 = 0x0000;
+    AD1CSSH = 0x0000;
+    AD1CSSL = 0x0000;
+    AD1CON1bits.AD12B = 1;
+    /* Assign MUXA inputs for block read */
+    AD1CHS0bits.CH0SA = CHOSA;
+    AD1CON3bits.ADRC = 0; //do not use internal clock
+    AD1CON1bits.SSRCG = 0;
+    AD1CON1bits.SSRC = 0b000; //Clearing SAMP bit stops sampling and triggers conversion
+    AD1CON1bits.SIMSAM = 0; //simultaneous sampling.
+    AD1CON1bits.ASAM = 0; //no auto sampling
+    AD1CON3bits.SAMC = 0x10; // Sample for (x+1)*Tad before triggering conversion
+    AD1CON2bits.SMPI = 0;
+    AD1CON3bits.ADCS = 0xA; // Conversion clock x*Tp
+    
 }
 
 void DisableComparator() {
