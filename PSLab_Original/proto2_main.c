@@ -5,17 +5,27 @@
  *
  */
 
-// FICD
-//#define POCKET
-
-#pragma config ICS = NONE               // ICD Communication Channel Select bits (Reserved, do not use)
-#pragma config JTAGEN = OFF             // JTAG Enable bit (JTAG is disabled)
+// Communication Settings
+#pragma config ICS      = NONE  // ICD Communication Channel Select bits
+#pragma config JTAGEN   = OFF   // JTAG Enable bit (JTAG is disabled)
+// Oscillator Settings
+#pragma config POSCMD   = XT    // Primary Oscillator Mode Select bits
+#pragma config OSCIOFNC = OFF   // OSC2 Pin Function bit (OSC2 is clock output)
+#pragma config FCKSM    = CSECMD// Clock Switching Mode bits
+#pragma config FNOSC    = FRC   // Oscillator Source Selection
+#pragma config IESO     = OFF   // Two-speed Oscillator Start-up Enable bit
+// WDT Settings
+#pragma config WDTPOST  = PS512 // Watchdog Timer Postscaler bits (1:512)
+#pragma config WDTPRE   = PR128 // Watchdog Timer Prescaler bit (1:128)
+#pragma config WINDIS   = OFF   // Watchdog Timer Window Enable bit
+#pragma config FWDTEN   = OFF   // Watchdog Timer Enable bit
+// SCL Settings
+#pragma config ALTI2C2  = OFF   // Alternate I2C2 pins (I2C2 mapped - SDA2/SCL2)
 
 #include <xc.h>
 #include <p24EP256GP204.h>
 #include <stdlib.h>
 #include <libpic30.h>
-//#include "functions.c"
 #include "COMMANDS.h"
 #include "Common_Functions.h"
 #include "Function.h"
@@ -26,27 +36,11 @@
 #include "PSLAB_ADC.h"
 #include "Wave_Generator.h"
 #include "Measurements.h"
-//_FICD(ICS_PGD2 & JTAGEN_OFF) //Programmming pins  ..PGED2
-
-
-/* PLL using external oscillator. */
-
-_FOSCSEL(FNOSC_FRC & IESO_OFF); //Start up using internal oscillator
-_FOSC(FCKSM_CSECMD & OSCIOFNC_OFF & POSCMD_XT); // enable failsafe osc, use external crystal
-//_FOSC(FCKSM_CSECMD & OSCIOFNC_ON & POSCMD_EC ); // For Non-passive , driving clocks.
 
 _FUID0(0x1000); // One way to set USER ID.  preferably use IPE + SQTP? for sequentially setting unique UID
 _FUID1(0x0000); // This approach was abandoned in ExpEYES17 due to its time consuming nature. Instead , unique timestamps are writting into flash by the calibration code
 _FUID2(0x0000);
 _FUID3(0x00FF); //4B
-
-// FWDT
-#pragma config WDTPOST = PS512          // Watchdog Timer Postscaler bits (1:512)
-#pragma config WDTPRE = PR128           // Watchdog Timer Prescaler bit (1:128)
-#pragma config WINDIS = OFF             // Watchdog Timer Window Enable bit (Watchdog Timer in Non-Window mode)
-#pragma config FWDTEN = OFF              // Watchdog Timer Enable bit (Watchdog timer always enabled)
-
-#pragma config ALTI2C2 = OFF            // Alternate I2C2 pins (I2C2 mapped to SDA2/SCL2 pins)
 
 const BYTE version[] = "CSpark-SE.P.1.0"; //Change to 'PSLab' after communicating with android and PC app developers
 
