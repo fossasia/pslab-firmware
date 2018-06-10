@@ -48,7 +48,7 @@ _FUID3(0x00FF); //4B
 
 #pragma config ALTI2C2 = OFF            // Alternate I2C2 pins (I2C2 mapped to SDA2/SCL2 pins)
 
-const BYTE version[] = "CSpark-SE.P.1.0"; //Change to 'PSLab' after communicating with android and PC app developers
+const BYTE VERSION[] = "PSLab V5";
 
 int main() {
     LEDPIN = 0;
@@ -957,7 +957,7 @@ int main() {
                         break;
 
                     case GET_VERSION:
-                        for (i = 0; i < sizeof (version) - 1; i++) sendChar(version[i]);
+                        for (i = 0; i < sizeof (VERSION) - 1; i++) sendChar(VERSION[i]);
                         sendChar('\n');
                         RESPONSE = DO_NOT_BOTHER;
                         break;
