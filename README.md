@@ -5,7 +5,7 @@
 
 Repository for PSLab Firmware.
 
-PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides an array of necessary test and measurement equipment for doing science and engineering experiments. It can function like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. The [hardware schematics](https://github.com/fossasia/pslab-hardware/) and [Desktop applications](https://github.com/fossasia/pslab-desktop-apps) are hosted in separate repositories. Android [application](https://github.com/fossasia/pslab-android) development is underway. Our website is at: http://pslab.fossasia.org
+PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides an array of necessary test and measurement equipment for doing science and engineering experiments. It can function like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. The [hardware schematics](https://github.com/fossasia/pslab-hardware/) and [Desktop applications](https://github.com/fossasia/pslab-desktop-apps) are hosted in separate repositories. Android [application](https://github.com/fossasia/pslab-android) development is underway. Our website is at: https://pslab.io
 
 ## Communication
 
@@ -37,7 +37,7 @@ This code is elaborately written , and special function register(SFR) bit settin
 
 ### Preliminary tests after program download
 
-- Connect the device via USB , and issue an `lsusb command via the terminal (On Linux)
+- Connect the device via USB , and issue an `lsusb command via the terminal (On Linux)`
 - The output should have an entry `Bus 003 Device 003: ID 04d8:00df Microchip Technology, Inc.` . This indicates that the USB-UART chip was detected 
 - To locate its handler , check /dev for ttyACM devices. The desktop app automatically locates and connects to the handler.
 - In case either step failed , issue `dmesg` command. Output should resemble :
@@ -74,5 +74,3 @@ Implemented feature list in new project called 'MPLab Project'
 ## Hardware requirements
 
 [PSLab Hardware](https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board.
-
-Kits and accessories are available with <praveenkumar103@gmail.com> or <jithinbp@gmail.com>
