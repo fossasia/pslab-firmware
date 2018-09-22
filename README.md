@@ -10,22 +10,34 @@ PSLab is a new addition to FOSSASIA Science Lab. This tiny pocket lab provides a
 ## Communication
 
 Please join us on the following channels:
-* [Pocket Science Channel](https://gitter.im/fossasia/pslab)
-* [Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia)
+* Pocket Science Channel https://gitter.im/fossasia/pslab
+* Mailing List https://groups.google.com/forum/#!forum/pslab-fossasia
 
 ## Basic requirements 
 
-- Microcontroller Platform : [ PIC24EP256GP204 ](http://www.microchip.com/wwwproducts/en/PIC24EP256GP204)
-- IDE : [MPLABX IDE v3.35](http://www.microchip.com/mplab/mplab-x-ide) . Supported on Linux/Windows/Mac
-- Compiler : [MPLAB® XC16 Compiler](http://www.microchip.com/mplab/compilers)
-- Programming Tool : [PICkit™ 3 In-Circuit Debugger/PICkit2](http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130)
+- PSLab Hardware - https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board - http://www.microchip.com/wwwproducts/en/PIC24EP256GP204
+- IDE: MPLABX IDE v3.35 Supported on Linux/Windows/Mac - http://www.microchip.com/mplab/mplab-x-ide
+- Compiler: MPLAB® XC16 Compiler - http://www.microchip.com/mplab/compilers
+- Programming Tool: PICkit™ 3 In-Circuit Debugger/PICkit2 - http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130
 
 ## Existing Firmware
 
-The original library and main code for PSLab version 1 are located in directories 'PSLab_Original' and 'PSLab_Original_library'.
-Please note that they must be located in the same directory during compilation via MPLABX because the former relatively imports the latter.
+Implemented features:
+-Byte Headers 
++ Flash R/W . One page at a time (2048 bytes)
++ I2C Sensors :
+  + Start , Stop, BulkTransfers, config
++ ADC :
+  + Read buffer , clear buffer
++ Sine wave :
+  + Wave tables 
++ Sine wave :
+  + Wave tables 
 
 This code is elaborately written , and special function register(SFR) bit settings are done in separate lines of code for easily tweaking. The code can be shrunk if firmware efficiency becomes a concern at any point. 
+
+The library and code for PSLab version 1 are located in directories 'PSLab_V1'. Please note that they must be located in the same directory during compilation via MPLABX because the former relatively imports the latter.
+
 
 ### Compilation and testing instructions
 
@@ -52,25 +64,3 @@ This code is elaborately written , and special function register(SFR) bit settin
 [128189.933262] hid-generic 0003:04D8:00DF.0032: hiddev0,hidraw0: USB HID v1.11 Device [Microchip Technology Inc. MCP2200 USB Serial Port Emulator] on usb-0000:00:14.0-2/input2
 ```
 - Install and launch the [PSLab desktop app](https://github.com/fossasia/pslab-desktop-apps) by following its README
-
-
-### New Firmware
-
-Implemented feature list in new project called 'MPLab Project'
--Byte Headers 
-
-+ Flash R/W . One page at a time (2048 bytes)
-+ I2C Sensors :
-  + Start , Stop, BulkTransfers, config
-
-+ ADC :
-  + Read buffer , clear buffer
-
-+ Sine wave :
-  + Wave tables 
-+ Sine wave :
-  + Wave tables 
-
-## Hardware requirements
-
-[PSLab Hardware](https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board.
