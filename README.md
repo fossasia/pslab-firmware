@@ -20,7 +20,7 @@ Please join us on the following channels:
 - Compiler: MPLAB® XC16 Compiler - http://www.microchip.com/mplab/compilers
 - Programming Tool: PICkit™ 3 In-Circuit Debugger/PICkit2 - http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130
 
-## Existing Firmware
+## Firmware
 
 Implemented features:
 -Byte Headers 
