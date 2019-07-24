@@ -54,6 +54,590 @@
 /**
     Section: Device Pin Macros
 */
+/**
+  @Summary
+    Sets the GPIO pin, RA4, high using LATA4.
+
+  @Description
+    Sets the GPIO pin, RA4, high using LATA4.
+
+  @Preconditions
+    The RA4 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RA4 high (1)
+    SDO1_SetHigh();
+    </code>
+
+*/
+#define SDO1_SetHigh()          _LATA4 = 1
+/**
+  @Summary
+    Sets the GPIO pin, RA4, low using LATA4.
+
+  @Description
+    Sets the GPIO pin, RA4, low using LATA4.
+
+  @Preconditions
+    The RA4 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RA4 low (0)
+    SDO1_SetLow();
+    </code>
+
+*/
+#define SDO1_SetLow()           _LATA4 = 0
+/**
+  @Summary
+    Toggles the GPIO pin, RA4, using LATA4.
+
+  @Description
+    Toggles the GPIO pin, RA4, using LATA4.
+
+  @Preconditions
+    The RA4 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Toggle RA4
+    SDO1_Toggle();
+    </code>
+
+*/
+#define SDO1_Toggle()           _LATA4 ^= 1
+/**
+  @Summary
+    Reads the value of the GPIO pin, RA4.
+
+  @Description
+    Reads the value of the GPIO pin, RA4.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    uint16_t portValue;
+
+    // Read RA4
+    postValue = SDO1_GetValue();
+    </code>
+
+*/
+#define SDO1_GetValue()         _RA4
+/**
+  @Summary
+    Configures the GPIO pin, RA4, as an input.
+
+  @Description
+    Configures the GPIO pin, RA4, as an input.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RA4 as an input
+    SDO1_SetDigitalInput();
+    </code>
+
+*/
+#define SDO1_SetDigitalInput()  _TRISA4 = 1
+/**
+  @Summary
+    Configures the GPIO pin, RA4, as an output.
+
+  @Description
+    Configures the GPIO pin, RA4, as an output.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RA4 as an output
+    SDO1_SetDigitalOutput();
+    </code>
+
+*/
+#define SDO1_SetDigitalOutput() _TRISA4 = 0
+/**
+  @Summary
+    Sets the GPIO pin, RA9, high using LATA9.
+
+  @Description
+    Sets the GPIO pin, RA9, high using LATA9.
+
+  @Preconditions
+    The RA9 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RA9 high (1)
+    SDI1_SetHigh();
+    </code>
+
+*/
+#define SDI1_SetHigh()          _LATA9 = 1
+/**
+  @Summary
+    Sets the GPIO pin, RA9, low using LATA9.
+
+  @Description
+    Sets the GPIO pin, RA9, low using LATA9.
+
+  @Preconditions
+    The RA9 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RA9 low (0)
+    SDI1_SetLow();
+    </code>
+
+*/
+#define SDI1_SetLow()           _LATA9 = 0
+/**
+  @Summary
+    Toggles the GPIO pin, RA9, using LATA9.
+
+  @Description
+    Toggles the GPIO pin, RA9, using LATA9.
+
+  @Preconditions
+    The RA9 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Toggle RA9
+    SDI1_Toggle();
+    </code>
+
+*/
+#define SDI1_Toggle()           _LATA9 ^= 1
+/**
+  @Summary
+    Reads the value of the GPIO pin, RA9.
+
+  @Description
+    Reads the value of the GPIO pin, RA9.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    uint16_t portValue;
+
+    // Read RA9
+    postValue = SDI1_GetValue();
+    </code>
+
+*/
+#define SDI1_GetValue()         _RA9
+/**
+  @Summary
+    Configures the GPIO pin, RA9, as an input.
+
+  @Description
+    Configures the GPIO pin, RA9, as an input.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RA9 as an input
+    SDI1_SetDigitalInput();
+    </code>
+
+*/
+#define SDI1_SetDigitalInput()  _TRISA9 = 1
+/**
+  @Summary
+    Configures the GPIO pin, RA9, as an output.
+
+  @Description
+    Configures the GPIO pin, RA9, as an output.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RA9 as an output
+    SDI1_SetDigitalOutput();
+    </code>
+
+*/
+#define SDI1_SetDigitalOutput() _TRISA9 = 0
+/**
+  @Summary
+    Sets the GPIO pin, RB9, high using LATB9.
+
+  @Description
+    Sets the GPIO pin, RB9, high using LATB9.
+
+  @Preconditions
+    The RB9 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RB9 high (1)
+    SDCard_CS_SetHigh();
+    </code>
+
+*/
+#define SDCard_CS_SetHigh()          _LATB9 = 1
+/**
+  @Summary
+    Sets the GPIO pin, RB9, low using LATB9.
+
+  @Description
+    Sets the GPIO pin, RB9, low using LATB9.
+
+  @Preconditions
+    The RB9 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RB9 low (0)
+    SDCard_CS_SetLow();
+    </code>
+
+*/
+#define SDCard_CS_SetLow()           _LATB9 = 0
+/**
+  @Summary
+    Toggles the GPIO pin, RB9, using LATB9.
+
+  @Description
+    Toggles the GPIO pin, RB9, using LATB9.
+
+  @Preconditions
+    The RB9 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Toggle RB9
+    SDCard_CS_Toggle();
+    </code>
+
+*/
+#define SDCard_CS_Toggle()           _LATB9 ^= 1
+/**
+  @Summary
+    Reads the value of the GPIO pin, RB9.
+
+  @Description
+    Reads the value of the GPIO pin, RB9.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    uint16_t portValue;
+
+    // Read RB9
+    postValue = SDCard_CS_GetValue();
+    </code>
+
+*/
+#define SDCard_CS_GetValue()         _RB9
+/**
+  @Summary
+    Configures the GPIO pin, RB9, as an input.
+
+  @Description
+    Configures the GPIO pin, RB9, as an input.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RB9 as an input
+    SDCard_CS_SetDigitalInput();
+    </code>
+
+*/
+#define SDCard_CS_SetDigitalInput()  _TRISB9 = 1
+/**
+  @Summary
+    Configures the GPIO pin, RB9, as an output.
+
+  @Description
+    Configures the GPIO pin, RB9, as an output.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RB9 as an output
+    SDCard_CS_SetDigitalOutput();
+    </code>
+
+*/
+#define SDCard_CS_SetDigitalOutput() _TRISB9 = 0
+/**
+  @Summary
+    Sets the GPIO pin, RC3, high using LATC3.
+
+  @Description
+    Sets the GPIO pin, RC3, high using LATC3.
+
+  @Preconditions
+    The RC3 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RC3 high (1)
+    SCK1_SetHigh();
+    </code>
+
+*/
+#define SCK1_SetHigh()          _LATC3 = 1
+/**
+  @Summary
+    Sets the GPIO pin, RC3, low using LATC3.
+
+  @Description
+    Sets the GPIO pin, RC3, low using LATC3.
+
+  @Preconditions
+    The RC3 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Set RC3 low (0)
+    SCK1_SetLow();
+    </code>
+
+*/
+#define SCK1_SetLow()           _LATC3 = 0
+/**
+  @Summary
+    Toggles the GPIO pin, RC3, using LATC3.
+
+  @Description
+    Toggles the GPIO pin, RC3, using LATC3.
+
+  @Preconditions
+    The RC3 must be set to an output.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Toggle RC3
+    SCK1_Toggle();
+    </code>
+
+*/
+#define SCK1_Toggle()           _LATC3 ^= 1
+/**
+  @Summary
+    Reads the value of the GPIO pin, RC3.
+
+  @Description
+    Reads the value of the GPIO pin, RC3.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    uint16_t portValue;
+
+    // Read RC3
+    postValue = SCK1_GetValue();
+    </code>
+
+*/
+#define SCK1_GetValue()         _RC3
+/**
+  @Summary
+    Configures the GPIO pin, RC3, as an input.
+
+  @Description
+    Configures the GPIO pin, RC3, as an input.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RC3 as an input
+    SCK1_SetDigitalInput();
+    </code>
+
+*/
+#define SCK1_SetDigitalInput()  _TRISC3 = 1
+/**
+  @Summary
+    Configures the GPIO pin, RC3, as an output.
+
+  @Description
+    Configures the GPIO pin, RC3, as an output.
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+  @Example
+    <code>
+    // Sets the RC3 as an output
+    SCK1_SetDigitalOutput();
+    </code>
+
+*/
+#define SCK1_SetDigitalOutput() _TRISC3 = 0
 
 /**
     Section: Function Prototypes

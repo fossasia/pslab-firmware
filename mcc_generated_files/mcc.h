@@ -54,8 +54,13 @@
 #include <stdbool.h>
 #include "interrupt_manager.h"
 #include "traps.h"
+#include "uart1.h"
 #include "reset.h"
+#include "spi1_driver.h"
+#include "uart2.h"
+#include "sd_spi/sd_spi.h"
 #include "watchdog.h"
+#include "fatfs/ff.h"
 
 #ifndef _XTAL_FREQ
 #define _XTAL_FREQ  120000000UL

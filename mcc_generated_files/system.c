@@ -48,12 +48,19 @@
 #include "system_types.h"
 #include "interrupt_manager.h"
 #include "traps.h"
+#include "uart1.h"
+#include "spi1_driver.h"
+#include "uart2.h"
+#include "sd_spi/sd_spi.h"
+#include "fatfs/ff.h"
 
 void SYSTEM_Initialize(void)
 {
     PIN_MANAGER_Initialize();
     INTERRUPT_Initialize();
     CLOCK_Initialize();
+    UART2_Initialize();
+    UART1_Initialize();
     SYSTEM_CORCONModeOperatingSet(CORCON_MODE_PORVALUES);
 }
 

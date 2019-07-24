@@ -7,6 +7,19 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
+        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
+          <itemPath>mcc_generated_files/drivers/spi_master.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
+          <itemPath>mcc_generated_files/fatfs/diskio.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/integer.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ffconf.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ff.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
+          <itemPath>mcc_generated_files/sd_spi/sd_spi.h</itemPath>
+        </logicalFolder>
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/watchdog.h</itemPath>
         <itemPath>mcc_generated_files/pin_manager.h</itemPath>
@@ -17,6 +30,10 @@
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
         <itemPath>mcc_generated_files/mcc.h</itemPath>
         <itemPath>mcc_generated_files/system.h</itemPath>
+        <itemPath>mcc_generated_files/spi1_types.h</itemPath>
+        <itemPath>mcc_generated_files/spi1_driver.h</itemPath>
+        <itemPath>mcc_generated_files/uart1.h</itemPath>
+        <itemPath>mcc_generated_files/uart2.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -29,6 +46,19 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
+        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
+          <itemPath>mcc_generated_files/drivers/spi_master.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
+          <itemPath>mcc_generated_files/fatfs/ffsystem.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ffunicode.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/fatfs_demo.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ff.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/diskio.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
+          <itemPath>mcc_generated_files/sd_spi/sd_spi.c</itemPath>
+        </logicalFolder>
         <itemPath>mcc_generated_files/reset.c</itemPath>
         <itemPath>mcc_generated_files/system.c</itemPath>
         <itemPath>mcc_generated_files/clock.c</itemPath>
@@ -36,6 +66,9 @@
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/mcc.c</itemPath>
         <itemPath>mcc_generated_files/pin_manager.c</itemPath>
+        <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
+        <itemPath>mcc_generated_files/uart1.c</itemPath>
+        <itemPath>mcc_generated_files/uart2.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>
@@ -48,7 +81,7 @@
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
-    <conf name="default" type="2">
+    <conf name="PSLab" type="2">
       <toolsSet>
         <developmentServer>localhost</developmentServer>
         <targetDevice>PIC24EP256GP204</targetDevice>

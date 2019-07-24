@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=pslab-firmware
 
 # Active Configuration
-DEFAULTCONF=default
+DEFAULTCONF=PSLab
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=default 
+ALLCONFS=PSLab 
 
 
 # build
@@ -45,13 +45,13 @@ ALLCONFS=default
 
 # clobber
 .clobber-impl: .clobber-pre .depcheck-impl
-	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=default clean
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=PSLab clean
 
 
 
 # all
 .all-impl: .all-pre .depcheck-impl
-	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=default build
+	    ${MAKE} SUBPROJECTS=${SUBPROJECTS} CONF=PSLab build
 
 
 

@@ -1,25 +1,3 @@
-/**
-  Generated main.c file from MPLAB Code Configurator
-
-  @Company
-    Microchip Technology Inc.
-
-  @File Name
-    main.c
-
-  @Summary
-    This is the generated main.c using PIC24 / dsPIC33 / PIC32MM MCUs.
-
-  @Description
-    This source file provides main entry point for system initialization and application code development.
-    Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
-        Device            :  PIC24EP256GP204
-    The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB 	          :  MPLAB X v5.20
-*/
-
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -42,29 +20,32 @@
     TERMS.
 */
 
-/**
-  Section: Included Files
-*/
-#include "mcc_generated_files/system.h"
-#include "mcc_generated_files/fatfs/fatfs_demo.h"
+#ifndef SPI1_DRIVER_H
+#define SPI1_DRIVER_H
 
-/*
-                         Main application
- */
-int main(void)
-{
-    // initialize the device
-    SYSTEM_Initialize();
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <stdio.h>
+#include "spi1_types.h"
 
-    while (1)
-    {
-        // Add your application code
-        FatFsDemo_Tasks();
-    }
+#define INLINE  inline 
 
-    return 1;
-}
-/**
- End of File
-*/
+/* arbitration interface */
+INLINE void spi1_close(void);
 
+bool spi1_open(spi1_modes spiUniqueConfiguration);
+/* SPI native data exchange function */
+uint8_t spi1_exchangeByte(uint8_t b);
+/* SPI Block move functions }(future DMA support will be here) */
+void spi1_exchangeBlock(void *block, size_t blockSize);
+void spi1_writeBlock(void *block, size_t blockSize);
+void spi1_readBlock(void *block, size_t blockSize);
+
+void spi1_writeByte(uint8_t byte);
+uint8_t spi1_readByte(void);
+
+void spi1_isr(void);
+void spi1_setSpiISR(void(*handler)(void));
+
+#endif // SPI1_DRIVER_H

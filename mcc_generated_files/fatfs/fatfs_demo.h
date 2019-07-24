@@ -1,25 +1,3 @@
-/**
-  Generated main.c file from MPLAB Code Configurator
-
-  @Company
-    Microchip Technology Inc.
-
-  @File Name
-    main.c
-
-  @Summary
-    This is the generated main.c using PIC24 / dsPIC33 / PIC32MM MCUs.
-
-  @Description
-    This source file provides main entry point for system initialization and application code development.
-    Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
-        Device            :  PIC24EP256GP204
-    The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB 	          :  MPLAB X v5.20
-*/
-
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -41,30 +19,9 @@
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
 */
+#ifndef FATFS_DEMO_H
+#define FATFS_DEMO_H
 
-/**
-  Section: Included Files
-*/
-#include "mcc_generated_files/system.h"
-#include "mcc_generated_files/fatfs/fatfs_demo.h"
+void FatFsDemo_Tasks(void);
 
-/*
-                         Main application
- */
-int main(void)
-{
-    // initialize the device
-    SYSTEM_Initialize();
-
-    while (1)
-    {
-        // Add your application code
-        FatFsDemo_Tasks();
-    }
-
-    return 1;
-}
-/**
- End of File
-*/
-
+#endif

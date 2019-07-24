@@ -1,25 +1,3 @@
-/**
-  Generated main.c file from MPLAB Code Configurator
-
-  @Company
-    Microchip Technology Inc.
-
-  @File Name
-    main.c
-
-  @Summary
-    This is the generated main.c using PIC24 / dsPIC33 / PIC32MM MCUs.
-
-  @Description
-    This source file provides main entry point for system initialization and application code development.
-    Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
-        Device            :  PIC24EP256GP204
-    The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB 	          :  MPLAB X v5.20
-*/
-
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -42,29 +20,29 @@
     TERMS.
 */
 
-/**
-  Section: Included Files
-*/
-#include "mcc_generated_files/system.h"
-#include "mcc_generated_files/fatfs/fatfs_demo.h"
 
-/*
-                         Main application
- */
-int main(void)
+#include "ff.h"
+#include "../../mcc_generated_files/sd_spi/sd_spi.h"
+
+void FatFsDemo_Tasks(void)
 {
-    // initialize the device
-    SYSTEM_Initialize();
-
-    while (1)
+    FATFS drive;
+    FIL file;
+    UINT actualLength;
+    char data[] = "Hello World!";
+    if( SD_SPI_IsMediaPresent() == false)
     {
-        // Add your application code
-        FatFsDemo_Tasks();
+        return;
     }
 
-    return 1;
-}
-/**
- End of File
-*/
+    if (f_mount(&drive,"0:",1) == FR_OK)
+    {
+        if (f_open(&file, "HELLO.TXT", FA_WRITE | FA_CREATE_NEW ) == FR_OK)
+        {
+            f_write(&file, data, sizeof(data)-1, &actualLength );
+            f_close(&file);
+        }
 
+        f_mount(0,"0:",0);
+    }
+}
