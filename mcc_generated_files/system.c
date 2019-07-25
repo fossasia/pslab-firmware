@@ -51,6 +51,7 @@
 #include "fatfs/ff.h"
 #include "interrupt_manager.h"
 #include "traps.h"
+#include "i2c2_driver.h"
 #include "spi1_driver.h"
 #include "sd_spi/sd_spi.h"
 
