@@ -17,6 +17,9 @@
           <itemPath>mcc_generated_files/fatfs/ffconf.h</itemPath>
           <itemPath>mcc_generated_files/fatfs/ff.h</itemPath>
         </logicalFolder>
+        <logicalFolder name="memory" displayName="memory" projectFiles="true">
+          <itemPath>mcc_generated_files/memory/flash.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
           <itemPath>mcc_generated_files/sd_spi/sd_spi.h</itemPath>
         </logicalFolder>
@@ -35,6 +38,26 @@
         <itemPath>mcc_generated_files/uart1.h</itemPath>
         <itemPath>mcc_generated_files/uart2.h</itemPath>
         <itemPath>mcc_generated_files/i2c2_driver.h</itemPath>
+        <itemPath>mcc_generated_files/ic3.h</itemPath>
+        <itemPath>mcc_generated_files/ic1.h</itemPath>
+        <itemPath>mcc_generated_files/oc4.h</itemPath>
+        <itemPath>mcc_generated_files/adc1.h</itemPath>
+        <itemPath>mcc_generated_files/cmp1.h</itemPath>
+        <itemPath>mcc_generated_files/cmp3.h</itemPath>
+        <itemPath>mcc_generated_files/dma.h</itemPath>
+        <itemPath>mcc_generated_files/tmr2.h</itemPath>
+        <itemPath>mcc_generated_files/tmr4.h</itemPath>
+        <itemPath>mcc_generated_files/ptg.h</itemPath>
+        <itemPath>mcc_generated_files/oc2.h</itemPath>
+        <itemPath>mcc_generated_files/ic2.h</itemPath>
+        <itemPath>mcc_generated_files/ic4.h</itemPath>
+        <itemPath>mcc_generated_files/cmp2.h</itemPath>
+        <itemPath>mcc_generated_files/cmp4.h</itemPath>
+        <itemPath>mcc_generated_files/tmr1.h</itemPath>
+        <itemPath>mcc_generated_files/tmr3.h</itemPath>
+        <itemPath>mcc_generated_files/oc3.h</itemPath>
+        <itemPath>mcc_generated_files/oc1.h</itemPath>
+        <itemPath>mcc_generated_files/tmr5.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -57,6 +80,9 @@
           <itemPath>mcc_generated_files/fatfs/ff.c</itemPath>
           <itemPath>mcc_generated_files/fatfs/diskio.c</itemPath>
         </logicalFolder>
+        <logicalFolder name="memory" displayName="memory" projectFiles="true">
+          <itemPath>mcc_generated_files/memory/flash.s</itemPath>
+        </logicalFolder>
         <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
           <itemPath>mcc_generated_files/sd_spi/sd_spi.c</itemPath>
         </logicalFolder>
@@ -71,6 +97,26 @@
         <itemPath>mcc_generated_files/uart1.c</itemPath>
         <itemPath>mcc_generated_files/uart2.c</itemPath>
         <itemPath>mcc_generated_files/i2c2_driver.c</itemPath>
+        <itemPath>mcc_generated_files/ic3.c</itemPath>
+        <itemPath>mcc_generated_files/ic1.c</itemPath>
+        <itemPath>mcc_generated_files/adc1.c</itemPath>
+        <itemPath>mcc_generated_files/ptg.c</itemPath>
+        <itemPath>mcc_generated_files/cmp1.c</itemPath>
+        <itemPath>mcc_generated_files/cmp3.c</itemPath>
+        <itemPath>mcc_generated_files/oc4.c</itemPath>
+        <itemPath>mcc_generated_files/oc2.c</itemPath>
+        <itemPath>mcc_generated_files/tmr2.c</itemPath>
+        <itemPath>mcc_generated_files/tmr4.c</itemPath>
+        <itemPath>mcc_generated_files/dma.c</itemPath>
+        <itemPath>mcc_generated_files/ic4.c</itemPath>
+        <itemPath>mcc_generated_files/ic2.c</itemPath>
+        <itemPath>mcc_generated_files/cmp2.c</itemPath>
+        <itemPath>mcc_generated_files/cmp4.c</itemPath>
+        <itemPath>mcc_generated_files/tmr1.c</itemPath>
+        <itemPath>mcc_generated_files/oc3.c</itemPath>
+        <itemPath>mcc_generated_files/oc1.c</itemPath>
+        <itemPath>mcc_generated_files/tmr3.c</itemPath>
+        <itemPath>mcc_generated_files/tmr5.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>

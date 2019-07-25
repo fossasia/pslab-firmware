@@ -52,16 +52,37 @@
 #include "pin_manager.h"
 #include <stdint.h>
 #include <stdbool.h>
+#include "ic4.h"
 #include "uart1.h"
-#include "uart2.h"
-#include "reset.h"
-#include "fatfs/ff.h"
+#include "ic2.h"
+#include "tmr4.h"
 #include "interrupt_manager.h"
 #include "traps.h"
-#include "watchdog.h"
 #include "i2c2_driver.h"
+#include "tmr2.h"
 #include "spi1_driver.h"
+#include "cmp1.h"
+#include "oc3.h"
+#include "ptg.h"
+#include "oc1.h"
+#include "memory/flash.h"
+#include "cmp3.h"
+#include "adc1.h"
 #include "sd_spi/sd_spi.h"
+#include "ic3.h"
+#include "ic1.h"
+#include "uart2.h"
+#include "tmr3.h"
+#include "tmr5.h"
+#include "fatfs/ff.h"
+#include "tmr1.h"
+#include "oc4.h"
+#include "dma.h"
+#include "oc2.h"
+#include "watchdog.h"
+#include "cmp4.h"
+#include "cmp2.h"
+#include "reset.h"
 
 #ifndef _XTAL_FREQ
 #define _XTAL_FREQ  120000000UL
@@ -78,7 +99,7 @@
  * @Example
     OSCILLATOR_Initialize(void);
  */
-void OSCILLATOR_Initialize(void) __attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse CLOCK_Initialize (void) instead. ")));
+void OSCILLATOR_Initialize(void) __attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse CLOCK_Initialize (void) instead. ")));
 
 /**
  * Checks reset cause, flashes UI with an error code as a result.
@@ -87,7 +108,8 @@ void OSCILLATOR_Initialize(void) __attribute__((deprecated("\nThis will be remov
  * since it has a side-effect of clearing the appropriate bits in the
  * register showing reset cause (see DS70602B page 8-10)
  */
-uint16_t SYSTEM_GetResetCause(void) __attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse RESET_GetCause(void) (void) instead. ")));
+uint16_t SYSTEM_GetResetCause(void) __attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse RESET_GetCause(void) (void) instead. ")));
+
 
 /**
  * Enables Watch Dog Timer (WDT) using the software bit.
@@ -96,8 +118,9 @@ uint16_t SYSTEM_GetResetCause(void) __attribute__((deprecated("\nThis will be re
  * WDT_WatchdogtimerSoftwareEnable();
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse WATCHDOG_TimerSoftwareEnable (void) instead. ")))
-inline static void WDT_WatchdogtimerSoftwareEnable(void) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse WATCHDOG_TimerSoftwareEnable (void) instead. ")))
+inline static void WDT_WatchdogtimerSoftwareEnable(void)
+{
     RCONbits.SWDTEN = 1;
 }
 
@@ -108,8 +131,9 @@ inline static void WDT_WatchdogtimerSoftwareEnable(void) {
  * WDT_WatchdogtimerSoftwareDisable();
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse WATCHDOG_TimerSoftwareDisable (void) instead. ")))
-inline static void WDT_WatchdogtimerSoftwareDisable(void) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse WATCHDOG_TimerSoftwareDisable (void) instead. ")))
+inline static void WDT_WatchdogtimerSoftwareDisable(void)
+{
     RCONbits.SWDTEN = 0;
 }
 
@@ -120,8 +144,9 @@ inline static void WDT_WatchdogtimerSoftwareDisable(void) {
  * WDT_WatchdogTimerClear();
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse WATCHDOG_TimerClear (void) instead. ")))
-inline static void WDT_WatchdogTimerClear(void) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse WATCHDOG_TimerClear (void) instead. ")))
+inline static void WDT_WatchdogTimerClear(void)
+{
     ClrWdt();
 }
 
@@ -134,8 +159,9 @@ inline static void WDT_WatchdogTimerClear(void) {
  * devIdAddress = DEVICE_DeviceIdRegisterAddressGet();
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse SYSTEM_DeviceIdRegisterAddressGet (void) instead. ")))
-inline static uint32_t DEVICE_DeviceIdRegisterAddressGet(void) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse SYSTEM_DeviceIdRegisterAddressGet (void) instead. ")))
+inline static uint32_t DEVICE_DeviceIdRegisterAddressGet(void)
+{
     return __DEVID_BASE;
 }
 
@@ -146,9 +172,10 @@ inline static uint32_t DEVICE_DeviceIdRegisterAddressGet(void) {
  * CORCON_Initialize();
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONInitialize() instead. ")))
-inline static void CORCON_Initialize() {
-    CORCON = (CORCON & 0x00F2) | CORCON_MODE_PORVALUES; // POR value
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONInitialize() instead. ")))
+inline static void CORCON_Initialize()
+{
+    CORCON = (CORCON & 0x00F2) | CORCON_MODE_PORVALUES;    // POR value
 }
 
 /**
@@ -160,8 +187,9 @@ inline static void CORCON_Initialize() {
  * CORCON_ModeOperatingSet(CORCON_MODE_ENABLEALLSATNORMAL_ROUNDUNBIASED);
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONModeOperatingSet(SYSTEM_CORCON_MODES modeValue) instead. ")))
-inline static void CORCON_ModeOperatingSet(SYSTEM_CORCON_MODES modeValue) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONModeOperatingSet(SYSTEM_CORCON_MODES modeValue) instead. ")))
+inline static void CORCON_ModeOperatingSet(SYSTEM_CORCON_MODES modeValue)
+{
     CORCON = (CORCON & 0x00F2) | modeValue;
 }
 
@@ -173,8 +201,9 @@ inline static void CORCON_ModeOperatingSet(SYSTEM_CORCON_MODES modeValue) {
  * CORCON_RegisterValueSet(0x00E2);
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONRegisterValueSet(uint16_t value) instead. ")))
-inline static void CORCON_RegisterValueSet(uint16_t value) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONRegisterValueSet(uint16_t value) instead. ")))
+inline static void CORCON_RegisterValueSet(uint16_t value)
+{
     CORCON = value;
 }
 
@@ -186,8 +215,9 @@ inline static void CORCON_RegisterValueSet(uint16_t value) {
  * corconSave = CORCON_RegisterValueGet();
  * </code>
  */
-__attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONRegisterValueGet (void) instead. ")))
-inline static uint16_t CORCON_RegisterValueGet(void) {
+__attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse SYSTEM_CORCONRegisterValueGet (void) instead. ")))
+inline static uint16_t CORCON_RegisterValueGet(void)
+{    
     return CORCON;
 }
 
@@ -200,7 +230,7 @@ inline static uint16_t CORCON_RegisterValueGet(void) {
  * SYSTEM_ResetCauseHandler();
  * </code>
  */
-void __attribute__((weak)) SYSTEM_ResetCauseHandler(void) __attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse RESET_CauseHandler(void) (void) instead. ")));
+void __attribute__ ((weak)) SYSTEM_ResetCauseHandler(void) __attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse RESET_CauseHandler(void) (void) instead. ")));
 
 /**
  * This function resets the reset cause register.
@@ -210,7 +240,7 @@ void __attribute__((weak)) SYSTEM_ResetCauseHandler(void) __attribute__((depreca
  * SYSTEM_ResetCauseClearAll();
  * </code>
  */
-void SYSTEM_ResetCauseClearAll() __attribute__((deprecated("\nThis will be removed in future MCC releases. \nUse RESET_CauseClearAll(void) (void) instead. ")));
+void SYSTEM_ResetCauseClearAll() __attribute__((deprecated ("\nThis will be removed in future MCC releases. \nUse RESET_CauseClearAll(void) (void) instead. ")));
 
 #endif	/* MCC_H */
 /**

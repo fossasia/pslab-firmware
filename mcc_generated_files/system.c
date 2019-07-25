@@ -46,21 +46,63 @@
 #include "clock.h"
 #include "system.h"
 #include "system_types.h"
+#include "ic4.h"
 #include "uart1.h"
-#include "uart2.h"
-#include "fatfs/ff.h"
+#include "ic2.h"
+#include "tmr4.h"
 #include "interrupt_manager.h"
 #include "traps.h"
 #include "i2c2_driver.h"
+#include "tmr2.h"
 #include "spi1_driver.h"
+#include "cmp1.h"
+#include "oc3.h"
+#include "ptg.h"
+#include "oc1.h"
+#include "memory/flash.h"
+#include "cmp3.h"
+#include "adc1.h"
 #include "sd_spi/sd_spi.h"
+#include "ic3.h"
+#include "ic1.h"
+#include "uart2.h"
+#include "tmr3.h"
+#include "tmr5.h"
+#include "fatfs/ff.h"
+#include "tmr1.h"
+#include "oc4.h"
+#include "dma.h"
+#include "oc2.h"
+#include "cmp4.h"
+#include "cmp2.h"
 
-void SYSTEM_Initialize(void) {
+void SYSTEM_Initialize(void)
+{
     PIN_MANAGER_Initialize();
     INTERRUPT_Initialize();
     CLOCK_Initialize();
-    UART2_Initialize();
     UART1_Initialize();
+    UART2_Initialize();
+    PTG_Initialize();
+    OC4_Initialize();
+    CMP4_Initialize();
+    TMR4_Initialize();
+    OC1_Initialize();
+    IC4_Initialize();
+    CMP1_Initialize();
+    TMR3_Initialize();
+    IC3_Initialize();
+    IC2_Initialize();
+    CMP2_Initialize();
+    OC3_Initialize();
+    TMR2_Initialize();
+    CMP3_Initialize();
+    ADC1_Initialize();
+    OC2_Initialize();
+    TMR5_Initialize();
+    IC1_Initialize();
+    TMR1_Initialize();
+    DMA_Initialize();
     SYSTEM_CORCONModeOperatingSet(CORCON_MODE_PORVALUES);
 }
 

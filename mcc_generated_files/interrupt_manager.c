@@ -50,7 +50,11 @@
 /**
     void INTERRUPT_Initialize (void)
  */
-void INTERRUPT_Initialize(void) {
+void INTERRUPT_Initialize (void)
+{
+    //    ADI: ADC1 Convert Done
+    //    Priority: 1
+        IPC3bits.AD1IP = 1;
     //    MICI: I2C2 Master Events
     //    Priority: 1
     IPC12bits.MI2C2IP = 1;
