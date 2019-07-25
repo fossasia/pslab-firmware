@@ -10,36 +10,31 @@
 #include "diskio.h"		/* FatFs lower layer API */
 #include "../../mcc_generated_files/sd_spi/sd_spi.h"
 
-
 /* Definitions of physical drive number for each drive */
-enum DRIVER_LIST{
+enum DRIVER_LIST {
     SDCard = 0,
 };
 
 /*-----------------------------------------------------------------------*/
 /* Get Drive Status                                                      */
+
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_status (
-    BYTE pdrv    /* Physical drive number to identify the drive */
-)
-{
+DSTATUS disk_status(
+        BYTE pdrv /* Physical drive number to identify the drive */
+        ) {
     DSTATUS stat = STA_NOINIT;
 
     switch (pdrv) {
 
         case SDCard:
-            if ( SD_SPI_IsMediaPresent() == false)
-            {
-               stat = STA_NODISK;
-            }
-            else if ( SD_SPI_IsMediaInitialized() == true)
-            {
+            if (SD_SPI_IsMediaPresent() == false) {
+                stat = STA_NODISK;
+            } else if (SD_SPI_IsMediaInitialized() == true) {
                 stat &= ~STA_NOINIT;
             }
-        
-            if ( SD_SPI_IsWriteProtected() == true)
-            {
+
+            if (SD_SPI_IsWriteProtected() == true) {
                 stat |= STA_PROTECT;
             }
 
@@ -55,22 +50,19 @@ DSTATUS disk_status (
 
 /*-----------------------------------------------------------------------*/
 /* Initialize a Drive                                                    */
+
 /*-----------------------------------------------------------------------*/
 
-DSTATUS disk_initialize (
-    BYTE pdrv    /* Physical drive number to identify the drive */
-)
-{
+DSTATUS disk_initialize(
+        BYTE pdrv /* Physical drive number to identify the drive */
+        ) {
     DSTATUS stat = STA_NOINIT;
 
     switch (pdrv) {
-        case SDCard :
-            if(SD_SPI_MediaInitialize() == true)
-            {
+        case SDCard:
+            if (SD_SPI_MediaInitialize() == true) {
                 stat = RES_OK;
-            }
-            else
-            {
+            } else {
                 stat = RES_ERROR;
             }
             break;
@@ -85,25 +77,22 @@ DSTATUS disk_initialize (
 
 /*-----------------------------------------------------------------------*/
 /* Read Sector(s)                                                        */
+
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_read (
-    BYTE pdrv,    /* Physical drive number to identify the drive */
-    BYTE *buff,   /* Data buffer to store read data */
-    DWORD sector, /* Start sector in LBA */
-    UINT count    /* Number of sectors to read */
-)
-{
+DRESULT disk_read(
+        BYTE pdrv, /* Physical drive number to identify the drive */
+        BYTE *buff, /* Data buffer to store read data */
+        DWORD sector, /* Start sector in LBA */
+        UINT count /* Number of sectors to read */
+        ) {
     DRESULT res = RES_PARERR;
 
     switch (pdrv) {
-        case SDCard :
-            if(SD_SPI_SectorRead(sector, buff, count) == true)
-            {
+        case SDCard:
+            if (SD_SPI_SectorRead(sector, buff, count) == true) {
                 res = RES_OK;
-            }
-            else
-            {
+            } else {
                 res = RES_ERROR;
             }
             break;
@@ -119,25 +108,22 @@ DRESULT disk_read (
 
 /*-----------------------------------------------------------------------*/
 /* Write Sector(s)                                                       */
+
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_write (
-    BYTE pdrv,          /* Physical drive number to identify the drive */
-    const BYTE *buff,   /* Data to be written */
-    DWORD sector,       /* Start sector in LBA */
-    UINT count          /* Number of sectors to write */
-)
-{
+DRESULT disk_write(
+        BYTE pdrv, /* Physical drive number to identify the drive */
+        const BYTE *buff, /* Data to be written */
+        DWORD sector, /* Start sector in LBA */
+        UINT count /* Number of sectors to write */
+        ) {
     DRESULT res = RES_PARERR;
 
     switch (pdrv) {
-        case SDCard :
-            if(SD_SPI_SectorWrite(sector, buff, count) == true)
-            {
+        case SDCard:
+            if (SD_SPI_SectorWrite(sector, buff, count) == true) {
                 res = RES_OK;
-            }
-            else
-            {
+            } else {
                 res = RES_ERROR;
             }
             break;
@@ -153,18 +139,18 @@ DRESULT disk_write (
 
 /*-----------------------------------------------------------------------*/
 /* Miscellaneous Functions                                               */
+
 /*-----------------------------------------------------------------------*/
 
-DRESULT disk_ioctl (
-    BYTE pdrv,    /* Physical drive number (0..) */
-    BYTE cmd,     /* Control code */
-    void *buff    /* Buffer to send/receive control data */
-)
-{
+DRESULT disk_ioctl(
+        BYTE pdrv, /* Physical drive number (0..) */
+        BYTE cmd, /* Control code */
+        void *buff /* Buffer to send/receive control data */
+        ) {
     DRESULT res = RES_OK;
 
     switch (pdrv) {
-        case SDCard :
+        case SDCard:
             return res;
 
         default:

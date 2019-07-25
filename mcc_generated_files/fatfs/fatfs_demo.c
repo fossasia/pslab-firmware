@@ -18,31 +18,27 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 
 #include "ff.h"
 #include "../../mcc_generated_files/sd_spi/sd_spi.h"
 
-void FatFsDemo_Tasks(void)
-{
+void FatFsDemo_Tasks(void) {
     FATFS drive;
     FIL file;
     UINT actualLength;
     char data[] = "Hello World!";
-    if( SD_SPI_IsMediaPresent() == false)
-    {
+    if (SD_SPI_IsMediaPresent() == false) {
         return;
     }
 
-    if (f_mount(&drive,"0:",1) == FR_OK)
-    {
-        if (f_open(&file, "HELLO.TXT", FA_WRITE | FA_CREATE_NEW ) == FR_OK)
-        {
-            f_write(&file, data, sizeof(data)-1, &actualLength );
+    if (f_mount(&drive, "0:", 1) == FR_OK) {
+        if (f_open(&file, "HELLO.TXT", FA_WRITE | FA_CREATE_NEW) == FR_OK) {
+            f_write(&file, data, sizeof (data) - 1, &actualLength);
             f_close(&file);
         }
 
-        f_mount(0,"0:",0);
+        f_mount(0, "0:", 0);
     }
 }

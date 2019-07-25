@@ -13,12 +13,12 @@
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,15 +40,15 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef SYSTEM_TYPES_H
 #define	SYSTEM_TYPES_H
 
 /**
   Section: Type defines
- */ 
-    
+ */
+
 /** 
  * CORCON initialization type enumerator. Supported types:
  * CORCON_MODE_PORVALUES
@@ -59,43 +59,42 @@
  * CORCON_MODE_ENABLEALLSATSUPER_ROUNDBIASED
  * CORCON_MODE_ENABLEALLSATSUPER_ROUNDUNBIASED
  */
-typedef enum tagCORCON_MODE_TYPE
-{ 
-    CORCON_MODE_PORVALUES   = 0x0020,                       /** Use POR values of CORCON */
-    CORCON_MODE_ENABLEALLSATNORMAL_ROUNDBIASED = 0x00E2,    /** Enable saturation for ACCA, ACCB
+typedef enum tagCORCON_MODE_TYPE {
+    CORCON_MODE_PORVALUES = 0x0020, /** Use POR values of CORCON */
+    CORCON_MODE_ENABLEALLSATNORMAL_ROUNDBIASED = 0x00E2, /** Enable saturation for ACCA, ACCB
                                                              *  and Dataspace write, enable normal
                                                              *  ACCA/ACCB saturation mode and set
                                                              *  rounding to Biased (conventional)
                                                              *  mode. Rest of CORCON settings are
                                                              *  set to the default POR values.
                                                              *  */
-    CORCON_MODE_ENABLEALLSATNORMAL_ROUNDUNBIASED = 0x00E0,  /** Enable saturation for ACCA, ACCB
+    CORCON_MODE_ENABLEALLSATNORMAL_ROUNDUNBIASED = 0x00E0, /** Enable saturation for ACCA, ACCB
                                                              *  and Dataspace write, enable normal
                                                              *  ACCA/ACCB saturation mode and set
                                                              *  rounding to Unbiased (convergent)
                                                              *  mode. Rest of CORCON settings are
                                                              *  set to the default POR values.
                                                              *  */
-    CORCON_MODE_DISABLEALLSAT_ROUNDBIASED = 0x0022,         /** Disable saturation for ACCA, ACCB
+    CORCON_MODE_DISABLEALLSAT_ROUNDBIASED = 0x0022, /** Disable saturation for ACCA, ACCB
                                                              *  and Dataspace write and set
                                                              *  rounding to Biased (conventional)
                                                              *  mode. Rest of CORCON settings are
                                                              *  set to the default POR values.
                                                              *  */
-    CORCON_MODE_DISABLEALLSAT_ROUNDUNBIASED = 0x0020,       /** Disable saturation for ACCA, ACCB
+    CORCON_MODE_DISABLEALLSAT_ROUNDUNBIASED = 0x0020, /** Disable saturation for ACCA, ACCB
                                                              *  and Dataspace write and set
                                                              *  rounding to Unbiased (convergent)
                                                              *  mode. Rest of CORCON settings are
                                                              *  set to the default POR values.
                                                              *  */
-    CORCON_MODE_ENABLEALLSATSUPER_ROUNDBIASED = 0x00F2,    /** Enable saturation for ACCA, ACCB
+    CORCON_MODE_ENABLEALLSATSUPER_ROUNDBIASED = 0x00F2, /** Enable saturation for ACCA, ACCB
                                                              *  and Dataspace write, enable super
                                                              *  ACCA/ACCB saturation mode and set
                                                              *  rounding to Biased (conventional)
                                                              *  mode. Rest of CORCON settings are
                                                              *  set to the default POR values.
                                                              *  */
-    CORCON_MODE_ENABLEALLSATSUPER_ROUNDUNBIASED = 0x00F0,  /** Enable saturation for ACCA, ACCB
+    CORCON_MODE_ENABLEALLSATSUPER_ROUNDUNBIASED = 0x00F0, /** Enable saturation for ACCA, ACCB
                                                              *  and Dataspace write, enable super
                                                              *  ACCA/ACCB saturation mode and set
                                                              *  rounding to Unbiased (convergent)
@@ -107,4 +106,4 @@ typedef enum tagCORCON_MODE_TYPE
 #endif	/* SYSTEM_TYPES_H */
 /**
  End of File
-*/
+ */

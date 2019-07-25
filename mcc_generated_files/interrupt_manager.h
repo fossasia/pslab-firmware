@@ -14,12 +14,12 @@
   @Description:
     This source file provides implementations for PIC24 / dsPIC33 / PIC32MM MCUs interrupts.
     Generation Information : 
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -40,7 +40,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef _INTERRUPT_MANAGER_H
 #define _INTERRUPT_MANAGER_H
@@ -71,70 +71,7 @@
     }
     </code>
 
-*/
+ */
 void INTERRUPT_Initialize(void);
-
-/**
-  @Summary
-    Enables global interrupts of the PIC24EP256GP204
-
-  @Description
-    This routine enables the global interrupt bit for the PIC24EP256GP204
-
-  @Preconditions
-    None.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    void SYSTEM_Initialize(void)
-    {
-        // Other initializers are called from this function
-        INTERRUPT_GlobalEnable ();
-    }
-    </code>
-
-*/
-inline static void INTERRUPT_GlobalEnable(void)
-{
-    __builtin_enable_interrupts();
-}
-
-/**
-  @Summary
-    Disables global interrupts of the PIC24EP256GP204
-
-  @Description
-    This routine disables the global interrupt bit for the PIC24EP256GP204
-
-  @Preconditions
-    None.
-
-  @Returns
-    None.
-
-  @Param
-    None.
-
-  @Example
-    <code>
-    void SYSTEM_Initialize(void)
-    {
-        // Other initializers are called from this function
-        INTERRUPT_GlobalDisable ();
-    }
-    </code>
-
-*/
-inline static void INTERRUPT_GlobalDisable(void)
-{
-    __builtin_disable_interrupts();
-}
-
 
 #endif

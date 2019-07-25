@@ -13,12 +13,12 @@
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,7 +40,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 // Configuration bits: selected in the GUI
 
@@ -80,35 +80,31 @@
 
 /**
  Section: Local Variables
-*/
+ */
 
 /**
  Section: Function prototypes
-*/
+ */
 
 /**
-* a private place to store the error code if we run into a severe error
-*/
+ * a private place to store the error code if we run into a severe error
+ */
 
-void OSCILLATOR_Initialize(void)
-{
+void OSCILLATOR_Initialize(void) {
     CLOCK_Initialize();
 }
 
-uint16_t SYSTEM_GetResetCause(void)
-{
+uint16_t SYSTEM_GetResetCause(void) {
     return RCON;
 }
 
-void __attribute__ ((weak)) SYSTEM_ResetCauseHandler(void)
-{
+void __attribute__((weak)) SYSTEM_ResetCauseHandler(void) {
     RESET_CauseHandler();
 }
 
-void SYSTEM_ResetCauseClearAll()
-{ 
+void SYSTEM_ResetCauseClearAll() {
     RESET_CauseClearAll();
 }
 /**
  End of File
-*/
+ */

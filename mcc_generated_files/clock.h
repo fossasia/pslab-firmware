@@ -13,12 +13,12 @@
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,7 +40,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef CLOCK_H
 #define	CLOCK_H
@@ -48,12 +48,6 @@
 #ifndef _XTAL_FREQ
 #define _XTAL_FREQ  120000000UL
 #endif
-
-#define CLOCK_SystemFrequencyGet()        (120000000UL)
-
-#define CLOCK_PeripheralFrequencyGet()    (CLOCK_SystemFrequencyGet() / 2)
-
-#define CLOCK_InstructionFrequencyGet()   (CLOCK_SystemFrequencyGet() / 2)
 /**
  * @Param
     none
@@ -69,4 +63,4 @@ void CLOCK_Initialize(void);
 #endif	/* CLOCK_H */
 /**
  End of File
-*/
+ */

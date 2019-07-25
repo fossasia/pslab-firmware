@@ -18,7 +18,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 /**
   Section: Included Files
@@ -29,22 +29,23 @@
 inline bool SDFAST_open(void);
 inline bool SDSLOW_open(void);
 
-const spi_master_functions_t spiMaster[] = {   
-    { spi1_close, SDFAST_open, spi1_exchangeByte, spi1_exchangeBlock, spi1_writeBlock, spi1_readBlock, spi1_writeByte, spi1_readByte, spi1_setSpiISR, spi1_isr },
-    { spi1_close, SDSLOW_open, spi1_exchangeByte, spi1_exchangeBlock, spi1_writeBlock, spi1_readBlock, spi1_writeByte, spi1_readByte, spi1_setSpiISR, spi1_isr }
+const spi_master_functions_t spiMaster[] = {
+    { spi1_close, SDFAST_open, spi1_exchangeByte, spi1_exchangeBlock, spi1_writeBlock, spi1_readBlock, spi1_writeByte, spi1_readByte, spi1_setSpiISR, spi1_isr},
+    { spi1_close, SDSLOW_open, spi1_exchangeByte, spi1_exchangeBlock, spi1_writeBlock, spi1_readBlock, spi1_writeByte, spi1_readByte, spi1_setSpiISR, spi1_isr}
 };
 
-inline bool SDFAST_open(void){
+inline bool SDFAST_open(void) {
     return spi1_open(SDFAST_CONFIG);
 }
 
-inline bool SDSLOW_open(void){
+inline bool SDSLOW_open(void) {
     return spi1_open(SDSLOW_CONFIG);
 }
 
 //This function serves keep backwards compatibility with older api users
-inline bool spi_master_open(spi_master_configurations_t config){
-    switch(config){
+
+inline bool spi_master_open(spi_master_configurations_t config) {
+    switch (config) {
         case SDFAST:
             return SDFAST_open();
         case SDSLOW:

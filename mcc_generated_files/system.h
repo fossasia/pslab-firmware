@@ -13,12 +13,12 @@
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,7 +40,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #include "xc.h"
 #include "stdint.h"
@@ -48,6 +48,7 @@
 
 #ifndef SYSTEM_H
 #define	SYSTEM_H
+
 /**
  * Initializes the CPU core control register.
  * @example
@@ -55,9 +56,8 @@
  * SYSTEM_CORCONInitialize();
  * </code>
  */
-inline static void SYSTEM_CORCONInitialize()
-{
-    CORCON = (CORCON & 0x00F2) | CORCON_MODE_PORVALUES;    // POR value
+inline static void SYSTEM_CORCONInitialize() {
+    CORCON = (CORCON & 0x00F2) | CORCON_MODE_PORVALUES; // POR value
 }
 
 /**
@@ -69,8 +69,7 @@ inline static void SYSTEM_CORCONInitialize()
  * SYSTEM_CORCONModeOperatingSet(CORCON_MODE_ENABLEALLSATNORMAL_ROUNDUNBIASED);
  * </code>
  */
-inline static void SYSTEM_CORCONModeOperatingSet(SYSTEM_CORCON_MODES modeValue)
-{
+inline static void SYSTEM_CORCONModeOperatingSet(SYSTEM_CORCON_MODES modeValue) {
     CORCON = (CORCON & 0x00F2) | modeValue;
 }
 
@@ -82,8 +81,7 @@ inline static void SYSTEM_CORCONModeOperatingSet(SYSTEM_CORCON_MODES modeValue)
  *  SYSTEM_CORCONRegisterValueSet(0x00E2);
  * </code>
  */
-inline static void SYSTEM_CORCONRegisterValueSet(uint16_t value)
-{
+inline static void SYSTEM_CORCONRegisterValueSet(uint16_t value) {
     CORCON = value;
 }
 
@@ -95,11 +93,9 @@ inline static void SYSTEM_CORCONRegisterValueSet(uint16_t value)
  * corconSave = SYSTEM_CORCONRegisterValueGet();
  * </code>
  */
-inline static uint16_t SYSTEM_CORCONRegisterValueGet(void)
-{    
+inline static uint16_t SYSTEM_CORCONRegisterValueGet(void) {
     return CORCON;
 }
-
 
 /**
  * Gets the base address of the DEVID register for the currently selected device
@@ -110,8 +106,7 @@ inline static uint16_t SYSTEM_CORCONRegisterValueGet(void)
  * devIdAddress = SYSTEM_DeviceIdRegisterAddressGet();
  * </code>
  */
-inline static uint32_t SYSTEM_DeviceIdRegisterAddressGet(void)
-{
+inline static uint32_t SYSTEM_DeviceIdRegisterAddressGet(void) {
     return __DEVID_BASE;
 }
 
@@ -130,4 +125,4 @@ void SYSTEM_Initialize(void);
 #endif	/* SYSTEM_H */
 /**
  End of File
-*/
+ */

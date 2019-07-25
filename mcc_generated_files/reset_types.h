@@ -13,12 +13,12 @@
   @Description
     This header file provides implementations for driver APIs for RESET.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,15 +40,15 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef RESET_TYPES_H
 #define	RESET_TYPES_H
 
 /**
   Section: Type defines
- */ 
-    
+ */
+
 /** 
  * RCON error type enumerator. Supported types:
  * ERR_RCON_TRAPR
@@ -56,14 +56,13 @@
  * ERR_RCON_CM 
  * ERR_RCON_WDTO_ISR
  */
-typedef enum tagERROR_TYPE
-{
+typedef enum tagERROR_TYPE {
     ERR_RCON_TRAPR      = 1, /** A Trap Conflict Reset has occurred **/
     ERR_RCON_IOPUWR     = 2, /** An illegal opcode detection, an illegal address mode or Uninitialized W register used as an
                              *   Address Pointer caused a Reset **/
     ERR_RCON_CM         = 3, /** A Configuration Mismatch Reset has occurred **/
-    ERR_RCON_WDTO_ISR   = 4  /** WDT time-out has occurred **/
-}RESET_TYPES;
+    ERR_RCON_WDTO_ISR   = 4 /** WDT time-out has occurred **/
+} RESET_TYPES;
 
 /** 
  * RESET CAUSE Masks. Supported masks:
@@ -74,17 +73,16 @@ typedef enum tagERROR_TYPE
  * RESET_MASK_IOPUWR
  * RESET_MASK_TRAPR
  */
-typedef enum tagRESET_MASKS
-{ 
-  RESET_MASK_WDTO = 0x0010,
-  RESET_MASK_SWR = 0x0040,
-  RESET_MASK_EXTR = 0x0080, 
-  RESET_MASK_CM = 0x0200, 
-  RESET_MASK_IOPUWR = 0x4000, 
-  RESET_MASK_TRAPR = 0x8000, 
+typedef enum tagRESET_MASKS {
+    RESET_MASK_WDTO = 0x0010,
+    RESET_MASK_SWR = 0x0040,
+    RESET_MASK_EXTR = 0x0080,
+    RESET_MASK_CM = 0x0200,
+    RESET_MASK_IOPUWR = 0x4000,
+    RESET_MASK_TRAPR = 0x8000,
 } RESET_MASKS;
 
 #endif	/* RESET_TYPES_H */
 /**
  End of File
-*/
+ */

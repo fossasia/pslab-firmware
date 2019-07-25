@@ -13,12 +13,12 @@
   @Description
     This source file provides main entry point for system initialization and application code development.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB 	          :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB 	          :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,24 +40,22 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 /**
   Section: Included Files
-*/
+ */
 #include "mcc_generated_files/system.h"
 #include "mcc_generated_files/fatfs/fatfs_demo.h"
 
 /*
-                         Main application
+  Main application
  */
-int main(void)
-{
+int main(void) {
     // initialize the device
     SYSTEM_Initialize();
 
-    while (1)
-    {
+    while (1) {
         // Add your application code
         FatFsDemo_Tasks();
     }
@@ -66,5 +64,5 @@ int main(void)
 }
 /**
  End of File
-*/
+ */
 

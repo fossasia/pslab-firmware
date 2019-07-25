@@ -13,12 +13,12 @@
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,22 +40,21 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #include "pin_manager.h"
 #include "clock.h"
 #include "system.h"
 #include "system_types.h"
+#include "uart1.h"
+#include "uart2.h"
+#include "fatfs/ff.h"
 #include "interrupt_manager.h"
 #include "traps.h"
-#include "uart1.h"
 #include "spi1_driver.h"
-#include "uart2.h"
 #include "sd_spi/sd_spi.h"
-#include "fatfs/ff.h"
 
-void SYSTEM_Initialize(void)
-{
+void SYSTEM_Initialize(void) {
     PIN_MANAGER_Initialize();
     INTERRUPT_Initialize();
     CLOCK_Initialize();
@@ -66,4 +65,4 @@ void SYSTEM_Initialize(void)
 
 /**
  End of File
-*/
+ */

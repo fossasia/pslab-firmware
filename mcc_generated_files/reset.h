@@ -13,12 +13,12 @@
   @Description
     This header file provides implementations for driver APIs for RESET.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,7 +40,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef RESET_H
 #define	RESET_H
@@ -49,12 +49,12 @@
 #include "reset_types.h"
 
 /**
-* Checks reset cause, flashes UI with an error code as a result.
-* 
-* Note: this function should be called before any use of CLRWDT
-* since it has a side-effect of clearing the appropriate bits in the
-* register showing reset cause (see DS70602B page 8-10)
-*/
+ * Checks reset cause, flashes UI with an error code as a result.
+ * 
+ * Note: this function should be called before any use of CLRWDT
+ * since it has a side-effect of clearing the appropriate bits in the
+ * register showing reset cause (see DS70602B page 8-10)
+ */
 uint16_t RESET_GetCause(void);
 
 /**
@@ -66,7 +66,7 @@ uint16_t RESET_GetCause(void);
  * RESET_CauseHandler();
  * </code>
  */
-void __attribute__ ((weak)) RESET_CauseHandler(void);
+void __attribute__((weak)) RESET_CauseHandler(void);
 
 /**
  * This function resets the reset cause register.
@@ -81,4 +81,4 @@ void RESET_CauseClearAll();
 #endif	/* RESET_H */
 /**
  End of File
-*/
+ */

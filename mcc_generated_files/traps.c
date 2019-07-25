@@ -14,12 +14,12 @@
   @Description:
     This source file provides implementations for PIC24 / dsPIC33 / PIC32MM MCUs traps.
     Generation Information : 
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -40,11 +40,11 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 /**
     Section: Includes
-*/
+ */
 #include <xc.h>
 #include "traps.h"
 
@@ -62,80 +62,77 @@ static uint16_t TRAPS_error_code = -1;
  * 
  * @param code error code
  */
-void __attribute__((naked, noreturn, weak)) TRAPS_halt_on_error(uint16_t code)
-{
+void __attribute__((naked, noreturn, weak)) TRAPS_halt_on_error(uint16_t code) {
     TRAPS_error_code = code;
 #ifdef __DEBUG    
     __builtin_software_breakpoint();
     /* If we are in debug mode, cause a software breakpoint in the debugger */
 #endif
-    while(1);
-    
+    while (1);
+
 }
 
 /**
  * Sets the stack pointer to a backup area of memory, in case we run into
  * a stack error (in which case we can't really trust the stack pointer)
  */
-inline static void use_failsafe_stack(void)
-{
+inline static void use_failsafe_stack(void) {
     static uint8_t failsafe_stack[32];
     asm volatile (
-        "   mov    %[pstack], W15\n"
-        :
-        : [pstack]"r"(failsafe_stack)
-    );
-/* Controls where the stack pointer limit is, relative to the end of the
- * failsafe stack
- */    
-    SPLIM = (uint16_t)(((uint8_t *)failsafe_stack) + sizeof(failsafe_stack) 
+            "   mov    %[pstack], W15\n"
+            :
+            : [pstack]"r"(failsafe_stack)
+            );
+    /* Controls where the stack pointer limit is, relative to the end of the
+     * failsafe stack
+     */
+    SPLIM = (uint16_t) (((uint8_t *) failsafe_stack) + sizeof (failsafe_stack)
             - FAILSAFE_STACK_GUARDSIZE);
 }
 
 /** Oscillator Fail Trap vector**/
-void ERROR_HANDLER_NORETURN _OscillatorFail(void)
-{
-    INTCON1bits.OSCFAIL = 0;  //Clear the trap flag
+void ERROR_HANDLER_NORETURN _OscillatorFail(void) {
+    INTCON1bits.OSCFAIL = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_OSC_FAIL);
 }
+
 /** Stack Error Trap Vector**/
-void ERROR_HANDLER_NORETURN _StackError(void)
-{
+void ERROR_HANDLER_NORETURN _StackError(void) {
     /* We use a failsafe stack: the presence of a stack-pointer error
      * means that we cannot trust the stack to operate correctly unless
      * we set the stack pointer to a safe place.
      */
-    use_failsafe_stack(); 
-    INTCON1bits.STKERR = 0;  //Clear the trap flag
+    use_failsafe_stack();
+    INTCON1bits.STKERR = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_STACK_ERR);
 }
+
 /** Address error Trap vector**/
-void ERROR_HANDLER_NORETURN _AddressError(void)
-{
-    INTCON1bits.ADDRERR = 0;  //Clear the trap flag
+void ERROR_HANDLER_NORETURN _AddressError(void) {
+    INTCON1bits.ADDRERR = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_ADDRESS_ERR);
 }
+
 /** Math Error Trap vector**/
-void ERROR_HANDLER_NORETURN _MathError(void)
-{
-    INTCON1bits.MATHERR = 0;  //Clear the trap flag
+void ERROR_HANDLER_NORETURN _MathError(void) {
+    INTCON1bits.MATHERR = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_MATH_ERR);
 }
+
 /** DMAC Error Trap vector**/
-void ERROR_HANDLER_NORETURN _DMACError(void)
-{
-    INTCON1bits.DMACERR = 0;  //Clear the trap flag
+void ERROR_HANDLER_NORETURN _DMACError(void) {
+    INTCON1bits.DMACERR = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_DMAC_ERR);
 }
+
 /** Generic Hard Trap vector**/
-void ERROR_HANDLER_NORETURN _HardTrapError(void)
-{
-    INTCON4bits.SGHT = 0;  //Clear the trap flag
+void ERROR_HANDLER_NORETURN _HardTrapError(void) {
+    INTCON4bits.SGHT = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_HARD_ERR);
 }
+
 /** Generic Soft Trap vector**/
-void ERROR_HANDLER_NORETURN _SoftTrapError(void)
-{
-    INTCON3bits.DOOVR = 0;  //Clear the trap flag
+void ERROR_HANDLER_NORETURN _SoftTrapError(void) {
+    INTCON3bits.DOOVR = 0; //Clear the trap flag
     TRAPS_halt_on_error(TRAPS_DOOVR_ERR);
 }

@@ -15,12 +15,12 @@
   @Description:
     This source file provides implementations for PIN MANAGER.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB 	          :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB 	          :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -42,26 +42,20 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 
 /**
     Section: Includes
-*/
+ */
 
 #include <xc.h>
-#include <stdio.h>
 #include "pin_manager.h"
 
 /**
- Section: File specific functions
-*/
-
-/**
  Section: Driver Interface Function Definitions
-*/
-void PIN_MANAGER_Initialize (void)
-{
+ */
+void PIN_MANAGER_Initialize(void) {
     /****************************************************************************
      * Setting the Output Latch SFR(s)
      ***************************************************************************/
@@ -103,5 +97,4 @@ void PIN_MANAGER_Initialize (void)
 
 
 }
-
 

@@ -16,7 +16,7 @@ limitations under the License.
 
 To request to license the code under the MLA license (www.microchip.com/mla_license), 
 please contact mla_licensing@microchip.com
-*******************************************************************************/
+ *******************************************************************************/
 //DOM-IGNORE-END
 
 #ifndef SDMMC_H
@@ -38,8 +38,8 @@ please contact mla_licensing@microchip.com
   Return Values:
     The function returns a pointer to the MEDIA_INFORMATION structure.  The
     errorCode member may contain the following values:
-        * MEDIA_NO_ERROR - The media initialized successfully
-        * MEDIA_CANNOT_INITIALIZE - Cannot initialize the media.  
+ * MEDIA_NO_ERROR - The media initialized successfully
+ * MEDIA_CANNOT_INITIALIZE - Cannot initialize the media.  
   Side Effects:
     None.
   Description:
@@ -82,7 +82,7 @@ If v2.0+ device:
 9.  Parse CSD structure bits (based on v2.0 structure format) and extract useful information about the media.
 10. The card is now ready to perform application data transfers.
 --------------------------------------------------------------------------------
-********************************************************************************/
+ ********************************************************************************/
 bool SD_SPI_IsMediaInitialized(void);
 bool SD_SPI_MediaInitialize(void);
 bool SD_SPI_IsMediaPresent(void);
@@ -119,7 +119,7 @@ uint32_t SD_SPI_GetSectorCount(void);
     This function performs a synchronous read operation.  In other words, this
     function is a blocking function, and will not return until either the data
     has fully been read, or, a timeout or other error occurred.
-  ***************************************************************************************/
+ ***************************************************************************************/
 bool SD_SPI_SectorRead(uint32_t sector_address, uint8_t* buffer, uint16_t sector_count);
 
 /*****************************************************************************
@@ -150,7 +150,7 @@ bool SD_SPI_SectorRead(uint32_t sector_address, uint8_t* buffer, uint16_t sector
     The card expects the address field in the command packet to be a uint8_t address.
     The sector_addr value is converted to a uint8_t address by shifting it left nine
     times (multiplying by 512).
-  ***************************************************************************************/
+ ***************************************************************************************/
 bool SD_SPI_SectorWrite(uint32_t sector_address, const uint8_t* buffer, uint16_t sector_count);
 
 #endif

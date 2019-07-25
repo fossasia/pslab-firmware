@@ -18,13 +18,13 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef SPI1_TYPES_H
 #define	SPI1_TYPES_H
 
 /* SPI interfaces */
-typedef enum { 
+typedef enum {
     SDFAST_CONFIG,
     SDSLOW_CONFIG,
     SPI1_DEFAULT

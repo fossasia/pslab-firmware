@@ -13,12 +13,12 @@
   @Description
     This header file provides implementations for driver APIs for WATCHDOG.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,14 +40,14 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef WATCHDOG_H
 #define	WATCHDOG_H
 
 /**
   Section: Type defines
- */ 
+ */
 
 /**
  * Enables Watch Dog Timer (WDT) using the software bit.
@@ -56,8 +56,7 @@
  * WATCHDOG_TimerSoftwareEnable();
  * </code>
  */
-inline static void WATCHDOG_TimerSoftwareEnable(void)
-{
+inline static void WATCHDOG_TimerSoftwareEnable(void) {
     RCONbits.SWDTEN = 1;
 }
 
@@ -68,8 +67,7 @@ inline static void WATCHDOG_TimerSoftwareEnable(void)
  * WATCHDOG_TimerSoftwareDisable();
  * </code>
  */
-inline static void WATCHDOG_TimerSoftwareDisable(void)
-{
+inline static void WATCHDOG_TimerSoftwareDisable(void) {
     RCONbits.SWDTEN = 0;
 }
 
@@ -80,12 +78,11 @@ inline static void WATCHDOG_TimerSoftwareDisable(void)
  * WATCHDOG_TimerClear();
  * </code>
  */
-inline static void WATCHDOG_TimerClear(void)
-{
+inline static void WATCHDOG_TimerClear(void) {
     ClrWdt();
 }
 
 #endif	/* WATCHDOG_H */
 /**
  End of File
-*/
+ */

@@ -13,12 +13,12 @@
   @Description:
     This header file provides implementations for driver APIs for all modules selected in the GUI.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,19 +40,18 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #include <stdint.h>
 #include "xc.h"
 #include "clock.h"
 
-void CLOCK_Initialize(void)
-{
+void CLOCK_Initialize(void) {
     // FRCDIV FRC/2; PLLPRE 2; DOZE 1:8; PLLPOST 1:2; DOZEN disabled; ROI disabled; 
     CLKDIV = 0x3100;
     // TUN Center frequency; 
     OSCTUN = 0x00;
-    // ROON disabled; ROSEL FOSC; RODIV 0; ROSSLP disabled; 
+    // ROON disabled; ROSEL disabled; RODIV Base clock value; ROSSLP disabled; 
     REFOCON = 0x00;
     // PLLDIV 38; 
     PLLFBD = 0x26;
@@ -67,8 +66,8 @@ void CLOCK_Initialize(void)
     // PTGMD enabled; DMA0MD enabled; 
     PMD7 = 0x00;
     // CF no clock failure; NOSC PRIPLL; CLKLOCK unlocked; OSWEN Switch is Complete; 
-    __builtin_write_OSCCONH((uint8_t) (0x03));
-    __builtin_write_OSCCONL((uint8_t) (0x01));
+    __builtin_write_OSCCONH((uint8_t) ((0x03 << _OSCCON_NOSC_POSITION) >> 0x08));
+    __builtin_write_OSCCONL((uint8_t) ((0x300 | _OSCCON_OSWEN_MASK) & 0xFF));
     // Wait for Clock switch to occur
     while (OSCCONbits.OSWEN != 0);
     while (OSCCONbits.LOCK != 1);

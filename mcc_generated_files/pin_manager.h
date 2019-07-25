@@ -15,12 +15,12 @@
   @Description:
     This source file provides implementations for PIN MANAGER.
     Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB 	          :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB 	          :  MPLAB X v5.10
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -42,18 +42,18 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef _PIN_MANAGER_H
 #define _PIN_MANAGER_H
 /**
     Section: Includes
-*/
+ */
 #include <xc.h>
 
 /**
     Section: Device Pin Macros
-*/
+ */
 /**
   @Summary
     Sets the GPIO pin, RA4, high using LATA4.
@@ -76,7 +76,7 @@
     SDO1_SetHigh();
     </code>
 
-*/
+ */
 #define SDO1_SetHigh()          _LATA4 = 1
 /**
   @Summary
@@ -100,7 +100,7 @@
     SDO1_SetLow();
     </code>
 
-*/
+ */
 #define SDO1_SetLow()           _LATA4 = 0
 /**
   @Summary
@@ -124,7 +124,7 @@
     SDO1_Toggle();
     </code>
 
-*/
+ */
 #define SDO1_Toggle()           _LATA4 ^= 1
 /**
   @Summary
@@ -150,7 +150,7 @@
     postValue = SDO1_GetValue();
     </code>
 
-*/
+ */
 #define SDO1_GetValue()         _RA4
 /**
   @Summary
@@ -174,7 +174,7 @@
     SDO1_SetDigitalInput();
     </code>
 
-*/
+ */
 #define SDO1_SetDigitalInput()  _TRISA4 = 1
 /**
   @Summary
@@ -198,7 +198,7 @@
     SDO1_SetDigitalOutput();
     </code>
 
-*/
+ */
 #define SDO1_SetDigitalOutput() _TRISA4 = 0
 /**
   @Summary
@@ -222,7 +222,7 @@
     SDI1_SetHigh();
     </code>
 
-*/
+ */
 #define SDI1_SetHigh()          _LATA9 = 1
 /**
   @Summary
@@ -246,7 +246,7 @@
     SDI1_SetLow();
     </code>
 
-*/
+ */
 #define SDI1_SetLow()           _LATA9 = 0
 /**
   @Summary
@@ -270,7 +270,7 @@
     SDI1_Toggle();
     </code>
 
-*/
+ */
 #define SDI1_Toggle()           _LATA9 ^= 1
 /**
   @Summary
@@ -296,7 +296,7 @@
     postValue = SDI1_GetValue();
     </code>
 
-*/
+ */
 #define SDI1_GetValue()         _RA9
 /**
   @Summary
@@ -320,7 +320,7 @@
     SDI1_SetDigitalInput();
     </code>
 
-*/
+ */
 #define SDI1_SetDigitalInput()  _TRISA9 = 1
 /**
   @Summary
@@ -344,7 +344,7 @@
     SDI1_SetDigitalOutput();
     </code>
 
-*/
+ */
 #define SDI1_SetDigitalOutput() _TRISA9 = 0
 /**
   @Summary
@@ -368,7 +368,7 @@
     SDCard_CS_SetHigh();
     </code>
 
-*/
+ */
 #define SDCard_CS_SetHigh()          _LATB9 = 1
 /**
   @Summary
@@ -392,7 +392,7 @@
     SDCard_CS_SetLow();
     </code>
 
-*/
+ */
 #define SDCard_CS_SetLow()           _LATB9 = 0
 /**
   @Summary
@@ -416,7 +416,7 @@
     SDCard_CS_Toggle();
     </code>
 
-*/
+ */
 #define SDCard_CS_Toggle()           _LATB9 ^= 1
 /**
   @Summary
@@ -442,7 +442,7 @@
     postValue = SDCard_CS_GetValue();
     </code>
 
-*/
+ */
 #define SDCard_CS_GetValue()         _RB9
 /**
   @Summary
@@ -466,7 +466,7 @@
     SDCard_CS_SetDigitalInput();
     </code>
 
-*/
+ */
 #define SDCard_CS_SetDigitalInput()  _TRISB9 = 1
 /**
   @Summary
@@ -490,7 +490,7 @@
     SDCard_CS_SetDigitalOutput();
     </code>
 
-*/
+ */
 #define SDCard_CS_SetDigitalOutput() _TRISB9 = 0
 /**
   @Summary
@@ -514,7 +514,7 @@
     SCK1_SetHigh();
     </code>
 
-*/
+ */
 #define SCK1_SetHigh()          _LATC3 = 1
 /**
   @Summary
@@ -538,7 +538,7 @@
     SCK1_SetLow();
     </code>
 
-*/
+ */
 #define SCK1_SetLow()           _LATC3 = 0
 /**
   @Summary
@@ -562,7 +562,7 @@
     SCK1_Toggle();
     </code>
 
-*/
+ */
 #define SCK1_Toggle()           _LATC3 ^= 1
 /**
   @Summary
@@ -588,7 +588,7 @@
     postValue = SCK1_GetValue();
     </code>
 
-*/
+ */
 #define SCK1_GetValue()         _RC3
 /**
   @Summary
@@ -612,7 +612,7 @@
     SCK1_SetDigitalInput();
     </code>
 
-*/
+ */
 #define SCK1_SetDigitalInput()  _TRISC3 = 1
 /**
   @Summary
@@ -636,12 +636,12 @@
     SCK1_SetDigitalOutput();
     </code>
 
-*/
+ */
 #define SCK1_SetDigitalOutput() _TRISC3 = 0
 
 /**
     Section: Function Prototypes
-*/
+ */
 /**
   @Summary
     Configures the pin settings of the PIC24EP256GP204
@@ -670,8 +670,7 @@
     }
     </code>
 
-*/
-void PIN_MANAGER_Initialize (void);
-
+ */
+void PIN_MANAGER_Initialize(void);
 
 #endif

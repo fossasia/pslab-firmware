@@ -14,12 +14,12 @@
   @Description:
     This source file provides implementations for PIC24 / dsPIC33 / PIC32MM MCUs traps.
     Generation Information : 
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.125
+        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.95-b-SNAPSHOT
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.36B
-        MPLAB             :  MPLAB X v5.20
-*/
+        Compiler          :  XC16 v1.36
+        MPLAB             :  MPLAB X v5.10
+ */
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -40,7 +40,7 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef _TRAPS_H
 #define _TRAPS_H
@@ -50,8 +50,7 @@
 /**
  * Error codes
  */
-typedef enum 
-{
+typedef enum {
     /* ----- Traps ----- */
     TRAPS_OSC_FAIL = 0, /** Oscillator Fail Trap vector */
     TRAPS_STACK_ERR = 1, /** Stack Error Trap Vector */
@@ -83,7 +82,7 @@ typedef enum
   @Example
     None.
 
-*/
+ */
 void __attribute__((naked, noreturn, weak)) TRAPS_halt_on_error(uint16_t code);
 
 #endif

@@ -94,7 +94,7 @@
 /   949 - Korean (DBCS)
 /   950 - Traditional Chinese (DBCS)
 /     0 - Include all code pages above and configured by f_setcp()
-*/
+ */
 
 
 #define FF_USE_LFN		0
@@ -147,7 +147,7 @@
 /   1: Unicode in UTF-16LE
 /   2: Unicode in UTF-16BE
 /   3: Unicode in UTF-8
-*/
+ */
 
 
 #define FF_FS_RPATH		1
@@ -156,7 +156,7 @@
 /   0: Disable relative path and remove related functions.
 /   1: Enable relative path. f_chdir() and f_chdrive() are available.
 /   2: f_getcwd() function is available in addition to 1.
-*/
+ */
 
 
 /*---------------------------------------------------------------------------/
@@ -178,7 +178,7 @@
 /  not defined, a user defined volume string table needs to be defined as:
 /
 /  const char* VolumeStr[FF_VOLUMES] = {"ram","flash","sd","usb",...
-*/
+ */
 
 
 #define FF_MULTI_PARTITION	0
@@ -215,7 +215,7 @@
 /  bit0=1: Do not trust free cluster count in the FSINFO.
 /  bit1=0: Use last allocated cluster number in the FSINFO if available.
 /  bit1=1: Do not trust last allocated cluster number in the FSINFO.
-*/
+ */
 
 
 

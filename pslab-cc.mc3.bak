@@ -13,12 +13,12 @@
          <string>class com.microchip.mcc.foundationservices.mcu16.modules.peripheraldriver.uart.UART</string>
       </entry>
       <entry>
-         <string>Pin Module</string>
-         <string>class com.microchip.mcc.mcu16.pinManager.PinManager</string>
-      </entry>
-      <entry>
          <string>WATCHDOG</string>
          <string>class com.microchip.mcc.mcu16.systemManager.wdt.Wdt</string>
+      </entry>
+      <entry>
+         <string>Pin Module</string>
+         <string>class com.microchip.mcc.mcu16.pinManager.PinManager</string>
       </entry>
       <entry>
          <string>RESET</string>
@@ -38,7 +38,7 @@
       </entry>
       <entry>
          <string>UART1</string>
-         <string>class com.microchip.mcc.foundationservices.mcu16.modules.peripheraldriver.uart.UART</string>
+         <string>class com.microchip.mcc.mcu16.modules.uart.UART</string>
       </entry>
       <entry>
          <string>System Module</string>
@@ -67,7 +67,7 @@
    </usedClasses>
    <usedLibraries class="java.util.ArrayList">
       <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.foundationservices.library.FoundationServicesLibrary" version="0.1.31"/>
-      <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.mcu16.Mcu16PeripheralLibrary" version="1.95"/>
+      <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.mcu16.Mcu16PeripheralLibrary" version="1.125"/>
       <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.fatfs.FatFsLibrary" version="1.00"/>
       <ILibraryFile class="com.microchip.mcc.core.library.BaseLibraryFile" libraryClass="com.microchip.mcc.sdcard.SDCardLibrary" version="1.00"/>
    </usedLibraries>
@@ -129,6 +129,10 @@
          <value>disabled</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="INTERNAL OSCILLATOR" registerAlias="REFOCON" settingAlias="ROSEL" alias="FOSC"/>
+         <value>0</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="Pin Module" registerAlias="CNENC" settingAlias="CNIEC8" alias="disabled"/>
          <value>0</value>
       </entry>
@@ -174,7 +178,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="INTERNAL OSCILLATOR" registerAlias="REFOCON" settingAlias="ROSEL"/>
-         <value>disabled</value>
+         <value>FOSC</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="Pin Module" name="iocUserSet RC5"/>
@@ -690,7 +694,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="REFCLKOUT_ROSEL"/>
-         <value>disabled</value>
+         <value>FOSC</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="System Module" registerAlias="FICD" settingAlias="ICS"/>
@@ -769,8 +773,16 @@
          <value>none</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="FeatureRefoClockTrim"/>
+         <value>UNSUPPORTED</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.PropertyTokenKey" moduleName="SPIMASTER" name="spiConfigurations%0%selectedModule"/>
          <value>SPI1-Foundation Services Library</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="UART1" registerAlias="UTXI" settingAlias="context"/>
+         <value>OFF</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="Pin Module" registerAlias="ANSELC" settingAlias="ANSC1" alias="analog"/>
@@ -1217,6 +1229,10 @@
          <value>0</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="FeatureRefoOutputPinEnable"/>
+         <value>UNSUPPORTED</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="INTERNAL OSCILLATOR" registerAlias="CLKDIV" settingAlias="PLLPRE" alias="19"/>
          <value>17</value>
       </entry>
@@ -1425,12 +1441,20 @@
          <value>1</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="FeatureRefoClockDivider"/>
+         <value>NOTAVAILABLE</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="RPOR4" settingAlias="RP42R"/>
          <value>0</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="TRISB" settingAlias="TRISB0"/>
          <value>input</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="UART1" name="UARTFunctionMode"/>
+         <value>UART</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="UART2" registerAlias="UMODE" settingAlias="WAKE" alias="disabled"/>
@@ -1491,6 +1515,10 @@
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="System Module" registerAlias="FWDT"/>
          <value>125</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="FeatureRefoClockSource"/>
+         <value>NOTAVAILABLE</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="UART2" name="SWTXBufferSize"/>
@@ -1587,6 +1615,10 @@
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="CNPUA" settingAlias="CNPUA7"/>
          <value>disabled</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="FeatureRefoClockDivSwitch"/>
+         <value>UNSUPPORTED</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="RESET" registerAlias="RCON" settingAlias="SLEEP" alias="disabled"/>
@@ -2330,7 +2362,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="INTERNAL OSCILLATOR" registerAlias="REFOCON" settingAlias="RODIV"/>
-         <value>Base clock value</value>
+         <value>0</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="INTERNAL OSCILLATOR" registerAlias="PMD2" settingAlias="OC1MD" alias="enabled"/>
@@ -3961,6 +3993,10 @@
          <value>3</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="UART1" registerAlias="URXI" settingAlias="context"/>
+         <value>OFF</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="INTERNAL OSCILLATOR" registerAlias="PMD4" settingAlias="CTMUMD"/>
          <value>enabled</value>
       </entry>
@@ -4054,7 +4090,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="REFCLKOUT_RODIV"/>
-         <value>Base clock value</value>
+         <value>0</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="UART2" registerAlias="USTA" settingAlias="UTXBRK" alias="COMPLETED"/>
@@ -5433,6 +5469,10 @@
          <value>0</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="UART1" registerAlias="UERI" settingAlias="context"/>
+         <value>OFF</value>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="INTERNAL OSCILLATOR" registerAlias="OSCCON" settingAlias="NOSC" alias="LPRC"/>
          <value>5</value>
       </entry>
@@ -5986,7 +6026,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="SPIMASTER" name="pubSubspiConfigurations"/>
-         <value>423.60974041079635</value>
+         <value>8332.144155299695</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="FatFs" name="FF_CODE_PAGE"/>
@@ -6071,6 +6111,10 @@
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.RegisterKey" moduleName="SPI1" registerAlias="SPICON1"/>
          <value>0</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="SCLKPinsInput"/>
+         <value>disabled</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="INTERNAL OSCILLATOR" registerAlias="PMD3" settingAlias="CMPMD"/>
@@ -6254,7 +6298,7 @@
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="SPIMASTER" name="pubSubmsspSubscriber"/>
-         <value>1578.4102500782305</value>
+         <value>3577.5981187806183</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="Pin Module" registerAlias="TRISB" settingAlias="TRISB12" alias="output"/>
@@ -6705,6 +6749,10 @@
          <value>disabled</value>
       </entry>
       <entry>
+         <key class="com.microchip.mcc.core.tokenManager.CustomKey" moduleName="INTERNAL OSCILLATOR" name="REFCLKOUT_INPUT_FREQUENCY"/>
+         <value/>
+      </entry>
+      <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="System Module" registerAlias="FPOR" settingAlias="ALTI2C1" alias="OFF"/>
          <value>16</value>
       </entry>
@@ -6891,6 +6939,10 @@
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="Pin Module" registerAlias="CNENA" settingAlias="CNIEA8" alias="disabled"/>
          <value>0</value>
+      </entry>
+      <entry>
+         <key class="com.microchip.mcc.core.tokenManager.OptionKey" moduleName="INTERNAL OSCILLATOR" registerAlias="REFOCON" settingAlias="ROSEL" alias="Primary Oscillator"/>
+         <value>1</value>
       </entry>
       <entry>
          <key class="com.microchip.mcc.core.tokenManager.SettingKey" moduleName="Pin Module" registerAlias="RPOR6" settingAlias="RP57R"/>
@@ -7276,15 +7328,15 @@
    <generatedFileHashHistoryMap class="java.util.HashMap">
       <entry>
          <file>mcc_generated_files/interrupt_manager.h</file>
-         <hash>7ff58287632dfc90e36e950c2e6a739684a4e36cf1f39dab918d37a785ea330f</hash>
+         <hash>e5c3315b50d4cb5e95cc5df7e9188e8084e713b285b2ebcbf3a90d6f02f3717a</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/uart1.h</file>
-         <hash>9ec5c1d091f5b7eb61b67da98493bfdc3509835f9b5a9b8b6d5221563967ef33</hash>
+         <hash>7b20481e056938e5e85050d2e79c799e856d0c4ce32f85d5de3738a6203fecd0</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/reset.c</file>
-         <hash>4986101b5a7afb7c6a48f5da552337d4a2a74be90d7121ab7cd065787aa2537c</hash>
+         <hash>614c25e696f2f5f493a608c0d6525ba7e439c72f8a47deaf949b0c8089f1a89c</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/uart2.h</file>
@@ -7292,11 +7344,11 @@
       </entry>
       <entry>
          <file>mcc_generated_files/reset.h</file>
-         <hash>8f90df3eda5101e47e52c17507eecb192bf72754a473611363e68fa3a796e1b2</hash>
+         <hash>5e7d9dd6a33f02cb9ab24fe1d21d7c76da4febb431d08b7bedae2c8ac1e5b9f6</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/system.c</file>
-         <hash>bf21a0896e2e8825ae6c22001bd2473baa3af644c5f26c10b5a398861baf2e2d</hash>
+         <hash>7a8d96f51dcbe2ee9abdf45583f75e9942532de1a89c34d65b1044d7a4564e83</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/fatfs/diskio.h</file>
@@ -7308,7 +7360,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/clock.h</file>
-         <hash>65d62425c64f99fc7f30a0f9b082c25c121c7541881d95db8f56e0f05b66f3fc</hash>
+         <hash>3b9cf51a3d371e22baed35f96a02fcf35d40f0b87b279401540677192a84b69f</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/sd_spi/sd_spi.c</file>
@@ -7316,7 +7368,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/clock.c</file>
-         <hash>5b6ef3bca07cde3900cdcd3cdfa79bea92fd69fa75192d8cb37728a4f7e27974</hash>
+         <hash>188dccba4c58add03285b630b47c23a196e40f1c887dc19a43c3f294658a170a</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/sd_spi/sd_spi.h</file>
@@ -7324,7 +7376,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/reset_types.h</file>
-         <hash>afc3226d54425ade6439b1424110ad42ac2de4acaf89dd4fcfbbf3530a6445a3</hash>
+         <hash>ede70e3a6402c005f41acbb956270b9e8f5babee05fdcd8bfd145d21983a8b6c</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/fatfs/ffsystem.c</file>
@@ -7332,23 +7384,27 @@
       </entry>
       <entry>
          <file>mcc_generated_files/mcc.h</file>
-         <hash>f11228d183204fe1e4c093bbde98a79fe7b818bd5319a73bed8c1edc0cbe0ffd</hash>
+         <hash>8d20611b80c99ad63a3194cb7b9b9a1249837b232a1119589da3bf0913f5c816</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/interrupt_manager.c</file>
-         <hash>ef4dbea1f65cdec275f0f5e099c2e7a5044aa767ebd41b8df46fef7db7be5872</hash>
+         <hash>8e462460e4cfa7379c7ff777ab07be4ad96f012840e93959379517d8f8c7c239</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/mcc.c</file>
-         <hash>18086f0bf7181ff40c819366951a89a7f44de9d699ea158456b3153ae4274637</hash>
+         <hash>4ace69a33804ba20b0eaa9da7b1c9559c0f6a99778b54aca8a4a9fd62ec94192</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/pin_manager.c</file>
-         <hash>3a3d0a38a912bc0abdf5ec9238991bee53607145b0d822a4e1af1f8f140e5fdb</hash>
+         <hash>7733ab566d1729a7461cbed6ffe52f256caaa21f2dd131c9c2d2d72fe9cb14f8</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/watchdog.h</file>
-         <hash>eb9003b051643c0b6916e1f0ccba291d8a0d14018cee26096cb5bc498e051791</hash>
+         <hash>a95849cc199bb5e375fcc81d9c80b62d77f2c704190693891939662651a4d59c</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/pin_manager.h</file>
+         <hash>207f723d68577a2d3b68321e9e977bc005a891d86a61c2240980bb06139cf463</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/fatfs/ffunicode.c</file>
@@ -7357,10 +7413,6 @@
       <entry>
          <file>mcc_generated_files/fatfs/fatfs_demo.h</file>
          <hash>60b79d81ea7104386259b44bbbcf5c9439e625ba9c4cd7afc72490a9366d2dc3</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/pin_manager.h</file>
-         <hash>d31f6a03e2873acc7c8484f3ff7f15d34137cfbf784def1328a659175685a043</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/fatfs/integer.h</file>
@@ -7372,23 +7424,23 @@
       </entry>
       <entry>
          <file>main.c</file>
-         <hash>e47dc81b1739d09c96b8f0204c0e72840f6b4af52aac82e9b3bf2bf0ca7a2c6f</hash>
+         <hash>f55d927335341b5d01333efc382c8c7833cbb06878ab417a2d27a2cb69dfbdae</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/traps.h</file>
-         <hash>d3bc946ce3297936cb3d689db65c16a4fd78ee15f1b60b4170d77c4dd63b6650</hash>
+         <hash>182587da98a15f931f011d5e61aaf3297155b49251f02a2fb2c07d934b4289c2</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/traps.c</file>
-         <hash>4cd975ce143c084e0354a90fbb48ca5d4d1223dc57ce142c2beb5ba9d4dc5572</hash>
+         <hash>cfd1c6060982554ad4d2d46e0aca469325eba46ef6b463c3d49ecd87cfb5b623</hash>
+      </entry>
+      <entry>
+         <file>mcc_generated_files/system_types.h</file>
+         <hash>5cad21a1761627dbe00c61ed156d4484875b926191244e0d8b09281f69271a86</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/fatfs/fatfs_demo.c</file>
          <hash>f606441b54129f18de621fdd928d22f80638fff69b1a5736b70923071600c4ab</hash>
-      </entry>
-      <entry>
-         <file>mcc_generated_files/system_types.h</file>
-         <hash>3f47cfdde532ce485241ad1f3f00ebb8af7a4f2c38b888fe6389f75237f4df0e</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/spi1_types.h</file>
@@ -7407,16 +7459,16 @@
          <hash>7a6e2f63f1ab93c27bda7372e5433f2892d164752ace3314c5f9243f64992699</hash>
       </entry>
       <entry>
-         <file>mcc_generated_files/drivers/spi_master.c</file>
-         <hash>3faa8d694ead0b5f3ca34e620f731f62c3db16f1aec5c27917c69ea0d1b722dd</hash>
-      </entry>
-      <entry>
          <file>mcc_generated_files/spi1_driver.h</file>
          <hash>06896e135e553d51ae7a624d489b2b34eec00b1c11823e4789c29598d7611f29</hash>
       </entry>
       <entry>
+         <file>mcc_generated_files/drivers/spi_master.c</file>
+         <hash>3faa8d694ead0b5f3ca34e620f731f62c3db16f1aec5c27917c69ea0d1b722dd</hash>
+      </entry>
+      <entry>
          <file>mcc_generated_files/system.h</file>
-         <hash>e15798ee88dc95a6604df2871cebf19f56862ad1b18976cb4a98a67c66a1dcf4</hash>
+         <hash>043449546bdc7ead1c93751f712434797061e691c5d96ab12660399e70730967</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/fatfs/diskio.c</file>
@@ -7424,7 +7476,7 @@
       </entry>
       <entry>
          <file>mcc_generated_files/uart1.c</file>
-         <hash>068fa782e1f4fe7cbdc3aac8acb56c79574b2c89348ff4922ad4d04778bdca1d</hash>
+         <hash>5892d61d7e0a65c952039746501aa376fe99dac59705e94f5297ced513a914a5</hash>
       </entry>
       <entry>
          <file>mcc_generated_files/uart2.c</file>
