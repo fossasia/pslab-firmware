@@ -280,12 +280,8 @@ typedef unsigned int uint16;
 #define PASS_SPI    2
 #define PASS_UART_DMA   3
 
-/*--------- RTC --------*/
-#define RTC 16
-#define START_RTC 1
-#define RUNNING_RTC 2
-#define SET_RTC 3
-#define GET_RTC 4
+
+
 
 #define ESP_HEADER 254
 #define BUFFER_SIZE 10000

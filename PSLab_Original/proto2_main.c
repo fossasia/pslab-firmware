@@ -29,7 +29,6 @@
 #include "COMMANDS.h"
 #include "Common_Functions.h"
 #include "Function.h"
-#include "PSLAB_RTC.h"
 #include "PSLAB_UART.h"
 #include "PSLAB_I2C.h"
 #include "PSLAB_NRF.h"
@@ -53,8 +52,6 @@ int main() {
     uint16 ADLOC;
     pProg = 0x0;
     uint16 *pData;
-    uint16_t year;
-    uint8_t month, day, hour, minute, seconds;
     init();
     initUART(BRGVAL1000000);
     setMultiFuncPortMode(MULTIFUNC_I2C);
@@ -71,29 +68,6 @@ int main() {
         sub_command = getChar();
         RESPONSE = SUCCESS;
         switch (main_command) {
-            case RTC:
-                switch (sub_command) {
-                    case START_RTC:
-                        sendChar(beginRTC());
-                        break;
-                    case RUNNING_RTC:
-                        sendChar(isrunning());
-                        break;
-                    case SET_RTC:
-                        year = getInt();
-                        month = getInt();
-                        day = getInt();
-                        hour = getInt();
-                        minute = getInt();
-                        seconds = getInt();
-                        adjust(year, month, day, hour, minute, seconds);
-                        break;
-                    case GET_RTC:
-                        getTime();
-                        break;
-                    default: break;
-                }
-                break;
             case FLASH:
                 switch (sub_command) {
                     case WRITE_FLASH:

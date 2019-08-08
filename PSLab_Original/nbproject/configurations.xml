@@ -14,7 +14,6 @@
       <itemPath>Wave_Generator.h</itemPath>
       <itemPath>Function.h</itemPath>
       <itemPath>Measurements.h</itemPath>
-      <itemPath>PSLAB_RTC.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -33,7 +32,6 @@
       <itemPath>Wave_Generator.c</itemPath>
       <itemPath>Function.c</itemPath>
       <itemPath>Measurements.c</itemPath>
-      <itemPath>PSLAB_RTC.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
@@ -51,7 +49,7 @@
         <targetPluginBoard></targetPluginBoard>
         <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
-        <languageToolchainVersion>1.33</languageToolchainVersion>
+        <languageToolchainVersion>1.31</languageToolchainVersion>
         <platform>2</platform>
       </toolsSet>
       <compileType>
