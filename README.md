@@ -9,11 +9,15 @@ Repository for the firmware of the [Pocket Science Lab (PSLab)](https://pslab.io
 
 PSLab is a tiny pocket science lab that provides an array of test and measurement instruments for doing science and engineering experiments. It comes with function or instruments like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. Also available are the [hardware schematics](https://github.com/fossasia/pslab-hardware/), the [desktop application](https://github.com/fossasia/pslab-desktop) and an [Android app](https://github.com/fossasia/pslab-android). The website is at https://pslab.io.
 
+## Buy
+
+* You can get a Pocket Science Lab device from the [FOSSASIA Shop](https://fossasia.com).
+* More resellers are listed on the [PSLab website](https://pslab.io/shop/).
+
 ## Communication
 
-Please join us on the following channels:
-* Pocket Science Channel https://gitter.im/fossasia/pslab
-* Mailing List https://groups.google.com/forum/#!forum/pslab-fossasia
+* The PSLab [chat channel is on Gitter](https://gitter.im/fossasia/pslab).
+* Please also join us on the [PSLab Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia).
 
 ## Notes
 
@@ -21,10 +25,10 @@ Special function register(SFR) bit settings are done in separate lines of code f
 
 ## Requirements 
 
-- PSLab Hardware - https://github.com/fossasia/pslab-hardware) or PIC24EP256GP204 breakout board - http://www.microchip.com/wwwproducts/en/PIC24EP256GP204
-- IDE: MPLABX IDE v3.35 Supported on Linux/Windows/Mac - http://www.microchip.com/mplab/mplab-x-ide
-- Compiler: MPLAB® XC16 Compiler - http://www.microchip.com/mplab/compilers
-- Programming Tool: PICkit™ 3 In-Circuit Debugger/PICkit2 - http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130
+- The PSLab Hardware schematics are in the hardware repository at https://github.com/fossasia/pslab-hardware). Alternatively you can use a PIC 24 breakout board (PIC24EP256GP204). More details at http://www.microchip.com/wwwproducts/en/PIC24EP256GP204.
+- For the development environment you can use the IDE of MPLABX v3.35. It is supported on Linux, Windows and Mac. Check it out here: http://www.microchip.com/mplab/mplab-x-ide
+- As a compiler we use the MPLAB® XC16 Compiler available at http://www.microchip.com/mplab/compilers.
+- Another programming tool we use is the PICkit 3 In-Circuit Debugger/PICkit2 at http://www.microchip.com/Developmenttools/ProductDetails.aspx?PartNO=PG164130.
 
 ## Firmware Features
 
