@@ -1,4 +1,4 @@
-# pslab-firmware
+# PSLab Firmware
 
 [![Build Status](https://travis-ci.org/fossasia/pslab-firmware.svg?branch=master)](https://travis-ci.org/fossasia/pslab-firmware)
 [![Gitter](https://badges.gitter.im/fossasia/pslab.svg)](https://gitter.im/fossasia/pslab?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -66,3 +66,6 @@ The library and code for PSLab version 1 are located in directories 'PSLab_V1'. 
 [128189.933262] hid-generic 0003:04D8:00DF.0032: hiddev0,hidraw0: USB HID v1.11 Device [Microchip Technology Inc. MCP2200 USB Serial Port Emulator] on usb-0000:00:14.0-2/input2
 ```
 - Install and launch the [PSLab desktop app](https://github.com/fossasia/pslab-desktop-apps) by following its README
+
+## License
+This project is Free and Open Source software. The project us licensed under the [Apache License 2.0](LICENSE). Copyright is owned by FOSSASIA. More details in the license files.
