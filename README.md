@@ -35,8 +35,8 @@ Special function register(SFR) bit settings are done in separate lines of code f
 |   **Feature**          | **Description**                                              | **Status**         |
 |------------------------|--------------------------------------------------------------|--------------------|
 | Byte Headers           | Byte Headers                                                 | :heavy_check_mark: |
-| I2C Sensors            | EStart, Stop, BulkTransfers, config                         | :heavy_check_mark: |
-| Flash R/W              | Read buffer, clear buffer                                   | :heavy_check_mark: |
+| I2C Sensors            | EStart, Stop, BulkTransfers, config                          | :heavy_check_mark: |
+| Flash R/W              | Read buffer, clear buffer                                    | :heavy_check_mark: |
 | ADC                    | Measures voltage, current, resistance and capacitance        | :heavy_check_mark: |
 | Sine wave              | Wave tables                                                  | :heavy_check_mark: |
 
@@ -76,5 +76,4 @@ Either use the hardware with the [PSLab desktop app](https://github.com/fossasia
 
 ## License
 
-The library is free and open source software licensed under the [Apache License 2.0](LICENSE). The copyright is owned by FOSSASIA. 
-
+The library is free and open source software licensed under the [Apache License 2.0](LICENSE). The copyright is owned by FOSSASIA.
