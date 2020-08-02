@@ -8,6 +8,7 @@
 #ifndef COMMANDS_H
 #define	COMMANDS_H
 
+#include <xc.h>
 #include <p24EP256GP204.h>
 #include <libpic30.h>
 
