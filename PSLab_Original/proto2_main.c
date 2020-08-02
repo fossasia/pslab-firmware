@@ -22,7 +22,6 @@
 // SCL Settings
 #pragma config ALTI2C2  = OFF   // Alternate I2C2 pins (I2C2 mapped - SDA2/SCL2)
 
-#include <xc.h>
 #include <p24EP256GP204.h>
 #include <stdlib.h>
 #include <libpic30.h>
