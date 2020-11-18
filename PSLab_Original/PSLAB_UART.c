@@ -47,7 +47,7 @@ void initUART(uint16 BAUD) {
 
     U1MODEbits.URXINV = 0;
 
-    DELAY_105uS
+    DELAY_105uS  
     while (hasChar())getChar(); //clear buffer
 
 }
