@@ -36,13 +36,10 @@
 #include "PSLAB_ADC.h"
 #include "Wave_Generator.h"
 #include "Measurements.h"
+#include "Variables.h"
+#include "PSLAB_RTC.h"
 
-_FUID0(0x1000); // One way to set USER ID.  preferably use IPE + SQTP? for sequentially setting unique UID
-_FUID1(0x0000); // This approach was abandoned in ExpEYES17 due to its time consuming nature. Instead , unique timestamps are writting into flash by the calibration code
-_FUID2(0x0000);
-_FUID3(0x00FF); //4B
-
-const BYTE VERSION[] = "PSLab V5";
+const BYTE VERSION[] = "PSLab V6";
 
 int main() {
     LEDPIN = 0;
@@ -68,60 +65,6 @@ int main() {
         sub_command = getChar();
         RESPONSE = SUCCESS;
         switch (main_command) {
-            case FLASH:
-                switch (sub_command) {
-                    case WRITE_FLASH:
-                        value = getChar(); //fetch the page[0-19]
-                        location = getChar(); //fetch the address(0-31)
-                        /*-----------fetch 16 characters----------*/
-                        for (i = 0; i < 8; i++) {
-                            blk[i] = getInt();
-                        } //two per loop
-                        setFlashPointer(value);
-                        load_to_flash(p, location, &blk[0]);
-                        break;
-
-                    case READ_FLASH:
-                        value = getChar(); //fetch the page[0-19]
-                        location = getChar();
-                        setFlashPointer(value);
-                        read_flash(p, location);
-                        for (i = 0; i < 8; i++) {
-                            sendInt(blk[i]);
-                        }
-                        break;
-
-                    case READ_BULK_FLASH:
-                        lsb = getInt();
-                        location = getChar();
-                        setFlashPointer(location);
-                        read_all_from_flash(p);
-                        for (i = 0; i < lsb / 2; i++) {
-                            sendInt(dest[i]);
-                        }
-                        break;
-
-                    case WRITE_BULK_FLASH:
-                        lsb = getInt();
-                        location = getChar();
-                        for (i = 0; i < lsb / 2; i += 1) {
-                            dest[i] = getInt();
-                        }
-                        setFlashPointer(location);
-                        _erase_flash(p); /* erase a page */
-                        for (i = 0; i < _FLASH_ROW * 4; i += 1) /*combine two ints each for each word32 write*/ {
-                            tmp_int1 = dest[2 * i];
-                            tmp_int2 = dest[2 * i + 1];
-                            pProg = p + (4 * i);
-                            _write_flash_word32(pProg, tmp_int1, tmp_int2);
-                            Nop();
-                            Nop();
-                        }
-
-                        break;
-                }
-                break;
-
             case ADC:
                 switch (sub_command) {
                     case CAPTURE_12BIT:
@@ -1092,14 +1035,14 @@ int main() {
 
                     case READ_DATA_ADDRESS: //read SFRs from python
                         lsb = getInt()&0xFFFF;
-                        pData = lsb;
+                        pData = &(lsb);
                         sendInt(*pData);
                         break;
 
                     case WRITE_DATA_ADDRESS: //write SFRs from python. Forgot to add a pull-up? Push a software update instead of a firmware update. phew.
                         msb = getInt();
                         lsb = getInt();
-                        pData = msb;
+                        pData = &(msb);
                         *pData = lsb;
                         break;
 
@@ -1357,7 +1300,59 @@ int main() {
                         IC1CON2bits.TRIGSTAT = 1;
 
                         break;
-
+                        
+                    case DS1307:
+                        // Depending on the bool0, it would be either setting
+                        // time or reading time
+                        bool0 = getChar();
+                        if (bool0) { // Setting time
+                            // TODO : Signal User ############################################################################################
+                            // Get seconds
+                            // Clock Halt (1) | 10 Seconds (3) | Seconds (4)
+                            temp0 = getChar();
+                            // Get minutes
+                            // XX (1) | 10 Minutes (3) | Minutes (4)
+                            temp1 = getChar();
+                            // Hour settings
+                            // XX (1) | 12/24 | AM/PM | 10h | Hours (4)
+                            temp2 = getChar();
+                            // Day of week
+                            // XX (5) | Day (3)
+                            temp3 = getChar();
+                            // Date of month
+                            // XX (2) | 10 Dates (2) | Dates (4)
+                            temp4 = getChar();
+                            // Month of year
+                            // XX (3) | 10 Months (1) | Month (4)
+                            temp5 = getChar();
+                            // Year
+                            // 10 Years (4) | Year (4)
+                            temp6 = getChar();
+                            // Control register
+                            // OUT (1) | XX (2) | SQWE (1) | XX (2) | RS1:0 (2)
+                            temp7 = getChar();
+                            
+                            // Initiate I2C and Address the clock module
+                            bool1 = setRealTime(temp0, temp1, temp2, temp3, 
+                                                temp4, temp5, temp6, temp7);
+                            // TODO : Signal User ############################################################################################
+//                            if (bool1) {
+//                                
+//                            }
+                        } else { // Read time
+                            ptr0 = getRealTime();
+                            for (loop1 = 0; loop1 < 7; loop1++) {
+                                sendChar(*ptr0);
+                                ptr0++;
+                            }
+                        }                        
+                        // Reset variables
+                        bool0 = 0; bool1 = 0;
+                        temp0 = 0; temp1 = 0; temp2 = 0; temp3 = 0;
+                        temp4 = 0; temp5 = 0; temp6 = 0; temp7 = 0;
+                        ptr0 = NULL;
+                        
+                        break;
                 }
                 break;
 

@@ -10,6 +10,7 @@
 
 #include <p24EP256GP204.h>
 #include <libpic30.h>
+#include <xc.h>
 
 #define DELAY_105uS asm volatile ("REPEAT, #6721"); Nop(); // 105uS delay
 
@@ -272,6 +273,7 @@ typedef unsigned int uint16;
 
 #define HCSR04 2
 #define AM2302 3
+#define DS1307 4
 
 
 #define PASSTHROUGHS 15
