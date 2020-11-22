@@ -7,6 +7,7 @@
 
 #ifndef PSLAB_NRF_H
 #define	PSLAB_NRF_H
+#include <xc.h>
 
 #define CSN_HIGH _LATC4=1;Nop();
 #define CSN_LOW  _LATC4=0;Nop();

@@ -310,34 +310,6 @@ void read_all_from_flash(_prog_addressT pointer) {
 
 }
 
-void load_to_flash(_prog_addressT pointer, BYTE location, unsigned int * blk) {
-    /*Write to locations of 16bytes each (store 8 integers as a string, or 16 BYTES ...)*/
-    char bytes_to_write = 16;
-    _prog_addressT p;
-    //row_p = pointer;
-    /*The storage architecture only allows erasing a whole page(1024) at a time. So we must make
-     a copy of the data in the RAM, change the locations we need to access, and write the whole page back*/
-
-    /*------fetch a copy of the rows into RAM ( &DEST )------*/
-    read_all_from_flash(pointer);
-
-    /*-----------fetch bytes_to_write characters----------*/
-    for (i = 0; i < bytes_to_write / 2; i++) {
-        dest[location * 8 + i] = blk[i];
-    }
-
-    /*------write the copy back into the FLASH MEMORY------*/
-    unsigned int dat1, dat2;
-    _erase_flash(pointer); /* erase a page */
-    for (i = 0; i < _FLASH_ROW * 4; i += 1) /*combine two ints each for each word32 write*/ {
-        dat1 = dest[2 * i];
-        dat2 = dest[2 * i + 1];
-        p = pointer + (4 * i);
-        _write_flash_word32(p, dat1, dat2);
-    }
-
-
-}
 
 void read_flash(_prog_addressT pointer, BYTE location) {
     read_all_from_flash(pointer);
