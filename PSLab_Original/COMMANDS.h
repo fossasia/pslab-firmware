@@ -273,6 +273,7 @@ typedef unsigned int uint16;
 
 #define HCSR04 2
 #define AM2302 3
+#define DS1307 4
 
 
 #define PASSTHROUGHS 15

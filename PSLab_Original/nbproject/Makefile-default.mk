@@ -57,17 +57,18 @@ OBJECTDIR=build/${CND_CONF}/${IMAGE_TYPE}
 DISTDIR=dist/${CND_CONF}/${IMAGE_TYPE}
 
 # Source Files Quoted if spaced
-SOURCEFILES_QUOTED_IF_SPACED=proto2_main.c PSLAB_UART.c PSLAB_I2C.c Common_Functions.c PSLAB_NRF.c PSLAB_SPI.c PSLAB_ADC.c Wave_Generator.c Function.c Measurements.c
+SOURCEFILES_QUOTED_IF_SPACED=proto2_main.c PSLAB_UART.c PSLAB_I2C.c Common_Functions.c PSLAB_NRF.c PSLAB_SPI.c PSLAB_ADC.c Wave_Generator.c Function.c Measurements.c PSLAB_RTC.c Variables.c
 
 # Object Files Quoted if spaced
-OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o ${OBJECTDIR}/PSLAB_I2C.o ${OBJECTDIR}/Common_Functions.o ${OBJECTDIR}/PSLAB_NRF.o ${OBJECTDIR}/PSLAB_SPI.o ${OBJECTDIR}/PSLAB_ADC.o ${OBJECTDIR}/Wave_Generator.o ${OBJECTDIR}/Function.o ${OBJECTDIR}/Measurements.o
-POSSIBLE_DEPFILES=${OBJECTDIR}/proto2_main.o.d ${OBJECTDIR}/PSLAB_UART.o.d ${OBJECTDIR}/PSLAB_I2C.o.d ${OBJECTDIR}/Common_Functions.o.d ${OBJECTDIR}/PSLAB_NRF.o.d ${OBJECTDIR}/PSLAB_SPI.o.d ${OBJECTDIR}/PSLAB_ADC.o.d ${OBJECTDIR}/Wave_Generator.o.d ${OBJECTDIR}/Function.o.d ${OBJECTDIR}/Measurements.o.d
+OBJECTFILES_QUOTED_IF_SPACED=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o ${OBJECTDIR}/PSLAB_I2C.o ${OBJECTDIR}/Common_Functions.o ${OBJECTDIR}/PSLAB_NRF.o ${OBJECTDIR}/PSLAB_SPI.o ${OBJECTDIR}/PSLAB_ADC.o ${OBJECTDIR}/Wave_Generator.o ${OBJECTDIR}/Function.o ${OBJECTDIR}/Measurements.o ${OBJECTDIR}/PSLAB_RTC.o ${OBJECTDIR}/Variables.o
+POSSIBLE_DEPFILES=${OBJECTDIR}/proto2_main.o.d ${OBJECTDIR}/PSLAB_UART.o.d ${OBJECTDIR}/PSLAB_I2C.o.d ${OBJECTDIR}/Common_Functions.o.d ${OBJECTDIR}/PSLAB_NRF.o.d ${OBJECTDIR}/PSLAB_SPI.o.d ${OBJECTDIR}/PSLAB_ADC.o.d ${OBJECTDIR}/Wave_Generator.o.d ${OBJECTDIR}/Function.o.d ${OBJECTDIR}/Measurements.o.d ${OBJECTDIR}/PSLAB_RTC.o.d ${OBJECTDIR}/Variables.o.d
 
 # Object Files
-OBJECTFILES=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o ${OBJECTDIR}/PSLAB_I2C.o ${OBJECTDIR}/Common_Functions.o ${OBJECTDIR}/PSLAB_NRF.o ${OBJECTDIR}/PSLAB_SPI.o ${OBJECTDIR}/PSLAB_ADC.o ${OBJECTDIR}/Wave_Generator.o ${OBJECTDIR}/Function.o ${OBJECTDIR}/Measurements.o
+OBJECTFILES=${OBJECTDIR}/proto2_main.o ${OBJECTDIR}/PSLAB_UART.o ${OBJECTDIR}/PSLAB_I2C.o ${OBJECTDIR}/Common_Functions.o ${OBJECTDIR}/PSLAB_NRF.o ${OBJECTDIR}/PSLAB_SPI.o ${OBJECTDIR}/PSLAB_ADC.o ${OBJECTDIR}/Wave_Generator.o ${OBJECTDIR}/Function.o ${OBJECTDIR}/Measurements.o ${OBJECTDIR}/PSLAB_RTC.o ${OBJECTDIR}/Variables.o
 
 # Source Files
-SOURCEFILES=proto2_main.c PSLAB_UART.c PSLAB_I2C.c Common_Functions.c PSLAB_NRF.c PSLAB_SPI.c PSLAB_ADC.c Wave_Generator.c Function.c Measurements.c
+SOURCEFILES=proto2_main.c PSLAB_UART.c PSLAB_I2C.c Common_Functions.c PSLAB_NRF.c PSLAB_SPI.c PSLAB_ADC.c Wave_Generator.c Function.c Measurements.c PSLAB_RTC.c Variables.c
+
 
 
 
@@ -155,6 +156,18 @@ ${OBJECTDIR}/Measurements.o: Measurements.c  .generated_files/bfa1ca8a92b0900965
 	@${RM} ${OBJECTDIR}/Measurements.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  Measurements.c  -o ${OBJECTDIR}/Measurements.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/Measurements.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
+${OBJECTDIR}/PSLAB_RTC.o: PSLAB_RTC.c  .generated_files/c7ff724db33f16f3a231e0a8c065d013eb30b29d.flag .generated_files/f7c0ce93c58705ae075be29667b4f7f8d13d214d.flag
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/PSLAB_RTC.o.d 
+	@${RM} ${OBJECTDIR}/PSLAB_RTC.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  PSLAB_RTC.c  -o ${OBJECTDIR}/PSLAB_RTC.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/PSLAB_RTC.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/Variables.o: Variables.c  .generated_files/7f1b1411f969222b5cde36601fb6dd56242a3403.flag .generated_files/f7c0ce93c58705ae075be29667b4f7f8d13d214d.flag
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Variables.o.d 
+	@${RM} ${OBJECTDIR}/Variables.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Variables.c  -o ${OBJECTDIR}/Variables.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/Variables.o.d"      -g -D__DEBUG -D__MPLAB_DEBUGGER_PK3=1  -mno-eds-warn  -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
 else
 ${OBJECTDIR}/proto2_main.o: proto2_main.c  .generated_files/6a8ecea750e02cb8ba7bac5a029ccfcafc3170fb.flag .generated_files/f7c0ce93c58705ae075be29667b4f7f8d13d214d.flag
 	@${MKDIR} "${OBJECTDIR}" 
@@ -215,6 +228,18 @@ ${OBJECTDIR}/Measurements.o: Measurements.c  .generated_files/eb74b9b63bdcc3e501
 	@${RM} ${OBJECTDIR}/Measurements.o.d 
 	@${RM} ${OBJECTDIR}/Measurements.o 
 	${MP_CC} $(MP_EXTRA_CC_PRE)  Measurements.c  -o ${OBJECTDIR}/Measurements.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/Measurements.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/PSLAB_RTC.o: PSLAB_RTC.c  .generated_files/7b7017eadd1a796bf02cbc0375e837df2fb0a615.flag .generated_files/f7c0ce93c58705ae075be29667b4f7f8d13d214d.flag
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/PSLAB_RTC.o.d 
+	@${RM} ${OBJECTDIR}/PSLAB_RTC.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  PSLAB_RTC.c  -o ${OBJECTDIR}/PSLAB_RTC.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/PSLAB_RTC.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
+	
+${OBJECTDIR}/Variables.o: Variables.c  .generated_files/8456f635b781d562777d0f2f957992894691223f.flag .generated_files/f7c0ce93c58705ae075be29667b4f7f8d13d214d.flag
+	@${MKDIR} "${OBJECTDIR}" 
+	@${RM} ${OBJECTDIR}/Variables.o.d 
+	@${RM} ${OBJECTDIR}/Variables.o 
+	${MP_CC} $(MP_EXTRA_CC_PRE)  Variables.c  -o ${OBJECTDIR}/Variables.o  -c -mcpu=$(MP_PROCESSOR_OPTION)  -MP -MMD -MF "${OBJECTDIR}/Variables.o.d"      -mno-eds-warn  -g -omf=elf -DXPRJ_default=$(CND_CONF)  -no-legacy-libc  $(COMPARISON_BUILD)  -O1 -msmart-io=1 -Wall -msfr-warn=off    -mdfp="${DFP_DIR}/xc16"
 	
 endif
 
