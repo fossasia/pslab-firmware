@@ -8,3 +8,11 @@ pslab-bootloader.X/dist
 pslab-bootloader.X/nbproject/Makefile-*
 pslab-bootloader.X/nbproject/Package-*
 pslab-bootloader.X/nbproject/private
+
+pslab-core.X/.generated_files
+pslab-core.X/build
+pslab-core.X/dist
+
+pslab-core.X/nbproject/Makefile-*
+pslab-core.X/nbproject/Package-*
+pslab-core.X/nbproject/private
