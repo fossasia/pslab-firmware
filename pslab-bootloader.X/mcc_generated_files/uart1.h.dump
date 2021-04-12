@@ -1,0 +1,445 @@
+<?xml version="1.0"?>
+<dumps>
+  <platform name="Native" char_bit="8" short_bit="16" int_bit="32" long_bit="64" long_long_bit="64" pointer_bit="64"/>
+  <rawtokens>
+    <file index="0" name="mcc_generated_files/uart1.h"/>
+    <tok fileIndex="0" linenr="1" column="1" str="/**x  UART1 Generated Driver API Header Filexx  @Companyx    Microchip Technology Inc.xx  @File Namex    uart1.hxx  @Summaryx    This is the generated header file for the UART1 driver using Foundation Services Libraryxx  @Descriptionx    This header file provides APIs for driver for UART1.x    Generation Information :x        Product Revision  :  Foundation Services Library - pic24-dspic-pic32mm : v1.26x        Device            :  PIC24EP256GP204x    The generated drivers are tested against the following:x        Compiler          :  XC16 1.30x        MPLAB             :  MPLAB X 3.45x*/"/>
+    <tok fileIndex="0" linenr="23" column="1" str="/*x    (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use thisx    software and any derivatives exclusively with Microchip products.xx    THIS SOFTWARE IS SUPPLIED BY MICROCHIP &quot;AS IS&quot;. NO WARRANTIES, WHETHERx    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIEDx    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR Ax    PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATIONx    WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION.xx    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,x    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KINDx    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HASx    BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THEx    FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS INx    ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,x    THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.xx    MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESEx    TERMS.x*/"/>
+    <tok fileIndex="0" linenr="45" column="1" str="#"/>
+    <tok fileIndex="0" linenr="45" column="2" str="ifndef"/>
+    <tok fileIndex="0" linenr="45" column="9" str="_UART1_H"/>
+    <tok fileIndex="0" linenr="46" column="1" str="#"/>
+    <tok fileIndex="0" linenr="46" column="2" str="define"/>
+    <tok fileIndex="0" linenr="46" column="9" str="_UART1_H"/>
+    <tok fileIndex="0" linenr="48" column="1" str="/**  Section: Included Files*/"/>
+    <tok fileIndex="0" linenr="52" column="1" str="#"/>
+    <tok fileIndex="0" linenr="52" column="2" str="include"/>
+    <tok fileIndex="0" linenr="52" column="10" str="&lt;stdbool.h&gt;"/>
+    <tok fileIndex="0" linenr="53" column="1" str="#"/>
+    <tok fileIndex="0" linenr="53" column="2" str="include"/>
+    <tok fileIndex="0" linenr="53" column="10" str="&lt;stdint.h&gt;"/>
+    <tok fileIndex="0" linenr="55" column="1" str="#"/>
+    <tok fileIndex="0" linenr="55" column="2" str="ifdef"/>
+    <tok fileIndex="0" linenr="55" column="8" str="__cplusplus"/>
+    <tok fileIndex="0" linenr="55" column="21" str="// Provide C++ Compatibility"/>
+    <tok fileIndex="0" linenr="57" column="5" str="extern"/>
+    <tok fileIndex="0" linenr="57" column="12" str="&quot;C&quot;"/>
+    <tok fileIndex="0" linenr="57" column="16" str="{"/>
+    <tok fileIndex="0" linenr="59" column="1" str="#"/>
+    <tok fileIndex="0" linenr="59" column="2" str="endif"/>
+    <tok fileIndex="0" linenr="61" column="1" str="/**  Section: UART1 Driver Routines*/"/>
+    <tok fileIndex="0" linenr="64" column="1" str="/**x  @Summaryx    Initializes the UARTxx  @Descriptionx    This routine initializes the UART module.x    This routine must be called before any other UART routine x    is called.x    x  @Preconditionsx    None.xx  @Returnsx    None.xx  @Paramx    None.xx  @Commentx    x*/"/>
+    <tok fileIndex="0" linenr="85" column="1" str="void"/>
+    <tok fileIndex="0" linenr="85" column="6" str="UART1_Initialize"/>
+    <tok fileIndex="0" linenr="85" column="22" str="("/>
+    <tok fileIndex="0" linenr="85" column="23" str="void"/>
+    <tok fileIndex="0" linenr="85" column="27" str=")"/>
+    <tok fileIndex="0" linenr="85" column="28" str=";"/>
+    <tok fileIndex="0" linenr="87" column="1" str="/**x  @Summaryx    Read a byte of data from the UART1xx  @Descriptionx    This routine reads a byte of data from the UART1.  It willx    block until a byte of data is available.  If you do not wish to block, call x    the UART1_IsTxReady() function to check to see if there isx    data available to read first.xx  @Preconditionsx    UART1_Initialize function should have been called x    before calling this function. xx  @Paramx    None.xx  @Returnsx    A data byte received by the driver.x*/"/>
+    <tok fileIndex="0" linenr="107" column="1" str="uint8_t"/>
+    <tok fileIndex="0" linenr="107" column="9" str="UART1_Read"/>
+    <tok fileIndex="0" linenr="107" column="19" str="("/>
+    <tok fileIndex="0" linenr="107" column="20" str="void"/>
+    <tok fileIndex="0" linenr="107" column="24" str=")"/>
+    <tok fileIndex="0" linenr="107" column="25" str=";"/>
+    <tok fileIndex="0" linenr="109" column="1" str="/**x  @Summaryx    Writes a byte of data to the UART1xx  @Descriptionx    This routine writes a byte of data to the UART1. This functionx    will block if this transmit buffer is currently full until the transmit x    buffer becomes available.  If you do not wish to block, call thex    UART1_IsTxReady() function to check on the transmitx    availability.xx  @Preconditionsx    UART1_Initialize() function should have been calledx    before calling this function.xx  @Paramx    byte - data to be writtenx*/"/>
+    <tok fileIndex="0" linenr="127" column="1" str="void"/>
+    <tok fileIndex="0" linenr="127" column="6" str="UART1_Write"/>
+    <tok fileIndex="0" linenr="127" column="17" str="("/>
+    <tok fileIndex="0" linenr="127" column="18" str="uint8_t"/>
+    <tok fileIndex="0" linenr="127" column="26" str="byte"/>
+    <tok fileIndex="0" linenr="127" column="30" str=")"/>
+    <tok fileIndex="0" linenr="127" column="31" str=";"/>
+    <tok fileIndex="0" linenr="129" column="1" str="/**x  @Descriptionx    Indicates of there is data available to read.xx  @Returnsx    true if byte can be read.x    false if byte can't be read right now.x*/"/>
+    <tok fileIndex="0" linenr="137" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="137" column="6" str="UART1_IsRxReady"/>
+    <tok fileIndex="0" linenr="137" column="21" str="("/>
+    <tok fileIndex="0" linenr="137" column="22" str="void"/>
+    <tok fileIndex="0" linenr="137" column="26" str=")"/>
+    <tok fileIndex="0" linenr="137" column="27" str=";"/>
+    <tok fileIndex="0" linenr="139" column="1" str="/**x  @Descriptionx    Indicates if a byte can be written.x x @Returnsx    true if byte can be written.x    false if byte can't be written right now.x*/"/>
+    <tok fileIndex="0" linenr="147" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="147" column="6" str="UART1_IsTxReady"/>
+    <tok fileIndex="0" linenr="147" column="21" str="("/>
+    <tok fileIndex="0" linenr="147" column="22" str="void"/>
+    <tok fileIndex="0" linenr="147" column="26" str=")"/>
+    <tok fileIndex="0" linenr="147" column="27" str=";"/>
+    <tok fileIndex="0" linenr="149" column="1" str="/**x  @Descriptionx    Indicates if all bytes have been transferred.x x @Returnsx    true if all bytes transfered.x    false if there is still data pending to transfer.x*/"/>
+    <tok fileIndex="0" linenr="157" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="157" column="6" str="UART1_IsTxDone"/>
+    <tok fileIndex="0" linenr="157" column="20" str="("/>
+    <tok fileIndex="0" linenr="157" column="21" str="void"/>
+    <tok fileIndex="0" linenr="157" column="25" str=")"/>
+    <tok fileIndex="0" linenr="157" column="26" str=";"/>
+    <tok fileIndex="0" linenr="165" column="1" str="/*******************************************************************************xx  !!! Deprecated API and types !!!x  !!! These functions will not be supported in future releases !!!xx*******************************************************************************/"/>
+    <tok fileIndex="0" linenr="172" column="1" str="/**x  @Descriptionx    Indicates of there is data available to read.xx  @Returnsx    true if byte can be read.x    false if byte can't be read right now.x*/"/>
+    <tok fileIndex="0" linenr="180" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="180" column="6" str="__attribute__"/>
+    <tok fileIndex="0" linenr="180" column="19" str="("/>
+    <tok fileIndex="0" linenr="180" column="20" str="("/>
+    <tok fileIndex="0" linenr="180" column="21" str="deprecated"/>
+    <tok fileIndex="0" linenr="180" column="31" str=")"/>
+    <tok fileIndex="0" linenr="180" column="32" str=")"/>
+    <tok fileIndex="0" linenr="180" column="34" str="UART1_is_rx_ready"/>
+    <tok fileIndex="0" linenr="180" column="51" str="("/>
+    <tok fileIndex="0" linenr="180" column="52" str="void"/>
+    <tok fileIndex="0" linenr="180" column="56" str=")"/>
+    <tok fileIndex="0" linenr="180" column="57" str=";"/>
+    <tok fileIndex="0" linenr="182" column="1" str="/**x  @Descriptionx    Indicates if a byte can be written.x x @Returnsx    true if byte can be written.x    false if byte can't be written right now.x*/"/>
+    <tok fileIndex="0" linenr="190" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="190" column="6" str="__attribute__"/>
+    <tok fileIndex="0" linenr="190" column="19" str="("/>
+    <tok fileIndex="0" linenr="190" column="20" str="("/>
+    <tok fileIndex="0" linenr="190" column="21" str="deprecated"/>
+    <tok fileIndex="0" linenr="190" column="31" str=")"/>
+    <tok fileIndex="0" linenr="190" column="32" str=")"/>
+    <tok fileIndex="0" linenr="190" column="34" str="UART1_is_tx_ready"/>
+    <tok fileIndex="0" linenr="190" column="51" str="("/>
+    <tok fileIndex="0" linenr="190" column="52" str="void"/>
+    <tok fileIndex="0" linenr="190" column="56" str=")"/>
+    <tok fileIndex="0" linenr="190" column="57" str=";"/>
+    <tok fileIndex="0" linenr="192" column="1" str="/**x  @Descriptionx    Indicates if all bytes have been transferred.x x @Returnsx    true if all bytes transfered.x    false if there is still data pending to transfer.x*/"/>
+    <tok fileIndex="0" linenr="200" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="200" column="6" str="__attribute__"/>
+    <tok fileIndex="0" linenr="200" column="19" str="("/>
+    <tok fileIndex="0" linenr="200" column="20" str="("/>
+    <tok fileIndex="0" linenr="200" column="21" str="deprecated"/>
+    <tok fileIndex="0" linenr="200" column="31" str=")"/>
+    <tok fileIndex="0" linenr="200" column="32" str=")"/>
+    <tok fileIndex="0" linenr="200" column="34" str="UART1_is_tx_done"/>
+    <tok fileIndex="0" linenr="200" column="50" str="("/>
+    <tok fileIndex="0" linenr="200" column="51" str="void"/>
+    <tok fileIndex="0" linenr="200" column="55" str=")"/>
+    <tok fileIndex="0" linenr="200" column="56" str=";"/>
+    <tok fileIndex="0" linenr="202" column="1" str="/** UART1 Driver Hardware Flagsxx  @Summaryx    Specifies the status of the hardware receive or transmitxx  @Descriptionx    This type specifies the status of the hardware receive or transmit.x    More than one of these values may be OR'd together to create a completex    status value.  To test a value of this type, the bit of interest must bex    AND'ed with value and checked to see if the result is non-zero.x*/"/>
+    <tok fileIndex="0" linenr="213" column="1" str="typedef"/>
+    <tok fileIndex="0" linenr="213" column="9" str="enum"/>
+    <tok fileIndex="0" linenr="214" column="1" str="{"/>
+    <tok fileIndex="0" linenr="215" column="5" str="/* Indicates that Receive buffer has data, at least one more character can be read */"/>
+    <tok fileIndex="0" linenr="216" column="5" str="UART1_RX_DATA_AVAILABLE"/>
+    <tok fileIndex="0" linenr="216" column="29" str="="/>
+    <tok fileIndex="0" linenr="216" column="31" str="("/>
+    <tok fileIndex="0" linenr="216" column="32" str="1"/>
+    <tok fileIndex="0" linenr="216" column="34" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="216" column="37" str="0"/>
+    <tok fileIndex="0" linenr="216" column="38" str=")"/>
+    <tok fileIndex="0" linenr="216" column="39" str=","/>
+    <tok fileIndex="0" linenr="217" column="5" str="/* Indicates that Receive buffer has overflowed */"/>
+    <tok fileIndex="0" linenr="218" column="5" str="UART1_RX_OVERRUN_ERROR"/>
+    <tok fileIndex="0" linenr="218" column="28" str="="/>
+    <tok fileIndex="0" linenr="218" column="30" str="("/>
+    <tok fileIndex="0" linenr="218" column="31" str="1"/>
+    <tok fileIndex="0" linenr="218" column="33" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="218" column="36" str="1"/>
+    <tok fileIndex="0" linenr="218" column="37" str=")"/>
+    <tok fileIndex="0" linenr="218" column="38" str=","/>
+    <tok fileIndex="0" linenr="219" column="5" str="/* Indicates that Framing error has been detected for the current character */"/>
+    <tok fileIndex="0" linenr="220" column="5" str="UART1_FRAMING_ERROR"/>
+    <tok fileIndex="0" linenr="220" column="25" str="="/>
+    <tok fileIndex="0" linenr="220" column="27" str="("/>
+    <tok fileIndex="0" linenr="220" column="28" str="1"/>
+    <tok fileIndex="0" linenr="220" column="30" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="220" column="33" str="2"/>
+    <tok fileIndex="0" linenr="220" column="34" str=")"/>
+    <tok fileIndex="0" linenr="220" column="35" str=","/>
+    <tok fileIndex="0" linenr="221" column="5" str="/* Indicates that Parity error has been detected for the current character */"/>
+    <tok fileIndex="0" linenr="222" column="5" str="UART1_PARITY_ERROR"/>
+    <tok fileIndex="0" linenr="222" column="24" str="="/>
+    <tok fileIndex="0" linenr="222" column="26" str="("/>
+    <tok fileIndex="0" linenr="222" column="27" str="1"/>
+    <tok fileIndex="0" linenr="222" column="29" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="222" column="32" str="3"/>
+    <tok fileIndex="0" linenr="222" column="33" str=")"/>
+    <tok fileIndex="0" linenr="222" column="34" str=","/>
+    <tok fileIndex="0" linenr="223" column="5" str="/* Indicates that Receiver is Idle */"/>
+    <tok fileIndex="0" linenr="224" column="5" str="UART1_RECEIVER_IDLE"/>
+    <tok fileIndex="0" linenr="224" column="25" str="="/>
+    <tok fileIndex="0" linenr="224" column="27" str="("/>
+    <tok fileIndex="0" linenr="224" column="28" str="1"/>
+    <tok fileIndex="0" linenr="224" column="30" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="224" column="33" str="4"/>
+    <tok fileIndex="0" linenr="224" column="34" str=")"/>
+    <tok fileIndex="0" linenr="224" column="35" str=","/>
+    <tok fileIndex="0" linenr="225" column="5" str="/* Indicates that the last transmission has completed */"/>
+    <tok fileIndex="0" linenr="226" column="5" str="UART1_TX_COMPLETE"/>
+    <tok fileIndex="0" linenr="226" column="23" str="="/>
+    <tok fileIndex="0" linenr="226" column="25" str="("/>
+    <tok fileIndex="0" linenr="226" column="26" str="1"/>
+    <tok fileIndex="0" linenr="226" column="28" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="226" column="31" str="8"/>
+    <tok fileIndex="0" linenr="226" column="32" str=")"/>
+    <tok fileIndex="0" linenr="226" column="33" str=","/>
+    <tok fileIndex="0" linenr="227" column="5" str="/* Indicates that Transmit buffer is full */"/>
+    <tok fileIndex="0" linenr="228" column="5" str="UART1_TX_FULL"/>
+    <tok fileIndex="0" linenr="228" column="19" str="="/>
+    <tok fileIndex="0" linenr="228" column="21" str="("/>
+    <tok fileIndex="0" linenr="228" column="22" str="1"/>
+    <tok fileIndex="0" linenr="228" column="24" str="&lt;&lt;"/>
+    <tok fileIndex="0" linenr="228" column="27" str="9"/>
+    <tok fileIndex="0" linenr="228" column="28" str=")"/>
+    <tok fileIndex="0" linenr="229" column="1" str="}"/>
+    <tok fileIndex="0" linenr="229" column="2" str="UART1_STATUS"/>
+    <tok fileIndex="0" linenr="229" column="14" str=";"/>
+    <tok fileIndex="0" linenr="231" column="1" str="/**x  @Summaryx    Returns the transmitter and receiver statusxx  @Descriptionx    This returns the transmitter and receiver status. The returned status may x    contain a value with more than one of the bitsx    specified in the UART1_STATUS enumeration set.  x    The caller should perform an &quot;AND&quot; with the bit of interest and verify if thex    result is non-zero (as shown in the example) to verify the desired statusx    bit.xx  @Preconditionsx    UART1_Initialize function should have been called x    before calling this functionxx  @Paramx    None.xx  @Returnsx    A UART1_STATUS value describing the current status x    of the transfer.xx  @Examplex    &lt;code&gt;x        while(!(UART1_StatusGet &amp; UART1_TX_COMPLETE ))x        {x           // Wait for the tranmission to completex        }x    &lt;/code&gt;x*/"/>
+    <tok fileIndex="0" linenr="262" column="1" str="UART1_STATUS"/>
+    <tok fileIndex="0" linenr="262" column="14" str="__attribute__"/>
+    <tok fileIndex="0" linenr="262" column="27" str="("/>
+    <tok fileIndex="0" linenr="262" column="28" str="("/>
+    <tok fileIndex="0" linenr="262" column="29" str="deprecated"/>
+    <tok fileIndex="0" linenr="262" column="39" str=")"/>
+    <tok fileIndex="0" linenr="262" column="40" str=")"/>
+    <tok fileIndex="0" linenr="262" column="42" str="UART1_StatusGet"/>
+    <tok fileIndex="0" linenr="262" column="58" str="("/>
+    <tok fileIndex="0" linenr="262" column="59" str="void"/>
+    <tok fileIndex="0" linenr="262" column="64" str=")"/>
+    <tok fileIndex="0" linenr="262" column="65" str=";"/>
+    <tok fileIndex="0" linenr="264" column="1" str="/**x  @Summaryx    Indicates if data is ready for readingxx  @Preconditionsx    UART1_Initialize() function should have been called x    before calling this functionxx  @Returnsx    true - data available to read.x    false - no data availablex*/"/>
+    <tok fileIndex="0" linenr="276" column="1" str="bool"/>
+    <tok fileIndex="0" linenr="276" column="6" str="__attribute__"/>
+    <tok fileIndex="0" linenr="276" column="19" str="("/>
+    <tok fileIndex="0" linenr="276" column="20" str="("/>
+    <tok fileIndex="0" linenr="276" column="21" str="deprecated"/>
+    <tok fileIndex="0" linenr="276" column="31" str=")"/>
+    <tok fileIndex="0" linenr="276" column="32" str=")"/>
+    <tok fileIndex="0" linenr="276" column="34" str="UART1_DataReady"/>
+    <tok fileIndex="0" linenr="276" column="49" str="("/>
+    <tok fileIndex="0" linenr="276" column="50" str="void"/>
+    <tok fileIndex="0" linenr="276" column="54" str=")"/>
+    <tok fileIndex="0" linenr="276" column="55" str=";"/>
+    <tok fileIndex="0" linenr="278" column="1" str="#"/>
+    <tok fileIndex="0" linenr="278" column="2" str="ifdef"/>
+    <tok fileIndex="0" linenr="278" column="8" str="__cplusplus"/>
+    <tok fileIndex="0" linenr="278" column="21" str="// Provide C++ Compatibility"/>
+    <tok fileIndex="0" linenr="280" column="5" str="}"/>
+    <tok fileIndex="0" linenr="282" column="1" str="#"/>
+    <tok fileIndex="0" linenr="282" column="2" str="endif"/>
+    <tok fileIndex="0" linenr="284" column="1" str="#"/>
+    <tok fileIndex="0" linenr="284" column="2" str="endif"/>
+    <tok fileIndex="0" linenr="284" column="9" str="// _UART1_H"/>
+  </rawtokens>
+  <suppressions>
+  </suppressions>
+<dump cfg="">
+  <standards>
+    <c version="c11"/>
+    <cpp version="c++20"/>
+  </standards>
+  <directivelist>
+    <directive file="mcc_generated_files/uart1.h" linenr="45" str="#ifndef _UART1_H"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="46" str="#define _UART1_H"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="52" str="#include &lt;stdbool.h&gt;"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="53" str="#include &lt;stdint.h&gt;"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="55" str="#ifdef __cplusplus"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="59" str="#endif"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="278" str="#ifdef __cplusplus"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="282" str="#endif"/>
+    <directive file="mcc_generated_files/uart1.h" linenr="284" str="#endif"/>
+  </directivelist>
+  <tokenlist>
+    <token id="0x7ffd73805a40" file="mcc_generated_files/uart1.h" linenr="85" column="1" str="void" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73807d30" file="mcc_generated_files/uart1.h" linenr="85" column="6" str="UART1_Initialize" scope="0x7ffd7380c1e0" type="name" function="0x7ffd7380c310" astParent="0x7ffd73807190"/>
+    <token id="0x7ffd73807190" file="mcc_generated_files/uart1.h" linenr="85" column="22" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73808650" astOperand1="0x7ffd73807d30" valueType-type="void"/>
+    <token id="0x7ffd73808650" file="mcc_generated_files/uart1.h" linenr="85" column="27" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73807190"/>
+    <token id="0x7ffd73814310" file="mcc_generated_files/uart1.h" linenr="85" column="28" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73808500" file="mcc_generated_files/uart1.h" linenr="107" column="1" str="uint8_t" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73807e10" file="mcc_generated_files/uart1.h" linenr="107" column="9" str="UART1_Read" scope="0x7ffd7380c1e0" type="name" function="0x7ffd73813210" astParent="0x7ffd738146a0"/>
+    <token id="0x7ffd738146a0" file="mcc_generated_files/uart1.h" linenr="107" column="19" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73813020" astOperand1="0x7ffd73807e10" valueType-type="char" valueType-sign="unsigned"/>
+    <token id="0x7ffd73813020" file="mcc_generated_files/uart1.h" linenr="107" column="24" str=")" scope="0x7ffd7380c1e0" link="0x7ffd738146a0"/>
+    <token id="0x7ffd738147c0" file="mcc_generated_files/uart1.h" linenr="107" column="25" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73808020" file="mcc_generated_files/uart1.h" linenr="127" column="1" str="void" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd738145b0" file="mcc_generated_files/uart1.h" linenr="127" column="6" str="UART1_Write" scope="0x7ffd7380c1e0" type="name" function="0x7ffd738070f0" astParent="0x7ffd73807e60"/>
+    <token id="0x7ffd73807e60" file="mcc_generated_files/uart1.h" linenr="127" column="17" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73804080" astOperand1="0x7ffd738145b0" astOperand2="0x7ffd73804fe0" valueType-type="void"/>
+    <token id="0x7ffd73814910" file="mcc_generated_files/uart1.h" linenr="127" column="18" str="uint8_t" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73804fe0" file="mcc_generated_files/uart1.h" linenr="127" column="26" str="byte" scope="0x7ffd7380c1e0" type="name" varId="1" variable="0x7ffd73814db0" astParent="0x7ffd73807e60" valueType-type="char" valueType-sign="unsigned"/>
+    <token id="0x7ffd73804080" file="mcc_generated_files/uart1.h" linenr="127" column="30" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73807e60"/>
+    <token id="0x7ffd738040d0" file="mcc_generated_files/uart1.h" linenr="127" column="31" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73804120" file="mcc_generated_files/uart1.h" linenr="137" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73804170" file="mcc_generated_files/uart1.h" linenr="137" column="6" str="UART1_IsRxReady" scope="0x7ffd7380c1e0" type="name" function="0x7ffd7380f000" astParent="0x7ffd738041c0"/>
+    <token id="0x7ffd738041c0" file="mcc_generated_files/uart1.h" linenr="137" column="21" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73804260" astOperand1="0x7ffd73804170" valueType-type="bool"/>
+    <token id="0x7ffd73804260" file="mcc_generated_files/uart1.h" linenr="137" column="26" str=")" scope="0x7ffd7380c1e0" link="0x7ffd738041c0"/>
+    <token id="0x7ffd738042b0" file="mcc_generated_files/uart1.h" linenr="137" column="27" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73804380" file="mcc_generated_files/uart1.h" linenr="147" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73806e30" file="mcc_generated_files/uart1.h" linenr="147" column="6" str="UART1_IsTxReady" scope="0x7ffd7380c1e0" type="name" function="0x7ffd73805230" astParent="0x7ffd73806e80"/>
+    <token id="0x7ffd73806e80" file="mcc_generated_files/uart1.h" linenr="147" column="21" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73806f50" astOperand1="0x7ffd73806e30" valueType-type="bool"/>
+    <token id="0x7ffd73806f50" file="mcc_generated_files/uart1.h" linenr="147" column="26" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73806e80"/>
+    <token id="0x7ffd73806fa0" file="mcc_generated_files/uart1.h" linenr="147" column="27" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73806ff0" file="mcc_generated_files/uart1.h" linenr="157" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73807040" file="mcc_generated_files/uart1.h" linenr="157" column="6" str="UART1_IsTxDone" scope="0x7ffd7380c1e0" type="name" function="0x7ffd738052d0" astParent="0x7ffd73807090"/>
+    <token id="0x7ffd73807090" file="mcc_generated_files/uart1.h" linenr="157" column="20" str="(" scope="0x7ffd7380c1e0" link="0x7ffd738134d0" astOperand1="0x7ffd73807040" valueType-type="bool"/>
+    <token id="0x7ffd738134d0" file="mcc_generated_files/uart1.h" linenr="157" column="25" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73807090"/>
+    <token id="0x7ffd73813520" file="mcc_generated_files/uart1.h" linenr="157" column="26" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73813570" file="mcc_generated_files/uart1.h" linenr="180" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd738135c0" file="mcc_generated_files/uart1.h" linenr="180" column="34" str="UART1_is_rx_ready" scope="0x7ffd7380c1e0" type="name" function="0x7ffd73805370" astParent="0x7ffd73813820"/>
+    <token id="0x7ffd73813820" file="mcc_generated_files/uart1.h" linenr="180" column="51" str="(" scope="0x7ffd7380c1e0" link="0x7ffd738050b0" astOperand1="0x7ffd738135c0" valueType-type="bool"/>
+    <token id="0x7ffd738050b0" file="mcc_generated_files/uart1.h" linenr="180" column="56" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73813820"/>
+    <token id="0x7ffd73813430" file="mcc_generated_files/uart1.h" linenr="180" column="57" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73805100" file="mcc_generated_files/uart1.h" linenr="190" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd738051d0" file="mcc_generated_files/uart1.h" linenr="190" column="34" str="UART1_is_tx_ready" scope="0x7ffd7380c1e0" type="name" function="0x7ffd73813620" astParent="0x7ffd73805400"/>
+    <token id="0x7ffd73805400" file="mcc_generated_files/uart1.h" linenr="190" column="51" str="(" scope="0x7ffd7380c1e0" link="0x7ffd738044f0" astOperand1="0x7ffd738051d0" valueType-type="bool"/>
+    <token id="0x7ffd738044f0" file="mcc_generated_files/uart1.h" linenr="190" column="56" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73805400"/>
+    <token id="0x7ffd73804540" file="mcc_generated_files/uart1.h" linenr="190" column="57" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73804590" file="mcc_generated_files/uart1.h" linenr="200" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd738045e0" file="mcc_generated_files/uart1.h" linenr="200" column="34" str="UART1_is_tx_done" scope="0x7ffd7380c1e0" type="name" function="0x7ffd738136c0" astParent="0x7ffd73804890"/>
+    <token id="0x7ffd73804890" file="mcc_generated_files/uart1.h" linenr="200" column="50" str="(" scope="0x7ffd7380c1e0" link="0x7ffd738077e0" astOperand1="0x7ffd738045e0" valueType-type="bool"/>
+    <token id="0x7ffd738077e0" file="mcc_generated_files/uart1.h" linenr="200" column="55" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73804890"/>
+    <token id="0x7ffd73807830" file="mcc_generated_files/uart1.h" linenr="200" column="56" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73807880" file="mcc_generated_files/uart1.h" linenr="213" column="9" str="enum" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73805c70" file="mcc_generated_files/uart1.h" linenr="213" column="0" str="UART1_STATUS" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd73807920" file="mcc_generated_files/uart1.h" linenr="214" column="1" str="{" scope="0x7ffd7380c1e0" link="0x7ffd7380bfe0"/>
+    <token id="0x7ffd73807970" file="mcc_generated_files/uart1.h" linenr="216" column="5" str="UART1_RX_DATA_AVAILABLE" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd738079c0"/>
+    <token id="0x7ffd738079c0" file="mcc_generated_files/uart1.h" linenr="216" column="29" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd73807c20" astOperand1="0x7ffd73807970" astOperand2="0x7ffd73807b30"/>
+    <token id="0x7ffd73807a90" file="mcc_generated_files/uart1.h" linenr="216" column="31" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73807bd0"/>
+    <token id="0x7ffd73807ae0" file="mcc_generated_files/uart1.h" linenr="216" column="32" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd7380d350" astParent="0x7ffd73807b30" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd73807b30" file="mcc_generated_files/uart1.h" linenr="216" column="34" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd73814fd0" astParent="0x7ffd738079c0" astOperand1="0x7ffd73807ae0" astOperand2="0x7ffd73807b80" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd73807b80" file="mcc_generated_files/uart1.h" linenr="216" column="37" str="0" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73813000" astParent="0x7ffd73807b30" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd73807bd0" file="mcc_generated_files/uart1.h" linenr="216" column="38" str=")" scope="0x7ffd7380c1e0" link="0x7ffd73807a90"/>
+    <token id="0x7ffd73807c20" file="mcc_generated_files/uart1.h" linenr="216" column="39" str="," scope="0x7ffd7380c1e0" astParent="0x7ffd7380b0e0" astOperand1="0x7ffd738079c0" astOperand2="0x7ffd7380aed0"/>
+    <token id="0x7ffd73807c70" file="mcc_generated_files/uart1.h" linenr="218" column="5" str="UART1_RX_OVERRUN_ERROR" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd7380aed0"/>
+    <token id="0x7ffd7380aed0" file="mcc_generated_files/uart1.h" linenr="218" column="28" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd73807c20" astOperand1="0x7ffd73807c70" astOperand2="0x7ffd7380aff0"/>
+    <token id="0x7ffd7380af20" file="mcc_generated_files/uart1.h" linenr="218" column="30" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380b090"/>
+    <token id="0x7ffd73807cc0" file="mcc_generated_files/uart1.h" linenr="218" column="31" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73813de0" astParent="0x7ffd7380aff0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380aff0" file="mcc_generated_files/uart1.h" linenr="218" column="33" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd73813390" astParent="0x7ffd7380aed0" astOperand1="0x7ffd73807cc0" astOperand2="0x7ffd7380b040" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b040" file="mcc_generated_files/uart1.h" linenr="218" column="36" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73806f30" astParent="0x7ffd7380aff0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b090" file="mcc_generated_files/uart1.h" linenr="218" column="37" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380af20"/>
+    <token id="0x7ffd7380b0e0" file="mcc_generated_files/uart1.h" linenr="218" column="38" str="," scope="0x7ffd7380c1e0" astParent="0x7ffd7380b3e0" astOperand1="0x7ffd73807c20" astOperand2="0x7ffd7380b180"/>
+    <token id="0x7ffd7380b130" file="mcc_generated_files/uart1.h" linenr="220" column="5" str="UART1_FRAMING_ERROR" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd7380b180"/>
+    <token id="0x7ffd7380b180" file="mcc_generated_files/uart1.h" linenr="220" column="25" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd7380b0e0" astOperand1="0x7ffd7380b130" astOperand2="0x7ffd7380b2f0"/>
+    <token id="0x7ffd7380b1d0" file="mcc_generated_files/uart1.h" linenr="220" column="27" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380b390"/>
+    <token id="0x7ffd7380b220" file="mcc_generated_files/uart1.h" linenr="220" column="28" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73833c20" astParent="0x7ffd7380b2f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b2f0" file="mcc_generated_files/uart1.h" linenr="220" column="30" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd73833aa0" astParent="0x7ffd7380b180" astOperand1="0x7ffd7380b220" astOperand2="0x7ffd7380b340" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b340" file="mcc_generated_files/uart1.h" linenr="220" column="33" str="2" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73813950" astParent="0x7ffd7380b2f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b390" file="mcc_generated_files/uart1.h" linenr="220" column="34" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380b1d0"/>
+    <token id="0x7ffd7380b3e0" file="mcc_generated_files/uart1.h" linenr="220" column="35" str="," scope="0x7ffd7380c1e0" astParent="0x7ffd7380b6e0" astOperand1="0x7ffd7380b0e0" astOperand2="0x7ffd7380b480"/>
+    <token id="0x7ffd7380b430" file="mcc_generated_files/uart1.h" linenr="222" column="5" str="UART1_PARITY_ERROR" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd7380b480"/>
+    <token id="0x7ffd7380b480" file="mcc_generated_files/uart1.h" linenr="222" column="24" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd7380b3e0" astOperand1="0x7ffd7380b430" astOperand2="0x7ffd7380b5f0"/>
+    <token id="0x7ffd7380b4d0" file="mcc_generated_files/uart1.h" linenr="222" column="26" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380b690"/>
+    <token id="0x7ffd7380b520" file="mcc_generated_files/uart1.h" linenr="222" column="27" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd7380cf50" astParent="0x7ffd7380b5f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b5f0" file="mcc_generated_files/uart1.h" linenr="222" column="29" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd7380cad0" astParent="0x7ffd7380b480" astOperand1="0x7ffd7380b520" astOperand2="0x7ffd7380b640" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b640" file="mcc_generated_files/uart1.h" linenr="222" column="32" str="3" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73833c90" astParent="0x7ffd7380b5f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b690" file="mcc_generated_files/uart1.h" linenr="222" column="33" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380b4d0"/>
+    <token id="0x7ffd7380b6e0" file="mcc_generated_files/uart1.h" linenr="222" column="34" str="," scope="0x7ffd7380c1e0" astParent="0x7ffd7380b9e0" astOperand1="0x7ffd7380b3e0" astOperand2="0x7ffd7380b780"/>
+    <token id="0x7ffd7380b730" file="mcc_generated_files/uart1.h" linenr="224" column="5" str="UART1_RECEIVER_IDLE" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd7380b780"/>
+    <token id="0x7ffd7380b780" file="mcc_generated_files/uart1.h" linenr="224" column="25" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd7380b6e0" astOperand1="0x7ffd7380b730" astOperand2="0x7ffd7380b8f0"/>
+    <token id="0x7ffd7380b7d0" file="mcc_generated_files/uart1.h" linenr="224" column="27" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380b990"/>
+    <token id="0x7ffd7380b820" file="mcc_generated_files/uart1.h" linenr="224" column="28" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd738149e0" astParent="0x7ffd7380b8f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b8f0" file="mcc_generated_files/uart1.h" linenr="224" column="30" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd73812e90" astParent="0x7ffd7380b780" astOperand1="0x7ffd7380b820" astOperand2="0x7ffd7380b940" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b940" file="mcc_generated_files/uart1.h" linenr="224" column="33" str="4" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73807eb0" astParent="0x7ffd7380b8f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380b990" file="mcc_generated_files/uart1.h" linenr="224" column="34" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380b7d0"/>
+    <token id="0x7ffd7380b9e0" file="mcc_generated_files/uart1.h" linenr="224" column="35" str="," scope="0x7ffd7380c1e0" astParent="0x7ffd7380bce0" astOperand1="0x7ffd7380b6e0" astOperand2="0x7ffd7380ba80"/>
+    <token id="0x7ffd7380ba30" file="mcc_generated_files/uart1.h" linenr="226" column="5" str="UART1_TX_COMPLETE" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd7380ba80"/>
+    <token id="0x7ffd7380ba80" file="mcc_generated_files/uart1.h" linenr="226" column="23" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd7380b9e0" astOperand1="0x7ffd7380ba30" astOperand2="0x7ffd7380bbf0"/>
+    <token id="0x7ffd7380bad0" file="mcc_generated_files/uart1.h" linenr="226" column="25" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380bc90"/>
+    <token id="0x7ffd7380bb20" file="mcc_generated_files/uart1.h" linenr="226" column="26" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73808550" astParent="0x7ffd7380bbf0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380bbf0" file="mcc_generated_files/uart1.h" linenr="226" column="28" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd738086a0" astParent="0x7ffd7380ba80" astOperand1="0x7ffd7380bb20" astOperand2="0x7ffd7380bc40" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380bc40" file="mcc_generated_files/uart1.h" linenr="226" column="31" str="8" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73814360" astParent="0x7ffd7380bbf0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380bc90" file="mcc_generated_files/uart1.h" linenr="226" column="32" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380bad0"/>
+    <token id="0x7ffd7380bce0" file="mcc_generated_files/uart1.h" linenr="226" column="33" str="," scope="0x7ffd7380c1e0" astOperand1="0x7ffd7380b9e0" astOperand2="0x7ffd7380bd80"/>
+    <token id="0x7ffd7380bd30" file="mcc_generated_files/uart1.h" linenr="228" column="5" str="UART1_TX_FULL" scope="0x7ffd7380c1e0" type="name" astParent="0x7ffd7380bd80"/>
+    <token id="0x7ffd7380bd80" file="mcc_generated_files/uart1.h" linenr="228" column="19" str="=" scope="0x7ffd7380c1e0" type="op" isAssignmentOp="True" astParent="0x7ffd7380bce0" astOperand1="0x7ffd7380bd30" astOperand2="0x7ffd7380bef0"/>
+    <token id="0x7ffd7380bdd0" file="mcc_generated_files/uart1.h" linenr="228" column="21" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380bf90"/>
+    <token id="0x7ffd7380be20" file="mcc_generated_files/uart1.h" linenr="228" column="22" str="1" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd7380ce40" astParent="0x7ffd7380bef0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380bef0" file="mcc_generated_files/uart1.h" linenr="228" column="24" str="&lt;&lt;" scope="0x7ffd7380c1e0" type="op" isArithmeticalOp="True" values="0x7ffd7380d640" astParent="0x7ffd7380bd80" astOperand1="0x7ffd7380be20" astOperand2="0x7ffd7380bf40" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380bf40" file="mcc_generated_files/uart1.h" linenr="228" column="27" str="9" scope="0x7ffd7380c1e0" type="number" isInt="True" values="0x7ffd73808740" astParent="0x7ffd7380bef0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd7380bf90" file="mcc_generated_files/uart1.h" linenr="228" column="28" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380bdd0"/>
+    <token id="0x7ffd7380bfe0" file="mcc_generated_files/uart1.h" linenr="229" column="1" str="}" scope="0x7ffd7380c1e0" link="0x7ffd73807920"/>
+    <token id="0x7ffd73805d40" file="mcc_generated_files/uart1.h" linenr="229" column="0" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd738131b0" file="mcc_generated_files/uart1.h" linenr="262" column="1" str="UART1_STATUS" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd7380c180" file="mcc_generated_files/uart1.h" linenr="262" column="42" str="UART1_StatusGet" scope="0x7ffd7380c1e0" type="name" function="0x7ffd73813760" astParent="0x7ffd7380c430"/>
+    <token id="0x7ffd7380c430" file="mcc_generated_files/uart1.h" linenr="262" column="58" str="(" scope="0x7ffd7380c1e0" link="0x7ffd7380c4d0" astOperand1="0x7ffd7380c180"/>
+    <token id="0x7ffd7380c4d0" file="mcc_generated_files/uart1.h" linenr="262" column="64" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380c430"/>
+    <token id="0x7ffd7380c520" file="mcc_generated_files/uart1.h" linenr="262" column="65" str=";" scope="0x7ffd7380c1e0"/>
+    <token id="0x7ffd73813f00" file="mcc_generated_files/uart1.h" linenr="276" column="1" str="bool" scope="0x7ffd7380c1e0" type="name"/>
+    <token id="0x7ffd7380c5f0" file="mcc_generated_files/uart1.h" linenr="276" column="34" str="UART1_DataReady" scope="0x7ffd7380c1e0" type="name" function="0x7ffd7380c650" astParent="0x7ffd7380c8a0"/>
+    <token id="0x7ffd7380c8a0" file="mcc_generated_files/uart1.h" linenr="276" column="49" str="(" scope="0x7ffd7380c1e0" link="0x7ffd73833c40" astOperand1="0x7ffd7380c5f0" valueType-type="bool"/>
+    <token id="0x7ffd73833c40" file="mcc_generated_files/uart1.h" linenr="276" column="54" str=")" scope="0x7ffd7380c1e0" link="0x7ffd7380c8a0"/>
+    <token id="0x7ffd7380c9c0" file="mcc_generated_files/uart1.h" linenr="276" column="55" str=";" scope="0x7ffd7380c1e0"/>
+  </tokenlist>
+  <scopes>
+    <scope id="0x7ffd7380c1e0" type="Global">
+      <functionList>
+        <function id="0x7ffd7380c310" tokenDef="0x7ffd73807d30" name="UART1_Initialize" type="Function"/>
+        <function id="0x7ffd73813210" tokenDef="0x7ffd73807e10" name="UART1_Read" type="Function"/>
+        <function id="0x7ffd738070f0" tokenDef="0x7ffd738145b0" name="UART1_Write" type="Function">
+          <arg nr="1" variable="0x7ffd73814db0"/>
+        </function>
+        <function id="0x7ffd7380f000" tokenDef="0x7ffd73804170" name="UART1_IsRxReady" type="Function"/>
+        <function id="0x7ffd73805230" tokenDef="0x7ffd73806e30" name="UART1_IsTxReady" type="Function"/>
+        <function id="0x7ffd738052d0" tokenDef="0x7ffd73807040" name="UART1_IsTxDone" type="Function"/>
+        <function id="0x7ffd73805370" tokenDef="0x7ffd738135c0" name="UART1_is_rx_ready" type="Function"/>
+        <function id="0x7ffd73813620" tokenDef="0x7ffd738051d0" name="UART1_is_tx_ready" type="Function"/>
+        <function id="0x7ffd738136c0" tokenDef="0x7ffd738045e0" name="UART1_is_tx_done" type="Function"/>
+        <function id="0x7ffd73813760" tokenDef="0x7ffd7380c180" name="UART1_StatusGet" type="Function"/>
+        <function id="0x7ffd7380c650" tokenDef="0x7ffd7380c5f0" name="UART1_DataReady" type="Function"/>
+      </functionList>
+    </scope>
+  </scopes>
+  <variables>
+    <var id="0x7ffd73814db0" nameToken="0x7ffd73804fe0" typeStartToken="0x7ffd73814910" typeEndToken="0x7ffd73814910" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="false" isReference="false" isStatic="false"/>
+  </variables>
+  <valueflow>
+    <values id="0x7ffd7380d350">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd73814fd0">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd73813000">
+      <value intvalue="0" known="true"/>
+    </values>
+    <values id="0x7ffd73813de0">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd73813390">
+      <value intvalue="2" known="true"/>
+    </values>
+    <values id="0x7ffd73806f30">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd73833c20">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd73833aa0">
+      <value intvalue="4" known="true"/>
+    </values>
+    <values id="0x7ffd73813950">
+      <value intvalue="2" known="true"/>
+    </values>
+    <values id="0x7ffd7380cf50">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd7380cad0">
+      <value intvalue="8" known="true"/>
+    </values>
+    <values id="0x7ffd73833c90">
+      <value intvalue="3" known="true"/>
+    </values>
+    <values id="0x7ffd738149e0">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd73812e90">
+      <value intvalue="16" known="true"/>
+    </values>
+    <values id="0x7ffd73807eb0">
+      <value intvalue="4" known="true"/>
+    </values>
+    <values id="0x7ffd73808550">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd738086a0">
+      <value intvalue="256" known="true"/>
+    </values>
+    <values id="0x7ffd73814360">
+      <value intvalue="8" known="true"/>
+    </values>
+    <values id="0x7ffd7380ce40">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd7380d640">
+      <value intvalue="512" known="true"/>
+    </values>
+    <values id="0x7ffd73808740">
+      <value intvalue="9" known="true"/>
+    </values>
+  </valueflow>
+</dump>
+</dumps>

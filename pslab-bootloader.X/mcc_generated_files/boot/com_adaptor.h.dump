@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<dumps>
+  <platform name="Native" char_bit="8" short_bit="16" int_bit="32" long_bit="64" long_long_bit="64" pointer_bit="64"/>
+  <rawtokens>
+    <file index="0" name="mcc_generated_files/boot/com_adaptor.h"/>
+    <tok fileIndex="0" linenr="1" column="1" str="/**x  @Generated 16-bit Bootloader Source Filexx  @Company:x    Microchip Technology Inc.xx  @File Name: x    com_adaptor.hxx  @Summary:x    This is the com_adaptor.h file generated using 16-bit Bootloaderxx  @Description:x    This header file provides implementations for driver APIs for all modules selected in the GUI.x    Generation Information :x        Product Revision  :  16-bit Bootloader - 1.18.4x        Device            :  PIC24EP256GP204x    The generated drivers are tested against the following:x        Compiler          :  XC16 v1.36Bx        MPLAB             :  MPLAB X v5.15x*/"/>
+    <tok fileIndex="0" linenr="22" column="1" str="/*xCopyright (c) [2012-2019] Microchip Technology Inc.  xx    All rights reserved.xx    You are permitted to use the accompanying software and its derivatives x    with Microchip products. See the Microchip license agreement accompanying x    this software, if any, for additional info regarding your rights and x    obligations.x    x    MICROCHIP SOFTWARE AND DOCUMENTATION ARE PROVIDED &quot;AS IS&quot; WITHOUT x    WARRANTY OF ANY KIND, EITHER EXPRESS OR IMPLIED, INCLUDING WITHOUT x    LIMITATION, ANY WARRANTY OF MERCHANTABILITY, TITLE, NON-INFRINGEMENT x    AND FITNESS FOR A PARTICULAR PURPOSE. IN NO EVENT WILL MICROCHIP OR ITSx    LICENSORS BE LIABLE OR OBLIGATED UNDER CONTRACT, NEGLIGENCE, STRICT x    LIABILITY, CONTRIBUTION, BREACH OF WARRANTY, OR OTHER LEGAL EQUITABLE x    THEORY FOR ANY DIRECT OR INDIRECT DAMAGES OR EXPENSES INCLUDING BUT NOT x    LIMITED TO ANY INCIDENTAL, SPECIAL, INDIRECT OR CONSEQUENTIAL DAMAGES, x    OR OTHER SIMILAR COSTS. x    x    To the fullest extend allowed by law, Microchip and its licensors x    liability will not exceed the amount of fees, if any, that you paid x    directly to Microchip to use this software. x    x    THIRD PARTY SOFTWARE:  Notwithstanding anything to the contrary, any x    third party software accompanying this software is subject to the terms x    and conditions of the third party's license agreement.  To the extent x    required by third party licenses covering such third party software, x    the terms of such license will apply in lieu of the terms provided in x    this notice or applicable license.  To the extent the terms of such x    third party licenses prohibit any of the restrictions described here, x    such restrictions will not apply to such third party software.x*/"/>
+    <tok fileIndex="0" linenr="55" column="1" str="#"/>
+    <tok fileIndex="0" linenr="55" column="2" str="ifndef"/>
+    <tok fileIndex="0" linenr="55" column="9" str="COM_ADAPTOR_H"/>
+    <tok fileIndex="0" linenr="56" column="1" str="#"/>
+    <tok fileIndex="0" linenr="56" column="2" str="define"/>
+    <tok fileIndex="0" linenr="56" column="9" str="COM_ADAPTOR_H"/>
+    <tok fileIndex="0" linenr="58" column="1" str="#"/>
+    <tok fileIndex="0" linenr="58" column="2" str="include"/>
+    <tok fileIndex="0" linenr="58" column="10" str="&lt;stdbool.h&gt;"/>
+    <tok fileIndex="0" linenr="59" column="1" str="#"/>
+    <tok fileIndex="0" linenr="59" column="2" str="include"/>
+    <tok fileIndex="0" linenr="59" column="10" str="&lt;stdint.h&gt;"/>
+    <tok fileIndex="0" linenr="61" column="1" str="uint16_t"/>
+    <tok fileIndex="0" linenr="61" column="10" str="BOOT_COM_Read"/>
+    <tok fileIndex="0" linenr="61" column="23" str="("/>
+    <tok fileIndex="0" linenr="61" column="24" str="uint8_t"/>
+    <tok fileIndex="0" linenr="61" column="31" str="*"/>
+    <tok fileIndex="0" linenr="61" column="33" str="readBuffer"/>
+    <tok fileIndex="0" linenr="61" column="43" str=","/>
+    <tok fileIndex="0" linenr="61" column="45" str="uint16_t"/>
+    <tok fileIndex="0" linenr="61" column="54" str="length"/>
+    <tok fileIndex="0" linenr="61" column="60" str=")"/>
+    <tok fileIndex="0" linenr="61" column="61" str=";"/>
+    <tok fileIndex="0" linenr="62" column="1" str="uint16_t"/>
+    <tok fileIndex="0" linenr="62" column="10" str="BOOT_COM_GetBytesReady"/>
+    <tok fileIndex="0" linenr="62" column="32" str="("/>
+    <tok fileIndex="0" linenr="62" column="33" str=")"/>
+    <tok fileIndex="0" linenr="62" column="34" str=";"/>
+    <tok fileIndex="0" linenr="63" column="1" str="uint8_t"/>
+    <tok fileIndex="0" linenr="63" column="9" str="BOOT_COM_Peek"/>
+    <tok fileIndex="0" linenr="63" column="22" str="("/>
+    <tok fileIndex="0" linenr="63" column="23" str="uint16_t"/>
+    <tok fileIndex="0" linenr="63" column="32" str="location"/>
+    <tok fileIndex="0" linenr="63" column="40" str=")"/>
+    <tok fileIndex="0" linenr="63" column="41" str=";"/>
+    <tok fileIndex="0" linenr="64" column="1" str="void"/>
+    <tok fileIndex="0" linenr="64" column="6" str="BOOT_COM_Write"/>
+    <tok fileIndex="0" linenr="64" column="20" str="("/>
+    <tok fileIndex="0" linenr="64" column="21" str="uint8_t"/>
+    <tok fileIndex="0" linenr="64" column="28" str="*"/>
+    <tok fileIndex="0" linenr="64" column="30" str="data"/>
+    <tok fileIndex="0" linenr="64" column="34" str=","/>
+    <tok fileIndex="0" linenr="64" column="36" str="uint16_t"/>
+    <tok fileIndex="0" linenr="64" column="45" str="length"/>
+    <tok fileIndex="0" linenr="64" column="51" str=")"/>
+    <tok fileIndex="0" linenr="64" column="52" str=";"/>
+    <tok fileIndex="0" linenr="66" column="1" str="#"/>
+    <tok fileIndex="0" linenr="66" column="2" str="endif"/>
+  </rawtokens>
+  <suppressions>
+  </suppressions>
+<dump cfg="">
+  <standards>
+    <c version="c11"/>
+    <cpp version="c++20"/>
+  </standards>
+  <directivelist>
+    <directive file="mcc_generated_files/boot/com_adaptor.h" linenr="55" str="#ifndef COM_ADAPTOR_H"/>
+    <directive file="mcc_generated_files/boot/com_adaptor.h" linenr="56" str="#define COM_ADAPTOR_H"/>
+    <directive file="mcc_generated_files/boot/com_adaptor.h" linenr="58" str="#include &lt;stdbool.h&gt;"/>
+    <directive file="mcc_generated_files/boot/com_adaptor.h" linenr="59" str="#include &lt;stdint.h&gt;"/>
+    <directive file="mcc_generated_files/boot/com_adaptor.h" linenr="66" str="#endif"/>
+  </directivelist>
+  <tokenlist>
+    <token id="0x7ffd7044faa0" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="1" str="uint16_t" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd7044e540" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="10" str="BOOT_COM_Read" scope="0x7ffd7044f910" type="name" function="0x7ffd70450680" astParent="0x7ffd7044e430"/>
+    <token id="0x7ffd7044e430" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="23" str="(" scope="0x7ffd7044f910" link="0x7ffd7044fd00" astOperand1="0x7ffd7044e540" astOperand2="0x7ffd7044fc10" valueType-type="short" valueType-sign="unsigned"/>
+    <token id="0x7ffd7044e690" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="24" str="uint8_t" scope="0x7ffd7044f910" type="name" astParent="0x7ffd7044fb70"/>
+    <token id="0x7ffd7044fb70" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="31" str="*" scope="0x7ffd7044f910" type="op" isArithmeticalOp="True" astParent="0x7ffd7044fc10" astOperand1="0x7ffd7044e690" astOperand2="0x7ffd7044fbc0"/>
+    <token id="0x7ffd7044fbc0" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="33" str="readBuffer" scope="0x7ffd7044f910" type="name" varId="1" variable="0x7ffd70450980" astParent="0x7ffd7044fb70" valueType-type="char" valueType-sign="unsigned" valueType-pointer="1"/>
+    <token id="0x7ffd7044fc10" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="43" str="," scope="0x7ffd7044f910" astParent="0x7ffd7044e430" astOperand1="0x7ffd7044fb70" astOperand2="0x7ffd7044fcb0"/>
+    <token id="0x7ffd7044fc60" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="45" str="uint16_t" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd7044fcb0" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="54" str="length" scope="0x7ffd7044f910" type="name" varId="2" variable="0x7ffd70450a50" astParent="0x7ffd7044fc10" valueType-type="short" valueType-sign="unsigned"/>
+    <token id="0x7ffd7044fd00" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="60" str=")" scope="0x7ffd7044f910" link="0x7ffd7044e430"/>
+    <token id="0x7ffd7044fd50" file="mcc_generated_files/boot/com_adaptor.h" linenr="61" column="61" str=";" scope="0x7ffd7044f910"/>
+    <token id="0x7ffd7044fda0" file="mcc_generated_files/boot/com_adaptor.h" linenr="62" column="1" str="uint16_t" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd7044fe70" file="mcc_generated_files/boot/com_adaptor.h" linenr="62" column="10" str="BOOT_COM_GetBytesReady" scope="0x7ffd7044f910" type="name" function="0x7ffd70450720" astParent="0x7ffd7044fec0"/>
+    <token id="0x7ffd7044fec0" file="mcc_generated_files/boot/com_adaptor.h" linenr="62" column="32" str="(" scope="0x7ffd7044f910" link="0x7ffd7044ff10" astOperand1="0x7ffd7044fe70" valueType-type="short" valueType-sign="unsigned"/>
+    <token id="0x7ffd7044ff10" file="mcc_generated_files/boot/com_adaptor.h" linenr="62" column="33" str=")" scope="0x7ffd7044f910" link="0x7ffd7044fec0"/>
+    <token id="0x7ffd7044ff60" file="mcc_generated_files/boot/com_adaptor.h" linenr="62" column="34" str=";" scope="0x7ffd7044f910"/>
+    <token id="0x7ffd7044ffb0" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="1" str="uint8_t" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd70450000" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="9" str="BOOT_COM_Peek" scope="0x7ffd7044f910" type="name" function="0x7ffd704507c0" astParent="0x7ffd70450050"/>
+    <token id="0x7ffd70450050" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="22" str="(" scope="0x7ffd7044f910" link="0x7ffd704501c0" astOperand1="0x7ffd70450000" astOperand2="0x7ffd70450170" valueType-type="char" valueType-sign="unsigned"/>
+    <token id="0x7ffd704500a0" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="23" str="uint16_t" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd70450170" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="32" str="location" scope="0x7ffd7044f910" type="name" varId="3" variable="0x7ffd70450b20" astParent="0x7ffd70450050" valueType-type="short" valueType-sign="unsigned"/>
+    <token id="0x7ffd704501c0" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="40" str=")" scope="0x7ffd7044f910" link="0x7ffd70450050"/>
+    <token id="0x7ffd70450210" file="mcc_generated_files/boot/com_adaptor.h" linenr="63" column="41" str=";" scope="0x7ffd7044f910"/>
+    <token id="0x7ffd70450260" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="1" str="void" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd704502b0" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="6" str="BOOT_COM_Write" scope="0x7ffd7044f910" type="name" function="0x7ffd704508a0" astParent="0x7ffd70450300"/>
+    <token id="0x7ffd70450300" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="20" str="(" scope="0x7ffd7044f910" link="0x7ffd704505b0" astOperand1="0x7ffd704502b0" astOperand2="0x7ffd704504c0" valueType-type="void"/>
+    <token id="0x7ffd70450350" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="21" str="uint8_t" scope="0x7ffd7044f910" type="name" astParent="0x7ffd704503a0"/>
+    <token id="0x7ffd704503a0" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="28" str="*" scope="0x7ffd7044f910" type="op" isArithmeticalOp="True" astParent="0x7ffd704504c0" astOperand1="0x7ffd70450350" astOperand2="0x7ffd70450470"/>
+    <token id="0x7ffd70450470" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="30" str="data" scope="0x7ffd7044f910" type="name" varId="4" variable="0x7ffd70450bf0" astParent="0x7ffd704503a0" valueType-type="char" valueType-sign="unsigned" valueType-pointer="1"/>
+    <token id="0x7ffd704504c0" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="34" str="," scope="0x7ffd7044f910" astParent="0x7ffd70450300" astOperand1="0x7ffd704503a0" astOperand2="0x7ffd70450560"/>
+    <token id="0x7ffd70450510" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="36" str="uint16_t" scope="0x7ffd7044f910" type="name"/>
+    <token id="0x7ffd70450560" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="45" str="length" scope="0x7ffd7044f910" type="name" varId="5" variable="0x7ffd70450cc0" astParent="0x7ffd704504c0" valueType-type="short" valueType-sign="unsigned"/>
+    <token id="0x7ffd704505b0" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="51" str=")" scope="0x7ffd7044f910" link="0x7ffd70450300"/>
+    <token id="0x7ffd70450600" file="mcc_generated_files/boot/com_adaptor.h" linenr="64" column="52" str=";" scope="0x7ffd7044f910"/>
+  </tokenlist>
+  <scopes>
+    <scope id="0x7ffd7044f910" type="Global">
+      <functionList>
+        <function id="0x7ffd70450680" tokenDef="0x7ffd7044e540" name="BOOT_COM_Read" type="Function">
+          <arg nr="1" variable="0x7ffd70450980"/>
+          <arg nr="2" variable="0x7ffd70450a50"/>
+        </function>
+        <function id="0x7ffd70450720" tokenDef="0x7ffd7044fe70" name="BOOT_COM_GetBytesReady" type="Function"/>
+        <function id="0x7ffd704507c0" tokenDef="0x7ffd70450000" name="BOOT_COM_Peek" type="Function">
+          <arg nr="1" variable="0x7ffd70450b20"/>
+        </function>
+        <function id="0x7ffd704508a0" tokenDef="0x7ffd704502b0" name="BOOT_COM_Write" type="Function">
+          <arg nr="1" variable="0x7ffd70450bf0"/>
+          <arg nr="2" variable="0x7ffd70450cc0"/>
+        </function>
+      </functionList>
+    </scope>
+  </scopes>
+  <variables>
+    <var id="0x7ffd70450980" nameToken="0x7ffd7044fbc0" typeStartToken="0x7ffd7044e690" typeEndToken="0x7ffd7044fb70" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="true" isReference="false" isStatic="false"/>
+    <var id="0x7ffd70450a50" nameToken="0x7ffd7044fcb0" typeStartToken="0x7ffd7044fc60" typeEndToken="0x7ffd7044fc60" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="false" isReference="false" isStatic="false"/>
+    <var id="0x7ffd70450b20" nameToken="0x7ffd70450170" typeStartToken="0x7ffd704500a0" typeEndToken="0x7ffd704500a0" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="false" isReference="false" isStatic="false"/>
+    <var id="0x7ffd70450bf0" nameToken="0x7ffd70450470" typeStartToken="0x7ffd70450350" typeEndToken="0x7ffd704503a0" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="true" isReference="false" isStatic="false"/>
+    <var id="0x7ffd70450cc0" nameToken="0x7ffd70450560" typeStartToken="0x7ffd70450510" typeEndToken="0x7ffd70450510" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="false" isReference="false" isStatic="false"/>
+  </variables>
+  <valueflow>
+  </valueflow>
+</dump>
+</dumps>

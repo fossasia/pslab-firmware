@@ -1,0 +1,174 @@
+<?xml version="1.0"?>
+<dumps>
+  <platform name="Native" char_bit="8" short_bit="16" int_bit="32" long_bit="64" long_long_bit="64" pointer_bit="64"/>
+  <rawtokens>
+    <file index="0" name="mcc_generated_files/traps.h"/>
+    <tok fileIndex="0" linenr="1" column="1" str="/**x  System Traps Generated Driver File xx  @Company:x    Microchip Technology Inc.xx  @File Name:x    traps.hxx  @Summary:x    This is the generated driver implementation file for handling trapsx    using PIC24 / dsPIC33 / PIC32MM MCUsxx  @Description:x    This source file provides implementations for PIC24 / dsPIC33 / PIC32MM MCUs traps.x    Generation Information : x        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0x        Device            :  PIC24EP256GP204x    The generated drivers are tested against the following:x        Compiler          :  XC16 v1.61x        MPLAB             :  MPLAB X v5.45x*/"/>
+    <tok fileIndex="0" linenr="23" column="1" str="/*x    (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use thisx    software and any derivatives exclusively with Microchip products.xx    THIS SOFTWARE IS SUPPLIED BY MICROCHIP &quot;AS IS&quot;. NO WARRANTIES, WHETHERx    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIEDx    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR Ax    PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATIONx    WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION.xx    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,x    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KINDx    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HASx    BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THEx    FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS INx    ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,x    THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.xx    MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESEx    TERMS.x*/"/>
+    <tok fileIndex="0" linenr="45" column="1" str="#"/>
+    <tok fileIndex="0" linenr="45" column="2" str="ifndef"/>
+    <tok fileIndex="0" linenr="45" column="9" str="_TRAPS_H"/>
+    <tok fileIndex="0" linenr="46" column="1" str="#"/>
+    <tok fileIndex="0" linenr="46" column="2" str="define"/>
+    <tok fileIndex="0" linenr="46" column="9" str="_TRAPS_H"/>
+    <tok fileIndex="0" linenr="48" column="1" str="#"/>
+    <tok fileIndex="0" linenr="48" column="2" str="include"/>
+    <tok fileIndex="0" linenr="48" column="10" str="&lt;stdint.h&gt;"/>
+    <tok fileIndex="0" linenr="50" column="1" str="/** * Error codes */"/>
+    <tok fileIndex="0" linenr="53" column="1" str="typedef"/>
+    <tok fileIndex="0" linenr="53" column="9" str="enum"/>
+    <tok fileIndex="0" linenr="54" column="1" str="{"/>
+    <tok fileIndex="0" linenr="55" column="5" str="/* ----- Traps ----- */"/>
+    <tok fileIndex="0" linenr="56" column="5" str="TRAPS_OSC_FAIL"/>
+    <tok fileIndex="0" linenr="56" column="20" str="="/>
+    <tok fileIndex="0" linenr="56" column="22" str="0"/>
+    <tok fileIndex="0" linenr="56" column="23" str=","/>
+    <tok fileIndex="0" linenr="56" column="25" str="/** Oscillator Fail Trap vector */"/>
+    <tok fileIndex="0" linenr="57" column="5" str="TRAPS_STACK_ERR"/>
+    <tok fileIndex="0" linenr="57" column="21" str="="/>
+    <tok fileIndex="0" linenr="57" column="23" str="1"/>
+    <tok fileIndex="0" linenr="57" column="24" str=","/>
+    <tok fileIndex="0" linenr="57" column="26" str="/** Stack Error Trap Vector */"/>
+    <tok fileIndex="0" linenr="58" column="5" str="TRAPS_ADDRESS_ERR"/>
+    <tok fileIndex="0" linenr="58" column="23" str="="/>
+    <tok fileIndex="0" linenr="58" column="25" str="2"/>
+    <tok fileIndex="0" linenr="58" column="26" str=","/>
+    <tok fileIndex="0" linenr="58" column="28" str="/** Address error Trap vector */"/>
+    <tok fileIndex="0" linenr="59" column="5" str="TRAPS_MATH_ERR"/>
+    <tok fileIndex="0" linenr="59" column="20" str="="/>
+    <tok fileIndex="0" linenr="59" column="22" str="3"/>
+    <tok fileIndex="0" linenr="59" column="23" str=","/>
+    <tok fileIndex="0" linenr="59" column="25" str="/** Math Error Trap vector */"/>
+    <tok fileIndex="0" linenr="60" column="5" str="TRAPS_DMAC_ERR"/>
+    <tok fileIndex="0" linenr="60" column="20" str="="/>
+    <tok fileIndex="0" linenr="60" column="22" str="4"/>
+    <tok fileIndex="0" linenr="60" column="23" str=","/>
+    <tok fileIndex="0" linenr="60" column="25" str="/** DMAC Error Trap vector */"/>
+    <tok fileIndex="0" linenr="61" column="5" str="TRAPS_HARD_ERR"/>
+    <tok fileIndex="0" linenr="61" column="20" str="="/>
+    <tok fileIndex="0" linenr="61" column="22" str="7"/>
+    <tok fileIndex="0" linenr="61" column="23" str=","/>
+    <tok fileIndex="0" linenr="61" column="25" str="/** Generic Hard Trap vector */"/>
+    <tok fileIndex="0" linenr="62" column="5" str="TRAPS_DAE_ERR"/>
+    <tok fileIndex="0" linenr="62" column="19" str="="/>
+    <tok fileIndex="0" linenr="62" column="21" str="9"/>
+    <tok fileIndex="0" linenr="62" column="22" str=","/>
+    <tok fileIndex="0" linenr="62" column="24" str="/** Generic Soft Trap vector */"/>
+    <tok fileIndex="0" linenr="63" column="5" str="TRAPS_DOOVR_ERR"/>
+    <tok fileIndex="0" linenr="63" column="21" str="="/>
+    <tok fileIndex="0" linenr="63" column="23" str="10"/>
+    <tok fileIndex="0" linenr="63" column="25" str=","/>
+    <tok fileIndex="0" linenr="63" column="27" str="/** Generic Soft Trap vector */"/>
+    <tok fileIndex="0" linenr="64" column="1" str="}"/>
+    <tok fileIndex="0" linenr="64" column="3" str="TRAPS_ERROR_CODE"/>
+    <tok fileIndex="0" linenr="64" column="19" str=";"/>
+    <tok fileIndex="0" linenr="66" column="1" str="/**x  @Summaryx    Default handler for the trapsxx  @Descriptionx    This routine will be called whenever a trap happens. It stores the trapx    error code and waits forever.x    This routine has a weak attribute and can be over written.xx  @Preconditionsx    None.xx  @Returnsx    None.xx  @Paramx    None.xx  @Examplex    None.xx*/"/>
+    <tok fileIndex="0" linenr="88" column="1" str="void"/>
+    <tok fileIndex="0" linenr="88" column="6" str="TRAPS_halt_on_error"/>
+    <tok fileIndex="0" linenr="88" column="25" str="("/>
+    <tok fileIndex="0" linenr="88" column="26" str="uint16_t"/>
+    <tok fileIndex="0" linenr="88" column="35" str="code"/>
+    <tok fileIndex="0" linenr="88" column="39" str=")"/>
+    <tok fileIndex="0" linenr="88" column="40" str=";"/>
+    <tok fileIndex="0" linenr="90" column="1" str="#"/>
+    <tok fileIndex="0" linenr="90" column="2" str="endif"/>
+  </rawtokens>
+  <suppressions>
+  </suppressions>
+<dump cfg="">
+  <standards>
+    <c version="c11"/>
+    <cpp version="c++20"/>
+  </standards>
+  <directivelist>
+    <directive file="mcc_generated_files/traps.h" linenr="45" str="#ifndef _TRAPS_H"/>
+    <directive file="mcc_generated_files/traps.h" linenr="46" str="#define _TRAPS_H"/>
+    <directive file="mcc_generated_files/traps.h" linenr="48" str="#include &lt;stdint.h&gt;"/>
+    <directive file="mcc_generated_files/traps.h" linenr="90" str="#endif"/>
+  </directivelist>
+  <tokenlist>
+    <token id="0x7ffd7044ee00" file="mcc_generated_files/traps.h" linenr="53" column="9" str="enum" scope="0x7ffd7044fd80" type="name"/>
+    <token id="0x7ffd7044fb50" file="mcc_generated_files/traps.h" linenr="53" column="0" str="TRAPS_ERROR_CODE" scope="0x7ffd7044fd80" type="name"/>
+    <token id="0x7ffd70450bc0" file="mcc_generated_files/traps.h" linenr="54" column="1" str="{" scope="0x7ffd7044fd80" link="0x7ffd70454d20"/>
+    <token id="0x7ffd70450c10" file="mcc_generated_files/traps.h" linenr="56" column="5" str="TRAPS_OSC_FAIL" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70450d80"/>
+    <token id="0x7ffd70450d80" file="mcc_generated_files/traps.h" linenr="56" column="20" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd70450f20" astOperand1="0x7ffd70450c10" astOperand2="0x7ffd70450e50"/>
+    <token id="0x7ffd70450e50" file="mcc_generated_files/traps.h" linenr="56" column="22" str="0" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd7044ea20" astParent="0x7ffd70450d80" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd70450f20" file="mcc_generated_files/traps.h" linenr="56" column="23" str="," scope="0x7ffd7044fd80" astParent="0x7ffd704538d0" astOperand1="0x7ffd70450d80" astOperand2="0x7ffd70453730"/>
+    <token id="0x7ffd70453660" file="mcc_generated_files/traps.h" linenr="57" column="5" str="TRAPS_STACK_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70453730"/>
+    <token id="0x7ffd70453730" file="mcc_generated_files/traps.h" linenr="57" column="21" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd70450f20" astOperand1="0x7ffd70453660" astOperand2="0x7ffd70453800"/>
+    <token id="0x7ffd70453800" file="mcc_generated_files/traps.h" linenr="57" column="23" str="1" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd7044f340" astParent="0x7ffd70453730" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd704538d0" file="mcc_generated_files/traps.h" linenr="57" column="24" str="," scope="0x7ffd7044fd80" astParent="0x7ffd70453c10" astOperand1="0x7ffd70450f20" astOperand2="0x7ffd70453a70"/>
+    <token id="0x7ffd704539a0" file="mcc_generated_files/traps.h" linenr="58" column="5" str="TRAPS_ADDRESS_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70453a70"/>
+    <token id="0x7ffd70453a70" file="mcc_generated_files/traps.h" linenr="58" column="23" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd704538d0" astOperand1="0x7ffd704539a0" astOperand2="0x7ffd70453b40"/>
+    <token id="0x7ffd70453b40" file="mcc_generated_files/traps.h" linenr="58" column="25" str="2" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd7044f680" astParent="0x7ffd70453a70" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd70453c10" file="mcc_generated_files/traps.h" linenr="58" column="26" str="," scope="0x7ffd7044fd80" astParent="0x7ffd70453f50" astOperand1="0x7ffd704538d0" astOperand2="0x7ffd70453db0"/>
+    <token id="0x7ffd70453ce0" file="mcc_generated_files/traps.h" linenr="59" column="5" str="TRAPS_MATH_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70453db0"/>
+    <token id="0x7ffd70453db0" file="mcc_generated_files/traps.h" linenr="59" column="20" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd70453c10" astOperand1="0x7ffd70453ce0" astOperand2="0x7ffd70453e80"/>
+    <token id="0x7ffd70453e80" file="mcc_generated_files/traps.h" linenr="59" column="22" str="3" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd7044f1a0" astParent="0x7ffd70453db0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd70453f50" file="mcc_generated_files/traps.h" linenr="59" column="23" str="," scope="0x7ffd7044fd80" astParent="0x7ffd70454290" astOperand1="0x7ffd70453c10" astOperand2="0x7ffd704540f0"/>
+    <token id="0x7ffd70454020" file="mcc_generated_files/traps.h" linenr="60" column="5" str="TRAPS_DMAC_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd704540f0"/>
+    <token id="0x7ffd704540f0" file="mcc_generated_files/traps.h" linenr="60" column="20" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd70453f50" astOperand1="0x7ffd70454020" astOperand2="0x7ffd704541c0"/>
+    <token id="0x7ffd704541c0" file="mcc_generated_files/traps.h" linenr="60" column="22" str="4" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd7044f860" astParent="0x7ffd704540f0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd70454290" file="mcc_generated_files/traps.h" linenr="60" column="23" str="," scope="0x7ffd7044fd80" astParent="0x7ffd704545d0" astOperand1="0x7ffd70453f50" astOperand2="0x7ffd70454430"/>
+    <token id="0x7ffd70454360" file="mcc_generated_files/traps.h" linenr="61" column="5" str="TRAPS_HARD_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70454430"/>
+    <token id="0x7ffd70454430" file="mcc_generated_files/traps.h" linenr="61" column="20" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd70454290" astOperand1="0x7ffd70454360" astOperand2="0x7ffd70454500"/>
+    <token id="0x7ffd70454500" file="mcc_generated_files/traps.h" linenr="61" column="22" str="7" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd7044e610" astParent="0x7ffd70454430" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd704545d0" file="mcc_generated_files/traps.h" linenr="61" column="23" str="," scope="0x7ffd7044fd80" astParent="0x7ffd70454910" astOperand1="0x7ffd70454290" astOperand2="0x7ffd70454770"/>
+    <token id="0x7ffd704546a0" file="mcc_generated_files/traps.h" linenr="62" column="5" str="TRAPS_DAE_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70454770"/>
+    <token id="0x7ffd70454770" file="mcc_generated_files/traps.h" linenr="62" column="19" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd704545d0" astOperand1="0x7ffd704546a0" astOperand2="0x7ffd70454840"/>
+    <token id="0x7ffd70454840" file="mcc_generated_files/traps.h" linenr="62" column="21" str="9" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd70450990" astParent="0x7ffd70454770" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd70454910" file="mcc_generated_files/traps.h" linenr="62" column="22" str="," scope="0x7ffd7044fd80" astOperand1="0x7ffd704545d0" astOperand2="0x7ffd70454ab0"/>
+    <token id="0x7ffd704549e0" file="mcc_generated_files/traps.h" linenr="63" column="5" str="TRAPS_DOOVR_ERR" scope="0x7ffd7044fd80" type="name" astParent="0x7ffd70454ab0"/>
+    <token id="0x7ffd70454ab0" file="mcc_generated_files/traps.h" linenr="63" column="21" str="=" scope="0x7ffd7044fd80" type="op" isAssignmentOp="True" astParent="0x7ffd70454910" astOperand1="0x7ffd704549e0" astOperand2="0x7ffd70454b80"/>
+    <token id="0x7ffd70454b80" file="mcc_generated_files/traps.h" linenr="63" column="23" str="10" scope="0x7ffd7044fd80" type="number" isInt="True" values="0x7ffd70450a40" astParent="0x7ffd70454ab0" valueType-type="int" valueType-sign="signed"/>
+    <token id="0x7ffd70454c50" file="mcc_generated_files/traps.h" linenr="63" column="25" str="," scope="0x7ffd7044fd80"/>
+    <token id="0x7ffd70454d20" file="mcc_generated_files/traps.h" linenr="64" column="1" str="}" scope="0x7ffd7044fd80" link="0x7ffd70450bc0"/>
+    <token id="0x7ffd7044fc20" file="mcc_generated_files/traps.h" linenr="64" column="0" str=";" scope="0x7ffd7044fd80"/>
+    <token id="0x7ffd7044fcf0" file="mcc_generated_files/traps.h" linenr="88" column="1" str="void" scope="0x7ffd7044fd80" type="name"/>
+    <token id="0x7ffd70455060" file="mcc_generated_files/traps.h" linenr="88" column="6" str="TRAPS_halt_on_error" scope="0x7ffd7044fd80" type="name" function="0x7ffd70454ed0" astParent="0x7ffd70455130"/>
+    <token id="0x7ffd70455130" file="mcc_generated_files/traps.h" linenr="88" column="25" str="(" scope="0x7ffd7044fd80" link="0x7ffd704553a0" astOperand1="0x7ffd70455060" astOperand2="0x7ffd704552d0" valueType-type="void"/>
+    <token id="0x7ffd70455200" file="mcc_generated_files/traps.h" linenr="88" column="26" str="uint16_t" scope="0x7ffd7044fd80" type="name"/>
+    <token id="0x7ffd704552d0" file="mcc_generated_files/traps.h" linenr="88" column="35" str="code" scope="0x7ffd7044fd80" type="name" varId="1" variable="0x7ffd7044feb0" astParent="0x7ffd70455130" valueType-type="short" valueType-sign="unsigned"/>
+    <token id="0x7ffd704553a0" file="mcc_generated_files/traps.h" linenr="88" column="39" str=")" scope="0x7ffd7044fd80" link="0x7ffd70455130"/>
+    <token id="0x7ffd70455470" file="mcc_generated_files/traps.h" linenr="88" column="40" str=";" scope="0x7ffd7044fd80"/>
+  </tokenlist>
+  <scopes>
+    <scope id="0x7ffd7044fd80" type="Global">
+      <functionList>
+        <function id="0x7ffd70454ed0" tokenDef="0x7ffd70455060" name="TRAPS_halt_on_error" type="Function">
+          <arg nr="1" variable="0x7ffd7044feb0"/>
+        </function>
+      </functionList>
+    </scope>
+  </scopes>
+  <variables>
+    <var id="0x7ffd7044feb0" nameToken="0x7ffd704552d0" typeStartToken="0x7ffd70455200" typeEndToken="0x7ffd70455200" access="Argument" scope="0x0" constness="0" isArgument="true" isArray="false" isClass="false" isConst="false" isExtern="false" isLocal="false" isPointer="false" isReference="false" isStatic="false"/>
+  </variables>
+  <valueflow>
+    <values id="0x7ffd7044ea20">
+      <value intvalue="0" known="true"/>
+    </values>
+    <values id="0x7ffd7044f340">
+      <value intvalue="1" known="true"/>
+    </values>
+    <values id="0x7ffd7044f680">
+      <value intvalue="2" known="true"/>
+    </values>
+    <values id="0x7ffd7044f1a0">
+      <value intvalue="3" known="true"/>
+    </values>
+    <values id="0x7ffd7044f860">
+      <value intvalue="4" known="true"/>
+    </values>
+    <values id="0x7ffd7044e610">
+      <value intvalue="7" known="true"/>
+    </values>
+    <values id="0x7ffd70450990">
+      <value intvalue="9" known="true"/>
+    </values>
+    <values id="0x7ffd70450a40">
+      <value intvalue="10" known="true"/>
+    </values>
+  </valueflow>
+</dump>
+</dumps>
