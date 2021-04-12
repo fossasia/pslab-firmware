@@ -38,6 +38,8 @@ Compiled `.hex` files can be uploaded into the microcontroller using a direct US
 
 It might not be straightforward to run this application. Java and JavaFX libraries are required as pre-requisites and they can be downloaded from [Gluonhq](https://gluonhq.com/products/javafx/) page and installation instructions are available at [OpenJFX Docs](https://openjfx.io/openjfx-docs/#install-javafx) page. Extract the `lib` folder into `/usr/local/openjfx/` directory to use the supplimentary [shell file](bootloader-host-application/run-host.sh) to execute the GUI application.
 
+More resources on ezbl integration can be found from [this video](https://www.youtube.com/watch?v=2LhW11LbNhY).
+
 ## Branch Policy
 
 * The **bootloader** branch contains the new version of firmware that enables on-site firmware updates over a USB connection.

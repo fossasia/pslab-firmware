@@ -1,2 +1,10 @@
 .DS_Store
 */.DS_Store
+
+pslab-bootloader.X/.generated_files
+pslab-bootloader.X/build
+pslab-bootloader.X/dist
+
+pslab-bootloader.X/nbproject/Makefile-*
+pslab-bootloader.X/nbproject/Package-*
+pslab-bootloader.X/nbproject/private
