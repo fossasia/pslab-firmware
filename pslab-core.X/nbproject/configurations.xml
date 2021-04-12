@@ -4,6 +4,38 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <logicalFolder name="boot" displayName="boot" projectFiles="true">
+          <itemPath>mcc_generated_files/boot/boot_config.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
+          <itemPath>mcc_generated_files/drivers/spi_master.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
+          <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/integer.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/diskio.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ff.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ffconf.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
+          <itemPath>mcc_generated_files/sd_spi/sd_spi.h</itemPath>
+        </logicalFolder>
+        <itemPath>mcc_generated_files/watchdog.h</itemPath>
+        <itemPath>mcc_generated_files/reset.h</itemPath>
+        <itemPath>mcc_generated_files/traps.h</itemPath>
+        <itemPath>mcc_generated_files/clock.h</itemPath>
+        <itemPath>mcc_generated_files/mcc.h</itemPath>
+        <itemPath>mcc_generated_files/spi1_driver.h</itemPath>
+        <itemPath>mcc_generated_files/system.h</itemPath>
+        <itemPath>mcc_generated_files/system_types.h</itemPath>
+        <itemPath>mcc_generated_files/spi1_types.h</itemPath>
+        <itemPath>mcc_generated_files/pin_manager.h</itemPath>
+        <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
+        <itemPath>mcc_generated_files/reset_types.h</itemPath>
+      </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -12,11 +44,57 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <logicalFolder name="boot" displayName="boot" projectFiles="true">
+          <itemPath>mcc_generated_files/boot/remapped_reset.S</itemPath>
+          <itemPath>mcc_generated_files/boot/combineAppAndBootloaderHex.sh</itemPath>
+          <itemPath>mcc_generated_files/boot/hardware_interrupt_table.S</itemPath>
+          <itemPath>mcc_generated_files/boot/interrupts.S</itemPath>
+          <itemPath>mcc_generated_files/boot/memory_partition.S</itemPath>
+          <itemPath>mcc_generated_files/boot/user_interrupt_table.S</itemPath>
+        </logicalFolder>
+        <logicalFolder name="docs" displayName="docs" projectFiles="true">
+          <itemPath>mcc_generated_files/docs/spi_basic.dox</itemPath>
+          <itemPath>mcc_generated_files/docs/spi.dox</itemPath>
+        </logicalFolder>
+        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
+          <itemPath>mcc_generated_files/drivers/spi_master.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
+          <itemPath>mcc_generated_files/fatfs/ffsystem.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ff.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/diskio.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ffunicode.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/fatfs_demo.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
+          <itemPath>mcc_generated_files/sd_spi/sd_spi.c</itemPath>
+        </logicalFolder>
+        <itemPath>mcc_generated_files/traps.c</itemPath>
+        <itemPath>mcc_generated_files/clock.c</itemPath>
+        <itemPath>mcc_generated_files/reset.c</itemPath>
+        <itemPath>mcc_generated_files/system.c</itemPath>
+        <itemPath>mcc_generated_files/mcc.c</itemPath>
+        <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
+        <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
+        <itemPath>mcc_generated_files/pin_manager.c</itemPath>
+      </logicalFolder>
+      <itemPath>main.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
+      <logicalFolder name="MCC Generated Files"
+                     displayName="MCC Generated Files"
+                     projectFiles="true">
+        <logicalFolder name="boot" displayName="boot" projectFiles="true">
+          <itemPath>mcc_generated_files/boot/combineAppAndBootloaderHex.bat</itemPath>
+        </logicalFolder>
+      </logicalFolder>
       <itemPath>Makefile</itemPath>
+      <itemPath>pslab-core.mc3</itemPath>
     </logicalFolder>
   </logicalFolder>
   <projectmakefile>Makefile</projectmakefile>
