@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB             :  MPLAB X v5.45
-*/
+ */
 
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,14 +40,14 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #include <stdint.h>
+#include <libpic30.h>
 #include "xc.h"
 #include "clock.h"
 
-void CLOCK_Initialize(void)
-{
+void CLOCK_Initialize(void) {
     // FRCDIV FRC/2; PLLPRE 12; DOZE 1:8; PLLPOST 1:4; DOZEN disabled; ROI disabled; 
     CLKDIV = 0x314A;
     // TUN Center frequency; 
@@ -72,4 +72,12 @@ void CLOCK_Initialize(void)
     // Wait for Clock switch to occur
     while (OSCCONbits.OSWEN != 0);
     while (OSCCONbits.LOCK != 1);
+}
+
+void Delay_Mili(unsigned long d) {
+    __delay32(d * (_XTAL_FREQ) / 1000ULL);
+}
+
+void Delay_Micro(unsigned long d) {
+    __delay32(d * (_XTAL_FREQ) / 1000000ULL);
 }

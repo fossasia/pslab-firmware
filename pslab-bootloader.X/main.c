@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB 	          :  MPLAB X v5.45
-*/
+ */
 
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,19 +40,19 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 /**
   Section: Included Files
-*/
+ */
 #include "mcc_generated_files/system.h"
 #include "mcc_generated_files/boot/boot_demo.h"
 #include "mcc_generated_files/clock.h"
 #include "mcc_generated_files/pin_manager.h"
 
-#define FCY _XTAL_FREQ/4
+#include "rgb_led.h"
+#include "mcc_generated_files/watchdog.h"
 
-#include <libpic30.h>
 /*
                          Main application
  */
@@ -60,22 +60,32 @@ int main(void)
 {
     // initialize the device
     SYSTEM_Initialize();
+    
     int i;
-    for (i = 0; i < 10; i++) {
+    for (i = 0; i < 5; i++) {
         STATUS_LED_Toggle();
-        __delay_ms(100);
+        Delay_Mili(400);
     }
-    BOOT_DEMO_Initialize();
-
+    Light_RGB(20, 0, 0);
+    Delay_Mili(2000);
+    Light_RGB(0, 20, 0);
+    Delay_Mili(2000);
+    Light_RGB(0, 0, 20);
+    Delay_Mili(2000);
+    Light_RGB(20, 20, 20);
+    Delay_Mili(5000);
+    
+    Initialize_BOOT_Sequence();
+    
     while (1)
     {
         // Add your application code
-        BOOT_DEMO_Tasks();
+//        BOOT_DEMO_Tasks();
     }
 
     return 1;
 }
 /**
  End of File
-*/
+ */
 

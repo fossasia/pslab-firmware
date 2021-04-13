@@ -73,6 +73,8 @@
  */
 void CLOCK_Initialize(void);
 
+void Delay_Mili(unsigned long);
+void Delay_Micro(unsigned long);
 
 #endif	/* CLOCK_H */
 /**

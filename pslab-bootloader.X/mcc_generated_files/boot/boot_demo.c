@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.36B
         MPLAB             :  MPLAB X v5.15
-*/
+ */
 /*
 Copyright (c) [2012-2019] Microchip Technology Inc.  
 
@@ -51,91 +51,48 @@ Copyright (c) [2012-2019] Microchip Technology Inc.
     this notice or applicable license.  To the extent the terms of such 
     third party licenses prohibit any of the restrictions described here, 
     such restrictions will not apply to such third party software.
-*/
-#include "../memory/flash.h"
-#include "boot_process.h"
-
+ */
 #include <stdbool.h>
 #include <stdint.h>
-#include "../clock.h"
 
-#define FCY _XTAL_FREQ/4
-
-#include <libpic30.h>
+#include "boot_process.h"
 #include "boot_config.h"
+
+#include "../memory/flash.h"
+#include "../clock.h"
 #include "../pin_manager.h"
+#include "../../rgb_led.h"
 
 static bool inBootloadMode = false;
 
 static bool EnterBootloadMode(void);
 
-void BOOT_DEMO_Initialize(void)
-{   
-//    RGB_LED_SetHigh();
-//    __delay_ms(1);
-//    
-//    unsigned char data[] = {0, 0, 0};
-//    unsigned char location = 0;
-//    unsigned char ca = 0;
-//    unsigned char cb = 0;
-//    
-//    data[2] = 20;
-//    data[1] = 50;
-//    data[0] = 10;
-//    
-//    RGB_LED_SetLow();
-//    
-//    __delay_us(51);
-//    
-//    for (location = 0; location < 3; location++) {
-//        cb = data[location];
-//        for (ca = 0; ca < 8; ca++) {
-//            // 64 -- 1us
-//            if (cb & 0x80) {
-//                // T1H = 0.9 us 0.7
-//                RGB_LED_SetHigh();
-//                __asm__ __volatile__ ("repeat #50"); __asm__ volatile ("nop");
-//                // T1L = 0.35 us 0.6
-//                RGB_LED_SetLow();
-//                __asm__ __volatile__ ("repeat #20"); __asm__ volatile ("nop");
-//            } else {
-//                // T0H = 0.35 us 0.35 
-//                RGB_LED_SetHigh();
-//                __asm__ __volatile__ ("repeat #20"); __asm__ volatile ("nop");
-//                // T0L = 0.9 us 0.8
-//                RGB_LED_SetLow();
-//                __asm__ __volatile__ ("repeat #50"); __asm__ volatile ("nop");
-//            }
-//            cb = cb << 1;
-//        }
-//    }
-    
+void Initialize_BOOT_Sequence(void) {
 
-}
-
-void BOOT_DEMO_Tasks(void)
-{
-    if(inBootloadMode == false)
-    {
-        if( (EnterBootloadMode() == true) || (BOOT_Verify() == false) )
-        {
-            inBootloadMode = true;
-        }
-        else
-        {
-            BOOT_StartApplication();
-        }
+    if ((EnterBootloadMode() == false) || (BOOT_Verify() == true)) {
+        BOOT_StartApplication();
     }
-    
+
     BOOT_ProcessCommand();
 }
 
-static bool EnterBootloadMode(void)
-{
-    #warning "Update this function to return 'true' when you want to stay in the boot loader, and 'false' when you want to allow a release to the application code"
- 
-    /* NOTE: This might be a a push button status on power up, a command from a peripheral, 
-     * or whatever is specific to your boot loader implementation */    
+// In case of a failure, revert back to this method from above method
+void BOOT_DEMO_Tasks(void) {
+    if (inBootloadMode == false) {
+        if ((EnterBootloadMode() == true) || (BOOT_Verify() == false)) {
+            inBootloadMode = true;
+        } else {
+            BOOT_StartApplication();
+        }
+    }
 
+    BOOT_ProcessCommand();
+}
+
+static bool EnterBootloadMode(void) {
+    if (GPIO_PIN_GetValue() == 0) {
+        return true;
+    }
+    
     return false;
 }
