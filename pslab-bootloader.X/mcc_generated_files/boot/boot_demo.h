@@ -56,7 +56,7 @@ Copyright (c) [2012-2019] Microchip Technology Inc.
 #ifndef BOOT_DEMO_H
 #define BOOT_DEMO_H
 
-void BOOT_DEMO_Initialize(void);
+void Initialize_BOOT_Sequence(void);
 void BOOT_DEMO_Tasks(void);
 
 #endif
