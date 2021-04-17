@@ -9,17 +9,30 @@ on:
 jobs:
 
     build:
-        
         runs-on: ubuntu-latest
-
         steps:
-        - uses: actions/checkout@v2
+            - name: Download project files
+              uses: actions/checkout@v2
 
-        - name: Install MPLab IDE and Compilers
-          run: scripts/install_mplab_dependencies.sh
-        
-        - name: Make bootloader project
-          run: |
-            cd pslab-bootloader.X
-            /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
-            /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
+            - name: Cache dependencies
+              id: cache-ide-compiler
+              uses: actions/cache@v2
+              with:
+                path: /opt/microchip/mplabx/*
+                key: ${{ runner.os }}-microchip
+
+            - name: Install dependencies
+              if: steps.cache-ide-compiler.outputs.cache-hit != 'true'
+              run: scripts/install_mplab_dependencies.sh
+
+            - name: Build Bootloader project
+              run: |
+                cd pslab-bootloader.X
+                /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
+                /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
+
+            - name: Build Core application
+              run: |
+                cd pslab-core.X
+                /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
+                /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
