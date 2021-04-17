@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Install pre-requisites
+sudo apt-get install libc6:i386 libx11-6:i386 libxext6:i386 libstdc++6:i386 libexpat1:i386
+
 # Create a folder for the installation files.
 mkdir ../install-dependencies
 cd ../install-dependencies
@@ -12,7 +15,7 @@ echo "Extracting MPLAB X IDE"
 tar -xvf mplabx-v5.45-linux-installer.tar
 
 echo "Installing MPLAB X IDE"
-sudo ./MPLABX-v5.45-linux-installer.sh --mode unattended
+sudo ./MPLABX-v5.45-linux-installer.sh -- --mode unattended --unattendedmodeui minimal --debuglevel 0 --8bitmcu 0 --32bitmcu 0 --othermcu 0
 
 echo "MPLAB IDE installed successfully"
 

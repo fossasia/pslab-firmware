@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB 	          :  MPLAB X v5.45
-*/
+ */
 
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,24 +40,22 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 /**
   Section: Included Files
-*/
+ */
 #include "mcc_generated_files/system.h"
 #include "mcc_generated_files/fatfs/fatfs_demo.h"
 
 /*
                          Main application
  */
-int main(void)
-{
+int main(void) {
     // initialize the device
     SYSTEM_Initialize();
 
-    while (1)
-    {
+    while (1) {
         // Add your application code
         FatFsDemo_Tasks();
     }
@@ -66,5 +64,5 @@ int main(void)
 }
 /**
  End of File
-*/
+ */
 
