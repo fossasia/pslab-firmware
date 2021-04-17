@@ -35,6 +35,31 @@
         <itemPath>mcc_generated_files/pin_manager.h</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
+        <itemPath>mcc_generated_files/cvr.h</itemPath>
+        <itemPath>mcc_generated_files/ic2.h</itemPath>
+        <itemPath>mcc_generated_files/ic4.h</itemPath>
+        <itemPath>mcc_generated_files/ext_int.h</itemPath>
+        <itemPath>mcc_generated_files/tmr3.h</itemPath>
+        <itemPath>mcc_generated_files/tmr5.h</itemPath>
+        <itemPath>mcc_generated_files/oc1.h</itemPath>
+        <itemPath>mcc_generated_files/tmr1.h</itemPath>
+        <itemPath>mcc_generated_files/oc3.h</itemPath>
+        <itemPath>mcc_generated_files/cmp2.h</itemPath>
+        <itemPath>mcc_generated_files/cmp4.h</itemPath>
+        <itemPath>mcc_generated_files/uart2.h</itemPath>
+        <itemPath>mcc_generated_files/adc_module_features.h</itemPath>
+        <itemPath>mcc_generated_files/ic1.h</itemPath>
+        <itemPath>mcc_generated_files/ic3.h</itemPath>
+        <itemPath>mcc_generated_files/i2c1.h</itemPath>
+        <itemPath>mcc_generated_files/tmr2.h</itemPath>
+        <itemPath>mcc_generated_files/tmr4.h</itemPath>
+        <itemPath>mcc_generated_files/oc2.h</itemPath>
+        <itemPath>mcc_generated_files/oc4.h</itemPath>
+        <itemPath>mcc_generated_files/dma.h</itemPath>
+        <itemPath>mcc_generated_files/adc1.h</itemPath>
+        <itemPath>mcc_generated_files/cmp1.h</itemPath>
+        <itemPath>mcc_generated_files/cmp3.h</itemPath>
+        <itemPath>mcc_generated_files/uart1.h</itemPath>
       </logicalFolder>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
@@ -68,6 +93,7 @@
           <itemPath>mcc_generated_files/fatfs/diskio.c</itemPath>
           <itemPath>mcc_generated_files/fatfs/ffunicode.c</itemPath>
           <itemPath>mcc_generated_files/fatfs/fatfs_demo.c</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ff_time.c</itemPath>
         </logicalFolder>
         <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
           <itemPath>mcc_generated_files/sd_spi/sd_spi.c</itemPath>
@@ -80,6 +106,30 @@
         <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/pin_manager.c</itemPath>
+        <itemPath>mcc_generated_files/cvr.c</itemPath>
+        <itemPath>mcc_generated_files/ext_int.c</itemPath>
+        <itemPath>mcc_generated_files/ic2.c</itemPath>
+        <itemPath>mcc_generated_files/ic4.c</itemPath>
+        <itemPath>mcc_generated_files/oc1.c</itemPath>
+        <itemPath>mcc_generated_files/oc3.c</itemPath>
+        <itemPath>mcc_generated_files/tmr3.c</itemPath>
+        <itemPath>mcc_generated_files/tmr5.c</itemPath>
+        <itemPath>mcc_generated_files/cmp2.c</itemPath>
+        <itemPath>mcc_generated_files/cmp4.c</itemPath>
+        <itemPath>mcc_generated_files/tmr1.c</itemPath>
+        <itemPath>mcc_generated_files/uart2.c</itemPath>
+        <itemPath>mcc_generated_files/i2c1.c</itemPath>
+        <itemPath>mcc_generated_files/ic3.c</itemPath>
+        <itemPath>mcc_generated_files/ic1.c</itemPath>
+        <itemPath>mcc_generated_files/oc2.c</itemPath>
+        <itemPath>mcc_generated_files/adc1.c</itemPath>
+        <itemPath>mcc_generated_files/tmr4.c</itemPath>
+        <itemPath>mcc_generated_files/oc4.c</itemPath>
+        <itemPath>mcc_generated_files/cmp1.c</itemPath>
+        <itemPath>mcc_generated_files/uart1.c</itemPath>
+        <itemPath>mcc_generated_files/cmp3.c</itemPath>
+        <itemPath>mcc_generated_files/dma.c</itemPath>
+        <itemPath>mcc_generated_files/tmr2.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
     </logicalFolder>

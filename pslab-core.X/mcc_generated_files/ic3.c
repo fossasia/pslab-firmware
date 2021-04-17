@@ -1,17 +1,17 @@
 /**
-  Generated main.c file from MPLAB Code Configurator
+  IC3 Generated Driver API Source File
 
   @Company
     Microchip Technology Inc.
 
   @File Name
-    main.c
+    ic3.c
 
   @Summary
-    This is the generated main.c using PIC24 / dsPIC33 / PIC32MM MCUs.
+    This is the generated source file for the IC3 driver using PIC24 / dsPIC33 / PIC32MM MCUs
 
   @Description
-    This source file provides main entry point for system initialization and application code development.
+    This source file provides APIs for driver for IC3.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
         Device            :  PIC24EP256GP204
@@ -45,26 +45,94 @@
 /**
   Section: Included Files
 */
-#include "mcc_generated_files/system.h"
-#include "mcc_generated_files/fatfs/fatfs_demo.h"
 
-/*
-                         Main application
- */
-int main(void)
+#include "ic3.h"
+
+/**
+  IC Mode.
+
+  @Summary
+    Defines the IC Mode.
+
+  @Description
+    This data type defines the IC Mode of operation.
+
+*/
+
+static uint16_t         gIC3Mode;
+
+/**
+  Section: Driver Interface
+*/
+
+void IC3_Initialize (void)
 {
-    // initialize the device
-    SYSTEM_Initialize();
-
-    while (1)
-    {
-        // Add your application code
-        FatFsDemo_Tasks();
-    }
-
-    return 1;
+    // ICSIDL disabled; ICM Off; ICTSEL TMR3; ICI Every; 
+    IC3CON1 = 0x00;
+    // SYNCSEL TMR3; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
+    IC3CON2 = 0x0D;
+    
+    gIC3Mode = IC3CON1bits.ICM;
+    
 }
+
+
+void __attribute__ ((weak)) IC3_CallBack(void)
+{
+    // Add your custom callback code here
+}
+
+void IC3_Tasks( void )
+{	
+    if(IFS2bits.IC3IF)
+    {
+		// IC3 callback function 
+		IC3_CallBack();
+        IFS2bits.IC3IF = 0;
+    }
+}
+void IC3_Start( void )
+{
+    IC3CON1bits.ICM = gIC3Mode;
+}
+
+void IC3_Stop( void )
+{
+    IC3CON1bits.ICM = 0;
+}
+
+uint16_t IC3_CaptureDataRead( void )
+{
+    return(IC3BUF);
+}
+
+void IC3_ManualTriggerSet( void )
+{
+    IC3CON2bits.TRIGSTAT= true; 
+}
+
+bool IC3_TriggerStatusGet( void )
+{
+    return( IC3CON2bits.TRIGSTAT );
+}
+
+
+void IC3_TriggerStatusClear( void )
+{
+    /* Clears the trigger status */
+    IC3CON2bits.TRIGSTAT = 0;
+}
+bool IC3_HasCaptureBufferOverflowed( void )
+{
+    return( IC3CON1bits.ICOV );
+}
+
+
+bool IC3_IsCaptureBufferEmpty( void )
+{
+    return( ! IC3CON1bits.ICBNE );
+}
+
 /**
  End of File
 */
-

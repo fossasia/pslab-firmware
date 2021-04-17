@@ -17,14 +17,14 @@
 #define SD_NAC_TIMEOUT     (uint32_t)0x40000     //SPI byte times we should wait when performing read operations (should be at least 100ms for SD cards)
 #define SD_WRITE_TIMEOUT   (uint32_t)0xA0000     //SPI byte times to wait before timing out when the media is performing a write operation (should be at least 250ms for SD cards).
 
-#define SD_SPI_ChipSelect() _SetLow()
-#define SD_SPI_ChipDeselect() _SetHigh()
+#define SD_SPI_ChipSelect() SDCard_CS_SetLow()
+#define SD_SPI_ChipDeselect() SDCard_CS_SetHigh()
 #define SD_SPI_exchangeByte(data) spiMaster[SDFAST].exchangeByte(data)
 #define SD_SPI_exchangeBlock(data, length) spiMaster[SDFAST].exchangeBlock(data, length)
 #define SD_SPI_master_open(config) spiMaster[config].spiOpen()
 #define SD_SPI_close() spiMaster[SDFAST].spiClose()
-#define SD_SPI_GetCardDetect() _GetValue()
-#define SD_SPI_GetWriteProtect() _GetValue()
+#define SD_SPI_GetCardDetect() 1
+#define SD_SPI_GetWriteProtect() 0
 
 /*****************************************************************************/
 /*                        Custom structures and definitions                  */

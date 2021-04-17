@@ -1,25 +1,26 @@
-/**
-  System Interrupts Generated Driver File 
 
-  @Company:
+/**
+  CVR Generated Driver API Header File
+
+  @Company
     Microchip Technology Inc.
 
-  @File Name:
-    interrupt_manager.h
+  @File Name
+    cvr.h
 
-  @Summary:
-    This is the generated driver implementation file for setting up the
-    interrupts using PIC24 / dsPIC33 / PIC32MM MCUs
+  @Summary
+    This is the generated header file for the CVR driver using PIC24 / dsPIC33 / PIC32MM MCUs
 
-  @Description:
-    This source file provides implementations for PIC24 / dsPIC33 / PIC32MM MCUs interrupts.
-    Generation Information : 
+  @Description
+    This header file provides APIs for driver for CVR.
+    Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
         Device            :  PIC24EP256GP204
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
-        MPLAB             :  MPLAB X v5.45
+        MPLAB 	          :  MPLAB X v5.45
 */
+
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -42,27 +43,53 @@
     TERMS.
 */
 
+#ifndef _CVR_H
+#define _CVR_H
+
 /**
-    Section: Includes
+  Section: Included Files
 */
+
 #include <xc.h>
+#include <stdbool.h>
+#include <stdint.h>
+#include <stdlib.h>
+
+#ifdef __cplusplus  // Provide C++ Compatibility
+
+    extern "C" {
+
+#endif
+
 
 /**
-    void INTERRUPT_Initialize (void)
-*/
-void INTERRUPT_Initialize (void)
-{
-    //    INT0I: External Interrupt 0
-    //    Priority: 1
-        IPC0bits.INT0IP = 1;
-    //    ADI: ADC1 Convert Done
-    //    Priority: 1
-        IPC3bits.AD1IP = 1;
-    //    MICI: I2C1 Master Events
-    //    Priority: 1
-        IPC4bits.MI2C1IP = 1;
-    //    SICI: I2C1 Slave Events
-    //    Priority: 1
-        IPC4bits.SI2C1IP = 1;
+  @Summary
+    This function initializes CVR 
 
-}
+  @Description
+    This routine initializes the CVR driver index, making it 
+    ready for clients to open and use it. It also initializes any internal data 
+    structures.
+
+  @Param
+    None.
+
+  @Returns 
+    None
+ 
+  @Comment
+
+*/
+void CVR_Initialize(void);
+        
+#ifdef __cplusplus  // Provide C++ Compatibility
+
+    }
+
+#endif 
+    
+#endif //_CVR_H    
+
+/**
+  End of File
+*/

@@ -52,10 +52,10 @@
 #include <stdbool.h>
 
 #ifndef _XTAL_FREQ
-#define _XTAL_FREQ  64000000UL
+#define _XTAL_FREQ  128000000UL
 #endif
 
-#define CLOCK_SystemFrequencyGet()        (64000000UL)
+#define CLOCK_SystemFrequencyGet()        (128000000UL)
 
 #define CLOCK_PeripheralFrequencyGet()    (CLOCK_SystemFrequencyGet() / 2)
 
