@@ -1,17 +1,17 @@
 /**
-  Generated main.c file from MPLAB Code Configurator
+  IC4 Generated Driver API Source File
 
   @Company
     Microchip Technology Inc.
 
   @File Name
-    main.c
+    ic4.c
 
   @Summary
-    This is the generated main.c using PIC24 / dsPIC33 / PIC32MM MCUs.
+    This is the generated source file for the IC4 driver using PIC24 / dsPIC33 / PIC32MM MCUs
 
   @Description
-    This source file provides main entry point for system initialization and application code development.
+    This source file provides APIs for driver for IC4.
     Generation Information :
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
         Device            :  PIC24EP256GP204
@@ -45,26 +45,94 @@
 /**
   Section: Included Files
 */
-#include "mcc_generated_files/system.h"
-#include "mcc_generated_files/fatfs/fatfs_demo.h"
 
-/*
-                         Main application
- */
-int main(void)
+#include "ic4.h"
+
+/**
+  IC Mode.
+
+  @Summary
+    Defines the IC Mode.
+
+  @Description
+    This data type defines the IC Mode of operation.
+
+*/
+
+static uint16_t         gIC4Mode;
+
+/**
+  Section: Driver Interface
+*/
+
+void IC4_Initialize (void)
 {
-    // initialize the device
-    SYSTEM_Initialize();
-
-    while (1)
-    {
-        // Add your application code
-        FatFsDemo_Tasks();
-    }
-
-    return 1;
+    // ICSIDL disabled; ICM Off; ICTSEL TMR3; ICI Every; 
+    IC4CON1 = 0x00;
+    // SYNCSEL TMR3; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
+    IC4CON2 = 0x0D;
+    
+    gIC4Mode = IC4CON1bits.ICM;
+    
 }
+
+
+void __attribute__ ((weak)) IC4_CallBack(void)
+{
+    // Add your custom callback code here
+}
+
+void IC4_Tasks( void )
+{	
+    if(IFS2bits.IC4IF)
+    {
+		// IC4 callback function 
+		IC4_CallBack();
+        IFS2bits.IC4IF = 0;
+    }
+}
+void IC4_Start( void )
+{
+    IC4CON1bits.ICM = gIC4Mode;
+}
+
+void IC4_Stop( void )
+{
+    IC4CON1bits.ICM = 0;
+}
+
+uint16_t IC4_CaptureDataRead( void )
+{
+    return(IC4BUF);
+}
+
+void IC4_ManualTriggerSet( void )
+{
+    IC4CON2bits.TRIGSTAT= true; 
+}
+
+bool IC4_TriggerStatusGet( void )
+{
+    return( IC4CON2bits.TRIGSTAT );
+}
+
+
+void IC4_TriggerStatusClear( void )
+{
+    /* Clears the trigger status */
+    IC4CON2bits.TRIGSTAT = 0;
+}
+bool IC4_HasCaptureBufferOverflowed( void )
+{
+    return( IC4CON1bits.ICOV );
+}
+
+
+bool IC4_IsCaptureBufferEmpty( void )
+{
+    return( ! IC4CON1bits.ICBNE );
+}
+
 /**
  End of File
 */
-

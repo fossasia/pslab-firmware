@@ -1,18 +1,18 @@
-/**
-  System Interrupts Generated Driver File 
 
-  @Company:
+/**
+  CVR Generated Driver File 
+
+  @Company
     Microchip Technology Inc.
 
-  @File Name:
-    interrupt_manager.h
+  @File Name
+    cvr.c
 
-  @Summary:
-    This is the generated driver implementation file for setting up the
-    interrupts using PIC24 / dsPIC33 / PIC32MM MCUs
+  @Summary
+    This is the generated driver implementation file for the CVR driver using PIC24 / dsPIC33 / PIC32MM MCUs
 
-  @Description:
-    This source file provides implementations for PIC24 / dsPIC33 / PIC32MM MCUs interrupts.
+  @Description
+    This header file provides implementations for driver APIs for CVR. 
     Generation Information : 
         Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
         Device            :  PIC24EP256GP204
@@ -20,6 +20,7 @@
         Compiler          :  XC16 v1.61
         MPLAB             :  MPLAB X v5.45
 */
+
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
     software and any derivatives exclusively with Microchip products.
@@ -43,26 +44,21 @@
 */
 
 /**
-    Section: Includes
+  Section: Included Files
 */
-#include <xc.h>
+
+#include "cvr.h"
 
 /**
-    void INTERRUPT_Initialize (void)
+  Section: Driver Interface
 */
-void INTERRUPT_Initialize (void)
-{
-    //    INT0I: External Interrupt 0
-    //    Priority: 1
-        IPC0bits.INT0IP = 1;
-    //    ADI: ADC1 Convert Done
-    //    Priority: 1
-        IPC3bits.AD1IP = 1;
-    //    MICI: I2C1 Master Events
-    //    Priority: 1
-        IPC4bits.MI2C1IP = 1;
-    //    SICI: I2C1 Slave Events
-    //    Priority: 1
-        IPC4bits.SI2C1IP = 1;
 
+void CVR_Initialize(void)
+{    
+    // CVREN Powered On; VREFSEL CVR; CVRSS AVDD ? AVSS; CVRR 0.25 CVRSRC to 0.75 CVRSRC, with CVRSRC/32 step size; CVR 0; CVR1OE enabled; CVR2OE enabled;     
+    CVRCON = 0x40C0;
 }
+
+/**
+  End of File
+*/
