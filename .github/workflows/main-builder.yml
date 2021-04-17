@@ -14,7 +14,7 @@ jobs:
             - name: Download project files
               uses: actions/checkout@v2
 
-            - name: Cache MPLAB-IDE X
+            - name: Cache MPLAB-X IDE
               id: cache-ide
               uses: actions/cache@v2
               with:
@@ -28,7 +28,7 @@ jobs:
                 path: ~/.cache/mplab-xc
                 key: xc16-v1.70-cache
 
-            - name: Download MPLAB-IDE
+            - name: Download MPLAB-X IDE
               if: steps.cache-ide.outputs.cache-hit != 'true'
               run: |
                 mkdir -p ~/.cache/mplab-ide
@@ -45,7 +45,7 @@ jobs:
                 wget https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.70-full-install-linux64-installer.run
                 chmod +x xc16-v1.70-full-install-linux64-installer.run
 
-            - name: Install MPLAB-IDE
+            - name: Install MPLAB-X IDE
               run: |
                 cd ~/.cache/mplab-ide
                 sudo ./MPLABX-v5.45-linux-installer.sh -- --mode unattended --unattendedmodeui minimal --debuglevel 0 --8bitmcu 0 --32bitmcu 0 --othermcu 0
