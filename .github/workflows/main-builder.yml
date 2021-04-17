@@ -18,8 +18,8 @@ jobs:
               id: cache-ide-compiler
               uses: actions/cache@v2
               with:
-                path: /opt/microchip/mplabx/*
-                key: ${{ runner.os }}-microchip
+                path: /opt/microchip/*
+                key: mplab-v5.45-xc16-v1.70
 
             - name: Install dependencies
               if: steps.cache-ide-compiler.outputs.cache-hit != 'true'
