@@ -1,0 +1,24 @@
+name: Build bootloader project
+
+on:
+
+    pull_request:
+
+        branches: [ bootloader ]
+
+jobs:
+
+    build:
+        
+        runs-on: ubuntu-latest
+
+        steps:
+        - uses: actions/checkout@v2
+
+        - name: Install MPLab IDE and Compilers
+          run: scripts/install_mplab_dependencies.sh
+        
+        - name: Make bootloader project
+          run: |
+            cd pslab-bootloader.X
+            make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf
