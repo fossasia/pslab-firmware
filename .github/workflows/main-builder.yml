@@ -1,4 +1,4 @@
-name: Build bootloader project
+name: pslab-firmware
 
 on:
 
