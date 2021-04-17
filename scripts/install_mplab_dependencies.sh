@@ -15,7 +15,7 @@ echo "Extracting MPLAB X IDE"
 tar -xvf mplabx-v5.45-linux-installer.tar
 
 echo "Installing MPLAB X IDE"
-./MPLABX-v5.45-linux-installer.sh -- --mode unattended --unattendedmodeui minimal --debuglevel 0 --8bitmcu 0 --32bitmcu 0 --othermcu 0
+sudo ./MPLABX-v5.45-linux-installer.sh -- --mode unattended --unattendedmodeui minimal --debuglevel 0 --8bitmcu 0 --32bitmcu 0 --othermcu 0
 
 echo "MPLAB IDE installed successfully"
 
@@ -24,6 +24,6 @@ wget https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.70-full-install-li
 
 echo "Installing MPLAB XC 16 Compiler"
 chmod +x xc16-v1.70-full-install-linux64-installer.run
-./xc16-v1.70-full-install-linux64-installer.run --mode unattended --netservername dontknow
+sudo ./xc16-v1.70-full-install-linux64-installer.run --mode unattended --netservername dontknow
 
 echo "Compiler setup successfully"
