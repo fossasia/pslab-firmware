@@ -21,4 +21,5 @@ jobs:
         - name: Make bootloader project
           run: |
             cd pslab-bootloader.X
-            make -f nbproject/Makefile-default.mk SUBPROJECTS= .build-conf
+            /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
+            /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
