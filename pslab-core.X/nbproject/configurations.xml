@@ -132,6 +132,12 @@
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
+      <itemPath>commands.h</itemPath>
+      <itemPath>version.c</itemPath>
+      <itemPath>version.h</itemPath>
+      <itemPath>commands.c</itemPath>
+      <itemPath>states.c</itemPath>
+      <itemPath>states.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
