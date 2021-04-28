@@ -46,12 +46,12 @@
   Section: Included Files
  */
 #include "mcc_generated_files/system.h"
-#include "mcc_generated_files/boot/boot_demo.h"
+#include "mcc_generated_files/boot/boot_process.h"
 #include "mcc_generated_files/clock.h"
 #include "mcc_generated_files/pin_manager.h"
+#include "mcc_generated_files/watchdog.h"
 
 #include "rgb_led.h"
-#include "mcc_generated_files/watchdog.h"
 
 /*
                          Main application
@@ -61,11 +61,6 @@ int main(void)
     // initialize the device
     SYSTEM_Initialize();
     
-    int i;
-    for (i = 0; i < 5; i++) {
-        STATUS_LED_Toggle();
-        Delay_Mili(400);
-    }
     Light_RGB(20, 0, 0);
     Delay_Mili(2000);
     Light_RGB(0, 20, 0);
@@ -75,12 +70,19 @@ int main(void)
     Light_RGB(20, 20, 20);
     Delay_Mili(5000);
     
-    Initialize_BOOT_Sequence();
-    
-    while (1)
-    {
-        // Add your application code
-//        BOOT_DEMO_Tasks();
+    // If GPIO is grounded or no application is detected, stay in bootloader.
+    if (GPIO_PIN_GetValue() && BOOT_Verify()) {
+        BOOT_StartApplication();
+    } else {
+        unsigned int i;
+
+        while (1) {
+            // Monitor serial bus for commands, e.g. flashing new application.
+            BOOT_ProcessCommand();
+
+            // Flash system LED while in bootloader mode.
+            if (!i++) STATUS_LED_Toggle();
+        }
     }
 
     return 1;
