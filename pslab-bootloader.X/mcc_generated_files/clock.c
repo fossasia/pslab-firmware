@@ -73,11 +73,3 @@ void CLOCK_Initialize(void) {
     while (OSCCONbits.OSWEN != 0);
     while (OSCCONbits.LOCK != 1);
 }
-
-void Delay_Mili(unsigned long d) {
-    __delay32(d * (_XTAL_FREQ) / 1000ULL);
-}
-
-void Delay_Micro(unsigned long d) {
-    __delay32(d * (_XTAL_FREQ) / 1000000ULL);
-}
