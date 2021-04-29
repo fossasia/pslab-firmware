@@ -18,7 +18,7 @@
 
 int main(void)
 {
-    // initialize the device
+    // Initialize the device.
     SYSTEM_Initialize();
     
     Light_RGB(20, 0, 0);
@@ -30,6 +30,10 @@ int main(void)
     Light_RGB(20, 20, 20);
     Delay_Mili(5000);
     
+    GPIO_PIN_SetDigitalOutput();
+    GPIO_PIN_SetHigh();
+    DELAY_us(1000); // Wait for GPIO to go high.
+    
     // If GPIO is grounded or no application is detected, stay in bootloader.
     if (GPIO_PIN_GetValue() && BOOT_Verify()) {
         BOOT_StartApplication();
@@ -40,7 +44,7 @@ int main(void)
             // Monitor serial bus for commands, e.g. flashing new application.
             BOOT_ProcessCommand();
 
-            // Flash system LED while in bootloader mode.
+            // Blink system LED while in bootloader mode.
             if (!i++) STATUS_LED_Toggle();
         }
     }
