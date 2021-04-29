@@ -1,6 +1,8 @@
 name: pslab-firmware
 
 on:
+    push:
+        branches: [ bootloader ]
     pull_request:
         branches: [ bootloader ]
 
