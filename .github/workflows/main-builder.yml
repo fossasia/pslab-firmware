@@ -32,7 +32,7 @@ jobs:
               run: |
                 mkdir -p ~/.cache/mplab-ide
                 cd ~/.cache/mplab-ide
-                wget https://www.microchip.com/content/dam/mchp/documents/DEV/ProductDocuments/SoftwareTools/mplabx-v5.45-linux-installer.tar
+                wget https://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.45-linux-installer.tar
                 tar -xvf mplabx-v5.45-linux-installer.tar
                 rm -rf mplabx-v5.45-linux-installer.tar
 
