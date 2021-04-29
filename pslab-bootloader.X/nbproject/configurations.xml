@@ -65,6 +65,8 @@
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>rgb_led.c</itemPath>
+      <itemPath>delay.c</itemPath>
+      <itemPath>delay.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
