@@ -52,9 +52,6 @@
 */
 void INTERRUPT_Initialize (void)
 {
-    //    INT0I: External Interrupt 0
-    //    Priority: 1
-        IPC0bits.INT0IP = 1;
     //    ADI: ADC1 Convert Done
     //    Priority: 1
         IPC3bits.AD1IP = 1;

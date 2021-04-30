@@ -55,8 +55,8 @@
 
 void CVR_Initialize(void)
 {    
-    // CVREN Powered On; VREFSEL CVR; CVRSS AVDD ? AVSS; CVRR 0.25 CVRSRC to 0.75 CVRSRC, with CVRSRC/32 step size; CVR 0; CVR1OE enabled; CVR2OE enabled;     
-    CVRCON = 0x40C0;
+    // CVREN Powered On; VREFSEL CVR; CVRSS AVDD ? AVSS; CVRR 0.25 CVRSRC to 0.75 CVRSRC, with CVRSRC/32 step size; CVR 0; CVR1OE disabled; CVR2OE enabled;     
+    CVRCON = 0x4080;
 }
 
 /**

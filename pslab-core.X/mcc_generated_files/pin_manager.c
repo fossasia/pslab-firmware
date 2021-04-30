@@ -62,14 +62,14 @@ void PIN_MANAGER_Initialize (void)
      * Setting the Output Latch SFR(s)
      ***************************************************************************/
     LATA = 0x0000;
-    LATB = 0x0000;
+    LATB = 0x0080;
     LATC = 0x0000;
 
     /****************************************************************************
      * Setting the GPIO Direction SFR(s)
      ***************************************************************************/
     TRISA = 0x0797;
-    TRISB = 0xFDFF;
+    TRISB = 0xFD7F;
     TRISC = 0x03F7;
 
     /****************************************************************************
@@ -95,5 +95,15 @@ void PIN_MANAGER_Initialize (void)
     ANSELA = 0x0003;
     ANSELB = 0x000F;
     ANSELC = 0x0007;
+    
+    /****************************************************************************
+     * Set the PPS
+     ***************************************************************************/
+    __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
+
+    RPOR2bits.RP39R = 0x0001;    //RB7->UART1:U1TX
+    RPINR18bits.U1RXR = 0x0028;    //RB8->UART1:U1RX
+
+    __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
 }
 
