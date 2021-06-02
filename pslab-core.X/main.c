@@ -4,7 +4,6 @@
 
 #include "states.h"
 
-
 /**
  * @brief: Discard incoming serial traffic.
  */

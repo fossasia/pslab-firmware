@@ -130,6 +130,26 @@ uint8_t UART1_Read(void);
 void UART1_Write(uint8_t txData);
 
 /**
+  @Summary
+    Writes an integer data to the UART1.
+
+  @Description
+    This routine sequentially writes two bytes of data to the UART1.
+
+  @Preconditions
+    UART1_Initialize() function should have been called
+    before calling this function. The transfer status should be checked to see
+    if transmitter is not busy before calling this function.
+
+  @Param
+    txData  - Data bytes to write to the UART1
+
+  @Returns
+    None
+*/
+void UART1_WriteInt(uint16_t txData);
+
+/**
   @Description
     Indicates of there is data available to read.
 
