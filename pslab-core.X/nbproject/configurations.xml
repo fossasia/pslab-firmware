@@ -61,6 +61,7 @@
         <itemPath>mcc_generated_files/cmp3.h</itemPath>
         <itemPath>mcc_generated_files/uart1.h</itemPath>
       </logicalFolder>
+      <itemPath>delay.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -138,6 +139,9 @@
       <itemPath>commands.c</itemPath>
       <itemPath>states.c</itemPath>
       <itemPath>states.h</itemPath>
+      <itemPath>psl-adc.c</itemPath>
+      <itemPath>psl-adc.h</itemPath>
+      <itemPath>delay.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
