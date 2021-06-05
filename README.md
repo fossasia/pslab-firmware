@@ -19,6 +19,40 @@ PSLab is a tiny pocket science lab that provides an array of test and measuremen
 * The PSLab [chat channel is on Gitter](https://gitter.im/fossasia/pslab).
 * Please also join us on the [PSLab Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia).
 
+## Repository Structure
+```
+📦pslab-firmware
+ ┣ 📂bootloader-host-application                
+ ┃ ┣ 📜UnifiedHost-1.17.0-bin.zip               # GUI application for firmware updates
+ ┃ ┣ 📜openjfx-11.0.2_osx-x64_bin-sdk.zip
+ ┃ ┗ 📜run-host.sh                              # Script to open UnifiedHost GUI application
+ ┣ 📂pslab-bootloader.X                         # PSLab Bootloader application
+ ┃ ┣ 📂build                                    # Compiled source files
+ ┃ ┣ 📂dist                                     # HEX and ELF files
+ ┃ ┣ 📂mcc_generated_files                      # Source C++ files
+ ┃ ┣ 📂nbproject
+ ┃ ┣ 📂report
+ ┃ ┣ 📜 ...
+ ┃ ┣ 📜main.c                                   # Entry point to PSLab Bootloader
+ ┃ ┗ 📜pslab-bootloader.mc3                     # Code configurator settings
+ ┣ 📂pslab-core.X                               # PSLab Core application
+ ┃ ┣ 📂build                                    # Compiled source files
+ ┃ ┣ 📂dist                                     # HEX and ELF files
+ ┃ ┣ 📂mcc_generated_files                      # Source C++ files
+ ┃ ┣ 📂nbproject
+ ┃ ┣ 📂instruments                              # Instrument specific source files
+ ┃ ┣ ┣ 📜 ...
+ ┃ ┣ ┗ 📜multimeter.c
+ ┃ ┣ 📂bus                                      # Communication specific source files
+ ┃ ┣ ┣ 📜 ...
+ ┃ ┣ ┗ 📜i2c.c
+ ┃ ┣ 📜 ...
+ ┃ ┣ 📜main.c                                   # Entry point to PSLab Core
+ ┃ ┗ 📜pslab-core.mc3                           # Code configurator settings
+ ┣ 📜FirmwareFlowChart.drawio                   # Firmware flow diagram
+ ┣ 📜LICENSE
+ ┗ 📜README.md
+```
 ## Requirements 
 
 ### Development Environment
