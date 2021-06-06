@@ -1,6 +1,6 @@
 #include "commands.h"
 #include "mcc_generated_files/adc1.h"
-#include "mcc_generated_files/uart1.h"
+#include "protocols/uart1.h"
 #include "mcc_generated_files/dma.h"
 #include "delay.h"
 

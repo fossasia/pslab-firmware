@@ -1,5 +1,5 @@
 #include "mcc_generated_files/system.h"
-#include "mcc_generated_files/uart1.h"
+#include "protocols/uart1.h"
 #include "mcc_generated_files/watchdog.h"
 #include "commands.h"
 #include "states.h"
