@@ -1,4 +1,4 @@
-#include "protocols/uart1.h"
+#include "bus/uart1.h"
 #include "commands.h"
 
 const unsigned char VERSION_HW[] = "PSLab V6"; /**< Hardware version. */

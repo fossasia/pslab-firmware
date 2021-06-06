@@ -14,6 +14,8 @@
             <make-dep-projects/>
             <sourceRootList>
                 <sourceRootElem>protocols</sourceRootElem>
+                <sourceRootElem>bus</sourceRootElem>
+                <sourceRootElem>instruments</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

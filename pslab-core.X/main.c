@@ -1,6 +1,6 @@
 #include "mcc_generated_files/system.h"
 #include "mcc_generated_files/fatfs/fatfs_demo.h"
-#include "protocols/uart1.h"
+#include "bus/uart1.h"
 
 #include "states.h"
 

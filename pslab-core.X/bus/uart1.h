@@ -124,41 +124,6 @@ extern "C" {
      */
     bool UART1_IsTxDone(void);
 
-    /*******************************************************************************
-
-      !!! Deprecated API and types !!!
-      !!! These functions will not be supported in future releases !!!
-
-     *******************************************************************************/
-
-    /** UART1 Driver Hardware Flags
-
-      @Summary
-        Specifies the status of the hardware receive or transmit
-
-      @Description
-        This type specifies the status of the hardware receive or transmit.
-        More than one of these values may be OR'd together to create a complete
-        status value.  To test a value of this type, the bit of interest must be
-        AND'ed with value and checked to see if the result is non-zero.
-     */
-    typedef enum {
-        /* Indicates that Receive buffer has data, at least one more character can be read */
-        UART1_RX_DATA_AVAILABLE = (1 << 0),
-        /* Indicates that Receive buffer has overflowed */
-        UART1_RX_OVERRUN_ERROR = (1 << 1),
-        /* Indicates that Framing error has been detected for the current character */
-        UART1_FRAMING_ERROR = (1 << 2),
-        /* Indicates that Parity error has been detected for the current character */
-        UART1_PARITY_ERROR = (1 << 3),
-        /* Indicates that Receiver is Idle */
-        UART1_RECEIVER_IDLE = (1 << 4),
-        /* Indicates that the last transmission has completed */
-        UART1_TX_COMPLETE = (1 << 8),
-        /* Indicates that Transmit buffer is full */
-        UART1_TX_FULL = (1 << 9)
-    } UART1_STATUS;
-
     /**
       @Summary
         Allows setting of a the enable bit for the UART1 mode
@@ -179,7 +144,6 @@ extern "C" {
       @Example
         Refer to UART1_Initialize(); for an example
      */
-
     void UART1_Enable(void);
 
     /**
@@ -202,7 +166,6 @@ extern "C" {
       @Example
         Refer to UART1_Initialize(); for an example
      */
-
     void UART1_Disable(void);
 
     /**
@@ -239,7 +202,15 @@ extern "C" {
     uint16_t UART1_StatusGet(void);
 
     /**
-     * @brief: Discard incoming serial traffic.
+     * @Summary
+     *   Discard incoming serial traffic
+     * 
+     * @Description
+     *   Reads out the RX buffer and clear it for incoming serial traffic at the
+     *   startup.
+     * 
+     * @Returns
+     *   None.
      */
     void ClearBuffer(void);
 
