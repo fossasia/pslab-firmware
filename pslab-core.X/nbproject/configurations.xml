@@ -59,13 +59,18 @@
         <itemPath>mcc_generated_files/adc1.h</itemPath>
         <itemPath>mcc_generated_files/cmp1.h</itemPath>
         <itemPath>mcc_generated_files/cmp3.h</itemPath>
-        <itemPath>mcc_generated_files/uart1.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="protocols" projectFiles="true">
+        <itemPath>mcc_generated_files/protocols/uart1.h</itemPath>
       </logicalFolder>
       <itemPath>delay.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
+    </logicalFolder>
+    <logicalFolder name="protocols" displayName="protocols" projectFiles="true">
+      <itemPath>protocols/uart1.c</itemPath>
     </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
@@ -127,10 +132,10 @@
         <itemPath>mcc_generated_files/tmr4.c</itemPath>
         <itemPath>mcc_generated_files/oc4.c</itemPath>
         <itemPath>mcc_generated_files/cmp1.c</itemPath>
-        <itemPath>mcc_generated_files/uart1.c</itemPath>
         <itemPath>mcc_generated_files/cmp3.c</itemPath>
         <itemPath>mcc_generated_files/dma.c</itemPath>
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
+        <itemPath>mcc_generated_files/protocols/uart1.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>commands.h</itemPath>
@@ -157,6 +162,9 @@
       <itemPath>pslab-core.mc3</itemPath>
     </logicalFolder>
   </logicalFolder>
+  <sourceRootList>
+    <Elem>protocols</Elem>
+  </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
     <conf name="default" type="2">
@@ -326,6 +334,10 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
+      <item path="mcc_generated_files/protocols/uart1.c" ex="true" overriding="false">
+      </item>
+      <item path="mcc_generated_files/protocols/uart1.h" ex="true" overriding="false">
+      </item>
     </conf>
   </confs>
 </configurationDescriptor>

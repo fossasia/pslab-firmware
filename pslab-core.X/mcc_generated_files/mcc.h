@@ -74,7 +74,7 @@
 #include "cmp2.h"
 #include "cmp4.h"
 #include "oc3.h"
-#include "uart1.h"
+#include "../protocols/uart1.h"
 #include "oc1.h"
 #include "adc1.h"
 #include "ic1.h"
