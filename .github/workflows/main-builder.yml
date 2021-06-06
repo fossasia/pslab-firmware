@@ -65,3 +65,9 @@ jobs:
                 cd pslab-core.X
                 /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
                 /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
+                
+            - name: Publish build files
+              uses: actions/upload-artifact@v2
+              with:
+                name: production-files
+                path: pslab-core.X/dist/default/production/
