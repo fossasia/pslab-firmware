@@ -1,0 +1,7 @@
+#ifndef WAVEGENERATOR_H
+#define	WAVEGENERATOR_H
+
+
+
+#endif	/* WAVEGENERATOR_H */
+

@@ -24,7 +24,7 @@ void UART1_Initialize(void) {
     U1MODEbits.LPBACK = 0;
     // Baud rate measurement is disabled or completed
     U1MODEbits.ABAUD = 0;
-    // UxRX Idle state is ?1?
+    // UxRX Idle state is '1'
     U1MODEbits.URXINV = 0;
     // BRG generates 16 clocks per bit period (16x baud clock, Standard mode)
     U1MODEbits.BRGH = 1;
@@ -37,7 +37,7 @@ void UART1_Initialize(void) {
     // :this implies there is at least one character open in the transmit buffer
     U1STAbits.UTXISEL1 = 0;
     U1STAbits.UTXISEL0 = 0;
-    // UxTX Idle state is ?1?
+    // UxTX Idle state is '1'
     U1STAbits.UTXINV = 0;
     // Sync Break transmission is disabled or completed
     U1STAbits.UTXBRK = 0;

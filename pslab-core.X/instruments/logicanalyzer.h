@@ -1,0 +1,7 @@
+#ifndef LOGICANALYZER_H
+#define	LOGICANALYZER_H
+
+
+
+#endif	/* LOGICANALYZER_H */
+

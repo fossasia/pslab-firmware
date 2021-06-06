@@ -4,6 +4,15 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="bus" displayName="bus" projectFiles="true">
+        <itemPath>bus/uart1.h</itemPath>
+      </logicalFolder>
+      <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
+        <itemPath>instruments/multimeter.h</itemPath>
+        <itemPath>instruments/logicanalyzer.h</itemPath>
+        <itemPath>instruments/oscilloscope.h</itemPath>
+        <itemPath>instruments/wavegenerator.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
@@ -60,21 +69,21 @@
         <itemPath>mcc_generated_files/cmp1.h</itemPath>
         <itemPath>mcc_generated_files/cmp3.h</itemPath>
       </logicalFolder>
-      <logicalFolder name="f1" displayName="protocols" projectFiles="true">
-        <itemPath>mcc_generated_files/protocols/uart1.h</itemPath>
-      </logicalFolder>
       <itemPath>delay.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
                    projectFiles="true">
     </logicalFolder>
-    <logicalFolder name="protocols" displayName="protocols" projectFiles="true">
-      <itemPath>protocols/uart1.c</itemPath>
-    </logicalFolder>
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="bus" displayName="bus" projectFiles="true">
+        <itemPath>bus/uart1.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
+        <itemPath>instruments/multimeter.c</itemPath>
+      </logicalFolder>
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
@@ -135,7 +144,6 @@
         <itemPath>mcc_generated_files/cmp3.c</itemPath>
         <itemPath>mcc_generated_files/dma.c</itemPath>
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
-        <itemPath>mcc_generated_files/protocols/uart1.c</itemPath>
       </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>commands.h</itemPath>
@@ -144,8 +152,6 @@
       <itemPath>commands.c</itemPath>
       <itemPath>states.c</itemPath>
       <itemPath>states.h</itemPath>
-      <itemPath>psl-adc.c</itemPath>
-      <itemPath>psl-adc.h</itemPath>
       <itemPath>delay.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
@@ -164,6 +170,8 @@
   </logicalFolder>
   <sourceRootList>
     <Elem>protocols</Elem>
+    <Elem>bus</Elem>
+    <Elem>instruments</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
@@ -334,10 +342,6 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
-      <item path="mcc_generated_files/protocols/uart1.c" ex="true" overriding="false">
-      </item>
-      <item path="mcc_generated_files/protocols/uart1.h" ex="true" overriding="false">
-      </item>
     </conf>
   </confs>
 </configurationDescriptor>

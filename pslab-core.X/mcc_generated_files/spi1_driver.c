@@ -23,7 +23,7 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <stdbool.h>
-#include "mcc.h"
+#include "system.h"
 #include "spi1_driver.h"
 
 void (*spi1_interruptHandler)(void); 
