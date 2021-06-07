@@ -1,12 +1,17 @@
 #include <xc.h>
 #include "../commands.h"
 #include "../bus/uart1.h"
-
+#include "../mcc_generated_files/tmr4.h"
+#include "../mcc_generated_files/dma.h"
+#include "../mcc_generated_files/oc3.h"
+#include "../mcc_generated_files/pin_manager.h"
 
 #define WAVE_TABLE_FULL_LENGTH          512
 #define WAVE_TABLE_SHORT_LENGTH         32
+#define HIGH_RESOLUTION                 1
+#define LOW_RESOLUTION                  0
 
-int __attribute__((section(".sine_table1"))) sineTable1[] = {
+int __attribute__((section(".sine_table1"))) sine_table_1[] = {
     256, 252, 249, 246, 243, 240, 237, 234, 230, 227, 224, 221, 218, 215, 212,
     209, 206, 203, 200, 196, 193, 190, 187, 184, 181, 178, 175, 172, 169, 166,
     164, 161, 158, 155, 152, 149, 146, 143, 141, 138, 135, 132, 130, 127, 124,
@@ -40,11 +45,11 @@ int __attribute__((section(".sine_table1"))) sineTable1[] = {
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
-int __attribute__((section(".sine_table1_short"))) sineTable1_short[] = {
+int __attribute__((section(".sine_table1_short"))) sine_table_1_short[] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
-int __attribute__((section(".sine_table2"))) sineTable2[] = {
+int __attribute__((section(".sine_table2"))) sine_table_2[] = {
     256, 252, 249, 246, 243, 240, 237, 234, 230, 227, 224, 221, 218, 215, 212,
     209, 206, 203, 200, 196, 193, 190, 187, 184, 181, 178, 175, 172, 169, 166,
     164, 161, 158, 155, 152, 149, 146, 143, 141, 138, 135, 132, 130, 127, 124,
@@ -78,7 +83,7 @@ int __attribute__((section(".sine_table2"))) sineTable2[] = {
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
-int __attribute__((section(".sine_table2_short"))) sineTable2_short[] = {
+int __attribute__((section(".sine_table2_short"))) sine_table_2_short[] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
@@ -88,11 +93,11 @@ response_t WAVEGENERATOR_LoadWaveForm1(void) {
     uint8_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        sineTable1[i] = UART1_ReadInt();
+        sine_table_1[i] = UART1_ReadInt();
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        sineTable1_short[i] = UART1_Read();
+        sine_table_1_short[i] = UART1_Read();
     }
 
     return SUCCESS;
@@ -103,12 +108,110 @@ response_t WAVEGENERATOR_LoadWaveForm2(void) {
     uint8_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        sineTable2[i] = UART1_ReadInt();
+        sine_table_2[i] = UART1_ReadInt();
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        sineTable2_short[i] = UART1_Read();
+        sine_table_2_short[i] = UART1_Read();
     }
+
+    return SUCCESS;
+}
+
+response_t WAVEGENERATOR_SetSine1(void) {
+
+    unsigned char wave_length;
+    wave_length = UART1_Read();
+    unsigned char resolution;
+    resolution = UART1_Read();
+
+    TMR4_Initialize();
+
+    DMA_InterruptDisable(DMA_CHANNEL_2);
+    DMA_InitializeChannel2();
+    // DMA Reads from RAM address, writes to peripheral address
+    DMA2CONbits.DIR = 1;
+
+    if (resolution & HIGH_RESOLUTION) {
+        OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH / 2);
+        OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_2,
+                __builtin_dmapage(&sine_table_1),
+                __builtin_dmaoffset(&sine_table_1));
+        DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
+    } else {
+        OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH / 2);
+        OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_2,
+                __builtin_dmapage(&sine_table_1_short),
+                __builtin_dmaoffset(&sine_table_1_short));
+        DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
+    }
+
+    // Output Compare 3 continues to operate in CPU Idle mode
+    OC3CON1bits.OCSIDL = 0;
+    // Output Compare Clock Select is Peripheral clock
+    OC3CON1bits.OCTSEL = 0b111;
+    // Output Compare Fault B input (OCFB) is disabled
+    OC3CON1bits.ENFLTB = 0;
+    // Output Compare Fault A input (OCFA) is disabled
+    OC3CON1bits.ENFLTA = 0;
+    // No PWM Fault B condition on OCFB pin has occurred
+    OC3CON1bits.OCFLTB = 0;
+    // No PWM Fault A condition on OCFA pin has occurred
+    OC3CON1bits.OCFLTA = 0;
+    // TRIGSTAT is cleared only by software
+    OC3CON1bits.TRIGMODE = 0;
+    // Output set high when OC3TMR=0 and set low when OC3TMR=OC3R
+    OC3CON1bits.OCM = 0b110;
+
+    // Fault mode is maintained until the Fault source is removed and a new PWM period starts
+    OC3CON2bits.FLTMD = 0;
+    // PWM output is driven low on a Fault
+    OC3CON2bits.FLTOUT = 0;
+    // OC3 pin I/O state is defined by the FLTOUT bit on a Fault condition
+    OC3CON2bits.FLTTRIEN = 0;
+    // OC3 output is not inverted
+    OC3CON2bits.OCINV = 0;
+    // Cascade module operation is disabled
+    OC3CON2bits.OC32 = 0;
+    // Synchronizes OCx with the source designated by the SYNCSELx bits
+    OC3CON2bits.OCTRIG = 0;
+    // Timer source has not been triggered and is being held clear
+    OC3CON2bits.TRIGSTAT = 0;
+    // Output Compare 3 module drives the OC3 pin
+    OC3CON2bits.OCTRIS = 0;
+    // OC3RS compare event is used for synchronization
+    OC3CON2bits.SYNCSEL = 0b11111;
+
+    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) & OC3R);
+
+    // Automatic DMA transfer initiation by DMA request
+    DMA2REQbits.FORCE = 0;
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_2, DMA_PERIPHERAL_IRQ_TMR4);
+
+    DMA_FlagInterruptClear(DMA_CHANNEL_2);
+    DMA_InterruptEnable(DMA_CHANNEL_2);
+
+    DMA_ChannelEnable(DMA_CHANNEL_2);
+
+    TMR4_Period16BitSet(wave_length);
+    T4CONbits.TCKPS = (resolution >> 1) & 3;
+
+    // Link OC3 pin to output
+    RPOR6bits.RP57R = RPN_OC3_PORT;
+
+    TMR4_Start();
+
+    return SUCCESS;
+}
+
+response_t WAVEGENERATOR_SetSine2(void) {
+    
+    unsigned char wave_length;
+    wave_length = UART1_Read();
+    unsigned char resolution;
+    resolution = UART1_Read();
 
     return SUCCESS;
 }

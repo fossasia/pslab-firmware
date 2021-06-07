@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB 	          :  MPLAB X v5.45
-*/
+ */
 
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,14 +40,14 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef _TMR4_H
 #define _TMR4_H
 
 /**
   Section: Included Files
-*/
+ */
 
 #include <xc.h>
 #include <stdint.h>
@@ -55,275 +55,275 @@
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 
-    extern "C" {
+extern "C" {
 
 #endif
 
 
-/**
-  Section: Interface Routines
-*/
+    /**
+      Section: Interface Routines
+     */
 
-/**
-  @Summary
-    Initializes hardware and data for the given instance of the TMR module
+    /**
+      @Summary
+        Initializes hardware and data for the given instance of the TMR module
 
-  @Description
-    This routine initializes hardware for the instance of the TMR module,
-    using the hardware initialization given data.  It also initializes all
-    necessary internal data.
+      @Description
+        This routine initializes hardware for the instance of the TMR module,
+        using the hardware initialization given data.  It also initializes all
+        necessary internal data.
 
-  @Param
-    None.
+      @Param
+        None.
 
-  @Returns
-    None
+      @Returns
+        None
  
-  @Example 
-    <code>
-    bool statusTimer1;
-    uint16_t period;
-    uint16_t value;
+      @Example 
+        <code>
+        bool statusTimer1;
+        uint16_t period;
+        uint16_t value;
 
-    period = 0x20;
+        period = 0x20;
 
-    TMR4_Initialize();
+        TMR4_Initialize();
 
-    TMR4_Period16BitSet(period);
+        TMR4_Period16BitSet(period);
 
-    if((value = TMR4_Period16BitGet())== period)
-    {
-        TMR4_Start();
-    }
-
-    while(1)
-    {
-        TMR4_Tasks();
-        if( (statusTimer1 = TMR4_GetElapsedThenClear()) == true)
+        if((value = TMR4_Period16BitGet())== period)
         {
-            TMR4_Stop();
+            TMR4_Start();
         }
-    }
-    </code>
-*/
-void TMR4_Initialize (void);
 
-/**
-  @Summary
-    Used to maintain the driver's state machine and implement its ISR
-
-  @Description
-    This routine is used to maintain the driver's internal state machine and
-    implement its ISR for interrupt-driven implementations.
-
-  @Param
-    None.
-
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
-
-void TMR4_Tasks_16BitOperation( void );
-
-/**
-  @Summary
-    Updates 16-bit timer value
-
-  @Description
-    This routine updates 16-bit timer value
-
-  @Param
-    None.
-
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
-
-void TMR4_Period16BitSet( uint16_t value );
-
-/**
-
-  @Summary
-    Provides the timer 16-bit period value
-
-  @Description
-    This routine provides the timer 16-bit period value
-
-  @Param
-    None.
-
-  @Returns
-    Timer 16-bit period value
- 
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
-
-uint16_t TMR4_Period16BitGet( void );
-
-/**
-  @Summary
-    Updates the timer's 16-bit value
-
-  @Description
-    This routine updates the timer's 16-bit value
-
-  @Param
-    None.
-
-  @Returns
-    None
-
-  @Example 
-    <code>
-    uint16_t value=0xF0F0;
-
-    TMR4_Counter16BitSet(value));
-
-    while(1)
-    {
-        TMR4_Tasks();
-        if( (value == TMR4_Counter16BitGet()))
+        while(1)
         {
-            TMR4_Stop();
+            TMR4_Tasks();
+            if( (statusTimer1 = TMR4_GetElapsedThenClear()) == true)
+            {
+                TMR4_Stop();
+            }
         }
-    }
-    </code>
-*/
+        </code>
+     */
+    void TMR4_Initialize(void);
 
-void TMR4_Counter16BitSet ( uint16_t value );
+    /**
+      @Summary
+        Used to maintain the driver's state machine and implement its ISR
 
-/**
-  @Summary
-    Provides 16-bit current counter value
+      @Description
+        This routine is used to maintain the driver's internal state machine and
+        implement its ISR for interrupt-driven implementations.
 
-  @Description
-    This routine provides 16-bit current counter value
+      @Param
+        None.
 
-  @Param
-    None.
-
-  @Returns
-    16-bit current counter value
+      @Returns
+        None
  
-  @Example 
-    Refer to the example of TMR4_Counter16BitSet();
-*/
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
 
-uint16_t TMR4_Counter16BitGet( void );
+    void TMR4_Tasks_16BitOperation(void);
 
+    /**
+      @Summary
+        Updates 16-bit timer value
 
-/**
-  @Summary
-    Starts the TMR
+      @Description
+        This routine updates 16-bit timer value
 
-  @Description
-    This routine starts the TMR
+      @Param
+        None.
 
-  @Param
-    None.
-
-  @Returns
-    None
+      @Returns
+        None
  
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
 
-void TMR4_Start( void );
+    void TMR4_Period16BitSet(uint16_t value);
 
-/**
-  @Summary
-    Stops the TMR
+    /**
 
-  @Description
-    This routine stops the TMR
+      @Summary
+        Provides the timer 16-bit period value
 
-  @Param
-    None.
+      @Description
+        This routine provides the timer 16-bit period value
 
-  @Returns
-    None
+      @Param
+        None.
+
+      @Returns
+        Timer 16-bit period value
  
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
 
-void TMR4_Stop( void );
+    uint16_t TMR4_Period16BitGet(void);
 
-/**
-  @Summary
-    Returns the elapsed status of the timer and clears if flag is set.
+    /**
+      @Summary
+        Updates the timer's 16-bit value
 
-  @Description
-    This routine returns the elapsed status of the timer and clears 
-    flag if its set.
+      @Description
+        This routine updates the timer's 16-bit value
 
-  @Param
-    None.
+      @Param
+        None.
 
-  @Returns
-    True - Timer has elapsed.
-    False - Timer has not elapsed.
+      @Returns
+        None
+
+      @Example 
+        <code>
+        uint16_t value=0xF0F0;
+
+        TMR4_Counter16BitSet(value));
+
+        while(1)
+        {
+            TMR4_Tasks();
+            if( (value == TMR4_Counter16BitGet()))
+            {
+                TMR4_Stop();
+            }
+        }
+        </code>
+     */
+
+    void TMR4_Counter16BitSet(uint16_t value);
+
+    /**
+      @Summary
+        Provides 16-bit current counter value
+
+      @Description
+        This routine provides 16-bit current counter value
+
+      @Param
+        None.
+
+      @Returns
+        16-bit current counter value
  
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
+      @Example 
+        Refer to the example of TMR4_Counter16BitSet();
+     */
 
-bool TMR4_GetElapsedThenClear(void);
+    uint16_t TMR4_Counter16BitGet(void);
 
-/**
-  @Summary
-    Returns the software counter value.
 
-  @Description
-    This routine returns the software counter value.
+    /**
+      @Summary
+        Starts the TMR
 
-  @Param
-    None.
+      @Description
+        This routine starts the TMR
 
-  @Returns
-    Software counter value.
+      @Param
+        None.
+
+      @Returns
+        None
  
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
 
-int TMR4_SoftwareCounterGet(void);
+    void TMR4_Start(void);
 
-/**
-  @Summary
-    Clears the software counter value.
+    /**
+      @Summary
+        Stops the TMR
 
-  @Description
-    This routine clears the software counter value.
+      @Description
+        This routine stops the TMR
 
-  @Param
-    None.
+      @Param
+        None.
 
-  @Returns
-    None
+      @Returns
+        None
  
-  @Example 
-    Refer to the example of TMR4_Initialize();
-*/
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
 
-void TMR4_SoftwareCounterClear(void);
+    void TMR4_Stop(void);
+
+    /**
+      @Summary
+        Returns the elapsed status of the timer and clears if flag is set.
+
+      @Description
+        This routine returns the elapsed status of the timer and clears 
+        flag if its set.
+
+      @Param
+        None.
+
+      @Returns
+        True - Timer has elapsed.
+        False - Timer has not elapsed.
+ 
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
+
+    bool TMR4_GetElapsedThenClear(void);
+
+    /**
+      @Summary
+        Returns the software counter value.
+
+      @Description
+        This routine returns the software counter value.
+
+      @Param
+        None.
+
+      @Returns
+        Software counter value.
+ 
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
+
+    int TMR4_SoftwareCounterGet(void);
+
+    /**
+      @Summary
+        Clears the software counter value.
+
+      @Description
+        This routine clears the software counter value.
+
+      @Param
+        None.
+
+      @Returns
+        None
+ 
+      @Example 
+        Refer to the example of TMR4_Initialize();
+     */
+
+    void TMR4_SoftwareCounterClear(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 
-    }
+}
 
 #endif
 
 #endif //_TMR4_H
-    
+
 /**
  End of File
-*/
+ */
