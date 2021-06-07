@@ -92,6 +92,13 @@ uint8_t UART1_Read(void) {
     return U1RXREG;
 }
 
+uint16_t UART1_ReadInt(void) {
+    uint8_t byte1, byte2;
+    byte1 = UART1_Read() & 0xFF;
+    byte2 = UART1_Read() & 0xFF;
+    return (byte1 << 8) | byte2;
+}
+
 void UART1_Write(uint8_t txData) {
     while (U1STAbits.UTXBF == 1);
     U1TXREG = txData;

@@ -10,6 +10,12 @@ extern "C" {
      * @return SUCCESS
      */
     response_t MULTIMETER_GetVoltage(void);
+    
+    /**
+     * @brief Read multiple (16) voltage instances using ADC
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_GetVoltageSummed(void);
 
 #ifdef	__cplusplus
 }

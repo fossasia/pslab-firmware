@@ -83,6 +83,8 @@
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.c</itemPath>
+        <itemPath>instruments/wavegenerator.c</itemPath>
+        <itemPath>instruments/oscilloscope.c</itemPath>
       </logicalFolder>
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"

@@ -56,6 +56,27 @@ extern "C" {
 
     /**
       @Summary
+        Read two bytes of data from the UART1.
+
+      @Description
+        This routine reads two byte of data sequentially from the UART1.
+
+      @Preconditions
+        UART1_Initialize() function should have been called
+        before calling this function. This is a blocking function.
+        So the receive status should be checked to see
+        if the receiver is not empty before calling this function.
+
+      @Param
+        None
+
+      @Returns
+        A 16 bit integer
+     */
+    uint16_t UART1_ReadInt(void);
+
+    /**
+      @Summary
         Writes a byte of data to the UART1.
 
       @Description
