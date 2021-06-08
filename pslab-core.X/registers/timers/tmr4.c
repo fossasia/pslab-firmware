@@ -32,7 +32,7 @@ void TMR4_Initialize(void) {
     T4CONbits.T32 = 0;
     // Internal clock (FP)
     T4CONbits.TCS = 0;
-    
+
     tmr4_obj.timerElapsed = false;
 }
 

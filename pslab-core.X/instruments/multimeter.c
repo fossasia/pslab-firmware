@@ -1,7 +1,7 @@
 #include "../commands.h"
 #include "../delay.h"
 #include "../mcc_generated_files/adc1.h"
-#include "../mcc_generated_files/dma.h"
+#include "../registers/memory/dma.h"
 #include "../bus/uart1.h"
 
 response_t MULTIMETER_GetVoltage(void) {

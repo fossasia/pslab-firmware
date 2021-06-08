@@ -1,10 +1,10 @@
 #include <xc.h>
 #include "../commands.h"
 #include "../bus/uart1.h"
-#include "../mcc_generated_files/tmr4.h"
-#include "../mcc_generated_files/dma.h"
-#include "../mcc_generated_files/oc3.h"
-#include "../mcc_generated_files/pin_manager.h"
+#include "../registers/timers/tmr4.h"
+#include "../registers/memory/dma.h"
+#include "../registers/comparators/oc3.h"
+#include "../registers/system/pin_manager.h"
 
 #define WAVE_TABLE_FULL_LENGTH          512
 #define WAVE_TABLE_SHORT_LENGTH         32
@@ -184,7 +184,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // OC3RS compare event is used for synchronization
     OC3CON2bits.SYNCSEL = 0b11111;
 
-    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) & OC3R);
+    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) (&OC3R));
 
     // Automatic DMA transfer initiation by DMA request
     DMA2REQbits.FORCE = 0;
@@ -207,11 +207,13 @@ response_t WAVEGENERATOR_SetSine1(void) {
 }
 
 response_t WAVEGENERATOR_SetSine2(void) {
-    
+
     unsigned char wave_length;
     wave_length = UART1_Read();
     unsigned char resolution;
     resolution = UART1_Read();
+
+    // TODO: Implement function
 
     return SUCCESS;
 }

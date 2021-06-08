@@ -2,7 +2,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#include "../pin_manager.h"
+#include "../../registers/system/pin_manager.h"
 #include "../drivers/spi_master.h"
 
 #include "sd_spi.h"

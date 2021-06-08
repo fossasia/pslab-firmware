@@ -1,50 +1,3 @@
-/**
-  @Generated PIC24 / dsPIC33 / PIC32MM MCUs Source File
-
-  @Company:
-    Microchip Technology Inc.
-
-  @File Name:
-    system.h
-
-  @Summary:
-    This is the sysetm.h file generated using PIC24 / dsPIC33 / PIC32MM MCUs
-
-  @Description:
-    This header file provides implementations for driver APIs for all modules selected in the GUI.
-    Generation Information :
-        Product Revision  :  PIC24 / dsPIC33 / PIC32MM MCUs - 1.170.0
-        Device            :  PIC24EP256GP204
-    The generated drivers are tested against the following:
-        Compiler          :  XC16 v1.61
-        MPLAB             :  MPLAB X v5.45
-*/
-
-/*
-    (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
-    software and any derivatives exclusively with Microchip products.
-
-    THIS SOFTWARE IS SUPPLIED BY MICROCHIP "AS IS". NO WARRANTIES, WHETHER
-    EXPRESS, IMPLIED OR STATUTORY, APPLY TO THIS SOFTWARE, INCLUDING ANY IMPLIED
-    WARRANTIES OF NON-INFRINGEMENT, MERCHANTABILITY, AND FITNESS FOR A
-    PARTICULAR PURPOSE, OR ITS INTERACTION WITH MICROCHIP PRODUCTS, COMBINATION
-    WITH ANY OTHER PRODUCTS, OR USE IN ANY APPLICATION.
-
-    IN NO EVENT WILL MICROCHIP BE LIABLE FOR ANY INDIRECT, SPECIAL, PUNITIVE,
-    INCIDENTAL OR CONSEQUENTIAL LOSS, DAMAGE, COST OR EXPENSE OF ANY KIND
-    WHATSOEVER RELATED TO THE SOFTWARE, HOWEVER CAUSED, EVEN IF MICROCHIP HAS
-    BEEN ADVISED OF THE POSSIBILITY OR THE DAMAGES ARE FORESEEABLE. TO THE
-    FULLEST EXTENT ALLOWED BY LAW, MICROCHIP'S TOTAL LIABILITY ON ALL CLAIMS IN
-    ANY WAY RELATED TO THIS SOFTWARE WILL NOT EXCEED THE AMOUNT OF FEES, IF ANY,
-    THAT YOU HAVE PAID DIRECTLY TO MICROCHIP FOR THIS SOFTWARE.
-
-    MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
-    TERMS.
-*/
-
-// Configuration bits: selected in the GUI
-
-// FICD
 #pragma config ICS = PGD2    //ICD Communication Channel Select bits->Communicate on PGEC2 and PGED2
 #pragma config JTAGEN = OFF    //JTAG Enable bit->JTAG is disabled
 
@@ -75,42 +28,41 @@
 #pragma config GCP = OFF    //General Segment Code-Protect bit->General Segment Code protect is Disabled
 
 #include "pin_manager.h"
-#include "clock.h"
+#include "../../mcc_generated_files/clock.h"
 #include "system.h"
 #include "system_types.h"
-#include "ext_int.h"
-#include "oc4.h"
-#include "uart2.h"
-#include "oc2.h"
-#include "drivers/spi_master.h"
-#include "i2c1.h"
-#include "sd_spi/sd_spi.h"
-#include "interrupt_manager.h"
-#include "traps.h"
-#include "dma.h"
-#include "spi1_driver.h"
-#include "ic2.h"
-#include "ic4.h"
-#include "tmr1.h"
-#include "tmr3.h"
-#include "tmr5.h"
-#include "cmp2.h"
-#include "cmp4.h"
-#include "oc3.h"
-#include "../bus/uart1.h"
-#include "oc1.h"
-#include "adc1.h"
-#include "ic1.h"
-#include "cvr.h"
-#include "ic3.h"
-#include "tmr2.h"
-#include "cmp1.h"
-#include "tmr4.h"
-#include "fatfs/ff.h"
-#include "cmp3.h"
+#include "../../mcc_generated_files/ext_int.h"
+#include "../../mcc_generated_files/adc1.h"
+#include "../../mcc_generated_files/oc1.h"
+#include "../../mcc_generated_files/oc2.h"
+#include "../comparators/oc3.h"
+#include "../../mcc_generated_files/oc4.h"
+#include "../../mcc_generated_files/drivers/spi_master.h"
+#include "../../mcc_generated_files/i2c1.h"
+#include "../../mcc_generated_files/sd_spi/sd_spi.h"
+#include "../../mcc_generated_files/interrupt_manager.h"
+#include "../../mcc_generated_files/traps.h"
+#include "../memory/dma.h"
+#include "../../mcc_generated_files/spi1_driver.h"
+#include "../../mcc_generated_files/ic1.h"
+#include "../../mcc_generated_files/ic2.h"
+#include "../../mcc_generated_files/ic3.h"
+#include "../../mcc_generated_files/ic4.h"
+#include "../../bus/uart1.h"
+#include "../../mcc_generated_files/uart2.h"
+#include "../../mcc_generated_files/cvr.h"
+#include "../../mcc_generated_files/tmr1.h"
+#include "../../mcc_generated_files/tmr2.h"
+#include "../../mcc_generated_files/tmr3.h"
+#include "../timers/tmr4.h"
+#include "../../mcc_generated_files/tmr5.h"
+#include "../../mcc_generated_files/cmp1.h"
+#include "../../mcc_generated_files/cmp2.h"
+#include "../../mcc_generated_files/cmp3.h"
+#include "../../mcc_generated_files/cmp4.h"
+#include "../../mcc_generated_files/fatfs/ff.h"
 
-void SYSTEM_Initialize(void)
-{
+void SYSTEM_Initialize(void) {
     PIN_MANAGER_Initialize();
     INTERRUPT_Initialize();
     CLOCK_Initialize();
@@ -143,4 +95,4 @@ void SYSTEM_Initialize(void)
 
 /**
  End of File
-*/
+ */

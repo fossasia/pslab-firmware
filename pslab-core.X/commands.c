@@ -1,6 +1,7 @@
 #include "commands.h"
 #include "version.h"
 #include "instruments/multimeter.h"
+#include "instruments/wavegenerator.h"
 
 /**
  * This is used to check that a received secondary command does not exceed the
@@ -170,10 +171,10 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Unimplemented,      Removed,         Undefined,            Unimplemented,
      // 8 MAP_REFERENCE     9 SET_WG_PHASE   10 SET_WAVEFORM_TYPE  11 SELECT_FREQ_REGISTER
         Unimplemented,      Unimplemented,   Unimplemented,        Unimplemented,
-     // 12 DELAY_GENERATOR  13 SET_SINE1     14 SET_SINE2          15 LOAD_WAVEFORM1
-        Unimplemented,      Unimplemented,   Unimplemented,        Unimplemented,
-     // 16 LOAD_WAVEFORM2   17 SQR1_PATTERN  18                    19
-        Unimplemented,      Removed,         Undefined,            Undefined,
+     // 12 DELAY_GENERATOR  13 SET_SINE1              14 SET_SINE2            15 LOAD_WAVEFORM1
+        Unimplemented,      WAVEGENERATOR_SetSine1,   WAVEGENERATOR_SetSine2, WAVEGENERATOR_LoadWaveForm1,
+     // 16 LOAD_WAVEFORM2             17 SQR1_PATTERN  18                    19
+        WAVEGENERATOR_LoadWaveForm2,  Removed,         Undefined,            Undefined,
      // 20                  21               22                    23
         Undefined,          Undefined,       Undefined,            Undefined,
      // 24                  25               26                    27

@@ -1,4 +1,4 @@
-#include "mcc_generated_files/system.h"
+#include "registers/system/system.h"
 #include "bus/uart1.h"
 #include "mcc_generated_files/watchdog.h"
 #include "commands.h"
