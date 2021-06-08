@@ -95,6 +95,9 @@ extern "C" {
      */
     void OC3_Initialize(void);
 
+    void OC3_InitializeCON1(void);
+    void OC3_InitializeCON2(void);
+
     /**
       @Summary
         Callback for OC3.

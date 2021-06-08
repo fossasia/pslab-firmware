@@ -148,39 +148,13 @@ response_t WAVEGENERATOR_SetSine1(void) {
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
-    // Output Compare 3 continues to operate in CPU Idle mode
-    OC3CON1bits.OCSIDL = 0;
+    OC3_InitializeCON1();
     // Output Compare Clock Select is Peripheral clock
     OC3CON1bits.OCTSEL = 0b111;
-    // Output Compare Fault B input (OCFB) is disabled
-    OC3CON1bits.ENFLTB = 0;
-    // Output Compare Fault A input (OCFA) is disabled
-    OC3CON1bits.ENFLTA = 0;
-    // No PWM Fault B condition on OCFB pin has occurred
-    OC3CON1bits.OCFLTB = 0;
-    // No PWM Fault A condition on OCFA pin has occurred
-    OC3CON1bits.OCFLTA = 0;
-    // TRIGSTAT is cleared only by software
-    OC3CON1bits.TRIGMODE = 0;
     // Output set high when OC3TMR=0 and set low when OC3TMR=OC3R
     OC3CON1bits.OCM = 0b110;
 
-    // Fault mode is maintained until the Fault source is removed and a new PWM period starts
-    OC3CON2bits.FLTMD = 0;
-    // PWM output is driven low on a Fault
-    OC3CON2bits.FLTOUT = 0;
-    // OC3 pin I/O state is defined by the FLTOUT bit on a Fault condition
-    OC3CON2bits.FLTTRIEN = 0;
-    // OC3 output is not inverted
-    OC3CON2bits.OCINV = 0;
-    // Cascade module operation is disabled
-    OC3CON2bits.OC32 = 0;
-    // Synchronizes OCx with the source designated by the SYNCSELx bits
-    OC3CON2bits.OCTRIG = 0;
-    // Timer source has not been triggered and is being held clear
-    OC3CON2bits.TRIGSTAT = 0;
-    // Output Compare 3 module drives the OC3 pin
-    OC3CON2bits.OCTRIS = 0;
+    OC3_InitializeCON2();
     // OC3RS compare event is used for synchronization
     OC3CON2bits.SYNCSEL = 0b11111;
 
