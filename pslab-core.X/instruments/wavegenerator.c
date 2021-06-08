@@ -123,7 +123,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     unsigned char wave_length;
     wave_length = UART1_Read();
     unsigned char resolution;
-    resolution = UART1_Read();
+    resolution = UART1_ReadInt();
 
     TMR4_Initialize();
 
@@ -136,15 +136,15 @@ response_t WAVEGENERATOR_SetSine1(void) {
         OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH / 2);
         OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
-                __builtin_dmapage(&sine_table_1),
-                __builtin_dmaoffset(&sine_table_1));
+                __builtin_dmaoffset(&sine_table_1),
+                __builtin_dmapage(&sine_table_1));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH / 2);
         OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
-                __builtin_dmapage(&sine_table_1_short),
-                __builtin_dmaoffset(&sine_table_1_short));
+                __builtin_dmaoffset(&sine_table_1_short),
+                __builtin_dmapage(&sine_table_1_short));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
@@ -158,10 +158,10 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // OC3RS compare event is used for synchronization
     OC3CON2bits.SYNCSEL = 0b11111;
 
-    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) (&OC3R));
+    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) &OC3R);
 
     // Automatic DMA transfer initiation by DMA request
-    DMA2REQbits.FORCE = 0;
+    DMA2REQbits.FORCE = 0; // TODO: Might not need
     DMA_PeripheralIrqNumberSet(DMA_CHANNEL_2, DMA_PERIPHERAL_IRQ_TMR4);
 
     DMA_FlagInterruptClear(DMA_CHANNEL_2);
@@ -170,13 +170,16 @@ response_t WAVEGENERATOR_SetSine1(void) {
     DMA_ChannelEnable(DMA_CHANNEL_2);
 
     TMR4_Period16BitSet(wave_length);
+    // 11 -- 1:256 
+    // 10 -- 1:64 
+    // 01 -- 1:8 
+    // 00 -- 1:1
     T4CONbits.TCKPS = (resolution >> 1) & 3;
-
+    
     // Link OC3 pin to output
     RPOR6bits.RP57R = RPN_OC3_PORT;
 
     TMR4_Start();
-
     return SUCCESS;
 }
 
@@ -185,7 +188,7 @@ response_t WAVEGENERATOR_SetSine2(void) {
     unsigned char wave_length;
     wave_length = UART1_Read();
     unsigned char resolution;
-    resolution = UART1_Read();
+    resolution = UART1_ReadInt();
 
     // TODO: Implement function
 

@@ -1077,6 +1077,13 @@
  */
 #define SCK1_SetDigitalOutput() (_TRISC3 = 0)
 
+#define LED_SetHigh()          (_LATB15 = 1)
+#define LED_SetLow()          (_LATB15 = 0)
+#define LED_Toggle()           (_LATB15 ^= 1)
+#define LED_GetValue()         _RB15
+#define LED_SetDigitalInput() (_TRISB15 = 1)
+#define LED_SetDigitalOutput() (_TRISB15 = 0)
+
 /**
     Section: Function Prototypes
  */

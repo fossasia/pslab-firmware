@@ -16,6 +16,8 @@ void PIN_MANAGER_Initialize(void) {
     TRISA = 0x0797;
     TRISB = 0xFD7F;
     TRISC = 0x03F7;
+    LED_SetDigitalOutput();
+    LED_SetLow();
 
     /****************************************************************************
      * Setting the Weak Pull Up and Weak Pull Down SFR(s)
