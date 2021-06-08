@@ -1,7 +1,11 @@
 #ifndef LOGICANALYZER_H
 #define	LOGICANALYZER_H
 
-
+typedef enum {
+    DMA_LA_ONE_CHAN = 1,
+    DMA_LA_TWO_CHAN = 2,
+    DMA_LA_FOUR_CHAN = 3
+} LOGICANALYZER_DMA_MODES;
 
 #endif	/* LOGICANALYZER_H */
 

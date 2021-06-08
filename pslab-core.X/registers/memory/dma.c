@@ -1,6 +1,51 @@
 #include "dma.h"
+#include "../../instruments/logicanalyzer.h"
+#include "../../registers/comparators/ic1.h"
+#include "../../registers/comparators/ic2.h"
+#include "../../registers/comparators/ic3.h"
+#include "../../registers/comparators/ic4.h"
 
-// TODO: define Interrupt functions here
+static unsigned char DMA_MODE;
+
+void __attribute__((__interrupt__, no_auto_psv)) _DMA0Interrupt(void) {
+    IC1_TriggerStatusClear();
+    IC1_Stop();
+    DMA_ChannelDisable(DMA_CHANNEL_0);
+    DMA_FlagInterruptClear(DMA_CHANNEL_0);
+    DMA_InterruptDisable(DMA_CHANNEL_0);
+
+    switch (DMA_MODE) {
+        case DMA_LA_ONE_CHAN:
+        case DMA_LA_TWO_CHAN:
+            IC2_Stop();
+            DMA_ChannelDisable(DMA_CHANNEL_1);
+            DMA_FlagInterruptClear(DMA_CHANNEL_1);
+            DMA_InterruptDisable(DMA_CHANNEL_1);
+            break;
+        default:
+            break;
+    }
+}
+
+void __attribute__((__interrupt__, no_auto_psv)) _DMA1Interrupt(void) {
+    IC2_TriggerStatusClear();
+    IC2_Stop();
+    DMA_ChannelDisable(DMA_CHANNEL_1);
+    DMA_FlagInterruptClear(DMA_CHANNEL_1);
+    DMA_InterruptDisable(DMA_CHANNEL_1);
+}
+
+void __attribute__((__interrupt__, no_auto_psv)) _DMA2Interrupt(void) {
+    IC3_TriggerStatusClear();
+    IC3_Stop();
+    DMA_FlagInterruptClear(DMA_CHANNEL_2);
+}
+
+void __attribute__((__interrupt__, no_auto_psv)) _DMA3Interrupt(void) {
+    IC4_TriggerStatusClear();
+    IC4_Stop();
+    DMA_FlagInterruptClear(DMA_CHANNEL_3);
+}
 
 void DMA_Initialize(void) {
     // Initialize channels which are enabled    
@@ -103,58 +148,6 @@ void DMA_InitializeChannel2(void) {
     // Enabling Channel 2 Interrupt
 }
 
-void __attribute__((weak)) DMA_Channel0_CallBack(void) {
-    // Add your custom callback code here
+void DMA_SetLogicAnalyzerChannelMode(LOGICANALYZER_DMA_MODES mode) {
+    DMA_MODE = mode;
 }
-
-void DMA_Channel0_Tasks(void) {
-    if (IFS0bits.DMA0IF) {
-        // DMA Channel0 callback function 
-        DMA_Channel0_CallBack();
-
-        IFS0bits.DMA0IF = 0;
-    }
-}
-
-void __attribute__((weak)) DMA_Channel1_CallBack(void) {
-    // Add your custom callback code here
-}
-
-void DMA_Channel1_Tasks(void) {
-    if (IFS0bits.DMA1IF) {
-        // DMA Channel1 callback function 
-        DMA_Channel1_CallBack();
-
-        IFS0bits.DMA1IF = 0;
-    }
-}
-
-void __attribute__((weak)) DMA_Channel2_CallBack(void) {
-    // Add your custom callback code here
-}
-
-void DMA_Channel2_Tasks(void) {
-    if (IFS1bits.DMA2IF) {
-        // DMA Channel2 callback function 
-        DMA_Channel2_CallBack();
-
-        IFS1bits.DMA2IF = 0;
-    }
-}
-
-void __attribute__((weak)) DMA_Channel3_CallBack(void) {
-    // Add your custom callback code here
-}
-
-void DMA_Channel3_Tasks(void) {
-    if (IFS2bits.DMA3IF) {
-        // DMA Channel3 callback function 
-        DMA_Channel3_CallBack();
-
-        IFS2bits.DMA3IF = 0;
-    }
-}
-
-/**
-  End of File
- */

@@ -41,8 +41,6 @@
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
         <itemPath>mcc_generated_files/cvr.h</itemPath>
-        <itemPath>mcc_generated_files/ic2.h</itemPath>
-        <itemPath>mcc_generated_files/ic4.h</itemPath>
         <itemPath>mcc_generated_files/ext_int.h</itemPath>
         <itemPath>mcc_generated_files/tmr3.h</itemPath>
         <itemPath>mcc_generated_files/tmr5.h</itemPath>
@@ -52,8 +50,6 @@
         <itemPath>mcc_generated_files/cmp4.h</itemPath>
         <itemPath>mcc_generated_files/uart2.h</itemPath>
         <itemPath>mcc_generated_files/adc_module_features.h</itemPath>
-        <itemPath>mcc_generated_files/ic1.h</itemPath>
-        <itemPath>mcc_generated_files/ic3.h</itemPath>
         <itemPath>mcc_generated_files/i2c1.h</itemPath>
         <itemPath>mcc_generated_files/tmr2.h</itemPath>
         <itemPath>mcc_generated_files/oc2.h</itemPath>
@@ -62,11 +58,15 @@
         <itemPath>mcc_generated_files/cmp1.h</itemPath>
         <itemPath>mcc_generated_files/cmp3.h</itemPath>
       </logicalFolder>
-      <logicalFolder name="registers" displayName="registers" projectFiles="true">
-        <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
+      <logicalFolder name="f1" displayName="registers" projectFiles="true">
+        <logicalFolder name="f2" displayName="comparators" projectFiles="true">
           <itemPath>registers/comparators/oc3.h</itemPath>
+          <itemPath>registers/comparators/ic1.h</itemPath>
+          <itemPath>registers/comparators/ic2.h</itemPath>
+          <itemPath>registers/comparators/ic3.h</itemPath>
+          <itemPath>registers/comparators/ic4.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="memory" displayName="memory" projectFiles="true">
+        <logicalFolder name="f3" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.h</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
@@ -74,7 +74,7 @@
           <itemPath>registers/system/system.h</itemPath>
           <itemPath>registers/system/system_types.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="timers" displayName="timers" projectFiles="true">
+        <logicalFolder name="f1" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.h</itemPath>
         </logicalFolder>
       </logicalFolder>
@@ -131,8 +131,6 @@
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/cvr.c</itemPath>
         <itemPath>mcc_generated_files/ext_int.c</itemPath>
-        <itemPath>mcc_generated_files/ic2.c</itemPath>
-        <itemPath>mcc_generated_files/ic4.c</itemPath>
         <itemPath>mcc_generated_files/oc1.c</itemPath>
         <itemPath>mcc_generated_files/tmr3.c</itemPath>
         <itemPath>mcc_generated_files/tmr5.c</itemPath>
@@ -141,8 +139,6 @@
         <itemPath>mcc_generated_files/tmr1.c</itemPath>
         <itemPath>mcc_generated_files/uart2.c</itemPath>
         <itemPath>mcc_generated_files/i2c1.c</itemPath>
-        <itemPath>mcc_generated_files/ic3.c</itemPath>
-        <itemPath>mcc_generated_files/ic1.c</itemPath>
         <itemPath>mcc_generated_files/oc2.c</itemPath>
         <itemPath>mcc_generated_files/adc1.c</itemPath>
         <itemPath>mcc_generated_files/oc4.c</itemPath>
@@ -150,18 +146,22 @@
         <itemPath>mcc_generated_files/cmp3.c</itemPath>
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
       </logicalFolder>
-      <logicalFolder name="registers" displayName="registers" projectFiles="true">
-        <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
+      <logicalFolder name="f1" displayName="registers" projectFiles="true">
+        <logicalFolder name="f3" displayName="comparators" projectFiles="true">
           <itemPath>registers/comparators/oc3.c</itemPath>
+          <itemPath>registers/comparators/ic1.c</itemPath>
+          <itemPath>registers/comparators/ic2.c</itemPath>
+          <itemPath>registers/comparators/ic3.c</itemPath>
+          <itemPath>registers/comparators/ic4.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="memory" displayName="memory" projectFiles="true">
+        <logicalFolder name="f2" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="system" displayName="system" projectFiles="true">
+        <logicalFolder name="f4" displayName="system" projectFiles="true">
           <itemPath>registers/system/pin_manager.c</itemPath>
           <itemPath>registers/system/system.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="timers" displayName="timers" projectFiles="true">
+        <logicalFolder name="f1" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.c</itemPath>
         </logicalFolder>
       </logicalFolder>
