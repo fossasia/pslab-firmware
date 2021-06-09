@@ -42,7 +42,6 @@
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
         <itemPath>mcc_generated_files/cvr.h</itemPath>
         <itemPath>mcc_generated_files/ext_int.h</itemPath>
-        <itemPath>mcc_generated_files/tmr3.h</itemPath>
         <itemPath>mcc_generated_files/tmr5.h</itemPath>
         <itemPath>mcc_generated_files/oc1.h</itemPath>
         <itemPath>mcc_generated_files/tmr1.h</itemPath>
@@ -65,6 +64,7 @@
           <itemPath>registers/comparators/ic2.h</itemPath>
           <itemPath>registers/comparators/ic3.h</itemPath>
           <itemPath>registers/comparators/ic4.h</itemPath>
+          <itemPath>registers/comparators/oc4.h</itemPath>
         </logicalFolder>
         <logicalFolder name="f3" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.h</itemPath>
@@ -76,6 +76,7 @@
         </logicalFolder>
         <logicalFolder name="f1" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.h</itemPath>
+          <itemPath>registers/timers/tmr3.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <itemPath>delay.h</itemPath>
@@ -132,7 +133,6 @@
         <itemPath>mcc_generated_files/cvr.c</itemPath>
         <itemPath>mcc_generated_files/ext_int.c</itemPath>
         <itemPath>mcc_generated_files/oc1.c</itemPath>
-        <itemPath>mcc_generated_files/tmr3.c</itemPath>
         <itemPath>mcc_generated_files/tmr5.c</itemPath>
         <itemPath>mcc_generated_files/cmp2.c</itemPath>
         <itemPath>mcc_generated_files/cmp4.c</itemPath>
@@ -141,7 +141,6 @@
         <itemPath>mcc_generated_files/i2c1.c</itemPath>
         <itemPath>mcc_generated_files/oc2.c</itemPath>
         <itemPath>mcc_generated_files/adc1.c</itemPath>
-        <itemPath>mcc_generated_files/oc4.c</itemPath>
         <itemPath>mcc_generated_files/cmp1.c</itemPath>
         <itemPath>mcc_generated_files/cmp3.c</itemPath>
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
@@ -153,6 +152,7 @@
           <itemPath>registers/comparators/ic2.c</itemPath>
           <itemPath>registers/comparators/ic3.c</itemPath>
           <itemPath>registers/comparators/ic4.c</itemPath>
+          <itemPath>registers/comparators/oc4.c</itemPath>
         </logicalFolder>
         <logicalFolder name="f2" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.c</itemPath>
@@ -163,6 +163,7 @@
         </logicalFolder>
         <logicalFolder name="f1" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.c</itemPath>
+          <itemPath>registers/timers/tmr3.c</itemPath>
         </logicalFolder>
       </logicalFolder>
       <itemPath>main.c</itemPath>
@@ -202,7 +203,7 @@
         <targetDevice>PIC24EP256GP204</targetDevice>
         <targetHeader></targetHeader>
         <targetPluginBoard></targetPluginBoard>
-        <platformTool>noID</platformTool>
+        <platformTool>PICkit3PlatformTool</platformTool>
         <languageToolchain>XC16</languageToolchain>
         <languageToolchainVersion>1.61</languageToolchainVersion>
         <platform>4</platform>
@@ -363,6 +364,9 @@
         <property key="relaxed-math" value="false"/>
         <property key="save-temps" value="false"/>
       </C30Global>
+      <PICkit3PlatformTool>
+        <property key="firmware.download.all" value="false"/>
+      </PICkit3PlatformTool>
     </conf>
   </confs>
 </configurationDescriptor>

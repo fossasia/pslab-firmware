@@ -123,6 +123,7 @@ extern "C" {
     void DMA_Initialize(void);
 
     void DMA_InitializeChannel2(void);
+    void DMA_InitializeChannel3(void);
 
     /**
       @Summary

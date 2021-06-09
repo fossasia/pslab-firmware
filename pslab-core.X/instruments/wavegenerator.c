@@ -1,9 +1,11 @@
 #include <xc.h>
 #include "../commands.h"
 #include "../bus/uart1.h"
+#include "../registers/timers/tmr3.h"
 #include "../registers/timers/tmr4.h"
 #include "../registers/memory/dma.h"
 #include "../registers/comparators/oc3.h"
+#include "../registers/comparators/oc4.h"
 #include "../registers/system/pin_manager.h"
 
 #define WAVE_TABLE_FULL_LENGTH          512
@@ -158,7 +160,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // OC3RS compare event is used for synchronization
     OC3CON2bits.SYNCSEL = 0b11111;
 
-    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) &OC3R);
+    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) (&OC3R));
 
     // Automatic DMA transfer initiation by DMA request
     DMA2REQbits.FORCE = 0; // TODO: Might not need
@@ -175,7 +177,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // 01 -- 1:8 
     // 00 -- 1:1
     T4CONbits.TCKPS = (resolution >> 1) & 3;
-    
+
     // Link OC3 pin to output
     RPOR6bits.RP57R = RPN_OC3_PORT;
 
@@ -185,12 +187,66 @@ response_t WAVEGENERATOR_SetSine1(void) {
 
 response_t WAVEGENERATOR_SetSine2(void) {
 
-    unsigned char wave_length;
-    wave_length = UART1_Read();
     unsigned char resolution;
-    resolution = UART1_ReadInt();
+    resolution = UART1_Read();
+    unsigned char wave_length;
+    wave_length = UART1_ReadInt();
 
-    // TODO: Implement function
+    TMR3_Initialize();
+
+    DMA_InterruptDisable(DMA_CHANNEL_3);
+    DMA_InitializeChannel3();
+    // DMA Reads from RAM address, writes to peripheral address
+    DMA3CONbits.DIR = 1;
+
+    if (resolution & HIGH_RESOLUTION) {
+        OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH / 2);
+        OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_3,
+                __builtin_dmaoffset(&sine_table_2),
+                __builtin_dmapage(&sine_table_2));
+        DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_FULL_LENGTH - 1);
+    } else {
+        OC4_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
+        OC4_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH * 2);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_3,
+                __builtin_dmaoffset(&sine_table_2_short),
+                __builtin_dmapage(&sine_table_2_short));
+        DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_SHORT_LENGTH - 1);
+    }
+
+    OC4_InitializeCON1();
+    // Output Compare Clock Select is Peripheral clock
+    OC4CON1bits.OCTSEL = 0b111;
+    // Output set high when OC3TMR=0 and set low when OC3TMR=OC3R
+    OC4CON1bits.OCM = 0b110;
+
+    OC4_InitializeCON2();
+    // OC3RS compare event is used for synchronization
+    OC4CON2bits.SYNCSEL = 0b11111;
+
+    DMA_PeripheralAddressSet(DMA_CHANNEL_3, (volatile uint16_t) (&OC4R));
+
+    // Automatic DMA transfer initiation by DMA request
+    DMA3REQbits.FORCE = 0; // TODO: Might not need
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_3, DMA_PERIPHERAL_IRQ_TMR3);
+
+    DMA_FlagInterruptClear(DMA_CHANNEL_3);
+    DMA_InterruptEnable(DMA_CHANNEL_3);
+
+    DMA_ChannelEnable(DMA_CHANNEL_3);
+
+    TMR3_Period16BitSet(wave_length);
+    // 11 -- 1:256 
+    // 10 -- 1:64 
+    // 01 -- 1:8 
+    // 00 -- 1:1
+    T3CONbits.TCKPS = (resolution >> 1) & 3;
+
+    // Link OC3 pin to output
+    RPOR6bits.RP57R = RPN_OC4_PORT;
+
+    TMR3_Start();
 
     return SUCCESS;
 }

@@ -141,6 +141,9 @@ typedef enum
 
 void OC4_Initialize (void);
 
+void OC4_InitializeCON1(void);
+void OC4_InitializeCON2(void);
+
 /**
   @Summary
     Callback for OC4.

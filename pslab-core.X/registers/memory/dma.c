@@ -91,27 +91,7 @@ void DMA_Initialize(void) {
     // Enabling Channel 1 Interrupt
 
     DMA_InitializeChannel2();
-
-    // MODE Continuous, Ping-Pong modes are disabled; AMODE Register Indirect with Post-Increment mode; CHEN disabled; HALF Initiates interrupt when all of the data has been moved; SIZE 16 bit; DIR Reads from peripheral address, writes to RAM address; NULLW disabled; 
-    DMA3CON = 0x00 & 0x7FFF; //Enable DMA Channel later;
-    // IRQSEL INT0; FORCE disabled; 
-    DMA3REQ = 0x00;
-    // STA 0; 
-    DMA3STAH = 0x00;
-    // STA 4096; 
-    DMA3STAL = 0x1000;
-    // STB 0; 
-    DMA3STBH = 0x00;
-    // STB 0; 
-    DMA3STBL = 0x00;
-    // PAD 0; 
-    DMA3PAD = 0x00;
-    // CNT 0; 
-    DMA3CNT = 0x00;
-    // Clearing Channel 3 Interrupt Flag;
-    IFS2bits.DMA3IF = false;
-    // Enabling Channel 3 Interrupt
-
+    DMA_InitializeChannel3();
 }
 
 void DMA_InitializeChannel2(void) {
@@ -146,6 +126,40 @@ void DMA_InitializeChannel2(void) {
     // Clearing Channel 2 Interrupt Flag;
     IFS1bits.DMA2IF = false;
     // Enabling Channel 2 Interrupt
+}
+
+void DMA_InitializeChannel3(void) {
+    // Channel is disabled
+    DMA3CONbits.CHEN = 0;
+    // DMA Data Transfer Size bit is word wise
+    DMA3CONbits.SIZE = 0;
+    // Reads from peripheral address, writes to RAM address
+    DMA3CONbits.DIR = 0;
+    // Initiates interrupt when all of the data have been moved
+    DMA3CONbits.HALF = 0;
+    // Normal operation
+    DMA3CONbits.NULLW = 0;
+    // Register Indirect with Post-Increment mode
+    DMA3CONbits.AMODE = 0b00;
+    // DMA Channel operating mode is continuous with Ping-Pong modes disabled
+    DMA3CONbits.MODE = 0b00;
+    // IRQSEL INT0; FORCE disabled; 
+    DMA3REQ = 0x00;
+    // STA 0; 
+    DMA3STAH = 0x00;
+    // STA 4096; 
+    DMA3STAL = 0x1000;
+    // STB 0; 
+    DMA3STBH = 0x00;
+    // STB 0; 
+    DMA3STBL = 0x00;
+    // PAD 0; 
+    DMA3PAD = 0x00;
+    // CNT 0; 
+    DMA3CNT = 0x00;
+    // Clearing Channel 3 Interrupt Flag;
+    IFS2bits.DMA3IF = false;
+    // Enabling Channel 3 Interrupt
 }
 
 void DMA_SetLogicAnalyzerChannelMode(LOGICANALYZER_DMA_MODES mode) {
