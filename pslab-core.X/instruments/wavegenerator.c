@@ -120,10 +120,10 @@ response_t WAVEGENERATOR_LoadWaveForm2(void) {
 
 response_t WAVEGENERATOR_SetSine1(void) {
 
-    unsigned char wave_length;
-    wave_length = UART1_Read();
     unsigned char resolution;
-    resolution = UART1_ReadInt();
+    resolution = UART1_Read();
+    unsigned char wave_length;
+    wave_length = UART1_ReadInt();
 
     TMR4_Initialize();
 
@@ -140,8 +140,8 @@ response_t WAVEGENERATOR_SetSine1(void) {
                 __builtin_dmapage(&sine_table_1));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
-        OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH / 2);
-        OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH);
+        OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
+        OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH * 2);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
                 __builtin_dmaoffset(&sine_table_1_short),
                 __builtin_dmapage(&sine_table_1_short));
