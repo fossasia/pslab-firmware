@@ -40,13 +40,11 @@
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
         <itemPath>mcc_generated_files/cvr.h</itemPath>
         <itemPath>mcc_generated_files/ext_int.h</itemPath>
-        <itemPath>mcc_generated_files/oc1.h</itemPath>
         <itemPath>mcc_generated_files/cmp2.h</itemPath>
         <itemPath>mcc_generated_files/cmp4.h</itemPath>
         <itemPath>mcc_generated_files/uart2.h</itemPath>
         <itemPath>mcc_generated_files/adc_module_features.h</itemPath>
         <itemPath>mcc_generated_files/i2c1.h</itemPath>
-        <itemPath>mcc_generated_files/oc2.h</itemPath>
         <itemPath>mcc_generated_files/adc1.h</itemPath>
         <itemPath>mcc_generated_files/cmp1.h</itemPath>
         <itemPath>mcc_generated_files/cmp3.h</itemPath>
@@ -59,6 +57,8 @@
           <itemPath>registers/comparators/ic3.h</itemPath>
           <itemPath>registers/comparators/ic4.h</itemPath>
           <itemPath>registers/comparators/oc4.h</itemPath>
+          <itemPath>registers/comparators/oc1.h</itemPath>
+          <itemPath>registers/comparators/oc2.h</itemPath>
         </logicalFolder>
         <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.h</itemPath>
@@ -130,12 +130,10 @@
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/cvr.c</itemPath>
         <itemPath>mcc_generated_files/ext_int.c</itemPath>
-        <itemPath>mcc_generated_files/oc1.c</itemPath>
         <itemPath>mcc_generated_files/cmp2.c</itemPath>
         <itemPath>mcc_generated_files/cmp4.c</itemPath>
         <itemPath>mcc_generated_files/uart2.c</itemPath>
         <itemPath>mcc_generated_files/i2c1.c</itemPath>
-        <itemPath>mcc_generated_files/oc2.c</itemPath>
         <itemPath>mcc_generated_files/adc1.c</itemPath>
         <itemPath>mcc_generated_files/cmp1.c</itemPath>
         <itemPath>mcc_generated_files/cmp3.c</itemPath>
@@ -148,6 +146,8 @@
           <itemPath>registers/comparators/ic3.c</itemPath>
           <itemPath>registers/comparators/ic4.c</itemPath>
           <itemPath>registers/comparators/oc4.c</itemPath>
+          <itemPath>registers/comparators/oc1.c</itemPath>
+          <itemPath>registers/comparators/oc2.c</itemPath>
         </logicalFolder>
         <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.c</itemPath>

@@ -1,9 +1,11 @@
 #include <xc.h>
 #include "../commands.h"
 #include "../bus/uart1.h"
+#include "../registers/timers/tmr1.h"
 #include "../registers/timers/tmr3.h"
 #include "../registers/timers/tmr4.h"
 #include "../registers/memory/dma.h"
+#include "../registers/comparators/oc1.h"
 #include "../registers/comparators/oc3.h"
 #include "../registers/comparators/oc4.h"
 #include "../registers/system/pin_manager.h"
@@ -246,6 +248,74 @@ response_t WAVEGENERATOR_SetSine2(void) {
 
     // Link OC4 pin to SINE2 output
     RPOR6bits.RP56R = RPN_OC4_PORT;
+
+    TMR3_Start();
+
+    return SUCCESS;
+}
+
+response_t WAVEGENERATOR_SetSquare1(void) {
+
+    uint16_t wave_length;
+    wave_length = UART1_ReadInt();
+    uint16_t high_time;
+    high_time = UART1_ReadInt();
+    uint8_t scale;
+    scale = UART1_Read();
+
+    OC1_Initialize();
+    TMR1_Initialize();
+
+    // Output Compare Clock Select is TMR 1
+    OC1CON1bits.OCTSEL = 0b100;
+    // Output set high when OC1TMR=0 and set low when OC1TMR=OC1R
+    OC1CON1bits.OCM = 0b110;
+    // Timer 1 trigger event is used for synchronization
+    OC1CON2bits.SYNCSEL = 0b01011;
+
+    // Set pulse turn on time
+    OC1_PrimaryValueSet(high_time - 1);
+    // Set pulse width
+    TMR1_Period16BitSet(wave_length - 1);
+
+    T1CONbits.TCKPS = scale & 0x3;
+
+    if ((scale & 0x4) == 0) {
+        RPOR5bits.RP54R = RPN_OC1_PORT;
+    }
+
+    TMR1_Start();
+
+    return SUCCESS;
+}
+
+response_t WAVEGENERATOR_SetSquare2(void) {
+
+    uint16_t wave_length;
+    wave_length = UART1_ReadInt();
+    uint16_t high_time;
+    high_time = UART1_ReadInt();
+    uint8_t scale;
+    scale = UART1_Read();
+
+    OC4_Initialize();
+    TMR3_Initialize();
+
+    // Output Compare Clock Select is TMR 3
+    OC4CON1bits.OCTSEL = 0b001;
+    // Output set high when OC4TMR=0 and set low when OC4TMR=OC4R
+    OC4CON1bits.OCM = 0b110;
+    // Timer 3 trigger event is used for synchronization
+    OC4CON2bits.SYNCSEL = 0b01101;
+
+    // Set pulse turn on time
+    OC4_PrimaryValueSet(high_time - 1);
+    // Set pulse width
+    TMR3_Period16BitSet(wave_length - 1);
+
+    T3CONbits.TCKPS = scale;
+
+    RPOR5bits.RP55R = RPN_OC4_PORT;
 
     TMR3_Start();
 

@@ -28,10 +28,21 @@ extern "C" {
      * @return SUCCESS
      */
     response_t WAVEGENERATOR_SetSine2(void);
+    
+    /**
+     * @brief Generate PWM wave from SQR1 pin
+     * @return SUCCESS
+     */
+    response_t WAVEGENERATOR_SetSquare1(void);
+    
+    /**
+     * @brief Generate PWM wave from SQR2 pin
+     * @return SUCCESS
+     */
+    response_t WAVEGENERATOR_SetSquare2(void);
 
 #ifdef	__cplusplus
 }
 #endif
 
 #endif	/* WAVEGENERATOR_H */
-
