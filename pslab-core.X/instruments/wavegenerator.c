@@ -178,12 +178,12 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // 01 -- 1:8 
     // 00 -- 1:1
     T4CONbits.TCKPS = (resolution >> 1) & 3;
-    
-    // Link OC3 pin to output
+
+    // Link OC3 pin to SINE1 output
     RPOR6bits.RP57R = RPN_OC3_PORT;
 
     TMR4_Start();
-    
+
     return SUCCESS;
 }
 
@@ -194,6 +194,7 @@ response_t WAVEGENERATOR_SetSine2(void) {
     uint16_t wave_length;
     wave_length = UART1_ReadInt();
 
+    T2CONbits.T32 = 0;
     TMR3_Initialize();
 
     DMA_InterruptDisable(DMA_CHANNEL_3);
@@ -202,18 +203,16 @@ response_t WAVEGENERATOR_SetSine2(void) {
     DMA3CONbits.DIR = 1;
 
     if (resolution & HIGH_RESOLUTION) {
-        OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH / 2);
+        OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
-        DMA_StartAddressAFullSet(DMA_CHANNEL_3,
-                __builtin_dmaoffset(&sine_table_2),
-                __builtin_dmapage(&sine_table_2));
+        DMA_StartAddressASet(DMA_CHANNEL_3,
+                __builtin_dmaoffset(&sine_table_2));
         DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC4_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
-        OC4_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH * 2);
-        DMA_StartAddressAFullSet(DMA_CHANNEL_3,
-                __builtin_dmaoffset(&sine_table_2_short),
-                __builtin_dmapage(&sine_table_2_short));
+        OC4_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
+        DMA_StartAddressASet(DMA_CHANNEL_3,
+                __builtin_dmaoffset(&sine_table_2_short));
         DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
@@ -230,7 +229,7 @@ response_t WAVEGENERATOR_SetSine2(void) {
     DMA_PeripheralAddressSet(DMA_CHANNEL_3, (volatile uint16_t) (&OC4R));
 
     // Automatic DMA transfer initiation by DMA request
-    DMA3REQbits.FORCE = 0; // TODO: Might not need
+    DMA3REQbits.FORCE = 0;
     DMA_PeripheralIrqNumberSet(DMA_CHANNEL_3, DMA_PERIPHERAL_IRQ_TMR3);
 
     DMA_FlagInterruptClear(DMA_CHANNEL_3);
@@ -245,8 +244,8 @@ response_t WAVEGENERATOR_SetSine2(void) {
     // 00 -- 1:1
     T3CONbits.TCKPS = (resolution >> 1) & 3;
 
-    // Link OC3 pin to output
-    RPOR6bits.RP57R = RPN_OC4_PORT;
+    // Link OC4 pin to SINE2 output
+    RPOR6bits.RP56R = RPN_OC4_PORT;
 
     TMR3_Start();
 
