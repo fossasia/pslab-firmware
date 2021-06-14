@@ -1,11 +1,26 @@
 #include <xc.h>
 #include "uart1.h"
+#include "../registers/system/watchdog.h"
+
+void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
+    WATCHDOG_TimerClear();
+    while (U2STAbits.UTXBF);
+    U2TXREG = U1RXREG;
+    _U1RXIF = 0;
+}
+
+void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
+    WATCHDOG_TimerClear();
+    while (U1STAbits.UTXBF);
+    U1TXREG = U2RXREG;
+    _U2RXIF = 0;
+}
 
 void UART1_Initialize(void) {
     /**    
      Make sure to set LAT bit corresponding to TxPin as high before UART Init
      */
-
+    
     // UARTx is disabled; all UARTx pins are controlled by PORT latches; 
     // UARTx power consumption is minimal
     U1MODEbits.UARTEN = 0;
@@ -96,7 +111,7 @@ uint16_t UART1_ReadInt(void) {
     uint8_t byte1, byte2;
     byte1 = UART1_Read() & 0xFF;
     byte2 = UART1_Read() & 0xFF;
-    return (byte1 << 8) | byte2;
+    return (byte2 << 8) | byte1;
 }
 
 void UART1_Write(uint8_t txData) {

@@ -10,6 +10,7 @@
 
 #define WAVE_TABLE_FULL_LENGTH          512
 #define WAVE_TABLE_SHORT_LENGTH         32
+
 #define HIGH_RESOLUTION                 1
 #define LOW_RESOLUTION                  0
 
@@ -122,9 +123,9 @@ response_t WAVEGENERATOR_LoadWaveForm2(void) {
 
 response_t WAVEGENERATOR_SetSine1(void) {
 
-    unsigned char resolution;
+    uint8_t resolution;
     resolution = UART1_Read();
-    unsigned char wave_length;
+    uint16_t wave_length;
     wave_length = UART1_ReadInt();
 
     TMR4_Initialize();
@@ -135,7 +136,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     DMA2CONbits.DIR = 1;
 
     if (resolution & HIGH_RESOLUTION) {
-        OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH / 2);
+        OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
                 __builtin_dmaoffset(&sine_table_1),
@@ -143,7 +144,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
-        OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH * 2);
+        OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
                 __builtin_dmaoffset(&sine_table_1_short),
                 __builtin_dmapage(&sine_table_1_short));
@@ -163,7 +164,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) (&OC3R));
 
     // Automatic DMA transfer initiation by DMA request
-    DMA2REQbits.FORCE = 0; // TODO: Might not need
+    DMA2REQbits.FORCE = 0;
     DMA_PeripheralIrqNumberSet(DMA_CHANNEL_2, DMA_PERIPHERAL_IRQ_TMR4);
 
     DMA_FlagInterruptClear(DMA_CHANNEL_2);
@@ -177,19 +178,20 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // 01 -- 1:8 
     // 00 -- 1:1
     T4CONbits.TCKPS = (resolution >> 1) & 3;
-
+    
     // Link OC3 pin to output
     RPOR6bits.RP57R = RPN_OC3_PORT;
 
     TMR4_Start();
+    
     return SUCCESS;
 }
 
 response_t WAVEGENERATOR_SetSine2(void) {
 
-    unsigned char resolution;
+    uint8_t resolution;
     resolution = UART1_Read();
-    unsigned char wave_length;
+    uint16_t wave_length;
     wave_length = UART1_ReadInt();
 
     TMR3_Initialize();

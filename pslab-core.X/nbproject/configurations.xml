@@ -32,7 +32,6 @@
         <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
           <itemPath>mcc_generated_files/sd_spi/sd_spi.h</itemPath>
         </logicalFolder>
-        <itemPath>mcc_generated_files/watchdog.h</itemPath>
         <itemPath>mcc_generated_files/reset.h</itemPath>
         <itemPath>mcc_generated_files/traps.h</itemPath>
         <itemPath>mcc_generated_files/clock.h</itemPath>
@@ -52,13 +51,12 @@
         <itemPath>mcc_generated_files/i2c1.h</itemPath>
         <itemPath>mcc_generated_files/tmr2.h</itemPath>
         <itemPath>mcc_generated_files/oc2.h</itemPath>
-        <itemPath>mcc_generated_files/oc4.h</itemPath>
         <itemPath>mcc_generated_files/adc1.h</itemPath>
         <itemPath>mcc_generated_files/cmp1.h</itemPath>
         <itemPath>mcc_generated_files/cmp3.h</itemPath>
       </logicalFolder>
-      <logicalFolder name="f1" displayName="registers" projectFiles="true">
-        <logicalFolder name="f2" displayName="comparators" projectFiles="true">
+      <logicalFolder name="registers" displayName="registers" projectFiles="true">
+        <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
           <itemPath>registers/comparators/oc3.h</itemPath>
           <itemPath>registers/comparators/ic1.h</itemPath>
           <itemPath>registers/comparators/ic2.h</itemPath>
@@ -66,15 +64,17 @@
           <itemPath>registers/comparators/ic4.h</itemPath>
           <itemPath>registers/comparators/oc4.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="f3" displayName="memory" projectFiles="true">
+        <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.h</itemPath>
         </logicalFolder>
         <logicalFolder name="system" displayName="system" projectFiles="true">
           <itemPath>registers/system/pin_manager.h</itemPath>
           <itemPath>registers/system/system.h</itemPath>
           <itemPath>registers/system/system_types.h</itemPath>
+          <itemPath>registers/system/watchdog.h</itemPath>
+          <itemPath>registers/system/clock.h</itemPath>
         </logicalFolder>
-        <logicalFolder name="f1" displayName="timers" projectFiles="true">
+        <logicalFolder name="timers" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.h</itemPath>
           <itemPath>registers/timers/tmr3.h</itemPath>
         </logicalFolder>
@@ -126,7 +126,6 @@
           <itemPath>mcc_generated_files/sd_spi/sd_spi.c</itemPath>
         </logicalFolder>
         <itemPath>mcc_generated_files/traps.c</itemPath>
-        <itemPath>mcc_generated_files/clock.c</itemPath>
         <itemPath>mcc_generated_files/reset.c</itemPath>
         <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
@@ -145,8 +144,8 @@
         <itemPath>mcc_generated_files/cmp3.c</itemPath>
         <itemPath>mcc_generated_files/tmr2.c</itemPath>
       </logicalFolder>
-      <logicalFolder name="f1" displayName="registers" projectFiles="true">
-        <logicalFolder name="f3" displayName="comparators" projectFiles="true">
+      <logicalFolder name="registers" displayName="registers" projectFiles="true">
+        <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
           <itemPath>registers/comparators/oc3.c</itemPath>
           <itemPath>registers/comparators/ic1.c</itemPath>
           <itemPath>registers/comparators/ic2.c</itemPath>
@@ -154,14 +153,15 @@
           <itemPath>registers/comparators/ic4.c</itemPath>
           <itemPath>registers/comparators/oc4.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="f2" displayName="memory" projectFiles="true">
+        <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="f4" displayName="system" projectFiles="true">
+        <logicalFolder name="system" displayName="system" projectFiles="true">
           <itemPath>registers/system/pin_manager.c</itemPath>
           <itemPath>registers/system/system.c</itemPath>
+          <itemPath>registers/system/clock.c</itemPath>
         </logicalFolder>
-        <logicalFolder name="f1" displayName="timers" projectFiles="true">
+        <logicalFolder name="timers" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.c</itemPath>
           <itemPath>registers/timers/tmr3.c</itemPath>
         </logicalFolder>

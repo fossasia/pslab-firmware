@@ -100,54 +100,6 @@ extern "C" {
 
     /**
       @Summary
-        Callback for OC3.
-
-      @Description
-        This routine is callback for OC3
-
-      @Param
-        None.
-
-      @Returns
-        None
- 
-      @Example 
-        Refer to OC3_Initialize(); for an example
-     */
-    void OC3_CallBack(void);
-
-    /**
-      @Summary
-        Maintains the driver's state machine and implements its ISR
-
-      @Description
-        This routine is used to maintain the driver's internal state
-        machine and implement its ISR for interrupt-driven implementations.
-  
-      @Preconditions
-        None.
-
-      @Param
-        None.
-
-      @Returns
-        None.
-
-      @Example
-        <code>
-        while (true)
-        {
-            OC3_Tasks();
-
-            // Do other tasks
-        }
-        </code>
-    
-     */
-    void OC3_Tasks(void);
-
-    /**
-      @Summary
         Enables the OC module with the corresponding operation mode.
 
       @Description

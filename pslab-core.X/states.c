@@ -1,6 +1,6 @@
 #include "registers/system/system.h"
 #include "bus/uart1.h"
-#include "mcc_generated_files/watchdog.h"
+#include "registers/system/watchdog.h"
 #include "commands.h"
 #include "states.h"
 

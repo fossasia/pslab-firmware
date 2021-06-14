@@ -4,12 +4,13 @@
 // FPOR
 #pragma config ALTI2C1 = OFF    //Alternate I2C1 pins->I2C1 mapped to SDA1/SCL1 pins
 #pragma config ALTI2C2 = OFF    //Alternate I2C2 pins->I2C2 mapped to SDA2/SCL2 pins
-#pragma config WDTWIN = WIN25    //Watchdog Window Select bits->WDT Window is 25% of WDT period
+#pragma config WDTWIN = WIN75    //Watchdog Window Select bits->WDT Window is 25% of WDT period
 
 // FWDT
-#pragma config WDTPOST = PS32768    //Watchdog Timer Postscaler bits->1:32768
+#pragma config WDTPOST = PS512    //Watchdog Timer Postscaler bits->1:32768
 #pragma config WDTPRE = PR128    //Watchdog Timer Prescaler bit->1:128
-#pragma config PLLKEN = ON    //PLL Lock Enable bit->Clock switch to PLL source will wait until the PLL lock signal is valid.
+// TODO: Test the following config
+//#pragma config PLLKEN = ON    //PLL Lock Enable bit->Clock switch to PLL source will wait until the PLL lock signal is valid.
 #pragma config WINDIS = OFF    //Watchdog Timer Window Enable bit->Watchdog Timer in Non-Window mode
 #pragma config FWDTEN = OFF    //Watchdog Timer Enable bit->Watchdog timer enabled/disabled by user software
 
@@ -28,7 +29,7 @@
 #pragma config GCP = OFF    //General Segment Code-Protect bit->General Segment Code protect is Disabled
 
 #include "pin_manager.h"
-#include "../../mcc_generated_files/clock.h"
+#include "clock.h"
 #include "system.h"
 #include "system_types.h"
 #include "../../mcc_generated_files/ext_int.h"
@@ -63,36 +64,45 @@
 #include "../../mcc_generated_files/fatfs/ff.h"
 
 void SYSTEM_Initialize(void) {
-    PIN_MANAGER_Initialize();
-    INTERRUPT_Initialize();
-    CLOCK_Initialize();
-    OC4_Initialize();
-    UART1_Initialize();
-    CMP4_Initialize();
-    OC1_Initialize();
-    TMR4_Initialize();
-    EXT_INT_Initialize();
-    IC4_Initialize();
-    UART2_Initialize();
-    I2C1_Initialize();
-    CMP1_Initialize();
-    TMR3_Initialize();
-    IC3_Initialize();
-    IC2_Initialize();
-    CMP2_Initialize();
-    CVR_Initialize();
-    OC3_Initialize();
-    TMR2_Initialize();
-    CMP3_Initialize();
-    ADC1_Initialize();
-    OC2_Initialize();
-    TMR5_Initialize();
-    IC1_Initialize();
-    DMA_Initialize();
-    TMR1_Initialize();
-    SYSTEM_CORCONModeOperatingSet(CORCON_MODE_PORVALUES);
-}
 
-/**
- End of File
- */
+    CLOCK_Initialize();
+
+    PIN_MANAGER_Initialize();
+
+    SYSTEM_CORCONInitialize();
+
+    INTERRUPT_Initialize();
+    EXT_INT_Initialize();
+
+    UART1_Initialize();
+    UART2_Initialize();
+
+    ADC1_Initialize();
+
+    CMP1_Initialize();
+    CMP2_Initialize();
+    CMP3_Initialize();
+    CMP4_Initialize();
+
+    TMR1_Initialize();
+    TMR2_Initialize();
+    TMR3_Initialize();
+    TMR4_Initialize();
+    TMR5_Initialize();
+
+    IC1_Initialize();
+    IC2_Initialize();
+    IC3_Initialize();
+    IC4_Initialize();
+
+    I2C1_Initialize();
+
+    CVR_Initialize();
+
+    OC1_Initialize();
+    OC2_Initialize();
+    OC3_Initialize();
+    OC4_Initialize();
+
+    DMA_Initialize();
+}

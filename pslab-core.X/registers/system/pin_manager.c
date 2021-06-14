@@ -3,6 +3,11 @@
 #include "pin_manager.h"
 
 void PIN_MANAGER_Initialize(void) {
+    // PTG WatchDogTimer is disabled
+    PTGCONbits.PTGWDT = 0;
+    // Enable WatchDogTimer
+    RCONbits.SWDTEN = 1;
+    
     /****************************************************************************
      * Setting the Output Latch SFR(s)
      ***************************************************************************/
@@ -16,8 +21,18 @@ void PIN_MANAGER_Initialize(void) {
     TRISA = 0x0797;
     TRISB = 0xFD7F;
     TRISC = 0x03F7;
+    
+    TRISBbits.TRISB10 = INPUT_PIN; // LA1_
+    TRISBbits.TRISB11 = INPUT_PIN; // LA2_
+    TRISBbits.TRISB12 = INPUT_PIN; // LA3_
+    TRISBbits.TRISB13 = INPUT_PIN; // LA4_
+    
+    TRISCbits.TRISC6 = OUTPUT_PIN; // SQR1_
+    TRISCbits.TRISC7 = OUTPUT_PIN; // SQR2_
+    TRISCbits.TRISC8 = OUTPUT_PIN; // SQR3_
+    TRISCbits.TRISC9 = OUTPUT_PIN; // SQR4_
+
     LED_SetDigitalOutput();
-    LED_SetLow();
 
     /****************************************************************************
      * Setting the Weak Pull Up and Weak Pull Down SFR(s)
@@ -39,18 +54,16 @@ void PIN_MANAGER_Initialize(void) {
     /****************************************************************************
      * Setting the Analog/Digital Configuration SFR(s)
      ***************************************************************************/
-    ANSELA = 0x0003;
-    ANSELB = 0x000F;
-    ANSELC = 0x0007;
+    ANSELA = 0x0000;
+    ANSELB = 0x0000;
+    ANSELC = 0x0000;
 
     /****************************************************************************
-     * Set the PPS
+     * Assign pin mappings
      ***************************************************************************/
-    __builtin_write_OSCCONL(OSCCON & 0xbf); // unlock PPS
-
     RPOR2bits.RP39R = RPN_U1TX_PORT; //RB7->UART1:U1TX
     RPINR18bits.U1RXR = RPI_RP40; //RB8->UART1:U1RX
 
-    __builtin_write_OSCCONL(OSCCON | 0x40); // lock PPS
+    LED_SetHigh();
 }
 

@@ -1,16 +1,6 @@
 #include <stdio.h>
 #include "tmr4.h"
 
-typedef struct _TMR_OBJ_STRUCT {
-    /* Timer Elapsed */
-    volatile bool timerElapsed;
-    /*Software Counter value*/
-    volatile uint8_t count;
-
-} TMR_OBJ;
-
-static TMR_OBJ tmr4_obj;
-
 /**
   Section: Driver Interface
  */
@@ -32,15 +22,11 @@ void TMR4_Initialize(void) {
     T4CONbits.T32 = 0;
     // Internal clock (FP)
     T4CONbits.TCS = 0;
-
-    tmr4_obj.timerElapsed = false;
 }
 
 void TMR4_Tasks_16BitOperation(void) {
     /* Check if the Timer Interrupt/Status is set */
     if (IFS1bits.T4IF) {
-        tmr4_obj.count++;
-        tmr4_obj.timerElapsed = true;
         IFS1bits.T4IF = false;
     }
 }
@@ -48,29 +34,22 @@ void TMR4_Tasks_16BitOperation(void) {
 void TMR4_Period16BitSet(uint16_t value) {
     /* Update the counter values */
     PR4 = value;
-    /* Reset the status information */
-    tmr4_obj.timerElapsed = false;
 }
 
 uint16_t TMR4_Period16BitGet(void) {
-    return ( PR4);
+    return (PR4);
 }
 
 void TMR4_Counter16BitSet(uint16_t value) {
     /* Update the counter values */
     TMR4 = value;
-    /* Reset the status information */
-    tmr4_obj.timerElapsed = false;
 }
 
 uint16_t TMR4_Counter16BitGet(void) {
-    return ( TMR4);
+    return (TMR4);
 }
 
 void TMR4_Start(void) {
-    /* Reset the status information */
-    tmr4_obj.timerElapsed = false;
-
     /* Start the Timer */
     T4CONbits.TON = 1;
 }
@@ -79,23 +58,4 @@ void TMR4_Stop(void) {
     /* Stop the Timer */
     T4CONbits.TON = false;
 
-}
-
-bool TMR4_GetElapsedThenClear(void) {
-    bool status;
-
-    status = tmr4_obj.timerElapsed;
-
-    if (status == true) {
-        tmr4_obj.timerElapsed = false;
-    }
-    return status;
-}
-
-int TMR4_SoftwareCounterGet(void) {
-    return tmr4_obj.count;
-}
-
-void TMR4_SoftwareCounterClear(void) {
-    tmr4_obj.count = 0;
 }

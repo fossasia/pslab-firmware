@@ -5,9 +5,7 @@ static uint16_t gOC3Mode;
 void OC3_Initialize(void) {
     OC3_InitializeCON1();
     OC3_InitializeCON2();
-    // OC3RS 0; 
     OC3RS = 0x00;
-    // OC3R 0; 
     OC3R = 0x00;
 
     gOC3Mode = OC3CON1bits.OCM;
@@ -51,18 +49,6 @@ void OC3_InitializeCON2(void) {
     OC3CON2bits.OCTRIS = 0;
     // No Sync or Trigger source
     OC3CON2bits.SYNCSEL = 0b00000;
-}
-
-void __attribute__((weak)) OC3_CallBack(void) {
-    // Add your custom callback code here
-}
-
-void OC3_Tasks(void) {
-    if (IFS1bits.OC3IF) {
-        // OC3 callback function 
-        OC3_CallBack();
-        IFS1bits.OC3IF = 0;
-    }
 }
 
 void OC3_Start(void) {

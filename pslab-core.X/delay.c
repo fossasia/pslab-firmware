@@ -2,7 +2,7 @@
 
 #include "delay.h"
 #include <libpic30.h>
-#include "mcc_generated_files/clock.h"
+#include "registers/system/clock.h"
 
 void DELAY_ms(unsigned long d) {
     __delay_ms(d);
