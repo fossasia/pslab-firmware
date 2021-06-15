@@ -3,6 +3,7 @@
 #include "pin_manager.h"
 
 void PIN_MANAGER_Initialize(void) {
+    
     // PTG WatchDogTimer is disabled
     PTGCONbits.PTGWDT = 0;
     // Enable WatchDogTimer

@@ -6,6 +6,7 @@
 #include "../registers/timers/tmr4.h"
 #include "../registers/memory/dma.h"
 #include "../registers/comparators/oc1.h"
+#include "../registers/comparators/oc2.h"
 #include "../registers/comparators/oc3.h"
 #include "../registers/comparators/oc4.h"
 #include "../registers/system/pin_manager.h"
@@ -308,6 +309,96 @@ response_t WAVEGENERATOR_SetSquare2(void) {
     RPOR5bits.RP55R = RPN_OC4_PORT;
 
     TMR3_Start();
+
+    return SUCCESS;
+}
+
+response_t WAVEGENERATOR_SetSquareAll(void) {
+
+    uint16_t wave_length = UART1_ReadInt();
+    uint16_t high_time_1 = UART1_ReadInt();
+    uint16_t low_time_2 = UART1_ReadInt();
+    uint16_t high_time_2 = UART1_ReadInt();
+    uint16_t low_time_3 = UART1_ReadInt();
+    uint16_t high_time_3 = UART1_ReadInt();
+    uint16_t low_time_4 = UART1_ReadInt();
+    uint16_t high_time_4 = UART1_ReadInt();
+    uint8_t configuration = UART1_Read();
+
+    DMA_InterruptDisable(DMA_CHANNEL_2);
+    DMA_FlagInterruptClear(DMA_CHANNEL_2);
+    DMA_ChannelDisable(DMA_CHANNEL_2);
+    DMA_InterruptDisable(DMA_CHANNEL_3);
+    DMA_FlagInterruptClear(DMA_CHANNEL_3);
+    DMA_ChannelDisable(DMA_CHANNEL_3);
+
+    TMR1_Initialize();
+    T1CONbits.TCKPS = configuration & 0b11;
+
+    OC1_Initialize();
+    OC1_PrimaryValueSet(0);
+    OC1_SecondaryValueSet(high_time_1);
+    OC2_Initialize();
+    OC2_PrimaryValueSet(low_time_2);
+    OC2_SecondaryValueSet(high_time_2);
+    OC3_Initialize();
+    OC3_PrimaryValueSet(low_time_3);
+    OC3_SecondaryValueSet(high_time_3);
+    OC4_Initialize();
+    OC4_PrimaryValueSet(low_time_4);
+    OC4_SecondaryValueSet(high_time_4);
+
+    if ((configuration >> 6) & 1) {
+        // EnableComparator();
+        // CMP2 module synchronizes or triggers OCx
+        OC1CON2bits.SYNCSEL = 0b11001;
+        OC2CON2bits.SYNCSEL = 0b11001;
+        OC3CON2bits.SYNCSEL = 0b11001;
+        OC4CON2bits.SYNCSEL = 0b11001;
+        // Triggers OCx from the source designated by the SYNCSELx bits: CMP2
+        OC1CON2bits.OCTRIG = 1;
+        OC2CON2bits.OCTRIG = 1;
+        OC3CON2bits.OCTRIG = 1;
+        OC4CON2bits.OCTRIG = 1;
+    } else {
+        // Timer 1 synchronizes OCx timers
+        OC1CON2bits.SYNCSEL = 0b01011;
+        OC2CON2bits.SYNCSEL = 0b01011;
+        OC3CON2bits.SYNCSEL = 0b01011;
+        OC4CON2bits.SYNCSEL = 0b01011;
+    }
+
+    if ((configuration >> 5) & 1) {
+        // Output set high when OCxTMR = OCxR and set low when OCxTMR = OCxRS
+        OC1CON1bits.OCM = 0b111;
+        OC2CON1bits.OCM = 0b111;
+        OC3CON1bits.OCM = 0b111;
+        OC4CON1bits.OCM = 0b111;
+    } else {
+        // Toggles OCx state on matches of OCxR and OCxRS for one cycle
+        OC1CON1bits.OCM = 0b100;
+        OC2CON1bits.OCM = 0b100;
+        OC3CON1bits.OCM = 0b100;
+        OC4CON1bits.OCM = 0b100;
+        // Invert OCx pin output
+        OC2CON2bits.OCINV = (configuration >> 2) & 1;
+        OC3CON2bits.OCINV = (configuration >> 3) & 1;
+        OC4CON2bits.OCINV = (configuration >> 4) & 1;
+    }
+
+    // T1CLK is the clock source of the Output Compare modules
+    OC1CON1bits.OCTSEL = 0b100;
+    OC2CON1bits.OCTSEL = 0b100;
+    OC3CON1bits.OCTSEL = 0b100;
+    OC4CON1bits.OCTSEL = 0b100;
+
+    TMR1_Period16BitSet(wave_length);
+    TMR1_Start();
+
+    RPOR5bits.RP54R = RPN_OC1_PORT;
+    RPOR5bits.RP55R = RPN_OC2_PORT;
+    RPOR6bits.RP56R = RPN_OC3_PORT;
+    RPOR6bits.RP57R = RPN_OC4_PORT;
 
     return SUCCESS;
 }
