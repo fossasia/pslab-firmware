@@ -85,20 +85,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,         Undefined,     Undefined,     Undefined,
     },
     { // 2 ADC
-     // 0                          1 CAPTURE_ONE                2 CAPTURE_TWO          3 CAPTURE_DMASPEED
-        Undefined,                 Unimplemented,               Unimplemented,         Unimplemented,
-     // 4 CAPTURE_FOUR             5 CONFIGURE_TRIGGER          6 GET_CAPTURE_STATUS   7 GET_CAPTURE_CHANNEL
-        Unimplemented,             Unimplemented,               Unimplemented,         Unimplemented,
-     // 8 SET_PGA_GAIN             9 GET_VOLTAGE                10 GET_VOLTAGE_SUMMED  11 START_ADC_STREAMING
-        Unimplemented,             MULTIMETER_GetVoltage,       Unimplemented,         Removed,
-     // 12 SELECT_PGA_CHANNEL      13 CAPTURE_12BIT             14 CAPTURE_MULTIPLE    15 SET_HI_CAPTURE
-        Unimplemented,             Unimplemented,               Removed,               Unimplemented,
-     // 16 SET_LO_CAPTURE          17 SET_HI_CAPTURE12          18 SET_LO_CAPTURE12    19 CAPTURE_DMASPEED12
-        Unimplemented,             Unimplemented,               Unimplemented,         Unimplemented,
-     // 20 MULTIPOINT_CAPACITANCE  21 SET_CAP                   22 PULSE_TRAIN         23
-        Unimplemented,             Unimplemented,               Unimplemented,         Undefined,
-     // 24                         25                           26                     27
-        Undefined,                 Undefined,                   Undefined,             Undefined,
+     // 0                          1 CAPTURE_ONE                2 CAPTURE_TWO                   3 CAPTURE_DMASPEED
+        Undefined,                 Unimplemented,               Unimplemented,                  Unimplemented,
+     // 4 CAPTURE_FOUR             5 CONFIGURE_TRIGGER          6 GET_CAPTURE_STATUS            7 GET_CAPTURE_CHANNEL
+        Unimplemented,             Unimplemented,               Unimplemented,                  Unimplemented,
+     // 8 SET_PGA_GAIN             9 GET_VOLTAGE                10 GET_VOLTAGE_SUMMED           11 START_ADC_STREAMING
+        Unimplemented,             MULTIMETER_GetVoltage,       MULTIMETER_GetVoltageSummed,    Removed,
+     // 12 SELECT_PGA_CHANNEL      13 CAPTURE_12BIT             14 CAPTURE_MULTIPLE             15 SET_HI_CAPTURE
+        Unimplemented,             Unimplemented,               Removed,                        Unimplemented,
+     // 16 SET_LO_CAPTURE          17 SET_HI_CAPTURE12          18 SET_LO_CAPTURE12             19 CAPTURE_DMASPEED12
+        Unimplemented,             Unimplemented,               Unimplemented,                  Unimplemented,
+     // 20 MULTIPOINT_CAPACITANCE  21 SET_CAP                   22 PULSE_TRAIN                  23
+        Unimplemented,             Unimplemented,               Unimplemented,                  Undefined,
+     // 24                         25                           26                              27
+        Undefined,                 Undefined,                   Undefined,                      Undefined,
     },
     { // 3 SPI
      // 0               1 START_SPI           2 SEND_SPI8        3 SEND_SPI16

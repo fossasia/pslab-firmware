@@ -2,6 +2,8 @@
 
 // Space in memory to save ADC data
 int __attribute__((section(".adc_buffer"), far)) ADC1_Buffer[10000];
+// Current ADC operation mode variables
+static uint8_t current_mode, current_channel_0, current_channel_123;
 
 void ADC1_Initialize(void) {
 
@@ -80,6 +82,67 @@ void ADC1_InitializeCON4(void) {
     AD1CON4bits.ADDMAEN = 0;
     // Allocates 1 word of buffer to each analog input
     AD1CON4bits.DMABL = 0b000;
+}
+
+void ADC1_SetOperationMode(
+        ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123) {
+
+    // Save time by prevent reinitialization of registers
+    if (current_mode == mode && current_channel_0 == channel_0 &&
+            current_channel_123 == channel_123) {
+        return;
+    }
+
+    if (current_channel_0 == 7 || current_channel_0 == 5) {
+        CM4CONbits.CON = 0;
+        PMD3bits.CMPMD = 1;
+    }
+    // Save current mode settings
+    current_mode = mode;
+    current_channel_0 = channel_0;
+    current_channel_123 = channel_123;
+
+    ADC1_Initialize();
+
+    switch (current_mode) {
+        case ADC1_10BIT_SIMULTANEOUS_MODE:
+            // initADC10()
+            break;
+        case ADC1_10BIT_DMA_MODE:
+            // initADCDMA(0)
+            break;
+        case ADC1_12BIT_DMA_MODE:
+            // initADCDMA(1)
+            break;
+        case ADC1_12BIT_NORMAL_MODE:
+            // initADC12()
+            break;
+        case ADC1_12BIT_SCOPE_MODE:
+            // initADC12bit_scope()
+            break;
+        case ADC1_12BIT_AVERAGING_MODE:
+            // Disable DMA channel
+            DMA0CONbits.CHEN = 0;
+            ADC1_ResolutionModeSet(ADC1_RESOLUTION_12_BIT);
+            //Set input channels
+            ADC1_ChannelSelectSet(current_channel_0);
+            ADC1_Positive123ChannelSelect(current_channel_123);
+            // Channel 0 negative input is VREFL
+            AD1CHS0bits.CH0NA = 0;
+            // Internal counter ends sampling and starts auto conversion
+            AD1CON1bits.SSRC = 0b111;
+            // Generate interrupt after 16th sample conversion
+            AD1CON2bits.SMPI = 0b01111;
+            // Clock settings
+            AD1CON3bits.SAMC = 0b10000; // 16*TAD auto sample time
+            AD1CON3bits.ADCS = 0b00001010; // TAD = Tp*10 = 156.25 ns
+            break;
+        case ADC1_CTMU_MODE:
+            // initADCCTMU()
+            break;
+        default:
+            break;
+    }
 }
 
 void __attribute__((__interrupt__, auto_psv, weak)) _AD1Interrupt(void) {

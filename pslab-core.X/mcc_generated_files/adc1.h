@@ -46,6 +46,27 @@ extern "C" {
         channel_AN2, //Channel Name:AN2   Assigned to:Dedicated Channel3
     } ADC1_CHANNEL;
 
+    /** PSLab ADC operation modes
+ 
+     @Summary 
+       Defines the ADC modes PSLab is operating at
+ 
+     @Description
+       This routine defines the names for ADC operation modes specific to PSLab
+ 
+     Remarks:
+       None
+     */
+    typedef enum {
+        ADC1_10BIT_SIMULTANEOUS_MODE,
+        ADC1_10BIT_DMA_MODE,
+        ADC1_12BIT_DMA_MODE,
+        ADC1_12BIT_NORMAL_MODE,
+        ADC1_12BIT_SCOPE_MODE,
+        ADC1_12BIT_AVERAGING_MODE,
+        ADC1_CTMU_MODE
+    } ADC1_PSLAB_MODES;
+
     /**
       Section: Interface Routines
      */
@@ -959,6 +980,9 @@ extern "C" {
     inline static void ADC1_ConversionChannelsSet(ADC1_CONVERSION_CHANNELS_TYPE channel) {
         AD1CON2bits.CHPS = channel;
     }
+
+    void ADC1_SetOperationMode(
+            ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }
