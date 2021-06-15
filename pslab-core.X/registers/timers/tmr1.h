@@ -1,24 +1,13 @@
 #ifndef _TMR1_H
 #define _TMR1_H
 
-/**
-  Section: Included Files
- */
-
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 extern "C" {
-
 #endif
-
-
-    /**
-      Section: Interface Routines
-     */
 
     /**
       @Summary
@@ -34,55 +23,8 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        <code>
-        bool statusTimer1;
-        uint16_t period;
-        uint16_t value;
-
-        period = 0x20;
-
-        TMR1_Initialize();
-
-        TMR1_Period16BitSet(period);
-
-        if((value = TMR1_Period16BitGet())== period)
-        {
-            TMR1_Start();
-        }
-
-        while(1)
-        {
-            TMR1_Tasks();
-            if( (statusTimer1 = TMR1_GetElapsedThenClear()) == true)
-            {
-                TMR1_Stop();
-            }
-        }
-        </code>
      */
     void TMR1_Initialize(void);
-
-    /**
-      @Summary
-        Used to maintain the driver's state machine and implement its ISR
-
-      @Description
-        This routine is used to maintain the driver's internal state machine and
-        implement its ISR for interrupt-driven implementations.
-
-      @Param
-        None.
-
-      @Returns
-        None
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
-     */
-
-    void TMR1_Tasks_16BitOperation(void);
 
     /**
       @Summary
@@ -96,11 +38,7 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
      */
-
     void TMR1_Period16BitSet(uint16_t value);
 
     /**
@@ -116,11 +54,7 @@ extern "C" {
 
       @Returns
         Timer 16-bit period value
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
      */
-
     uint16_t TMR1_Period16BitGet(void);
 
     /**
@@ -135,24 +69,7 @@ extern "C" {
 
       @Returns
         None
-
-      @Example 
-        <code>
-        uint16_t value=0xF0F0;
-
-        TMR1_Counter16BitSet(value));
-
-        while(1)
-        {
-            TMR1_Tasks();
-            if( (value == TMR1_Counter16BitGet()))
-            {
-                TMR1_Stop();
-            }
-        }
-        </code>
      */
-
     void TMR1_Counter16BitSet(uint16_t value);
 
     /**
@@ -167,11 +84,7 @@ extern "C" {
 
       @Returns
         16-bit current counter value
- 
-      @Example 
-        Refer to the example of TMR1_Counter16BitSet();
      */
-
     uint16_t TMR1_Counter16BitGet(void);
 
 
@@ -187,11 +100,7 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
      */
-
     void TMR1_Start(void);
 
     /**
@@ -206,76 +115,11 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
      */
-
     void TMR1_Stop(void);
 
-    /**
-      @Summary
-        Returns the elapsed status of the timer and clears if flag is set.
-
-      @Description
-        This routine returns the elapsed status of the timer and clears 
-        flag if its set.
-
-      @Param
-        None.
-
-      @Returns
-        True - Timer has elapsed.
-        False - Timer has not elapsed.
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
-     */
-
-    bool TMR1_GetElapsedThenClear(void);
-
-    /**
-      @Summary
-        Returns the software counter value.
-
-      @Description
-        This routine returns the software counter value.
-
-      @Param
-        None.
-
-      @Returns
-        Software counter value.
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
-     */
-
-    int TMR1_SoftwareCounterGet(void);
-
-    /**
-      @Summary
-        Clears the software counter value.
-
-      @Description
-        This routine clears the software counter value.
-
-      @Param
-        None.
-
-      @Returns
-        None
- 
-      @Example 
-        Refer to the example of TMR1_Initialize();
-     */
-
-    void TMR1_SoftwareCounterClear(void);
-
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif //_TMR1_H

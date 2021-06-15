@@ -1,21 +1,6 @@
 #include "oc4.h"
 
-/** OC Mode.
-
-  @Summary
-    Defines the OC Mode.
-
-  @Description
-    This data type defines the OC Mode of operation.
-
- */
-
 static uint16_t gOC4Mode;
-
-/**
-  Section: Driver Interface
- */
-
 
 void OC4_Initialize(void) {
     OC4_InitializeCON1();

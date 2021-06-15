@@ -1,24 +1,13 @@
 #ifndef _TMR5_H
 #define _TMR5_H
 
-/**
-  Section: Included Files
- */
-
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 extern "C" {
-
 #endif
-
-
-    /**
-      Section: Interface Routines
-     */
 
     /**
       @Summary
@@ -34,55 +23,8 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        <code>
-        bool statusTimer1;
-        uint16_t period;
-        uint16_t value;
-
-        period = 0x20;
-
-        TMR5_Initialize();
-
-        TMR5_Period16BitSet(period);
-
-        if((value = TMR5_Period16BitGet())== period)
-        {
-            TMR5_Start();
-        }
-
-        while(1)
-        {
-            TMR5_Tasks();
-            if( (statusTimer1 = TMR5_GetElapsedThenClear()) == true)
-            {
-                TMR5_Stop();
-            }
-        }
-        </code>
      */
     void TMR5_Initialize(void);
-
-    /**
-      @Summary
-        Used to maintain the driver's state machine and implement its ISR
-
-      @Description
-        This routine is used to maintain the driver's internal state machine and
-        implement its ISR for interrupt-driven implementations.
-
-      @Param
-        None.
-
-      @Returns
-        None
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
-     */
-
-    void TMR5_Tasks_16BitOperation(void);
 
     /**
       @Summary
@@ -96,11 +38,7 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
      */
-
     void TMR5_Period16BitSet(uint16_t value);
 
     /**
@@ -116,9 +54,6 @@ extern "C" {
 
       @Returns
         Timer 16-bit period value
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
      */
 
     uint16_t TMR5_Period16BitGet(void);
@@ -135,24 +70,7 @@ extern "C" {
 
       @Returns
         None
-
-      @Example 
-        <code>
-        uint16_t value=0xF0F0;
-
-        TMR5_Counter16BitSet(value));
-
-        while(1)
-        {
-            TMR5_Tasks();
-            if( (value == TMR5_Counter16BitGet()))
-            {
-                TMR5_Stop();
-            }
-        }
-        </code>
      */
-
     void TMR5_Counter16BitSet(uint16_t value);
 
     /**
@@ -167,11 +85,7 @@ extern "C" {
 
       @Returns
         16-bit current counter value
- 
-      @Example 
-        Refer to the example of TMR5_Counter16BitSet();
      */
-
     uint16_t TMR5_Counter16BitGet(void);
 
 
@@ -187,11 +101,7 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
      */
-
     void TMR5_Start(void);
 
     /**
@@ -206,76 +116,11 @@ extern "C" {
 
       @Returns
         None
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
      */
-
     void TMR5_Stop(void);
 
-    /**
-      @Summary
-        Returns the elapsed status of the timer and clears if flag is set.
-
-      @Description
-        This routine returns the elapsed status of the timer and clears 
-        flag if its set.
-
-      @Param
-        None.
-
-      @Returns
-        True - Timer has elapsed.
-        False - Timer has not elapsed.
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
-     */
-
-    bool TMR5_GetElapsedThenClear(void);
-
-    /**
-      @Summary
-        Returns the software counter value.
-
-      @Description
-        This routine returns the software counter value.
-
-      @Param
-        None.
-
-      @Returns
-        Software counter value.
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
-     */
-
-    int TMR5_SoftwareCounterGet(void);
-
-    /**
-      @Summary
-        Clears the software counter value.
-
-      @Description
-        This routine clears the software counter value.
-
-      @Param
-        None.
-
-      @Returns
-        None
- 
-      @Example 
-        Refer to the example of TMR5_Initialize();
-     */
-
-    void TMR5_SoftwareCounterClear(void);
-
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif //_TMR5_H

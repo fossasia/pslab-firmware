@@ -1,10 +1,6 @@
 #include <stdio.h>
 #include "tmr4.h"
 
-/**
-  Section: Driver Interface
- */
-
 void TMR4_Initialize(void) {
     // Clear timer 4 register
     TMR4 = 0x00;
@@ -22,13 +18,6 @@ void TMR4_Initialize(void) {
     T4CONbits.T32 = 0;
     // Internal clock (FP)
     T4CONbits.TCS = 0;
-}
-
-void TMR4_Tasks_16BitOperation(void) {
-    /* Check if the Timer Interrupt/Status is set */
-    if (IFS1bits.T4IF) {
-        IFS1bits.T4IF = false;
-    }
 }
 
 void TMR4_Period16BitSet(uint16_t value) {

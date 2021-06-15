@@ -5,9 +5,7 @@
 #include <stdint.h>
 
 #ifdef __cplusplus
-
 extern "C" {
-
 #endif
 
     /**
@@ -236,9 +234,7 @@ extern "C" {
     void ClearBuffer(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif  // _UART1_H

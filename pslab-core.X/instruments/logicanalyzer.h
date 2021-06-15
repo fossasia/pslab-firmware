@@ -8,4 +8,3 @@ typedef enum {
 } LOGICANALYZER_DMA_MODES;
 
 #endif	/* LOGICANALYZER_H */
-

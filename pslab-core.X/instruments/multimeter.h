@@ -22,4 +22,3 @@ extern "C" {
 #endif
 
 #endif	/* MULTIMETER_H */
-

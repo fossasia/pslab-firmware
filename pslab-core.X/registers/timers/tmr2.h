@@ -1,281 +1,124 @@
 #ifndef _TMR2_H
 #define _TMR2_H
 
-/**
-  Section: Included Files
-*/
-
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
-    extern "C" {
-
+extern "C" {
 #endif
 
+    /**
+      @Summary
+        Initializes hardware and data for the given instance of the TMR module
 
-/**
-  Section: Interface Routines
-*/
-
-/**
-  @Summary
-    Initializes hardware and data for the given instance of the TMR module
+      @Description
+        This routine initializes hardware for the instance of the TMR module,
+        using the hardware initialization given data.  It also initializes all
+        necessary internal data.
 
-  @Description
-    This routine initializes hardware for the instance of the TMR module,
-    using the hardware initialization given data.  It also initializes all
-    necessary internal data.
-
-  @Param
-    None.
+      @Param
+        None.
 
-  @Returns
-    None
- 
-  @Example 
-    <code>
-    bool statusTimer1;
-    uint16_t period;
-    uint16_t value;
+      @Returns
+        None
+     */
+    void TMR2_Initialize(void);
 
-    period = 0x20;
+    /**
+      @Summary
+        Updates 16-bit timer value
 
-    TMR2_Initialize();
+      @Description
+        This routine updates 16-bit timer value
 
-    TMR2_Period16BitSet(period);
+      @Param
+        None.
 
-    if((value = TMR2_Period16BitGet())== period)
-    {
-        TMR2_Start();
-    }
-
-    while(1)
-    {
-        TMR2_Tasks();
-        if( (statusTimer1 = TMR2_GetElapsedThenClear()) == true)
-        {
-            TMR2_Stop();
-        }
-    }
-    </code>
-*/
-void TMR2_Initialize (void);
+      @Returns
+        None
+     */
+    void TMR2_Period16BitSet(uint16_t value);
 
-/**
-  @Summary
-    Used to maintain the driver's state machine and implement its ISR
+    /**
+      @Summary
+        Provides the timer 16-bit period value
 
-  @Description
-    This routine is used to maintain the driver's internal state machine and
-    implement its ISR for interrupt-driven implementations.
-
-  @Param
-    None.
+      @Description
+        This routine provides the timer 16-bit period value
 
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
+      @Param
+        None.
 
-void TMR2_Tasks_16BitOperation( void );
+      @Returns
+        Timer 16-bit period value
+     */
+    uint16_t TMR2_Period16BitGet(void);
 
-/**
-  @Summary
-    Updates 16-bit timer value
+    /**
+      @Summary
+        Updates the timer's 16-bit value
 
-  @Description
-    This routine updates 16-bit timer value
+      @Description
+        This routine updates the timer's 16-bit value
 
-  @Param
-    None.
+      @Param
+        None.
 
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
+      @Returns
+        None
+     */
+    void TMR2_Counter16BitSet(uint16_t value);
 
-void TMR2_Period16BitSet( uint16_t value );
+    /**
+      @Summary
+        Provides 16-bit current counter value
 
-/**
+      @Description
+        This routine provides 16-bit current counter value
 
-  @Summary
-    Provides the timer 16-bit period value
+      @Param
+        None.
 
-  @Description
-    This routine provides the timer 16-bit period value
+      @Returns
+        16-bit current counter value
+     */
+    uint16_t TMR2_Counter16BitGet(void);
 
-  @Param
-    None.
 
-  @Returns
-    Timer 16-bit period value
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
+    /**
+      @Summary
+        Starts the TMR
 
-uint16_t TMR2_Period16BitGet( void );
+      @Description
+        This routine starts the TMR
 
-/**
-  @Summary
-    Updates the timer's 16-bit value
+      @Param
+        None.
 
-  @Description
-    This routine updates the timer's 16-bit value
+      @Returns
+        None
+     */
+    void TMR2_Start(void);
 
-  @Param
-    None.
+    /**
+      @Summary
+        Stops the TMR
 
-  @Returns
-    None
+      @Description
+        This routine stops the TMR
 
-  @Example 
-    <code>
-    uint16_t value=0xF0F0;
-
-    TMR2_Counter16BitSet(value));
-
-    while(1)
-    {
-        TMR2_Tasks();
-        if( (value == TMR2_Counter16BitGet()))
-        {
-            TMR2_Stop();
-        }
-    }
-    </code>
-*/
-
-void TMR2_Counter16BitSet ( uint16_t value );
-
-/**
-  @Summary
-    Provides 16-bit current counter value
-
-  @Description
-    This routine provides 16-bit current counter value
-
-  @Param
-    None.
-
-  @Returns
-    16-bit current counter value
- 
-  @Example 
-    Refer to the example of TMR2_Counter16BitSet();
-*/
-
-uint16_t TMR2_Counter16BitGet( void );
-
-
-/**
-  @Summary
-    Starts the TMR
-
-  @Description
-    This routine starts the TMR
-
-  @Param
-    None.
-
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
-
-void TMR2_Start( void );
-
-/**
-  @Summary
-    Stops the TMR
-
-  @Description
-    This routine stops the TMR
-
-  @Param
-    None.
-
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
-
-void TMR2_Stop( void );
-
-/**
-  @Summary
-    Returns the elapsed status of the timer and clears if flag is set.
-
-  @Description
-    This routine returns the elapsed status of the timer and clears 
-    flag if its set.
-
-  @Param
-    None.
-
-  @Returns
-    True - Timer has elapsed.
-    False - Timer has not elapsed.
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
-
-bool TMR2_GetElapsedThenClear(void);
-
-/**
-  @Summary
-    Returns the software counter value.
-
-  @Description
-    This routine returns the software counter value.
-
-  @Param
-    None.
-
-  @Returns
-    Software counter value.
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
-
-int TMR2_SoftwareCounterGet(void);
-
-/**
-  @Summary
-    Clears the software counter value.
-
-  @Description
-    This routine clears the software counter value.
-
-  @Param
-    None.
-
-  @Returns
-    None
- 
-  @Example 
-    Refer to the example of TMR2_Initialize();
-*/
-
-void TMR2_SoftwareCounterClear(void);
+      @Param
+        None.
+
+      @Returns
+        None
+     */
+    void TMR2_Stop(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
-    }
-
+}
 #endif
 
 #endif //_TMR2_H

@@ -4,4 +4,3 @@
 
 
 #endif	/* OSCILLOSCOPE_H */
-
