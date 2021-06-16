@@ -64,6 +64,13 @@
 #define LED_SetDigitalInput()          (_TRISB15 = 1)
 #define LED_SetDigitalOutput()         (_TRISB15 = 0)
 
+#define RGB_LED_SetHigh()              (_LATB2 = 1)
+#define RGB_LED_SetLow()               (_LATB2 = 0)
+#define RGB_LED_Toggle()               (_LATB2 ^= 1)
+#define RGB_LED_GetValue()             _RB2
+#define RGB_LED_SetDigitalInput()      (_TRISB2 = 1)
+#define RGB_LED_SetDigitalOutput()     (_TRISB2 = 0)
+
 /**
     Section: Function Prototypes
  */

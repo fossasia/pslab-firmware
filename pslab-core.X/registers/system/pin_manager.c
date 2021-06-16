@@ -23,6 +23,8 @@ void PIN_MANAGER_Initialize(void) {
     TRISB = 0xFD7F;
     TRISC = 0x03F7;
     
+    TRISBbits.TRISB2 = OUTPUT_PIN; // RGB_LED
+    
     TRISBbits.TRISB10 = INPUT_PIN; // LA1_
     TRISBbits.TRISB11 = INPUT_PIN; // LA2_
     TRISBbits.TRISB12 = INPUT_PIN; // LA3_

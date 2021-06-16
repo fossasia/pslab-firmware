@@ -274,7 +274,7 @@ response_t WAVEGENERATOR_SetSquare1(void) {
 
     T1CONbits.TCKPS = scale & 0x3;
 
-    if ((scale & 0x4) == 0) {
+    if ((scale & 0x4) == 0) { // ...._.X..
         RPOR5bits.RP54R = RPN_OC1_PORT;
     }
 
@@ -333,7 +333,7 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
     DMA_ChannelDisable(DMA_CHANNEL_3);
 
     TMR1_Initialize();
-    T1CONbits.TCKPS = configuration & 0b11;
+    T1CONbits.TCKPS = configuration & 0b11; // ...._..XX
 
     OC1_Initialize();
     OC1_PrimaryValueSet(0);
@@ -348,7 +348,7 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
     OC4_PrimaryValueSet(low_time_4);
     OC4_SecondaryValueSet(high_time_4);
 
-    if ((configuration >> 6) & 1) {
+    if ((configuration >> 6) & 1) { // .X.._....
         // EnableComparator();
         // CMP2 module synchronizes or triggers OCx
         OC1CON2bits.SYNCSEL = 0b11001;
@@ -368,7 +368,7 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
         OC4CON2bits.SYNCSEL = 0b01011;
     }
 
-    if ((configuration >> 5) & 1) {
+    if ((configuration >> 5) & 1) { // ..X._....
         // Output set high when OCxTMR = OCxR and set low when OCxTMR = OCxRS
         OC1CON1bits.OCM = 0b111;
         OC2CON1bits.OCM = 0b111;
@@ -381,9 +381,9 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
         OC3CON1bits.OCM = 0b100;
         OC4CON1bits.OCM = 0b100;
         // Invert OCx pin output
-        OC2CON2bits.OCINV = (configuration >> 2) & 1;
-        OC3CON2bits.OCINV = (configuration >> 3) & 1;
-        OC4CON2bits.OCINV = (configuration >> 4) & 1;
+        OC2CON2bits.OCINV = (configuration >> 2) & 1; // ...._.X..
+        OC3CON2bits.OCINV = (configuration >> 3) & 1; // ...._X...
+        OC4CON2bits.OCINV = (configuration >> 4) & 1; // ...X_....
     }
 
     // T1CLK is the clock source of the Output Compare modules

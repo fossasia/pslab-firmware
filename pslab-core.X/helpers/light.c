@@ -1,8 +1,8 @@
 #include <xc.h>
-#include "mcc_generated_files/pin_manager.h"
+#include "../registers/system/pin_manager.h"
 
-void Light_RGB(uint8_t red, uint8_t green, uint8_t blue) {
-    
+void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue) {
+
     uint8_t data[] = {green, red, blue};
     uint8_t location = 0;
     uint8_t byte = 0;

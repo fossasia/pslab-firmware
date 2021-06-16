@@ -7,6 +7,9 @@
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
         <itemPath>bus/uart1.h</itemPath>
       </logicalFolder>
+      <logicalFolder name="f1" displayName="helpers" projectFiles="true">
+        <itemPath>helpers/light.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.h</itemPath>
         <itemPath>instruments/logicanalyzer.h</itemPath>
@@ -89,6 +92,9 @@
                    projectFiles="true">
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
         <itemPath>bus/uart1.c</itemPath>
+      </logicalFolder>
+      <logicalFolder name="f1" displayName="helpers" projectFiles="true">
+        <itemPath>helpers/light.c</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.c</itemPath>

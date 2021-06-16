@@ -74,12 +74,10 @@ void OC4_Stop(void) {
 }
 
 void OC4_SecondaryValueSet(uint16_t secVal) {
-
     OC4RS = secVal;
 }
 
 void OC4_PrimaryValueSet(uint16_t priVal) {
-
     OC4R = priVal;
 }
 
