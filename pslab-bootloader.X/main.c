@@ -15,8 +15,7 @@
 #include "delay.h"
 #include "rgb_led.h"
 
-int main(void)
-{
+int main(void) {
     // Initialize the device.
     SYSTEM_Initialize();
 
@@ -25,8 +24,6 @@ int main(void)
     Light_RGB(0, 20, 0);
     DELAY_ms(200);
     Light_RGB(0, 0, 20);
-    DELAY_ms(200);
-    Light_RGB(20, 20, 20);
 
     GPIO_PIN_SetDigitalOutput();
     GPIO_PIN_SetHigh();
@@ -36,7 +33,7 @@ int main(void)
     if (GPIO_PIN_GetValue() && BOOT_Verify()) {
         BOOT_StartApplication();
     } else {
-        unsigned int i;
+        uint16_t i = 0;
 
         while (1) {
             // Monitor serial bus for commands, e.g. flashing new application.

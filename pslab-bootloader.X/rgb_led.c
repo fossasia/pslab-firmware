@@ -8,7 +8,7 @@ void Light_RGB(unsigned char red, unsigned char green, unsigned char blue) {
 
     RGB_LED_SetLow();
 
-    __asm__ volatile ("repeat #1632");
+    __asm__ volatile ("repeat #3264");
     Nop();
 
     for (location = 0; location < 3; location++) {
@@ -16,17 +16,17 @@ void Light_RGB(unsigned char red, unsigned char green, unsigned char blue) {
         for (byte = 0; byte < 8; byte++) {
             if (bit & 0x80) {
                 RGB_LED_SetHigh();
-                __asm__ __volatile__("repeat #22");
+                __asm__ __volatile__("repeat #45");
                 Nop();
                 RGB_LED_SetLow();
-                __asm__ __volatile__("repeat #19");
+                __asm__ __volatile__("repeat #38");
                 Nop();
             } else {
                 RGB_LED_SetHigh();
-                __asm__ __volatile__("repeat #11");
+                __asm__ __volatile__("repeat #22");
                 Nop();
                 RGB_LED_SetLow();
-                __asm__ __volatile__("repeat #28");
+                __asm__ __volatile__("repeat #51");
                 Nop();
             }
             bit = bit << 1;

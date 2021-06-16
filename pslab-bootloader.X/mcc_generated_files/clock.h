@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 v1.61
         MPLAB             :  MPLAB X v5.45
-*/
+ */
 
 /*
     (c) 2020 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,22 +40,22 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 #ifndef CLOCK_H
 #define	CLOCK_H
 
 /**
   Section: Included Files
-*/
+ */
 
 #include <stdbool.h>
 
 #ifndef _XTAL_FREQ
-#define _XTAL_FREQ  64000000UL
+#define _XTAL_FREQ  128000000UL
 #endif
 
-#define CLOCK_SystemFrequencyGet()        (64000000UL)
+#define CLOCK_SystemFrequencyGet()        (128000000UL)
 
 #define CLOCK_PeripheralFrequencyGet()    (CLOCK_SystemFrequencyGet() / 2)
 
@@ -76,4 +76,4 @@ void CLOCK_Initialize(void);
 #endif	/* CLOCK_H */
 /**
  End of File
-*/
+ */

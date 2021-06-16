@@ -20,7 +20,6 @@
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/pin_manager.h</itemPath>
         <itemPath>mcc_generated_files/traps.h</itemPath>
-        <itemPath>mcc_generated_files/mcc.h</itemPath>
         <itemPath>mcc_generated_files/reset.h</itemPath>
         <itemPath>mcc_generated_files/uart1.h</itemPath>
         <itemPath>mcc_generated_files/system.h</itemPath>
@@ -55,7 +54,6 @@
           <itemPath>mcc_generated_files/memory/flash.s</itemPath>
         </logicalFolder>
         <itemPath>mcc_generated_files/traps.c</itemPath>
-        <itemPath>mcc_generated_files/mcc.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/uart1.c</itemPath>
         <itemPath>mcc_generated_files/system.c</itemPath>

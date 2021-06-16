@@ -18,7 +18,7 @@
     The generated drivers are tested against the following:
         Compiler          :  XC16 1.30
         MPLAB             :  MPLAB X 3.45
-*/
+ */
 
 /*
     (c) 2016 Microchip Technology Inc. and its subsidiaries. You may use this
@@ -40,100 +40,82 @@
 
     MICROCHIP PROVIDES THIS SOFTWARE CONDITIONALLY UPON YOUR ACCEPTANCE OF THESE
     TERMS.
-*/
+ */
 
 /**
   Section: Included Files
-*/
+ */
 #include <xc.h>
 #include "uart1.h"
 
 /**
   Section: UART1 APIs
-*/
+ */
 
-void UART1_Initialize(void)
-{
-/**    
-     Set the UART1 module to the options selected in the user interface.
-     Make sure to set LAT bit corresponding to TxPin as high before UART initialization
-*/
+void UART1_Initialize(void) {
     // STSEL 1; IREN disabled; PDSEL 8N; UARTEN enabled; RTSMD disabled; USIDL disabled; WAKE disabled; ABAUD disabled; LPBACK disabled; BRGH enabled; URXINV disabled; UEN TX_RX; 
-    U1MODE = (0x8008 & ~(1<<15));  // disabling UARTEN bit   
+    U1MODE = (0x8008 & ~(1 << 15)); // disabling UARTEN bit   
     // UTXISEL0 TX_ONE_CHAR; UTXINV disabled; OERR NO_ERROR_cleared; URXISEL RX_ONE_CHAR; UTXBRK COMPLETED; UTXEN disabled; ADDEN disabled; 
     U1STA = 0x0000;
-    // BaudRate = 460800; Frequency = 32000000 Hz; BRG 16; 
-    U1BRG = 0x0010;
-    
-    U1MODEbits.UARTEN = 1;  // enabling UARTEN bit
-    U1STAbits.UTXEN = 1;   
+    // BaudRate = 460800; Frequency = 64000000 Hz; BRG 34; 
+    U1BRG = 0x22;
+
+    U1MODEbits.UARTEN = 1; // enabling UARTEN bit
+    U1STAbits.UTXEN = 1;
 }
 
-uint8_t UART1_Read(void)
-{
-    while(!(U1STAbits.URXDA == 1))
-    {
+uint8_t UART1_Read(void) {
+    while (!(U1STAbits.URXDA == 1)) {
     }
 
-    if ((U1STAbits.OERR == 1))
-    {
+    if ((U1STAbits.OERR == 1)) {
         U1STAbits.OERR = 0;
     }
 
     return U1RXREG;
 }
 
-void UART1_Write(uint8_t txData)
-{
-    while(U1STAbits.UTXBF == 1)
-    {
+void UART1_Write(uint8_t txData) {
+    while (U1STAbits.UTXBF == 1) {
     }
 
-    U1TXREG = txData;    // Write the data byte to the USART.
+    U1TXREG = txData; // Write the data byte to the USART.
 }
 
-bool UART1_IsRxReady(void)
-{
+bool UART1_IsRxReady(void) {
     return U1STAbits.URXDA;
 }
 
-bool UART1_IsTxReady(void)
-{
-    return (U1STAbits.TRMT && U1STAbits.UTXEN );
+bool UART1_IsTxReady(void) {
+    return (U1STAbits.TRMT && U1STAbits.UTXEN);
 }
 
-bool UART1_IsTxDone(void)
-{
+bool UART1_IsTxDone(void) {
     return U1STAbits.TRMT;
 }
 
 /* !!! Deprecated API - This function may not be supported in a future release !!! */
-UART1_STATUS __attribute__((deprecated)) UART1_StatusGet (void)
-{
+UART1_STATUS __attribute__((deprecated)) UART1_StatusGet(void) {
     return U1STA;
 }
 
 /* !!! Deprecated API - This function may not be supported in a future release !!! */
-bool __attribute__((deprecated)) UART1_DataReady(void)
-{
+bool __attribute__((deprecated)) UART1_DataReady(void) {
     return UART1_IsRxReady();
 }
 
 /* !!! Deprecated API - This function may not be supported in a future release !!! */
-bool __attribute__((deprecated)) UART1_is_tx_ready(void)
-{
+bool __attribute__((deprecated)) UART1_is_tx_ready(void) {
     return UART1_IsTxReady();
 }
 
 /* !!! Deprecated API - This function may not be supported in a future release !!! */
-bool __attribute__((deprecated)) UART1_is_rx_ready(void)
-{
+bool __attribute__((deprecated)) UART1_is_rx_ready(void) {
     return UART1_IsRxReady();
 }
 
 /* !!! Deprecated API - This function may not be supported in a future release !!! */
-bool __attribute__((deprecated)) UART1_is_tx_done(void)
-{
+bool __attribute__((deprecated)) UART1_is_tx_done(void) {
     return UART1_IsTxDone();
 }
 

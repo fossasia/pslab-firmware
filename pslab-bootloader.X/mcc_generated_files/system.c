@@ -51,10 +51,10 @@
 // FPOR
 #pragma config ALTI2C1 = OFF    //Alternate I2C1 pins->I2C1 mapped to SDA1/SCL1 pins
 #pragma config ALTI2C2 = OFF    //Alternate I2C2 pins->I2C2 mapped to SDA2/SCL2 pins
-#pragma config WDTWIN = WIN25    //Watchdog Window Select bits->WDT Window is 25% of WDT period
+#pragma config WDTWIN = WIN75    //Watchdog Window Select bits->WDT Window is 25% of WDT period
 
 // FWDT
-#pragma config WDTPOST = PS32768    //Watchdog Timer Postscaler bits->1:32768
+#pragma config WDTPOST = PS512    //Watchdog Timer Postscaler bits->1:32768
 #pragma config WDTPRE = PR128    //Watchdog Timer Prescaler bit->1:128
 #pragma config PLLKEN = ON    //PLL Lock Enable bit->Clock switch to PLL source will wait until the PLL lock signal is valid.
 #pragma config WINDIS = OFF    //Watchdog Timer Window Enable bit->Watchdog Timer in Non-Window mode
