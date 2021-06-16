@@ -95,8 +95,8 @@ int __attribute__((section(".sine_table2_short"))) sine_table_2_short[] = {
 };
 
 response_t WAVEGENERATOR_LoadWaveForm1(void) {
-
-    uint8_t i;
+    
+    uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
         sine_table_1[i] = UART1_ReadInt();
@@ -111,14 +111,14 @@ response_t WAVEGENERATOR_LoadWaveForm1(void) {
 
 response_t WAVEGENERATOR_ReadWaveForm1(void) {
 
-    uint8_t i;
+    uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
         UART1_WriteInt(sine_table_1[i]);
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-         UART1_WriteInt(sine_table_1_short[i]);
+         UART1_Write(sine_table_1_short[i]);
     }
 
     return SUCCESS;
@@ -126,7 +126,7 @@ response_t WAVEGENERATOR_ReadWaveForm1(void) {
 
 response_t WAVEGENERATOR_LoadWaveForm2(void) {
 
-    uint8_t i;
+    uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
         sine_table_2[i] = UART1_ReadInt();
@@ -141,14 +141,14 @@ response_t WAVEGENERATOR_LoadWaveForm2(void) {
 
 response_t WAVEGENERATOR_ReadWaveForm2(void) {
 
-    uint8_t i;
+    uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
         UART1_WriteInt(sine_table_2[i]);
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-         UART1_WriteInt(sine_table_2_short[i]);
+         UART1_Write(sine_table_2_short[i]);
     }
 
     return SUCCESS;

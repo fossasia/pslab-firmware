@@ -61,6 +61,7 @@
 #include "../../mcc_generated_files/cmp3.h"
 #include "../../mcc_generated_files/cmp4.h"
 #include "../../mcc_generated_files/fatfs/ff.h"
+#include "../../helpers/light.h"
 
 void SYSTEM_Initialize(void) {
 
@@ -104,4 +105,7 @@ void SYSTEM_Initialize(void) {
     OC4_Initialize();
 
     DMA_Initialize();
+    
+    LIGHT_RGB(0, 20, 0);
+    UART1_ClearBuffer();
 }

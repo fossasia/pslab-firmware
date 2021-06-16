@@ -24,7 +24,7 @@ extern "C" {
 #define NUM_I2C_CMDS 16
 #define NUM_UART2_CMDS 8
 #define NUM_DAC_CMDS 2
-#define NUM_WAVEGEN_CMDS 17
+#define NUM_WAVEGEN_CMDS 19
 #define NUM_DOUT_CMDS 1
 #define NUM_DIN_CMDS 2
 #define NUM_TIMING_CMDS 17

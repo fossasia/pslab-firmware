@@ -231,7 +231,7 @@ extern "C" {
      * @Returns
      *   None.
      */
-    void ClearBuffer(void);
+    void UART1_ClearBuffer(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }

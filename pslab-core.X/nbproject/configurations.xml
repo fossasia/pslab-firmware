@@ -199,6 +199,7 @@
     <Elem>bus</Elem>
     <Elem>instruments</Elem>
     <Elem>registers</Elem>
+    <Elem>helpers</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

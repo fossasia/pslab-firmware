@@ -140,6 +140,6 @@ uint16_t UART1_StatusGet(void) {
     return U1STA;
 }
 
-void ClearBuffer(void) {
+void UART1_ClearBuffer(void) {
     while (UART1_IsRxReady()) UART1_Read();
 }

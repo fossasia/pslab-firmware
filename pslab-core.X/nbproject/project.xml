@@ -17,6 +17,7 @@
                 <sourceRootElem>bus</sourceRootElem>
                 <sourceRootElem>instruments</sourceRootElem>
                 <sourceRootElem>registers</sourceRootElem>
+                <sourceRootElem>helpers</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>

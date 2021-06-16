@@ -16,3 +16,5 @@ pslab-core.X/dist
 pslab-core.X/nbproject/Makefile-*
 pslab-core.X/nbproject/Package-*
 pslab-core.X/nbproject/private
+
+*.dump
