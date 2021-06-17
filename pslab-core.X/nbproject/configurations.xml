@@ -9,6 +9,8 @@
       </logicalFolder>
       <logicalFolder name="f1" displayName="helpers" projectFiles="true">
         <itemPath>helpers/light.h</itemPath>
+        <itemPath>helpers/delay.h</itemPath>
+        <itemPath>helpers/version.h</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.h</itemPath>
@@ -43,14 +45,8 @@
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
         <itemPath>mcc_generated_files/cvr.h</itemPath>
         <itemPath>mcc_generated_files/ext_int.h</itemPath>
-        <itemPath>mcc_generated_files/cmp2.h</itemPath>
-        <itemPath>mcc_generated_files/cmp4.h</itemPath>
         <itemPath>mcc_generated_files/uart2.h</itemPath>
-        <itemPath>mcc_generated_files/adc_module_features.h</itemPath>
         <itemPath>mcc_generated_files/i2c1.h</itemPath>
-        <itemPath>mcc_generated_files/adc1.h</itemPath>
-        <itemPath>mcc_generated_files/cmp1.h</itemPath>
-        <itemPath>mcc_generated_files/cmp3.h</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -62,6 +58,14 @@
           <itemPath>registers/comparators/oc4.h</itemPath>
           <itemPath>registers/comparators/oc1.h</itemPath>
           <itemPath>registers/comparators/oc2.h</itemPath>
+          <itemPath>registers/comparators/cmp1.h</itemPath>
+          <itemPath>registers/comparators/cmp2.h</itemPath>
+          <itemPath>registers/comparators/cmp3.h</itemPath>
+          <itemPath>registers/comparators/cmp4.h</itemPath>
+        </logicalFolder>
+        <logicalFolder name="converters" displayName="converters" projectFiles="true">
+          <itemPath>registers/converters/adc1.h</itemPath>
+          <itemPath>registers/converters/adc_module_features.h</itemPath>
         </logicalFolder>
         <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.h</itemPath>
@@ -81,7 +85,8 @@
           <itemPath>registers/timers/tmr5.h</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <itemPath>delay.h</itemPath>
+      <itemPath>states.h</itemPath>
+      <itemPath>commands.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -95,6 +100,8 @@
       </logicalFolder>
       <logicalFolder name="f1" displayName="helpers" projectFiles="true">
         <itemPath>helpers/light.c</itemPath>
+        <itemPath>helpers/delay.c</itemPath>
+        <itemPath>helpers/version.c</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.c</itemPath>
@@ -136,13 +143,8 @@
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/cvr.c</itemPath>
         <itemPath>mcc_generated_files/ext_int.c</itemPath>
-        <itemPath>mcc_generated_files/cmp2.c</itemPath>
-        <itemPath>mcc_generated_files/cmp4.c</itemPath>
         <itemPath>mcc_generated_files/uart2.c</itemPath>
         <itemPath>mcc_generated_files/i2c1.c</itemPath>
-        <itemPath>mcc_generated_files/adc1.c</itemPath>
-        <itemPath>mcc_generated_files/cmp1.c</itemPath>
-        <itemPath>mcc_generated_files/cmp3.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -154,6 +156,13 @@
           <itemPath>registers/comparators/oc4.c</itemPath>
           <itemPath>registers/comparators/oc1.c</itemPath>
           <itemPath>registers/comparators/oc2.c</itemPath>
+          <itemPath>registers/comparators/cmp1.c</itemPath>
+          <itemPath>registers/comparators/cmp2.c</itemPath>
+          <itemPath>registers/comparators/cmp3.c</itemPath>
+          <itemPath>registers/comparators/cmp4.c</itemPath>
+        </logicalFolder>
+        <logicalFolder name="converters" displayName="converters" projectFiles="true">
+          <itemPath>registers/converters/adc1.c</itemPath>
         </logicalFolder>
         <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.c</itemPath>
@@ -172,13 +181,8 @@
         </logicalFolder>
       </logicalFolder>
       <itemPath>main.c</itemPath>
-      <itemPath>commands.h</itemPath>
-      <itemPath>version.c</itemPath>
-      <itemPath>version.h</itemPath>
       <itemPath>commands.c</itemPath>
       <itemPath>states.c</itemPath>
-      <itemPath>states.h</itemPath>
-      <itemPath>delay.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"

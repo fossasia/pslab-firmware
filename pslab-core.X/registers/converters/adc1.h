@@ -10,10 +10,6 @@
 extern "C" {
 #endif
 
-    /**
-      Section: Data Types
-     */
-
     /** Scan Selected Macro Definition
  
      @Summary 

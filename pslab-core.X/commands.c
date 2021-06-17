@@ -1,5 +1,5 @@
 #include "commands.h"
-#include "version.h"
+#include "helpers/version.h"
 #include "instruments/multimeter.h"
 #include "instruments/wavegenerator.h"
 
@@ -232,7 +232,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 0                                1 GET_CTMU_VOLTAGE        2 GET_CAPACITANCE     3 GET_FREQUENCY
         Undefined,                       Unimplemented,            Unimplemented,        Unimplemented,
      // 4 GET_INDUCTANCE                 5 GET_VERSION             6                     7
-        Unimplemented,                   VERSION_SendHw,           Undefined,            Undefined,
+        Unimplemented,                   VERSION_GetVersion,       Undefined,            Undefined,
      // 8 RETRIEVE_BUFFER                9 GET_HIGH_FREQUENCY      10 CLEAR_BUFFER       11 SETRGB
         Unimplemented,                   Unimplemented,            Unimplemented,        Unimplemented,
      // 12 READ_PROGRAM_ADDRESS          13 WRITE_PROGRAM_ADDRESS  14 READ_DATA_ADDRESS  15 WRITE_DATA_ADDRESS

@@ -1,6 +1,6 @@
 #include "../commands.h"
-#include "../delay.h"
-#include "../mcc_generated_files/adc1.h"
+#include "../helpers/delay.h"
+#include "../registers/converters/adc1.h"
 #include "../registers/memory/dma.h"
 #include "../bus/uart1.h"
 #include "logicanalyzer.h"

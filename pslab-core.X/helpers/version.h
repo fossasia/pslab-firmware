@@ -6,10 +6,10 @@ extern "C" {
 #endif
 
     /**
-     * @brief Send hardware version.
+     * @brief Get hardware version.
      * @return DO_NOT_BOTHER
      */
-    response_t VERSION_SendHw(void);
+    response_t VERSION_GetVersion(void);
 
 #ifdef	__cplusplus
 }
