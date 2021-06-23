@@ -64,6 +64,12 @@ extern "C" {
      * @return SUCCESS
      */
     response_t WAVEGENERATOR_SetSquareAll(void);
+    
+    /**
+     * @brief Link system oscillator to an output pin
+     * @return SUCCESS
+     */
+    response_t WAVEGENERATOR_MapReference(void);
 
 #ifdef	__cplusplus
 }

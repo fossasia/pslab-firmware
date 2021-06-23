@@ -170,7 +170,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 4 SET_SQR2                   5 SET_SQRS                 6                             7 SQR4
         WAVEGENERATOR_SetSquare2,    Removed,                   Undefined,                    WAVEGENERATOR_SetSquareAll,
      // 8 MAP_REFERENCE              9 SET_WG_PHASE             10 SET_WAVEFORM_TYPE          11 SELECT_FREQ_REGISTER
-        Unimplemented,               WAVEGENERATOR_SetSineDual, Unimplemented,                Unimplemented,
+        WAVEGENERATOR_MapReference,  WAVEGENERATOR_SetSineDual, Unimplemented,                Unimplemented,
      // 12 DELAY_GENERATOR           13 SET_SINE1               14 SET_SINE2                  15 LOAD_WAVEFORM1
         Unimplemented,               WAVEGENERATOR_SetSine1,    WAVEGENERATOR_SetSine2,       WAVEGENERATOR_LoadWaveForm1,
      // 16 LOAD_WAVEFORM2            17 SQR1_PATTERN            18 READ_WAVEFORM1             19 READ_WAVEFORM2
