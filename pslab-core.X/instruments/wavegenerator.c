@@ -304,9 +304,7 @@ response_t WAVEGENERATOR_SetSquare1(void) {
 
     T1CONbits.TCKPS = scale & 0x3;
 
-    if ((scale & 0x4) == 0) { // ...._.X..
-        RPOR5bits.RP54R = RPN_OC1_PORT;
-    }
+    RPOR5bits.RP54R = RPN_OC1_PORT;
 
     TMR1_Start();
 
@@ -319,24 +317,24 @@ response_t WAVEGENERATOR_SetSquare2(void) {
     uint16_t high_time = UART1_ReadInt();
     uint8_t scale = UART1_Read();
 
-    OC4_Initialize();
+    OC2_Initialize();
     TMR3_Initialize();
-
+    
     // Output Compare Clock Select is TMR 3
-    OC4CON1bits.OCTSEL = 0b001;
-    // Output set high when OC4TMR=0 and set low when OC4TMR=OC4R
-    OC4CON1bits.OCM = 0b110;
+    OC2CON1bits.OCTSEL = 0b001;
+    // Output set high when OC2TMR=0 and set low when OC2TMR=OC2R
+    OC2CON1bits.OCM = 0b110;
     // Timer 3 trigger event is used for synchronization
-    OC4CON2bits.SYNCSEL = 0b01101;
+    OC2CON2bits.SYNCSEL = 0b01101;
 
     // Set pulse turn on time
-    OC4_PrimaryValueSet(high_time - 1);
+    OC2_PrimaryValueSet(high_time - 1);
     // Set pulse width
     TMR3_Period16BitSet(wave_length - 1);
 
-    T3CONbits.TCKPS = scale;
+    T3CONbits.TCKPS = scale & 0x3;
 
-    RPOR5bits.RP55R = RPN_OC4_PORT;
+    RPOR5bits.RP55R = RPN_OC2_PORT;
 
     TMR3_Start();
 
