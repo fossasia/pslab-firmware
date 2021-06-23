@@ -52,6 +52,12 @@ extern "C" {
      * @return SUCCESS
      */
     response_t WAVEGENERATOR_SetSquare2(void);
+    
+    /**
+     * @brief Generate PWM wave from all SQR pins
+     * @return SUCCESS
+     */
+    response_t WAVEGENERATOR_SetSquareAll(void);
 
 #ifdef	__cplusplus
 }
