@@ -42,6 +42,12 @@ extern "C" {
     response_t WAVEGENERATOR_SetSine2(void);
     
     /**
+     * @brief Generate two sine waves from SIN1 and SIN2 pins
+     * @return SUCCESS
+     */
+    response_t WAVEGENERATOR_SetSineDual(void);
+    
+    /**
      * @brief Generate PWM wave from SQR1 pin
      * @return SUCCESS
      */
