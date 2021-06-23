@@ -1,23 +1,13 @@
 #ifndef _OC2_H
 #define _OC2_H
 
-/**
-  Section: Included Files
- */
-
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 extern "C" {
-
 #endif
-
-    /**
-      Section: Data Types
-     */
 
     /** OC2 Fault Number
 
@@ -95,7 +85,7 @@ extern "C" {
      */
 
     void OC2_Initialize(void);
-    
+
     void OC2_InitializeCON1(void);
     void OC2_InitializeCON2(void);
 
@@ -387,9 +377,7 @@ extern "C" {
     void OC2_TriggerStatusClear(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif //_OC2_H
