@@ -95,7 +95,7 @@ int __attribute__((section(".sine_table2_short"))) sine_table_2_short[] = {
 };
 
 response_t WAVEGENERATOR_LoadWaveForm1(void) {
-    
+
     uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
@@ -118,7 +118,7 @@ response_t WAVEGENERATOR_ReadWaveForm1(void) {
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-         UART1_Write(sine_table_1_short[i]);
+        UART1_Write(sine_table_1_short[i]);
     }
 
     return SUCCESS;
@@ -148,7 +148,7 @@ response_t WAVEGENERATOR_ReadWaveForm2(void) {
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-         UART1_Write(sine_table_2_short[i]);
+        UART1_Write(sine_table_2_short[i]);
     }
 
     return SUCCESS;
@@ -277,6 +277,119 @@ response_t WAVEGENERATOR_SetSine2(void) {
     RPOR6bits.RP56R = RPN_OC4_PORT;
 
     TMR3_Start();
+
+    return SUCCESS;
+}
+
+response_t WAVEGENERATOR_SetSineDual(void) {
+
+    uint16_t wave_length_1 = UART1_ReadInt();
+    uint16_t wave_length_2 = UART1_ReadInt();
+    uint16_t table_offset = UART1_ReadInt();
+    uint16_t timer_offset = UART1_ReadInt();
+    uint8_t resolution = UART1_Read();
+
+    uint16_t i;
+
+    TMR3_Initialize();
+    TMR4_Initialize();
+
+    DMA_InterruptDisable(DMA_CHANNEL_2);
+    DMA_InitializeChannel2();
+    // DMA Reads from RAM address, writes to peripheral address
+    DMA2CONbits.DIR = 1;
+    DMA_InterruptDisable(DMA_CHANNEL_3);
+    DMA_InitializeChannel3();
+    // DMA Reads from RAM address, writes to peripheral address
+    DMA3CONbits.DIR = 1;
+
+    if (resolution & HIGH_RESOLUTION) {
+        OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
+        OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_2,
+                __builtin_dmaoffset(&sine_table_1),
+                __builtin_dmapage(&sine_table_1));
+        DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
+    } else {
+        OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
+        OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_2,
+                __builtin_dmaoffset(&sine_table_1_short),
+                __builtin_dmapage(&sine_table_1_short));
+        DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
+    }
+
+    if ((resolution >> 1) & HIGH_RESOLUTION) {
+        OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
+        OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_3,
+                __builtin_dmaoffset(&sine_table_2),
+                __builtin_dmapage(&sine_table_2));
+        DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_FULL_LENGTH - 1);
+    } else {
+        OC4_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
+        OC4_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
+        DMA_StartAddressAFullSet(DMA_CHANNEL_3,
+                __builtin_dmaoffset(&sine_table_2_short),
+                __builtin_dmapage(&sine_table_2_short));
+        DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_SHORT_LENGTH - 1);
+    }
+
+    OC3_InitializeCON1();
+    // Output Compare Clock Select is Peripheral clock
+    OC3CON1bits.OCTSEL = 0b111;
+    // Output set high when OC3TMR=0 and set low when OC3TMR=OC3R
+    OC3CON1bits.OCM = 0b110;
+
+    OC3_InitializeCON2();
+    // OC3RS compare event is used for synchronization
+    OC3CON2bits.SYNCSEL = 0b11111;
+
+    OC4_InitializeCON1();
+    // Output Compare Clock Select is Peripheral clock
+    OC4CON1bits.OCTSEL = 0b111;
+    // Output set high when OC4TMR=0 and set low when OC4TMR=OC4R
+    OC4CON1bits.OCM = 0b110;
+
+    OC4_InitializeCON2();
+    // OC4RS compare event is used for synchronization
+    OC4CON2bits.SYNCSEL = 0b11111;
+
+    DMA_PeripheralAddressSet(DMA_CHANNEL_2, (volatile uint16_t) (&OC3R));
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_2, DMA_PERIPHERAL_IRQ_TMR4);
+    DMA_PeripheralAddressSet(DMA_CHANNEL_3, (volatile uint16_t) (&OC4R));
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_3, DMA_PERIPHERAL_IRQ_TMR3);
+
+    DMA_FlagInterruptClear(DMA_CHANNEL_2);
+    DMA_InterruptEnable(DMA_CHANNEL_2);
+    DMA_FlagInterruptClear(DMA_CHANNEL_3);
+    DMA_InterruptEnable(DMA_CHANNEL_3);
+
+    DMA_ChannelEnable(DMA_CHANNEL_2);
+    DMA_ChannelEnable(DMA_CHANNEL_3);
+
+    // Fast forward DMA Channel 3 to create phase offset
+    for (i = 0; i < table_offset; i++) {
+        DMA3REQbits.FORCE = 1;
+        while (DMA3REQbits.FORCE);
+    }
+
+    TMR3_Period16BitSet(wave_length_1);
+    TMR4_Period16BitSet(wave_length_2);
+    
+    TMR3_Counter16BitSet(timer_offset);
+    // 11 -- 1:256 
+    // 10 -- 1:64 
+    // 01 -- 1:8 
+    // 00 -- 1:1
+    T3CONbits.TCKPS = (resolution >> 2) & 3;
+    T4CONbits.TCKPS = (resolution >> 4) & 3;
+
+    RPOR6bits.RP56R = RPN_OC4_PORT;
+    RPOR6bits.RP57R = RPN_OC3_PORT;
+
+    TMR3_Start();
+    TMR4_Start();
 
     return SUCCESS;
 }
