@@ -1,23 +1,13 @@
 #ifndef _OC4_H
 #define _OC4_H
 
-/**
-  Section: Included Files
- */
-
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 extern "C" {
-
 #endif
-
-    /**
-      Section: Data Types
-     */
 
     /** OC4 Fault Number
 
@@ -387,9 +377,7 @@ extern "C" {
     void OC4_TriggerStatusClear(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif //_OC4_H

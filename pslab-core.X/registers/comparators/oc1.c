@@ -3,7 +3,6 @@
 static uint16_t gOC1Mode;
 
 void OC1_Initialize(void) {
-
     OC1_InitializeCON1();
     OC1_InitializeCON2();
     OC1RS = 0x00;

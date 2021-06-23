@@ -1,23 +1,13 @@
 #ifndef _OC3_H
 #define _OC3_H
 
-/**
-  Section: Included Files
- */
-
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 extern "C" {
-
 #endif
-
-    /**
-      Section: Data Types
-     */
 
     /** OC3 Fault Number
 
@@ -338,9 +328,7 @@ extern "C" {
     void OC3_TriggerStatusClear(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif //_OC3_H
