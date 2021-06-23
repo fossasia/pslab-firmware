@@ -543,3 +543,37 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
 
     return SUCCESS;
 }
+
+response_t WAVEGENERATOR_MapReference(void) {
+
+    uint8_t port = UART1_Read();
+    uint8_t scale = UART1_Read();
+
+    // Reference Oscillator output is disabled
+    REFOCONbits.ROON = 0;
+    // System clock is used as the reference clock
+    REFOCONbits.ROSEL = 0;
+    // Reference Oscillator output is disabled in Sleep
+    REFOCONbits.ROSSLP = 0;
+    // Clock scaling as 2^scale (scale = 10 --> 1024 ticks for one toggle)
+    REFOCONbits.RODIV = scale;
+
+    // Configure output pin/s (multiple ports are supported)
+    if (port & 1) { // ...._...X
+        RPOR5bits.RP54R = RPN_REFCLKO_PORT; // SQR1
+    }
+    if (port & 2) { // ...._..X.
+        RPOR5bits.RP55R = RPN_REFCLKO_PORT; // SQR2
+    }
+    if (port & 4) { // ...._.X..
+        RPOR6bits.RP56R = RPN_REFCLKO_PORT; // SQR3
+    }
+    if (port & 8) { // ...._X...
+        RPOR6bits.RP57R = RPN_REFCLKO_PORT; // SQR4
+    }
+    
+    // Turn on oscillator output
+    REFOCONbits.ROON = 1;
+
+    return SUCCESS;
+}
