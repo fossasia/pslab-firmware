@@ -2,6 +2,7 @@
 #include "helpers/version.h"
 #include "instruments/multimeter.h"
 #include "instruments/wavegenerator.h"
+#include "registers/system/pin_manager.h"
 
 /**
  * This is used to check that a received secondary command does not exceed the
@@ -181,36 +182,36 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                   Undefined,                 Undefined,                    Undefined,
     },
     { // 8 DOUT
-     // 0          1 SET_STATE    2          3
-        Undefined, Unimplemented, Undefined, Undefined,
-     // 4          5              6          7
-        Undefined, Undefined,     Undefined, Undefined,
-     // 8          9              10         11
-        Undefined, Undefined,     Undefined, Undefined,
-     // 12         13             14         15
-        Undefined, Undefined,     Undefined, Undefined,
-     // 16         17             18         19
-        Undefined, Undefined,     Undefined, Undefined,
-     // 20         21             22         23
-        Undefined, Undefined,     Undefined, Undefined,
-     // 24         25             26         27
-        Undefined, Undefined,     Undefined, Undefined,
+     // 0          1 SET_STATE                  2          3
+        Undefined, PIN_MANAGER_SetWavePinState, Undefined, Undefined,
+     // 4          5                            6          7
+        Undefined, Undefined,                   Undefined, Undefined,
+     // 8          9                            10         11
+        Undefined, Undefined,                   Undefined, Undefined,
+     // 12         13                           14         15
+        Undefined, Undefined,                   Undefined, Undefined,
+     // 16         17                           18         19
+        Undefined, Undefined,                   Undefined, Undefined,
+     // 20         21                           22         23
+        Undefined, Undefined,                   Undefined, Undefined,
+     // 24         25                           26         27
+        Undefined, Undefined,                   Undefined, Undefined,
     },
     { // 9 DIN
-     // 0          1 GET_STATE    2 GET_STATES   3
-        Undefined, Unimplemented, Unimplemented, Undefined,
-     // 4          5              6              7
-        Undefined, Undefined,     Undefined,     Undefined,
-     // 8          9              10             11
-        Undefined, Undefined,     Undefined,     Undefined,
-     // 12         13             14             15
-        Undefined, Undefined,     Undefined,     Undefined,
-     // 16         17             18             19
-        Undefined, Undefined,     Undefined,     Undefined,
-     // 20         21             22             23
-        Undefined, Undefined,     Undefined,     Undefined,
-     // 24         25             26             27
-        Undefined, Undefined,     Undefined,     Undefined,
+     // 0          1 GET_STATE    2 GET_STATES               3
+        Undefined, Unimplemented, PIN_MANAGER_GetLAPinState, Undefined,
+     // 4          5              6                          7
+        Undefined, Undefined,     Undefined,                 Undefined,
+     // 8          9              10                         11
+        Undefined, Undefined,     Undefined,                 Undefined,
+     // 12         13             14                         15
+        Undefined, Undefined,     Undefined,                 Undefined,
+     // 16         17             18                         19
+        Undefined, Undefined,     Undefined,                 Undefined,
+     // 20         21             22                         23
+        Undefined, Undefined,     Undefined,                 Undefined,
+     // 24         25             26                         27
+        Undefined, Undefined,     Undefined,                 Undefined,
     },
     { // 10 TIMING
      // 0                       1 GET_TIMING              2                        3
