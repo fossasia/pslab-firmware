@@ -50,7 +50,7 @@
 #include "../comparators/ic4.h"
 #include "../../bus/uart1.h"
 #include "../../mcc_generated_files/uart2.h"
-#include "../../mcc_generated_files/cvr.h"
+#include "../comparators/cvr.h"
 #include "../timers/tmr1.h"
 #include "../timers/tmr2.h"
 #include "../timers/tmr3.h"
