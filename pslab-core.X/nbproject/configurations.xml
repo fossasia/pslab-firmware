@@ -43,7 +43,6 @@
         <itemPath>mcc_generated_files/spi1_types.h</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
-        <itemPath>mcc_generated_files/cvr.h</itemPath>
         <itemPath>mcc_generated_files/ext_int.h</itemPath>
         <itemPath>mcc_generated_files/uart2.h</itemPath>
         <itemPath>mcc_generated_files/i2c1.h</itemPath>
@@ -62,6 +61,7 @@
           <itemPath>registers/comparators/cmp2.h</itemPath>
           <itemPath>registers/comparators/cmp3.h</itemPath>
           <itemPath>registers/comparators/cmp4.h</itemPath>
+          <itemPath>registers/comparators/cvr.h</itemPath>
         </logicalFolder>
         <logicalFolder name="converters" displayName="converters" projectFiles="true">
           <itemPath>registers/converters/adc1.h</itemPath>
@@ -141,7 +141,6 @@
         <itemPath>mcc_generated_files/reset.c</itemPath>
         <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
-        <itemPath>mcc_generated_files/cvr.c</itemPath>
         <itemPath>mcc_generated_files/ext_int.c</itemPath>
         <itemPath>mcc_generated_files/uart2.c</itemPath>
         <itemPath>mcc_generated_files/i2c1.c</itemPath>
@@ -160,6 +159,7 @@
           <itemPath>registers/comparators/cmp2.c</itemPath>
           <itemPath>registers/comparators/cmp3.c</itemPath>
           <itemPath>registers/comparators/cmp4.c</itemPath>
+          <itemPath>registers/comparators/cvr.c</itemPath>
         </logicalFolder>
         <logicalFolder name="converters" displayName="converters" projectFiles="true">
           <itemPath>registers/converters/adc1.c</itemPath>
