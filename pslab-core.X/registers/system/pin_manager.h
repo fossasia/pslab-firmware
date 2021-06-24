@@ -4,6 +4,8 @@
     Section: Includes
  */
 #include <xc.h>
+#include "../../states.h"
+#include "../../commands.h"
 
 #define OUTPUT_PIN                     0
 #define INPUT_PIN                      1
@@ -104,6 +106,46 @@
 
  */
 void PIN_MANAGER_Initialize(void);
+
+/**
+  @Summary
+    Set port configuration for wave generator (SQR) pins
+
+  @Description
+    This method provides an interface to clear the logic value at SQR pins and
+    assign desired values to PORT register
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+ */
+response_t PIN_MANAGER_SetWavePinState(void);
+
+/**
+  @Summary
+    Get port values on logic analyzer (LA) pins
+
+  @Description
+    This method filters and fetches PORT register values correspond to logic
+    analyzer pins
+
+  @Preconditions
+    None.
+
+  @Returns
+    None.
+
+  @Param
+    None.
+
+ */
+response_t PIN_MANAGER_GetLAPinState(void);
 
 /**
   @Summary
