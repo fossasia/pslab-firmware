@@ -36,7 +36,6 @@
 #include "../../bus/spi/spi_master.h"
 #include "../../bus/spi/spi_driver.h"
 #include "../../bus/i2c/i2c1.h"
-#include "../../mcc_generated_files/sd_spi/sd_spi.h"
 #include "../../bus/uart/uart1.h"
 #include "../../bus/uart/uart2.h"
 #include "../timers/tmr1.h"
@@ -58,7 +57,8 @@
 #include "../comparators/oc3.h"
 #include "../comparators/oc4.h"
 #include "../../registers/system/interrupt_manager.h"
-#include "../../mcc_generated_files/fatfs/ff.h"
+#include "../../sdcard/sd_spi.h"
+#include "../../sdcard/fatfs/ff.h"
 #include "../../helpers/light.h"
 
 void SYSTEM_Initialize(void) {

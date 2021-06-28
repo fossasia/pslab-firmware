@@ -20,7 +20,7 @@
           <itemPath>bus/uart/uart2.h</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <logicalFolder name="f1" displayName="helpers" projectFiles="true">
+      <logicalFolder name="helpers" displayName="helpers" projectFiles="true">
         <itemPath>helpers/light.h</itemPath>
         <itemPath>helpers/delay.h</itemPath>
         <itemPath>helpers/version.h</itemPath>
@@ -30,20 +30,6 @@
         <itemPath>instruments/logicanalyzer.h</itemPath>
         <itemPath>instruments/oscilloscope.h</itemPath>
         <itemPath>instruments/wavegenerator.h</itemPath>
-      </logicalFolder>
-      <logicalFolder name="MCC Generated Files"
-                     displayName="MCC Generated Files"
-                     projectFiles="true">
-        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
-          <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/integer.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/diskio.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ff.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ffconf.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
-          <itemPath>mcc_generated_files/sd_spi/sd_spi.h</itemPath>
-        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -84,6 +70,16 @@
           <itemPath>registers/timers/tmr5.h</itemPath>
         </logicalFolder>
       </logicalFolder>
+      <logicalFolder name="sdcard" displayName="sdcard" projectFiles="true">
+        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
+          <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/integer.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/diskio.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ff.h</itemPath>
+          <itemPath>mcc_generated_files/fatfs/ffconf.h</itemPath>
+        </logicalFolder>
+        <itemPath>sdcard/sd_spi.h</itemPath>
+      </logicalFolder>
       <itemPath>states.h</itemPath>
       <itemPath>commands.h</itemPath>
     </logicalFolder>
@@ -116,7 +112,7 @@
           <itemPath>bus/uart/uart2.c</itemPath>
         </logicalFolder>
       </logicalFolder>
-      <logicalFolder name="f1" displayName="helpers" projectFiles="true">
+      <logicalFolder name="helpers" displayName="helpers" projectFiles="true">
         <itemPath>helpers/light.c</itemPath>
         <itemPath>helpers/delay.c</itemPath>
         <itemPath>helpers/version.c</itemPath>
@@ -125,21 +121,6 @@
         <itemPath>instruments/multimeter.c</itemPath>
         <itemPath>instruments/wavegenerator.c</itemPath>
         <itemPath>instruments/oscilloscope.c</itemPath>
-      </logicalFolder>
-      <logicalFolder name="MCC Generated Files"
-                     displayName="MCC Generated Files"
-                     projectFiles="true">
-        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
-          <itemPath>mcc_generated_files/fatfs/ffsystem.c</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ff.c</itemPath>
-          <itemPath>mcc_generated_files/fatfs/diskio.c</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ffunicode.c</itemPath>
-          <itemPath>mcc_generated_files/fatfs/fatfs_demo.c</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ff_time.c</itemPath>
-        </logicalFolder>
-        <logicalFolder name="sd_spi" displayName="sd_spi" projectFiles="true">
-          <itemPath>mcc_generated_files/sd_spi/sd_spi.c</itemPath>
-        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -177,6 +158,17 @@
           <itemPath>registers/timers/tmr5.c</itemPath>
         </logicalFolder>
       </logicalFolder>
+      <logicalFolder name="sdcard" displayName="sdcard" projectFiles="true">
+        <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
+          <itemPath>sdcard/fatfs/ffsystem.c</itemPath>
+          <itemPath>sdcard/fatfs/ff.c</itemPath>
+          <itemPath>sdcard/fatfs/ff_time.c</itemPath>
+          <itemPath>sdcard/fatfs/ffunicode.c</itemPath>
+          <itemPath>sdcard/fatfs/fatfs_demo.c</itemPath>
+          <itemPath>sdcard/fatfs/diskio.c</itemPath>
+        </logicalFolder>
+        <itemPath>sdcard/sd_spi.c</itemPath>
+      </logicalFolder>
       <itemPath>main.c</itemPath>
       <itemPath>commands.c</itemPath>
       <itemPath>states.c</itemPath>
@@ -202,6 +194,7 @@
     <Elem>registers</Elem>
     <Elem>helpers</Elem>
     <Elem>boot</Elem>
+    <Elem>sdcard</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>

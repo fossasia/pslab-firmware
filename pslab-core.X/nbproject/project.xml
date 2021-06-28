@@ -19,6 +19,7 @@
                 <sourceRootElem>registers</sourceRootElem>
                 <sourceRootElem>helpers</sourceRootElem>
                 <sourceRootElem>boot</sourceRootElem>
+                <sourceRootElem>sdcard</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
