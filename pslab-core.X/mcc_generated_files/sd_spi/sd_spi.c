@@ -3,7 +3,7 @@
 #include <stdbool.h>
 
 #include "../../registers/system/pin_manager.h"
-#include "../drivers/spi_master.h"
+#include "../../bus/spi/spi_master.h"
 
 #include "sd_spi.h"
 
