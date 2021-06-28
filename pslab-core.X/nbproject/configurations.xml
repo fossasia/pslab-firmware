@@ -5,7 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
-        <itemPath>bus/uart1.h</itemPath>
+        <logicalFolder name="uart" displayName="uart" projectFiles="true">
+          <itemPath>bus/uart/uart1.h</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f1" displayName="helpers" projectFiles="true">
         <itemPath>helpers/light.h</itemPath>
@@ -96,7 +98,9 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
-        <itemPath>bus/uart1.c</itemPath>
+        <logicalFolder name="uart" displayName="uart" projectFiles="true">
+          <itemPath>bus/uart/uart1.c</itemPath>
+        </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f1" displayName="helpers" projectFiles="true">
         <itemPath>helpers/light.c</itemPath>

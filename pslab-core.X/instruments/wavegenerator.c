@@ -1,6 +1,6 @@
 #include <xc.h>
 #include "../commands.h"
-#include "../bus/uart1.h"
+#include "../bus/uart/uart1.h"
 #include "../registers/timers/tmr1.h"
 #include "../registers/timers/tmr3.h"
 #include "../registers/timers/tmr4.h"
