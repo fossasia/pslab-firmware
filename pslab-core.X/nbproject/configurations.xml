@@ -47,7 +47,6 @@
         <itemPath>mcc_generated_files/traps.h</itemPath>
         <itemPath>mcc_generated_files/spi1_driver.h</itemPath>
         <itemPath>mcc_generated_files/spi1_types.h</itemPath>
-        <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
@@ -79,6 +78,7 @@
           <itemPath>registers/system/system_types.h</itemPath>
           <itemPath>registers/system/watchdog.h</itemPath>
           <itemPath>registers/system/clock.h</itemPath>
+          <itemPath>registers/system/interrupt_manager.h</itemPath>
         </logicalFolder>
         <logicalFolder name="timers" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.h</itemPath>
@@ -149,7 +149,6 @@
         <itemPath>mcc_generated_files/traps.c</itemPath>
         <itemPath>mcc_generated_files/reset.c</itemPath>
         <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
-        <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -177,6 +176,7 @@
           <itemPath>registers/system/pin_manager.c</itemPath>
           <itemPath>registers/system/system.c</itemPath>
           <itemPath>registers/system/clock.c</itemPath>
+          <itemPath>registers/system/interrupt_manager.c</itemPath>
         </logicalFolder>
         <logicalFolder name="timers" displayName="timers" projectFiles="true">
           <itemPath>registers/timers/tmr4.c</itemPath>

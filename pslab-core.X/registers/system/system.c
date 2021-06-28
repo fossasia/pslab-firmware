@@ -39,7 +39,7 @@
 #include "../../mcc_generated_files/drivers/spi_master.h"
 #include "../../bus/i2c/i2c1.h"
 #include "../../mcc_generated_files/sd_spi/sd_spi.h"
-#include "../../mcc_generated_files/interrupt_manager.h"
+#include "../../registers/system/interrupt_manager.h"
 #include "../../mcc_generated_files/traps.h"
 #include "../memory/dma.h"
 #include "../../mcc_generated_files/spi1_driver.h"
