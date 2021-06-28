@@ -5,8 +5,12 @@
                    displayName="Header Files"
                    projectFiles="true">
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
+        <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
+          <itemPath>bus/i2c/i2c1.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <itemPath>bus/uart/uart1.h</itemPath>
+          <itemPath>bus/uart/uart2.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f1" displayName="helpers" projectFiles="true">
@@ -46,8 +50,6 @@
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
         <itemPath>mcc_generated_files/ext_int.h</itemPath>
-        <itemPath>mcc_generated_files/uart2.h</itemPath>
-        <itemPath>mcc_generated_files/i2c1.h</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -98,8 +100,12 @@
                    displayName="Source Files"
                    projectFiles="true">
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
+        <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
+          <itemPath>bus/i2c/i2c1.c</itemPath>
+        </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <itemPath>bus/uart/uart1.c</itemPath>
+          <itemPath>bus/uart/uart2.c</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="f1" displayName="helpers" projectFiles="true">
@@ -146,8 +152,6 @@
         <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
         <itemPath>mcc_generated_files/ext_int.c</itemPath>
-        <itemPath>mcc_generated_files/uart2.c</itemPath>
-        <itemPath>mcc_generated_files/i2c1.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
