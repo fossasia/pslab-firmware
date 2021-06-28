@@ -18,6 +18,7 @@
                 <sourceRootElem>instruments</sourceRootElem>
                 <sourceRootElem>registers</sourceRootElem>
                 <sourceRootElem>helpers</sourceRootElem>
+                <sourceRootElem>boot</sourceRootElem>
             </sourceRootList>
             <confList>
                 <confElem>
