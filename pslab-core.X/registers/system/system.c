@@ -31,7 +31,6 @@
 #include "clock.h"
 #include "system.h"
 #include "system_types.h"
-#include "../../mcc_generated_files/ext_int.h"
 #include "../converters/adc1.h"
 #include "../comparators/oc1.h"
 #include "../comparators/oc2.h"
@@ -72,7 +71,6 @@ void SYSTEM_Initialize(void) {
     SYSTEM_CORCONInitialize();
 
     INTERRUPT_Initialize();
-    EXT_INT_Initialize();
 
     UART1_Initialize();
     UART2_Initialize();
