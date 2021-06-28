@@ -8,6 +8,11 @@
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
           <itemPath>bus/i2c/i2c1.h</itemPath>
         </logicalFolder>
+        <logicalFolder name="spi" displayName="spi" projectFiles="true">
+          <itemPath>bus/spi/spi1_driver.h</itemPath>
+          <itemPath>bus/spi/spi1_types.h</itemPath>
+          <itemPath>bus/spi/spi_master.h</itemPath>
+        </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <itemPath>bus/uart/uart1.h</itemPath>
           <itemPath>bus/uart/uart2.h</itemPath>
@@ -31,7 +36,6 @@
           <itemPath>mcc_generated_files/boot/boot_config.h</itemPath>
         </logicalFolder>
         <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
-          <itemPath>mcc_generated_files/drivers/spi_master.h</itemPath>
         </logicalFolder>
         <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
           <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
@@ -45,8 +49,6 @@
         </logicalFolder>
         <itemPath>mcc_generated_files/reset.h</itemPath>
         <itemPath>mcc_generated_files/traps.h</itemPath>
-        <itemPath>mcc_generated_files/spi1_driver.h</itemPath>
-        <itemPath>mcc_generated_files/spi1_types.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
@@ -102,6 +104,10 @@
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
           <itemPath>bus/i2c/i2c1.c</itemPath>
         </logicalFolder>
+        <logicalFolder name="spi" displayName="spi" projectFiles="true">
+          <itemPath>bus/spi/spi1_driver.c</itemPath>
+          <itemPath>bus/spi/spi_master.c</itemPath>
+        </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <itemPath>bus/uart/uart1.c</itemPath>
           <itemPath>bus/uart/uart2.c</itemPath>
@@ -132,9 +138,6 @@
           <itemPath>mcc_generated_files/docs/spi_basic.dox</itemPath>
           <itemPath>mcc_generated_files/docs/spi.dox</itemPath>
         </logicalFolder>
-        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
-          <itemPath>mcc_generated_files/drivers/spi_master.c</itemPath>
-        </logicalFolder>
         <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
           <itemPath>mcc_generated_files/fatfs/ffsystem.c</itemPath>
           <itemPath>mcc_generated_files/fatfs/ff.c</itemPath>
@@ -148,7 +151,6 @@
         </logicalFolder>
         <itemPath>mcc_generated_files/traps.c</itemPath>
         <itemPath>mcc_generated_files/reset.c</itemPath>
-        <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">

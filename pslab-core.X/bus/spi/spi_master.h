@@ -36,7 +36,7 @@
  */
 #include <stdint.h>
 #include <stdbool.h>
-#include "../spi1_driver.h"
+#include "spi1_driver.h"
 
 /**
 *   \ingroup doc_driver_spi_code
