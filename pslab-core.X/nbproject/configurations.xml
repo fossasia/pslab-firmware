@@ -9,9 +9,8 @@
           <itemPath>bus/i2c/i2c1.h</itemPath>
         </logicalFolder>
         <logicalFolder name="spi" displayName="spi" projectFiles="true">
-          <itemPath>bus/spi/spi1_driver.h</itemPath>
-          <itemPath>bus/spi/spi1_types.h</itemPath>
           <itemPath>bus/spi/spi_master.h</itemPath>
+          <itemPath>bus/spi/spi_driver.h</itemPath>
         </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <itemPath>bus/uart/uart1.h</itemPath>
@@ -34,8 +33,6 @@
                      projectFiles="true">
         <logicalFolder name="boot" displayName="boot" projectFiles="true">
           <itemPath>mcc_generated_files/boot/boot_config.h</itemPath>
-        </logicalFolder>
-        <logicalFolder name="drivers" displayName="drivers" projectFiles="true">
         </logicalFolder>
         <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
           <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
@@ -105,8 +102,8 @@
           <itemPath>bus/i2c/i2c1.c</itemPath>
         </logicalFolder>
         <logicalFolder name="spi" displayName="spi" projectFiles="true">
-          <itemPath>bus/spi/spi1_driver.c</itemPath>
           <itemPath>bus/spi/spi_master.c</itemPath>
+          <itemPath>bus/spi/spi_driver.c</itemPath>
         </logicalFolder>
         <logicalFolder name="uart" displayName="uart" projectFiles="true">
           <itemPath>bus/uart/uart1.c</itemPath>

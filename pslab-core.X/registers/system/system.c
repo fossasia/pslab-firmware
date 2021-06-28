@@ -37,7 +37,7 @@
 #include "../comparators/oc3.h"
 #include "../comparators/oc4.h"
 #include "../../bus/spi/spi_master.h"
-#include "../../bus/spi/spi1_driver.h"
+#include "../../bus/spi/spi_driver.h"
 #include "../../bus/i2c/i2c1.h"
 #include "../../mcc_generated_files/sd_spi/sd_spi.h"
 #include "../../registers/system/interrupt_manager.h"
