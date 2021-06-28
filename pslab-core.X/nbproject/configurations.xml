@@ -4,6 +4,9 @@
     <logicalFolder name="HeaderFiles"
                    displayName="Header Files"
                    projectFiles="true">
+      <logicalFolder name="boot" displayName="boot" projectFiles="true">
+        <itemPath>boot/boot_config.h</itemPath>
+      </logicalFolder>
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
           <itemPath>bus/i2c/i2c1.h</itemPath>
@@ -31,9 +34,6 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
-        <logicalFolder name="boot" displayName="boot" projectFiles="true">
-          <itemPath>mcc_generated_files/boot/boot_config.h</itemPath>
-        </logicalFolder>
         <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
           <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
           <itemPath>mcc_generated_files/fatfs/integer.h</itemPath>
@@ -94,6 +94,15 @@
     <logicalFolder name="SourceFiles"
                    displayName="Source Files"
                    projectFiles="true">
+      <logicalFolder name="boot" displayName="boot" projectFiles="true">
+        <itemPath>boot/combineAppAndBootloaderHex.bat</itemPath>
+        <itemPath>boot/combineAppAndBootloaderHex.sh</itemPath>
+        <itemPath>boot/hardware_interrupt_table.S</itemPath>
+        <itemPath>boot/interrupts.S</itemPath>
+        <itemPath>boot/memory_partition.S</itemPath>
+        <itemPath>boot/remapped_reset.S</itemPath>
+        <itemPath>boot/user_interrupt_table.S</itemPath>
+      </logicalFolder>
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
           <itemPath>bus/i2c/i2c1.c</itemPath>
@@ -120,18 +129,6 @@
       <logicalFolder name="MCC Generated Files"
                      displayName="MCC Generated Files"
                      projectFiles="true">
-        <logicalFolder name="boot" displayName="boot" projectFiles="true">
-          <itemPath>mcc_generated_files/boot/remapped_reset.S</itemPath>
-          <itemPath>mcc_generated_files/boot/combineAppAndBootloaderHex.sh</itemPath>
-          <itemPath>mcc_generated_files/boot/hardware_interrupt_table.S</itemPath>
-          <itemPath>mcc_generated_files/boot/interrupts.S</itemPath>
-          <itemPath>mcc_generated_files/boot/memory_partition.S</itemPath>
-          <itemPath>mcc_generated_files/boot/user_interrupt_table.S</itemPath>
-        </logicalFolder>
-        <logicalFolder name="docs" displayName="docs" projectFiles="true">
-          <itemPath>mcc_generated_files/docs/spi_basic.dox</itemPath>
-          <itemPath>mcc_generated_files/docs/spi.dox</itemPath>
-        </logicalFolder>
         <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
           <itemPath>mcc_generated_files/fatfs/ffsystem.c</itemPath>
           <itemPath>mcc_generated_files/fatfs/ff.c</itemPath>
@@ -204,6 +201,7 @@
     <Elem>instruments</Elem>
     <Elem>registers</Elem>
     <Elem>helpers</Elem>
+    <Elem>boot</Elem>
   </sourceRootList>
   <projectmakefile>Makefile</projectmakefile>
   <confs>
