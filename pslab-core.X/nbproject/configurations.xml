@@ -49,7 +49,6 @@
         <itemPath>mcc_generated_files/spi1_types.h</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.h</itemPath>
         <itemPath>mcc_generated_files/reset_types.h</itemPath>
-        <itemPath>mcc_generated_files/ext_int.h</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -151,7 +150,6 @@
         <itemPath>mcc_generated_files/reset.c</itemPath>
         <itemPath>mcc_generated_files/spi1_driver.c</itemPath>
         <itemPath>mcc_generated_files/interrupt_manager.c</itemPath>
-        <itemPath>mcc_generated_files/ext_int.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
