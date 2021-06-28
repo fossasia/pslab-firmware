@@ -1,6 +1,6 @@
 #include <xc.h>
 #include "uart1.h"
-#include "../registers/system/watchdog.h"
+#include "../../registers/system/watchdog.h"
 
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     WATCHDOG_TimerClear();

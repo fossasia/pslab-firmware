@@ -2,7 +2,7 @@
 #include "../helpers/delay.h"
 #include "../registers/converters/adc1.h"
 #include "../registers/memory/dma.h"
-#include "../bus/uart1.h"
+#include "../bus/uart/uart1.h"
 #include "logicanalyzer.h"
 
 response_t MULTIMETER_GetVoltage(void) {

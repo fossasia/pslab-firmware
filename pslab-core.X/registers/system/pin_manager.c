@@ -1,7 +1,7 @@
 #include <xc.h>
 #include <stdio.h>
 #include "pin_manager.h"
-#include "../../bus/uart1.h"
+#include "../../bus/uart/uart1.h"
 
 void PIN_MANAGER_Initialize(void) {
 
