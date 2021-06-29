@@ -72,11 +72,11 @@
       </logicalFolder>
       <logicalFolder name="sdcard" displayName="sdcard" projectFiles="true">
         <logicalFolder name="fatfs" displayName="fatfs" projectFiles="true">
-          <itemPath>mcc_generated_files/fatfs/fatfs_demo.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/integer.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/diskio.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ff.h</itemPath>
-          <itemPath>mcc_generated_files/fatfs/ffconf.h</itemPath>
+          <itemPath>sdcard/fatfs/fatfs_demo.h</itemPath>
+          <itemPath>sdcard/fatfs/integer.h</itemPath>
+          <itemPath>sdcard/fatfs/diskio.h</itemPath>
+          <itemPath>sdcard/fatfs/ff.h</itemPath>
+          <itemPath>sdcard/fatfs/ffconf.h</itemPath>
         </logicalFolder>
         <itemPath>sdcard/sd_spi.h</itemPath>
       </logicalFolder>
@@ -176,13 +176,6 @@
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
                    projectFiles="false">
-      <logicalFolder name="MCC Generated Files"
-                     displayName="MCC Generated Files"
-                     projectFiles="true">
-        <logicalFolder name="boot" displayName="boot" projectFiles="true">
-          <itemPath>mcc_generated_files/boot/combineAppAndBootloaderHex.bat</itemPath>
-        </logicalFolder>
-      </logicalFolder>
       <itemPath>Makefile</itemPath>
       <itemPath>pslab-core.mc3</itemPath>
     </logicalFolder>
