@@ -24,6 +24,7 @@
         <itemPath>helpers/light.h</itemPath>
         <itemPath>helpers/delay.h</itemPath>
         <itemPath>helpers/version.h</itemPath>
+        <itemPath>helpers/buffer.h</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.h</itemPath>
@@ -116,6 +117,7 @@
         <itemPath>helpers/light.c</itemPath>
         <itemPath>helpers/delay.c</itemPath>
         <itemPath>helpers/version.c</itemPath>
+        <itemPath>helpers/buffer.c</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.c</itemPath>

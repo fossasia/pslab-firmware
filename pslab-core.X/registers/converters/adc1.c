@@ -1,9 +1,14 @@
 #include "adc1.h"
+#include "../memory/dma.h"
+#include "../timers/tmr5.h"
+#include "../../helpers/delay.h"
+#include "../../commands.h"
 
-// Space in memory to save ADC data
-int __attribute__((section(".adc_buffer"), far)) ADC1_Buffer[10000];
 // Current ADC operation mode variables
 static uint8_t current_mode, current_channel_0, current_channel_123;
+
+/* Static function prototypes */
+static void Init10BitMode(void);
 
 void ADC1_Initialize(void) {
 
@@ -106,7 +111,7 @@ void ADC1_SetOperationMode(
 
     switch (current_mode) {
         case ADC1_10BIT_SIMULTANEOUS_MODE:
-            // initADC10()
+            Init10BitMode();
             break;
         case ADC1_10BIT_DMA_MODE:
             // initADCDMA(0)
@@ -145,9 +150,23 @@ void ADC1_SetOperationMode(
     }
 }
 
-void __attribute__((__interrupt__, auto_psv, weak)) _AD1Interrupt(void) {
-    if (IFS0bits.AD1IF) {
-        // clear the ADC interrupt flag
-        IFS0bits.AD1IF = false;
-    }
+static void Init10BitMode(void) {
+    DMA_ChannelDisable(DMA_CHANNEL_0);
+    AD1CON1bits.SSRC = 4; // TMR5 compare starts conversion
+    ADC1_AutomaticSamplingEnable();
+    ADC1_SimultaneousSamplingEnable();
+    ADC1_ChannelSelectSet(current_channel_0);
+    ADC1_Positive123ChannelSelect(current_channel_123);
+    ADC1_Negative123ChannelSelect(0);
+    ADC1_ConversionClockPrescalerSet(2); // Conversion rate = 16 MHz
+    ADC1_Enable();
+    DELAY_us(20);
+    
+    TMR5_Stop();
+    T5CONbits.TSIDL = 1;
+    T5CONbits.TCKPS = 1;
+    TMR5 = 0;
+    TMR5_Start();
+    _T5IF = 0;
+    _T5IE = 0;
 }
