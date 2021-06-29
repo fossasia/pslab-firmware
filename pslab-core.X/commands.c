@@ -1,6 +1,8 @@
 #include "commands.h"
+#include "helpers/buffer.h"
 #include "helpers/version.h"
 #include "instruments/multimeter.h"
+#include "instruments/oscilloscope.h"
 #include "instruments/wavegenerator.h"
 #include "registers/system/pin_manager.h"
 
@@ -87,9 +89,9 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 2 ADC
      // 0                          1 CAPTURE_ONE                2 CAPTURE_TWO                   3 CAPTURE_DMASPEED
-        Undefined,                 Unimplemented,               Unimplemented,                  Unimplemented,
+        Undefined,                 OSCILLOSCOPE_CaptureOne,     Unimplemented,                  Unimplemented,
      // 4 CAPTURE_FOUR             5 CONFIGURE_TRIGGER          6 GET_CAPTURE_STATUS            7 GET_CAPTURE_CHANNEL
-        Unimplemented,             Unimplemented,               Unimplemented,                  Unimplemented,
+        Unimplemented,             Unimplemented,               OSCILLOSCOPE_GetCaptureStatus,  Unimplemented,
      // 8 SET_PGA_GAIN             9 GET_VOLTAGE                10 GET_VOLTAGE_SUMMED           11 START_ADC_STREAMING
         Unimplemented,             MULTIMETER_GetVoltage,       MULTIMETER_GetVoltageSummed,    Removed,
      // 12 SELECT_PGA_CHANNEL      13 CAPTURE_12BIT             14 CAPTURE_MULTIPLE             15 SET_HI_CAPTURE
@@ -105,7 +107,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 0               1 START_SPI           2 SEND_SPI8        3 SEND_SPI16
         Undefined,      Unimplemented,        Unimplemented,     Unimplemented,
      // 4 STOP_SPI      5 SET_SPI_PARAMETERS  6 SEND_SPI8_BURST  7 SEND_SPI16_BURST
-        Unimplemented,  Unimplemented,    Removed,           Removed,
+        Unimplemented,  Unimplemented,        Removed,           Removed,
      // 8               9                     10                 11
         Undefined,      Undefined,            Undefined,         Undefined,
      // 12              13                    14                 15
@@ -235,7 +237,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 4 GET_INDUCTANCE                 5 GET_VERSION             6                     7
         Unimplemented,                   VERSION_GetVersion,       Undefined,            Undefined,
      // 8 RETRIEVE_BUFFER                9 GET_HIGH_FREQUENCY      10 CLEAR_BUFFER       11 SETRGB
-        Unimplemented,                   Unimplemented,            Unimplemented,        Unimplemented,
+        BUFFER_Retrieve,                 Unimplemented,            Unimplemented,        Unimplemented,
      // 12 READ_PROGRAM_ADDRESS          13 WRITE_PROGRAM_ADDRESS  14 READ_DATA_ADDRESS  15 WRITE_DATA_ADDRESS
         Unimplemented,                   Unimplemented,            Unimplemented,        Unimplemented,
      // 16 GET_CAP_RANGE                 17 SETRGB2                18 READ_LOG           19 RESTORE_STANDALONE
