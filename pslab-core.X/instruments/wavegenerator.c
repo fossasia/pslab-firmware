@@ -2,6 +2,7 @@
 #include "../commands.h"
 #include "../bus/uart/uart1.h"
 #include "../registers/timers/tmr1.h"
+#include "../registers/timers/tmr2.h"
 #include "../registers/timers/tmr3.h"
 #include "../registers/timers/tmr4.h"
 #include "../registers/memory/dma.h"
@@ -158,8 +159,9 @@ response_t WAVEGENERATOR_SetSine1(void) {
 
     uint8_t resolution = UART1_Read();
     uint16_t wave_length = UART1_ReadInt();
-
-    TMR4_Initialize();
+    
+    T2CONbits.T32 = 0;
+    TMR3_Initialize();
 
     DMA_InterruptDisable(DMA_CHANNEL_2);
     DMA_InitializeChannel2();
@@ -196,24 +198,24 @@ response_t WAVEGENERATOR_SetSine1(void) {
 
     // Automatic DMA transfer initiation by DMA request
     DMA2REQbits.FORCE = 0;
-    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_2, DMA_PERIPHERAL_IRQ_TMR4);
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_2, DMA_PERIPHERAL_IRQ_TMR3);
 
     DMA_FlagInterruptClear(DMA_CHANNEL_2);
     DMA_InterruptEnable(DMA_CHANNEL_2);
 
     DMA_ChannelEnable(DMA_CHANNEL_2);
 
-    TMR4_Period16BitSet(wave_length);
+    TMR3_Period16BitSet(wave_length);
     // 11 -- 1:256 
     // 10 -- 1:64 
     // 01 -- 1:8 
     // 00 -- 1:1
-    T4CONbits.TCKPS = (resolution >> 1) & 3;
+    T3CONbits.TCKPS = (resolution >> 1) & 3;
 
     // Link OC3 pin to SINE1 output
     RPOR6bits.RP57R = RPN_OC3_PORT;
 
-    TMR4_Start();
+    TMR3_Start();
 
     return SUCCESS;
 }
@@ -223,8 +225,7 @@ response_t WAVEGENERATOR_SetSine2(void) {
     uint8_t resolution = UART1_Read();
     uint16_t wave_length = UART1_ReadInt();
 
-    T2CONbits.T32 = 0;
-    TMR3_Initialize();
+    TMR4_Initialize();
 
     DMA_InterruptDisable(DMA_CHANNEL_3);
     DMA_InitializeChannel3();
@@ -259,24 +260,24 @@ response_t WAVEGENERATOR_SetSine2(void) {
 
     // Automatic DMA transfer initiation by DMA request
     DMA3REQbits.FORCE = 0;
-    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_3, DMA_PERIPHERAL_IRQ_TMR3);
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_3, DMA_PERIPHERAL_IRQ_TMR4);
 
     DMA_FlagInterruptClear(DMA_CHANNEL_3);
     DMA_InterruptEnable(DMA_CHANNEL_3);
 
     DMA_ChannelEnable(DMA_CHANNEL_3);
 
-    TMR3_Period16BitSet(wave_length);
+    TMR4_Period16BitSet(wave_length);
     // 11 -- 1:256 
     // 10 -- 1:64 
     // 01 -- 1:8 
     // 00 -- 1:1
-    T3CONbits.TCKPS = (resolution >> 1) & 3;
+    T4CONbits.TCKPS = (resolution >> 1) & 3;
 
     // Link OC4 pin to SINE2 output
     RPOR6bits.RP56R = RPN_OC4_PORT;
 
-    TMR3_Start();
+    TMR4_Start();
 
     return SUCCESS;
 }
@@ -431,25 +432,25 @@ response_t WAVEGENERATOR_SetSquare2(void) {
     uint8_t scale = UART1_Read();
 
     OC2_Initialize();
-    TMR3_Initialize();
+    TMR2_Initialize();
     
-    // Output Compare Clock Select is TMR 3
-    OC2CON1bits.OCTSEL = 0b001;
+    // Output Compare Clock Select is TMR 2
+    OC2CON1bits.OCTSEL = 0b000;
     // Output set high when OC2TMR=0 and set low when OC2TMR=OC2R
     OC2CON1bits.OCM = 0b110;
-    // Timer 3 trigger event is used for synchronization
-    OC2CON2bits.SYNCSEL = 0b01101;
+    // Timer 2 trigger event is used for synchronization
+    OC2CON2bits.SYNCSEL = 0b01100;
 
     // Set pulse turn on time
     OC2_PrimaryValueSet(high_time - 1);
     // Set pulse width
-    TMR3_Period16BitSet(wave_length - 1);
+    TMR2_Period16BitSet(wave_length - 1);
 
-    T3CONbits.TCKPS = scale & 0x3;
+    T2CONbits.TCKPS = scale & 0x3;
 
     RPOR5bits.RP55R = RPN_OC2_PORT;
 
-    TMR3_Start();
+    TMR2_Start();
 
     return SUCCESS;
 }
