@@ -17,6 +17,16 @@ void PIN_MANAGER_Initialize(void) {
     LATB = 0x0080;
     LATC = 0x0000;
 
+    UART1_TX_SetHigh();
+    UART2_TX_SetHigh();
+
+    CS_CH1_SetHigh();
+    CS_CH2_SetHigh();
+    CS_SPI_SetHigh();
+    SDCard_CS_SetHigh();
+
+    BOOT_SetHigh();
+
     /****************************************************************************
      * Setting the GPIO Direction SFR(s)
      ***************************************************************************/
@@ -24,19 +34,48 @@ void PIN_MANAGER_Initialize(void) {
     TRISB = 0xFD7F;
     TRISC = 0x03F7;
 
-    TRISBbits.TRISB2 = OUTPUT_PIN; // RGB_LED
+    I2C_SCL_SetDigitalInput();
+    I2C_SDA_SetDigitalInput();
 
-    TRISBbits.TRISB10 = INPUT_PIN; // LA1_
-    TRISBbits.TRISB11 = INPUT_PIN; // LA2_
-    TRISBbits.TRISB12 = INPUT_PIN; // LA3_
-    TRISBbits.TRISB13 = INPUT_PIN; // LA4_
+    UART1_TX_SetDigitalOutput();
+    UART1_RX_SetDigitalInput();
+    UART2_TX_SetDigitalOutput();
+    UART2_RX_SetDigitalInput();
 
-    TRISCbits.TRISC6 = OUTPUT_PIN; // SQR1_
-    TRISCbits.TRISC7 = OUTPUT_PIN; // SQR2_
-    TRISCbits.TRISC8 = OUTPUT_PIN; // SQR3_
-    TRISCbits.TRISC9 = OUTPUT_PIN; // SQR4_
+    BOOT_SetDigitalOutput(); // Bootloader enable pin
 
-    LED_SetDigitalOutput();
+    CS_CH1_SetDigitalOutput(); // CH1 chip select
+    CS_CH2_SetDigitalOutput(); // CH2 chip select
+    CS_SPI_SetDigitalOutput(); // SPI chip select
+    SDCard_CS_SetDigitalOutput(); // SD card chip select
+
+    OSC_CH1_SetDigitalInput(); // CH1
+    OSC_CH2_SetDigitalInput(); // CH2
+    OSC_CH3_SetDigitalInput(); // CH3
+    OSC_MIC_SetDigitalInput(); // MIC
+
+    LA1_SetDigitalInput(); // LA1_
+    LA2_SetDigitalInput(); // LA2_
+    LA3_SetDigitalInput(); // LA3_
+    LA4_SetDigitalInput(); // LA4_
+
+    SQR1_SetDigitalOutput(); // SQR1_
+    SQR2_SetDigitalOutput(); // SQR2_
+    SQR3_SetDigitalOutput(); // SQR3_
+    SQR4_SetDigitalOutput(); // SQR4_
+
+    FQY_SetDigitalInput(); // Pulse counter
+    VOL_SetDigitalInput(); // Voltage
+    RES_SetDigitalInput(); // Resistance
+    CAP_IN_SetDigitalInput(); // Capacitor read pin
+    CAP_OUT_SetDigitalInput(); // Capacitor charge pin
+
+    SDO1_SetDigitalOutput();
+    SCK1_SetDigitalOutput();
+    SDI1_SetDigitalInput();
+
+    LED_SetDigitalOutput(); // Status LED
+    RGB_LED_SetDigitalOutput(); // WS2812 RGB Led
 
     /****************************************************************************
      * Setting the Weak Pull Up and Weak Pull Down SFR(s)
@@ -62,11 +101,22 @@ void PIN_MANAGER_Initialize(void) {
     ANSELB = 0x0000;
     ANSELC = 0x0000;
 
+    VOL_SetAnalog();
+    RES_SetAnalog();
+    CAP_IN_SetAnalog();
+
+    OSC_CH1_SetAnalog();
+    OSC_CH2_SetAnalog();
+    OSC_CH3_SetAnalog();
+    OSC_MIC_SetAnalog();
+
     /****************************************************************************
      * Assign pin mappings
      ***************************************************************************/
     RPOR2bits.RP39R = RPN_U1TX_PORT; //RB7->UART1:U1TX
     RPINR18bits.U1RXR = RPI_RP40; //RB8->UART1:U1RX
+    RPOR2bits.RP38R = RPN_U2TX_PORT; // RB6->UART2:U2TX
+    RPINR19bits.U2RXR = RPI_RP37; // RB5->UART2:U2RX
 
     LED_SetHigh();
 }

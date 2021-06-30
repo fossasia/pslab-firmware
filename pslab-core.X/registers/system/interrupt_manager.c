@@ -10,4 +10,13 @@ void INTERRUPT_Initialize(void) {
     //    SICI: I2C1 Slave Events
     //    Priority: 1
     IPC4bits.SI2C1IP = 1;
+
+    _INT1IF = 0;
+    _INT1IE = 0;
+
+    _U1RXIF = 0;
+    _U1RXIE = 0;
+
+    _U2RXIF = 0;
+    _U2RXIE = 0;
 }
