@@ -17,10 +17,6 @@ void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
 }
 
 void UART1_Initialize(void) {
-    /**    
-     Make sure to set LAT bit corresponding to TxPin as high before UART Init
-     */
-    
     // UARTx is disabled; all UARTx pins are controlled by PORT latches; 
     // UARTx power consumption is minimal
     U1MODEbits.UARTEN = 0;
