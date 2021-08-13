@@ -501,7 +501,7 @@ int main() {
                         break;
 
                     case SET_MODE:
-                        sendChar(1); // Let host know SET_MODE subcommand is supported
+                        sendChar(4); // Let host know SET_MODE subcommand is supported
                         value = getChar(); // stop_bit, pd, 00000
                         UART2_ST = (value)&0x1;
                         UART2_PD = (value >> 1)&0x3;
