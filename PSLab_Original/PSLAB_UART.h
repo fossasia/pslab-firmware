@@ -11,6 +11,9 @@
 extern BYTE c1;
 extern BYTE c2;
 
+extern uint16 UART2_BRG;
+extern BYTE UART2_ST, UART2_PD;
+
 extern void initUART(uint16);
 extern bool hasChar();
 extern void sendChar(BYTE val);
@@ -20,7 +23,7 @@ extern char getChar();
 extern uint16 getInt();
 extern void ack(BYTE);
 
-extern void configUART2(uint16 BAUD);
+extern void configUART2(void);
 extern bool hasChar2(void);
 extern char getChar2(void);
 extern uint16 getInt2(void);

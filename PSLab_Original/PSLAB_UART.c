@@ -7,6 +7,10 @@
 BYTE c1 = 0;
 BYTE c2 = 0;
 
+uint16 UART2_BRG = BRGVAL1000000;
+BYTE UART2_ST = 0; //1 stop bit
+BYTE UART2_PD = 0; //no parity, 8-data bits
+
 void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
     asm("CLRWDT");
     //while (U1STAbits.UTXBF); //wait for transmit buffer empty
@@ -100,18 +104,18 @@ uint16 getInt() {
     return (c2 << 8) | c1;
 }
 
-void configUART2(uint16 BAUD) {
+void configUART2(void) {
     _TRISB5 = 0;
     _TRISB6 = 1;
     RPOR1bits.RP37R = 0x03;
     RPINR19bits.U2RXR = 38;
 
-    U2MODEbits.STSEL = 0; //1 stop bit
-    U2MODEbits.PDSEL = 0; //no parity, 8-data bits
+    U2MODEbits.STSEL = UART2_ST;
+    U2MODEbits.PDSEL = UART2_PD;
     U2MODEbits.ABAUD = 0; //disable auto-baud
     U2MODEbits.BRGH = 1; //high speed mode
 
-    U2BRG = BAUD;
+    U2BRG = UART2_BRG;
 
     U2MODEbits.UEN = 0;
     U2MODEbits.RTSMD = 1;
@@ -166,7 +170,8 @@ void sendAddress2(char address) { //9-bit mode only
 /*----UART 2 on SCL, SDA----------------*/
 void initUART2_passthrough(uint16 BAUD) {
     /*---------UART2 pass through------------*/
-    configUART2(BAUD);
+    UART2_BRG = BAUD
+    configUART2();
     _U1RXIE = 1; //enable receive interrupt for UART1
     _U2RXIE = 1; //enable receive interrupt for UART2
 

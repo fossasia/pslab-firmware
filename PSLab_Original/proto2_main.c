@@ -496,7 +496,16 @@ int main() {
 
                     case SET_BAUD:
                         lsb = getInt();
-                        configUART2(lsb);
+                        UART2_BRG = lsb;
+                        configUART2();
+                        break;
+
+                    case SET_MODE:
+                        sendChar(1); // Let host know SET_MODE subcommand is supported
+                        value = getChar(); // stop_bit, pd, 00000
+                        UART2_ST = (value)&0x1;
+                        UART2_PD = (value >> 1)&0x3;
+                        configUART2();
                         break;
 
                 }
