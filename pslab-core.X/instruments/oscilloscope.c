@@ -28,8 +28,9 @@ static uint16_t volatile SAMPLES_CAPTURED;
 static uint16_t SAMPLES_REQUESTED;
 
 /* Static function prototypes */
+static void Capture(void);
 static void ResetTrigger(void);
-static void Setup10BitMode(void);
+static void SetTimeGap(void);
 
 /**
  * @brief Handle trigger and data collection from ADC.
@@ -76,26 +77,70 @@ void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
 }
 
 response_t OSCILLOSCOPE_CaptureOne(void) {
-    uint8_t pin = UART1_Read();
+    CHANNELS = 0; // Capture one channel.
+    Capture();    
+    return SUCCESS;
+}
+
+response_t OSCILLOSCOPE_CaptureTwo(void) {
+    CHANNELS = 1; // Capture two channels.
+    Capture();
+    return SUCCESS;
+}
+
+response_t OSCILLOSCOPE_CaptureThree(void) {
+    CHANNELS = 2; // Capture four channels, but ignore the fourth.
+    Capture();
+    return SUCCESS;
+}
+
+response_t OSCILLOSCOPE_CaptureFour(void) {
+    CHANNELS = 3; // Capture four channels.
+    Capture();
+    return SUCCESS;
+}
+
+static void Capture(void) {
+    uint8_t config = UART1_Read();
     SAMPLES_REQUESTED = UART1_ReadInt();
     DELAY = UART1_ReadInt();
+    /*
+     * First channel input map:
+     *     CH1: 3,
+     *     CH2: 0,
+     *     CH3: 1,
+     *     MIC: 2,
+     *     RES: 7,
+     *     CAP: 5,
+     *     VOL: 8,
+     */
+    uint8_t ch0sa = config & 0x0F;
+    /* 
+     * Second, third, and fourth channels input map:
+     *     CH2, CH3, MIC: 0
+     *     CH1, CH2, CAP: 1
+     */
+    uint8_t ch123sa = config & 0x10;
+    uint8_t trigger = config & 0x80;
 
-    CHANNELS = 0; //capture one channel
-    AD1CON2bits.CHPS = 0;
-    ADC1_SetOperationMode(ADC1_10BIT_SIMULTANEOUS_MODE, pin & 0x7F, 0);
-    AD1CON2bits.CHPS = 0;
+    AD1CON2bits.CHPS = CHANNELS;
+    ADC1_SetOperationMode(ADC1_10BIT_SIMULTANEOUS_MODE, ch0sa, ch123sa);
+    AD1CON2bits.CHPS = CHANNELS;
 
-    if (pin & 0x80) ResetTrigger();
+    if (trigger) ResetTrigger();
     else TRIGGERED = 1;
 
+    int i;
+    for (i = 0; i <= CHANNELS; i++) {
+        BUFFER_IDX[i] = &BUFFER[i * SAMPLES_REQUESTED];
+    }
+    
     SAMPLES_CAPTURED = 0;
     BUFFER_IDX[0] = &BUFFER[0];
-    Setup10BitMode();
+    SetTimeGap();
     ADC1_InterruptFlagClear();
     ADC1_InterruptEnable();
-    LED_SetLow();
-    
-    return SUCCESS;
+    LED_SetLow();   
 }
 
 static void ResetTrigger(void) {
@@ -104,7 +149,7 @@ static void ResetTrigger(void) {
     TRIGGERED = 0;
 }
 
-static void Setup10BitMode(void) {
+static void SetTimeGap(void) {
     T5CONbits.TCKPS = 1;
     TMR5_Period16BitSet(DELAY - 1);
     TMR5 = 0;
@@ -113,7 +158,7 @@ static void Setup10BitMode(void) {
 
 response_t OSCILLOSCOPE_GetCaptureStatus(void) {
     uint8_t conversion_done;
-    conversion_done = SAMPLES_CAPTURED == SAMPLES_REQUESTED ? 1 : 0;
+    conversion_done = SAMPLES_CAPTURED == SAMPLES_REQUESTED;
     UART1_Write(conversion_done);
     UART1_WriteInt(SAMPLES_CAPTURED);
     return SUCCESS;

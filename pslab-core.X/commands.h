@@ -19,7 +19,7 @@ extern "C" {
  */
 #define NUM_PRIMARY_CMDS 11
 #define NUM_FLASH_CMDS 4
-#define NUM_ADC_CMDS 22
+#define NUM_ADC_CMDS 23
 #define NUM_SPI_CMDS 7
 #define NUM_I2C_CMDS 16
 #define NUM_UART2_CMDS 8
