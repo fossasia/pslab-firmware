@@ -15,7 +15,7 @@ static uint8_t TRIGGER_CHANNEL = 0;
 static uint8_t CHANNELS = 0;
 
 static uint16_t DELAY;
-static uint16_t TRIGGER_TIMEOUT = 100;
+static const uint16_t TRIGGER_TIMEOUT = 50000;
 static uint16_t volatile TRIGGER_WAITING = 0;
 static uint16_t TRIGGER_LEVEL = 0;
 static uint16_t TRIGGER_PRESCALER = 0;
@@ -103,23 +103,9 @@ response_t OSCILLOSCOPE_CaptureFour(void) {
 static void Capture(void) {
     uint8_t config = UART1_Read();
     SAMPLES_REQUESTED = UART1_ReadInt();
-    DELAY = UART1_ReadInt();
-    /*
-     * First channel input map:
-     *     CH1: 3,
-     *     CH2: 0,
-     *     CH3: 1,
-     *     MIC: 2,
-     *     RES: 7,
-     *     CAP: 5,
-     *     VOL: 8,
-     */
+    DELAY = UART1_ReadInt();  // Wait DELAY / 8 us between samples.
+
     uint8_t ch0sa = config & 0x0F;
-    /* 
-     * Second, third, and fourth channels input map:
-     *     CH2, CH3, MIC: 0
-     *     CH1, CH2, CAP: 1
-     */
     uint8_t ch123sa = config & 0x10;
     uint8_t trigger = config & 0x80;
 
@@ -150,7 +136,7 @@ static void ResetTrigger(void) {
 }
 
 static void SetTimeGap(void) {
-    T5CONbits.TCKPS = 1;
+    T5CONbits.TCKPS = 1; // Prescaler; Slow down T5 clock to 8 MHz.
     TMR5_Period16BitSet(DELAY - 1);
     TMR5 = 0;
     TMR5_Start();
@@ -163,3 +149,12 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void) {
     UART1_WriteInt(SAMPLES_CAPTURED);
     return SUCCESS;
 }
+
+response_t OSCILLOSCOPE_ConfigureTrigger(void) {
+    uint8_t config = UART1_Read();
+    TRIGGER_CHANNEL = config & 0x03;
+    TRIGGER_PRESCALER = config >> 4;
+    TRIGGER_LEVEL = UART1_ReadInt();
+    return SUCCESS;
+}
+
