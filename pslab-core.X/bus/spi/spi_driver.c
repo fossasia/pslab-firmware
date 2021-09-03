@@ -21,7 +21,8 @@ typedef struct {
 static const spi_configuration_t spi_configuration[] = {
     { 0x006B, 0x0000, 0x0000, 0},
     { 0x0074, 0x0000, 0x0000, 0},
-    { 0x0120, 0x0000, 0x0000, 0}
+    { 0x0520, 0x0000, 0x0000, 0},
+    { 0x0120, 0x0000, 0x0000, 0},
 };
 
 bool SPI_DRIVER_Open(SPI_MODES mode) {
@@ -43,6 +44,12 @@ void SPI_DRIVER_Close(void) {
 
 uint8_t SPI_DRIVER_ExchangeByte(uint8_t b) {
     SPI1BUF = b;
+    while (!SPI1STATbits.SPIRBF);
+    return SPI1BUF;
+}
+
+uint16_t SPI_DRIVER_ExchangeWord(uint16_t w) {
+    SPI1BUF = w;
     while (!SPI1STATbits.SPIRBF);
     return SPI1BUF;
 }

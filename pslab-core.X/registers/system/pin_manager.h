@@ -55,6 +55,7 @@
 #define SCK1_SetDigitalInput()         (_TRISC3 = 1)
 #define SCK1_SetDigitalOutput()        (_TRISC3 = 0)
 
+#define CS_CH1_Setter                  _LATA10
 #define CS_CH1_SetHigh()               (_LATA10 = 1)
 #define CS_CH1_SetLow()                (_LATA10 = 0)
 #define CS_CH1_Toggle()                (_LATA10 ^= 1)
@@ -62,6 +63,7 @@
 #define CS_CH1_SetDigitalInput()       (_TRISA10 = 1)
 #define CS_CH1_SetDigitalOutput()      (_TRISA10 = 0)
 
+#define CS_CH2_Setter                  _LATA7
 #define CS_CH2_SetHigh()               (_LATA7 = 1)
 #define CS_CH2_SetLow()                (_LATA7 = 0)
 #define CS_CH2_Toggle()                (_LATA7 ^= 1)

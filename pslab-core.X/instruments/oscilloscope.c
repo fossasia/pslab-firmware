@@ -2,6 +2,7 @@
 #include "../registers/converters/adc1.h"
 #include "../registers/system/pin_manager.h"
 #include "../registers/timers/tmr5.h"
+#include "../bus/spi/spi_driver.h"
 #include "../bus/uart/uart1.h"
 #include "../helpers/buffer.h"
 #include "../commands.h"
@@ -31,6 +32,7 @@ static uint16_t SAMPLES_REQUESTED;
 static void Capture(void);
 static void ResetTrigger(void);
 static void SetTimeGap(void);
+static void SetCS(uint8_t channel, uint8_t value);
 
 /**
  * @brief Handle trigger and data collection from ADC.
@@ -158,3 +160,32 @@ response_t OSCILLOSCOPE_ConfigureTrigger(void) {
     return SUCCESS;
 }
 
+response_t OSCILLOSCOPE_SetPGAGain(void) {
+    uint8_t channel = UART1_Read();
+    uint8_t gain = UART1_Read();
+    uint16_t write_register = 0x4000;
+    uint16_t cmd = write_register | gain;
+
+    SPI_DRIVER_Close();
+    SPI_DRIVER_Open(PGA_CONFIG);
+    SetCS(channel, 0);
+    SPI_DRIVER_ExchangeWord(cmd);
+    SetCS(channel, 1);
+    SPI_DRIVER_Close();
+    LED_SetHigh();
+
+    return SUCCESS;
+}
+
+static void SetCS(uint8_t channel, uint8_t value) {
+    switch(channel) {
+        case 1:
+            CS_CH1_Setter = value;
+            break;
+        case 2:
+            CS_CH2_Setter = value;
+            break;
+        default:
+            return;
+    }
+}
