@@ -92,4 +92,28 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void);
  */
 response_t OSCILLOSCOPE_ConfigureTrigger(void);
 
+/**
+ * @brief
+ * Set gain.
+ *
+ * @description
+ * This command function takes two arguments over serial:
+ * 1. (uint8) Channel:
+ *            1: CH1,
+ *            2: CH2,
+ * 2. (uint8) Gain:
+ *            0: 1,
+ *            1: 2,
+ *            2: 4,
+ *            3: 5,
+ *            4: 8,
+ *            5: 10,
+ *            6: 16,
+ *            7: 32,
+ * It returns nothing over serial.
+ *
+ * @return SUCCESS
+ */
+response_t OSCILLOSCOPE_SetPGAGain(void);
+
 #endif	/* OSCILLOSCOPE_H */

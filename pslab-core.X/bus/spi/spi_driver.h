@@ -8,7 +8,8 @@
 typedef enum {
     SDFAST_CONFIG,
     SDSLOW_CONFIG,
-    SPI1_DEFAULT
+    PGA_CONFIG,
+    SPI1_DEFAULT,
 } SPI_MODES;
 
 bool SPI_DRIVER_Open(SPI_MODES mode);
@@ -16,6 +17,7 @@ void SPI_DRIVER_Close(void);
 
 /* SPI native data exchange function */
 uint8_t SPI_DRIVER_ExchangeByte(uint8_t b);
+uint16_t SPI_DRIVER_ExchangeWord(uint16_t w);
 /* SPI Block move functions }(future DMA support will be here) */
 void SPI_DRIVER_ExchangeBlock(void *block, size_t blockSize);
 
