@@ -9,6 +9,9 @@ static uint8_t current_mode, current_channel_0, current_channel_123;
 
 /* Static function prototypes */
 static void Init10BitMode(void);
+static void InitDMAMode(ADC1_RESOLUTION_TYPE resolution);
+static void InitModesCommon(void);
+static void EnableDMA(void);
 
 void ADC1_Initialize(void) {
 
@@ -114,10 +117,10 @@ void ADC1_SetOperationMode(
             Init10BitMode();
             break;
         case ADC1_10BIT_DMA_MODE:
-            // initADCDMA(0)
+            InitDMAMode(ADC1_RESOLUTION_10_BIT);
             break;
         case ADC1_12BIT_DMA_MODE:
-            // initADCDMA(1)
+            InitDMAMode(ADC1_RESOLUTION_12_BIT);
             break;
         case ADC1_12BIT_NORMAL_MODE:
             // initADC12()
@@ -152,7 +155,22 @@ void ADC1_SetOperationMode(
 
 static void Init10BitMode(void) {
     DMA_ChannelDisable(DMA_CHANNEL_0);
-    AD1CON1bits.SSRC = 4; // TMR5 compare starts conversion
+    InitModesCommon();
+}
+
+static void InitDMAMode(ADC1_RESOLUTION_TYPE resolution) {
+    ADC1_ResolutionModeSet(resolution);
+    InitModesCommon();
+
+    DMA_Initialize();
+    DMA_SetOneShotMode(DMA_CHANNEL_0);
+    DMA_PeripheralIrqNumberSet(DMA_CHANNEL_0, DMA_PERIPHERAL_IRQ_ADC1);
+    DMA_SetLogicAnalyzerChannelMode(DMA_LA_ONE_CHAN);
+    EnableDMA();
+}
+
+static void InitModesCommon(void) {
+    ADC1_SelectSampleTrigger(ADC1_TMR5_SOURCE);
     ADC1_AutomaticSamplingEnable();
     ADC1_SimultaneousSamplingEnable();
     ADC1_ChannelSelectSet(current_channel_0);
@@ -161,12 +179,9 @@ static void Init10BitMode(void) {
     ADC1_ConversionClockPrescalerSet(2); // Conversion rate = 16 MHz
     ADC1_Enable();
     DELAY_us(20);
-    
-    TMR5_Stop();
-    T5CONbits.TSIDL = 1;
-    T5CONbits.TCKPS = 1;
-    TMR5 = 0;
-    TMR5_Start();
-    _T5IF = 0;
-    _T5IE = 0;
+}
+
+static void EnableDMA(void) {
+    AD1CON1bits.ADDMABM = 1;
+    AD1CON4bits.ADDMAEN = 1;
 }

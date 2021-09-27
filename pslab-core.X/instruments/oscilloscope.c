@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include "../registers/converters/adc1.h"
+#include "../registers/memory/dma.h"
 #include "../registers/system/pin_manager.h"
 #include "../registers/timers/tmr5.h"
 #include "../bus/spi/spi_driver.h"
@@ -111,9 +112,8 @@ static void Capture(void) {
     uint8_t ch123sa = config & 0x10;
     uint8_t trigger = config & 0x80;
 
-    AD1CON2bits.CHPS = CHANNELS;
     ADC1_SetOperationMode(ADC1_10BIT_SIMULTANEOUS_MODE, ch0sa, ch123sa);
-    AD1CON2bits.CHPS = CHANNELS;
+    ADC1_ConversionChannelsSet(CHANNELS);
 
     if (trigger) ResetTrigger();
     else TRIGGERED = 1;
@@ -126,9 +126,32 @@ static void Capture(void) {
     SAMPLES_CAPTURED = 0;
     BUFFER_IDX[0] = &BUFFER[0];
     SetTimeGap();
-    ADC1_InterruptFlagClear();
-    ADC1_InterruptEnable();
-    LED_SetLow();   
+    LED_SetLow();
+}
+
+response_t OSCILLOSCOPE_CaptureDMA(void) {
+    uint8_t config = UART1_Read();
+    SAMPLES_REQUESTED = UART1_ReadInt();
+    DELAY = UART1_ReadInt();  // Wait DELAY / 8 us between samples.
+
+    uint8_t ch0sa = config & 0x0F;
+    uint8_t mode = config & 0x80 ? ADC1_12BIT_DMA_MODE : ADC1_10BIT_DMA_MODE;
+
+    CHANNELS = 0; // Capture one channel.
+    ADC1_SetOperationMode(mode, ch0sa, 0);
+
+    DMA_StartAddressASet(DMA_CHANNEL_0, (uint16_t) &BUFFER[0]);
+    DMA_PeripheralAddressSet(DMA_CHANNEL_0, (uint16_t) &ADC1BUF0);
+    DMA_TransferCountSet(DMA_CHANNEL_0, SAMPLES_REQUESTED - 1);
+    DMA_FlagInterruptClear(DMA_CHANNEL_0);
+    DMA_InterruptEnable(DMA_CHANNEL_0);
+    DMA_ChannelEnable(DMA_CHANNEL_0);
+
+    SAMPLES_CAPTURED = SAMPLES_REQUESTED; // Assume it's all over already.
+    SetTimeGap();
+    LED_SetLow();
+    
+    return SUCCESS;
 }
 
 static void ResetTrigger(void) {
@@ -138,9 +161,12 @@ static void ResetTrigger(void) {
 }
 
 static void SetTimeGap(void) {
-    T5CONbits.TCKPS = 1; // Prescaler; Slow down T5 clock to 8 MHz.
+    TMR5_Initialize();
+    TMR5_StopWhenIdle();
     TMR5_Period16BitSet(DELAY - 1);
-    TMR5 = 0;
+    TMR5_SetPrescaler(TMR5_PRESCALER_8);
+    TMR5_InterruptFlagClear();
+    TMR5_InterruptDisable();
     TMR5_Start();
 }
 
