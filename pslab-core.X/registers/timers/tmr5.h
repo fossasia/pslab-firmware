@@ -11,6 +11,21 @@ extern "C" {
 
     /**
       @Summary
+       List of available prescalers.
+
+      @Description
+       These prescalers can be passed to the TMR5_SetPrescaler routine in order to
+       slow down the TMR by a certain factor.
+     */
+    typedef enum {
+        TMR5_PRESCALER_1,
+        TMR5_PRESCALER_8,
+        TMR5_PRESCALER_64,
+        TMR5_PRESCALER_256,
+    } TMR5_PRESCALER;
+
+    /**
+      @Summary
         Initializes hardware and data for the given instance of the TMR module
 
       @Description
@@ -118,6 +133,74 @@ extern "C" {
         None
      */
     void TMR5_Stop(void);
+    
+    /**
+      @Summary
+        Stops the TMR when MCU idles.
+
+      @Description
+        This routine stops the TMR when the MCU is in idle mode.
+
+      @Param
+        None.
+
+      @Returns
+        None
+     */
+    inline static void TMR5_StopWhenIdle(void) {
+        T5CONbits.TSIDL = 1;
+    }
+    
+    /**
+      @Summary
+       Slows down the TMR.
+
+      @Description
+        This routine sets a prescaler which slows down the TMR by a factor.
+
+      @Param
+        Pass the desired prescaler from the TMR5_PRESCALER list.
+
+      @Returns
+        None
+     */
+    inline static void TMR5_SetPrescaler(TMR5_PRESCALER prescaler) {
+        T5CONbits.TCKPS = prescaler;
+    }
+
+    /**
+      @Summary
+        Disables the TMR interrupt.
+
+      @Description
+        This routine disables the TMR interrupt.
+
+      @Param
+        None.
+
+      @Returns
+        None
+     */
+    inline static void TMR5_InterruptDisable(void) {
+        IEC1bits.T5IE = 0;
+    }
+    
+    /**
+      @Summary
+        Clears the TMR interrupt flag.
+
+      @Description
+        This routine clears the TMR interrupt flag.
+
+      @Param
+        None.
+
+      @Returns
+        None
+     */   
+    inline static void TMR5_InterruptFlagClear(void) {
+        IFS1bits.T5IF = 0;
+    }
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }

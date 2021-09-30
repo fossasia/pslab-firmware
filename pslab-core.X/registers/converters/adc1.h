@@ -63,6 +63,33 @@ extern "C" {
         ADC1_CTMU_MODE
     } ADC1_PSLAB_MODES;
 
+    /** ADC sample trigger source
+ 
+     @Summary 
+       Defines the trigger source that ends sampling and starts conversion.
+ 
+     @Description
+       The MSB is set on the SSRCG register and the three LSBs are set on the
+       SSRC register.
+ 
+     */
+    typedef enum {
+        ADC1_MANUAL_SOURCE            = 0b0000,
+        ADC1_INT0_SOURCE              = 0b0001,
+        ADC1_TMR3_SOURCE              = 0b0010,
+        ADC1_PWM_SPECIAL_EVENT_SOURCE = 0b0011,
+        ADC1_TMR5_SOURCE              = 0b0100,
+        ADC1_CTMU_SOURCE              = 0b0110,
+        ADC1_INTERNAL_CTR_SOURCE      = 0b0111,
+        ADC1_PWM_GEN1_SOURCE          = 0b1000,
+        ADC1_PWM_GEN2_SOURCE          = 0b1001,
+        ADC1_PWM_GEN3_SOURCE          = 0b1010,
+        ADC1_PTGO12_SOURCE            = 0b1011,
+        ADC1_PTGO13_SOURCE            = 0b1100,
+        ADC1_PTGO14_SOURCE            = 0b1101,
+        ADC1_PTGO15_SOURCE            = 0b1110,
+    } ADC1_SAMPLE_TRIGGER_SOURCE;
+    
     /**
       Section: Interface Routines
      */
@@ -877,6 +904,32 @@ extern "C" {
         AD1CON1bits.ASAM = 0;
     }
 
+        /**
+      @Summary
+         Selects the trigger source that ends sampling and starts conversion.
+
+      @Description
+        This routine is used to select a trigger source for the ADC. When
+        triggered, the ADC stop sampling and starts conversion.
+  
+      @Preconditions
+        ADC1_Initialize() function should have been 
+        called before calling this function.
+ 
+      @Returns
+        None
+
+      @Param
+        Pass in required trigger source from ADC1_SAMPLE_TRIGGER_SOURCE list.
+  
+      @Example
+        ADC1_SelectSampleTrigger(ADC1_TMR5_SOURCE); // TMR5 compare ends sampling and starts conversion.
+     */
+    inline static void ADC1_SelectSampleTrigger(ADC1_SAMPLE_TRIGGER_SOURCE source) {
+        AD1CON1bits.SSRCG = source >> 3;
+        AD1CON1bits.SSRC = source;
+    }
+    
     /**
       @Summary
         Allows conversion clock prescaler value to be set

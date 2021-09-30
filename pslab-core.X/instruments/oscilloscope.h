@@ -52,6 +52,35 @@ response_t OSCILLOSCOPE_CaptureThree(void);
 response_t OSCILLOSCOPE_CaptureFour(void);
 
 /**
+ * @brief Capture samples on one channel as fast as possible.
+ * 
+ * @description
+ * Direct memory access moves samples from ADC to RAM buffer as soon as
+ * conversion is complete. Allows for faster sample rate than using ADC
+ * interrupt, at the cost of only supporting a single channel and no trigger.
+ * This command function takes three arguments over serial:
+ * 1. (uint8)  Configuration byte:
+ *             | 7   | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+ *             | RES | - | - | - |     CH0SA     |
+ *             RES: Sample resolution:
+ *                  0: 10-bit,
+ *                  1: 12-bit,                        
+ *             CH0SA: First channel input map:
+ *                    3: CH1,
+ *                    0: CH2,
+ *                    1: CH3,
+ *                    2: MIC,
+ *                    7: RES,
+ *                    5: CAP,
+ *                    8: VOL,
+ * 2. (uint16) The number of samples to capture.
+ * 3. (uint16) The time to wait between samples in instruction cycles.
+ * It returns nothing over serial.
+ * It sends an acknowledge byte (SUCCESS).
+ */
+response_t OSCILLOSCOPE_CaptureDMA(void);
+
+/**
  * @brief
  * Send capture progress.
  *

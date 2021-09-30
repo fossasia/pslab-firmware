@@ -69,7 +69,7 @@ extern "C" {
         DMA_PERIPHERAL_IRQ_IC1 = 0x1,
         DMA_PERIPHERAL_IRQ_INT0 = 0x0,
     } DMA_PERIPHERAL_IRQ_NUMBER;
-
+    
     /**
       Section: Interface Routines
      */
@@ -320,7 +320,47 @@ extern "C" {
             default: break;
         }
     }
+    
+    /**
+     @Summary
+      Enables one-shot mode.
 
+     @Description
+      This routine is used to enable one-shot mode on a channel in the DMA. In
+      one-shot mode, the channel is automatically disabled after finishing
+      moving the data block.
+ 
+    @Preconditions
+     DMA_Initializer() function should have been 
+     called before calling this function.
+ 
+    @Returns
+     None
+
+    @Param
+     Pass in the required channel from the DMA_CHANNEL list.
+  
+    @Example
+     DMA_SetOneShotMode(DMA_CHANNEL_0); // Set one-shot mode on DMA0.
+     */
+    inline static void DMA_SetOneShotMode(DMA_CHANNEL channel) {
+        switch (channel) {
+            case DMA_CHANNEL_0:
+                DMA0CONbits.MODE |= 0b01;
+                break;
+            case DMA_CHANNEL_1:
+                DMA1CONbits.MODE |= 0b01;
+                break;
+            case DMA_CHANNEL_2:
+                DMA2CONbits.MODE |= 0b01;
+                break;
+            case DMA_CHANNEL_3:
+                DMA3CONbits.MODE |= 0b01;
+                break;
+            default: break;
+        }
+    }
+    
     /**
       @Summary
         Sets the transfer count of the DMA
