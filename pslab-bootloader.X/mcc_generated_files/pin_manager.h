@@ -365,11 +365,11 @@
   @Example
     <code>
     // Set RC5 high (1)
-    GPIO_PIN_SetHigh();
+    BOOT_PIN_SetHigh();
     </code>
 
 */
-#define GPIO_PIN_SetHigh()          (_LATC5 = 1)
+#define BOOT_PIN_SetHigh()          (_LATC5 = 1)
 /**
   @Summary
     Sets the GPIO pin, RC5, low using LATC5.
@@ -389,11 +389,11 @@
   @Example
     <code>
     // Set RC5 low (0)
-    GPIO_PIN_SetLow();
+    BOOT_PIN_SetLow();
     </code>
 
 */
-#define GPIO_PIN_SetLow()           (_LATC5 = 0)
+#define BOOT_PIN_SetLow()           (_LATC5 = 0)
 /**
   @Summary
     Toggles the GPIO pin, RC5, using LATC5.
@@ -413,11 +413,11 @@
   @Example
     <code>
     // Toggle RC5
-    GPIO_PIN_Toggle();
+    BOOT_PIN_Toggle();
     </code>
 
 */
-#define GPIO_PIN_Toggle()           (_LATC5 ^= 1)
+#define BOOT_PIN_Toggle()           (_LATC5 ^= 1)
 /**
   @Summary
     Reads the value of the GPIO pin, RC5.
@@ -439,11 +439,11 @@
     uint16_t portValue;
 
     // Read RC5
-    postValue = GPIO_PIN_GetValue();
+    postValue = BOOT_PIN_GetValue();
     </code>
 
 */
-#define GPIO_PIN_GetValue()         _RC5
+#define BOOT_PIN_GetValue()         _RC5
 /**
   @Summary
     Configures the GPIO pin, RC5, as an input.
@@ -463,11 +463,11 @@
   @Example
     <code>
     // Sets the RC5 as an input
-    GPIO_PIN_SetDigitalInput();
+    BOOT_PIN_SetDigitalInput();
     </code>
 
 */
-#define GPIO_PIN_SetDigitalInput()  (_TRISC5 = 1)
+#define BOOT_PIN_SetDigitalInput()  (_TRISC5 = 1)
 /**
   @Summary
     Configures the GPIO pin, RC5, as an output.
@@ -487,11 +487,11 @@
   @Example
     <code>
     // Sets the RC5 as an output
-    GPIO_PIN_SetDigitalOutput();
+    BOOT_PIN_SetDigitalOutput();
     </code>
 
 */
-#define GPIO_PIN_SetDigitalOutput() (_TRISC5 = 0)
+#define BOOT_PIN_SetDigitalOutput() (_TRISC5 = 0)
 
 /**
     Section: Function Prototypes
