@@ -90,7 +90,7 @@ void BOOT_DEMO_Tasks(void) {
 }
 
 static bool EnterBootloadMode(void) {
-    if (GPIO_PIN_GetValue() == 0) {
+    if (BOOT_PIN_GetValue() == 0) {
         return true;
     }
     

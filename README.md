@@ -68,11 +68,13 @@ Bootloader configurations based on EZBL library and SD card functionalities base
 The compiled source will generate a `.hex` file that can be uploaded into the microcontroller using a compatible programmer. PiCKit3 In-Circuit Debugger is used during development and it is available to purchase in many online stores
 
 ### Unified Bootloader
-Compiled `.hex` files can be uploaded into the microcontroller using a direct USB connection using a special GUI application; Unified Bootloader. This standalone application can be downloaded from [Unified Bootloader](https://www.microchip.com/SWLibraryWeb/product.aspx?product=16-bit-Bootloader) page.
+Compiled EZBL compatible `.hex` files can be uploaded into the microcontroller using a direct USB connection using a special GUI application; Unified Bootloader. This standalone application can be downloaded from [Unified Bootloader](https://www.microchip.com/SWLibraryWeb/product.aspx?product=16-bit-Bootloader) page.
 
 It might not be straightforward to run this application. Java and JavaFX libraries are required as pre-requisites and they can be downloaded from [Gluonhq](https://gluonhq.com/products/javafx/) page and installation instructions are available at [OpenJFX Docs](https://openjfx.io/openjfx-docs/#install-javafx) page. Extract the `lib` folder into `/usr/local/openjfx/` directory to use the supplimentary [shell file](bootloader-host-application/run-host.sh) to execute the GUI application.
 
-More resources on ezbl integration can be found from [this video](https://www.youtube.com/watch?v=2LhW11LbNhY).
+More resources on ezbl integration can be found from [this video](https://www.youtube.com/watch?v=2LhW11LbNhY) and for UART configuration settings, refer to the following figure.
+
+<img src="bootloader-host-application/ezbl-gui.png" width=460 alt="EZBL UART Settings" />
 
 ## Branch Policy
 
