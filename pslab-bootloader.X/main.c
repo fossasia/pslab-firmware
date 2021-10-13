@@ -35,7 +35,8 @@ int main(void) {
 
     BOOT_PIN_SetDigitalOutput();
     BOOT_PIN_SetHigh();
-    DELAY_us(1000); // Wait for GPIO to go high.
+    DELAY_us(1000); // Wait for BOOT to go high.
+
 
     // If BOOT is grounded or no application is detected, stay in bootloader.
     if (BOOT_PIN_GetValue() && BOOT_Verify()) {
