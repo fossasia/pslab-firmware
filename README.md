@@ -7,7 +7,7 @@ Repository for the firmware of the [Pocket Science Lab (PSLab)](https://pslab.io
 [![Mailing List](https://img.shields.io/badge/Mailing%20List-FOSSASIA-blue.svg)](https://groups.google.com/forum/#!forum/pslab-fossasia)
 [![Twitter Follow](https://img.shields.io/twitter/follow/pslabio.svg?style=social&label=Follow&maxAge=2592000?style=flat-square)](https://twitter.com/pslabio)
 
-PSLab is a tiny pocket science lab that provides an array of test and measurement instruments for doing science and engineering experiments. It comes with function or instruments like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. Also available are the [hardware schematics](https://github.com/fossasia/pslab-hardware/), the [desktop application](https://github.com/fossasia/pslab-desktop) and an [Android app](https://github.com/fossasia/pslab-android). The website is at https://pslab.io.
+PSLab is a tiny pocket science lab that provides an array of test and measurement instruments for doing science and engineering experiments. It comes with function or instruments like an oscilloscope, waveform generator, frequency counter, programmable voltage and current source and also as a data logger. Also available are the [hardware schematics](https://github.com/fossasia/pslab-hardware/blob/pslab-v6/docs/schematics/PSLab.pdf), the [desktop application](https://github.com/fossasia/pslab-desktop) and an [Android app](https://github.com/fossasia/pslab-android). The website is at https://pslab.io.
 
 ## Buy
 
@@ -31,23 +31,37 @@ PSLab is a tiny pocket science lab that provides an array of test and measuremen
  ┃ ┣ 📂dist                                     # HEX and ELF files
  ┃ ┣ 📂mcc_generated_files                      # Source C++ files
  ┃ ┣ 📂nbproject
- ┃ ┣ 📂report
  ┃ ┣ 📜 ...
  ┃ ┣ 📜main.c                                   # Entry point to PSLab Bootloader
  ┃ ┗ 📜pslab-bootloader.mc3                     # Code configurator settings
+ ┃ ..........................................................................................
  ┣ 📂pslab-core.X                               # PSLab Core application
  ┃ ┣ 📂build                                    # Compiled source files
  ┃ ┣ 📂dist                                     # HEX and ELF files
- ┃ ┣ 📂mcc_generated_files                      # Source C++ files
+ ┃ ┃ ┣ 📜 ...
+ ┃ ┃ ┗ 🔑pslab-core.X.production.hex            # Production HEX file
  ┃ ┣ 📂nbproject
- ┃ ┣ 📂instruments                              # Instrument specific source files
- ┃ ┣ ┣ 📜 ...
- ┃ ┣ ┗ 📜multimeter.c
  ┃ ┣ 📂bus                                      # Communication specific source files
- ┃ ┣ ┣ 📜 ...
- ┃ ┣ ┗ 📜i2c.c
+ ┃ ┃ ┣ 📜 ...
+ ┃ ┃ ┗ 📜i2c.c
+ ┃ ┣ 📂helpers                                  # Supplementary functions
+ ┃ ┃ ┣ 📜 ...
+ ┃ ┃ ┗ 📜version.c
+ ┃ ┣ 📂instruments                              # Instrument specific source files
+ ┃ ┃ ┣ 📜 ...
+ ┃ ┃ ┗ 📜multimeter.c
+ ┃ ┣ 📂registers                                # PIC specific register entry files
+ ┃ ┃ ┣ 📂comparators
+ ┃ ┃ ┃ ┣ 📜 ...
+ ┃ ┃ ┃ ┗ 📜ic1.c
+ ┃ ┃ ┣ 📂 ...                                   # includes converters, memory, system
+ ┃ ┃ ┣ 📂timers
+ ┃ ┃ ┃ ┣ 📜 ...
+ ┃ ┃ ┃ ┗ 📜tmr1.c
+ ┃ ┣ 📂sdcard                                   # SD Card specific file handling source files
  ┃ ┣ 📜 ...
  ┃ ┣ 📜main.c                                   # Entry point to PSLab Core
+ ┃ ┣ 📜commands.c                               # Entry point to function implementations
  ┃ ┗ 📜pslab-core.mc3                           # Code configurator settings
  ┣ 📜FirmwareFlowChart.drawio                   # Firmware flow diagram
  ┣ 📜LICENSE
@@ -78,13 +92,13 @@ More resources on ezbl integration can be found from [this video](https://www.yo
 
 ## Branch Policy
 
-* The **bootloader** branch contains the new version of firmware that enables on-site firmware updates over a USB connection.
-* The **development** branch holds is the standard branch of the project. PRs are merged to this branch and tested on an ongoing basis.
-* The **master** branch holds the stable version of the project and merges the development branch regularly after it is tested thouroughly.
+*   The **bootloader** branch contains the new firmware version that enables on-site firmware updates over a USB connection. PRs are merged to this branch and tested on an ongoing basis.
+*   The **development** branch holds the legacy firmware version.
+*   The **master** branch holds the stable version of the project and merges the development branch regularly after it is tested thouroughly.
 
 ## Available Software
 
-Either use the hardware with the [PSLab desktop app](https://github.com/fossasia/pslab-desktop) or the [PSLab Android app](https://github.com/fossasia/pslab-android).
+Either use the hardware with the [PSLab desktop app](https://github.com/fossasia/pslab-desktop) or the [PSLab Android app](https://github.com/fossasia/pslab-android). [PSLab python](https://github.com/fossasia/pslab-python) repository contains the source code to interface this firmware with PSLab desktop application.
 
 ## License
 
