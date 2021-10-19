@@ -29,6 +29,12 @@ extern "C" {
      * @return SUCCESS
      */
     response_t DEVICE_WriteRegisterData(void);
+    
+    /**
+     * @brief Channel UART1 and UART2 interfaces together
+     * @return SUCCESS
+     */
+    response_t DEVICE_UARTPassThrough(void);
 
 #ifdef	__cplusplus
 }

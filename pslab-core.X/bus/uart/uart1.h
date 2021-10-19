@@ -3,6 +3,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <xc.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -232,6 +233,18 @@ extern "C" {
      *   None.
      */
     void UART1_ClearBuffer(void);
+    
+    inline static void UART1_InterruptEnable(void) {
+        IEC0bits.U1RXIE = 1;
+    }
+    
+    inline static void UART1_InterruptDisable(void) {
+        IEC0bits.U1RXIE = 0;
+    }
+    
+    inline static void UART1_InterruptFlagClear(void) {
+        IFS0bits.U1RXIF = 0;
+    }
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }

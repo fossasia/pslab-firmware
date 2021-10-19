@@ -23,6 +23,7 @@ unsigned char num_secondary_cmds[NUM_PRIMARY_CMDS + 1] = {
     NUM_DIN_CMDS,
     NUM_TIMING_CMDS,
     NUM_COMMON_CMDS,
+    NUM_PASSTHRU_CMDS,
 };
 
 /**
@@ -246,5 +247,21 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Unimplemented,                   Undefined,                Unimplemented,           Unimplemented,
      // 24 STOP_CTMU                     25 START_COUNTING         26 FETCH_COUNT           27 FILL_BUFFER
         Unimplemented,                   Unimplemented,            Unimplemented,           Unimplemented,
+    },
+    { // 12 PASSTHROUGH
+     // 0          1                        2          3
+        Undefined, DEVICE_UARTPassThrough,  Undefined, Undefined,
+     // 4          5                        6          7
+        Undefined, Undefined,               Undefined, Undefined,
+     // 8          9                        10         11
+        Undefined, Undefined,               Undefined, Undefined,
+     // 12         13                       14         15
+        Undefined, Undefined,               Undefined, Undefined,
+     // 16         17                       18         19
+        Undefined, Undefined,               Undefined, Undefined,
+     // 20         21                       22         23
+        Undefined, Undefined,               Undefined, Undefined,
+     // 24         25                       26         27
+        Undefined, Undefined,               Undefined, Undefined,
     },
 };
