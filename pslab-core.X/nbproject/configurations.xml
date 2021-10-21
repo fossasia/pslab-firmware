@@ -9,7 +9,7 @@
       </logicalFolder>
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
-          <itemPath>bus/i2c/i2c1.h</itemPath>
+          <itemPath>bus/i2c/i2c.h</itemPath>
         </logicalFolder>
         <logicalFolder name="spi" displayName="spi" projectFiles="true">
           <itemPath>bus/spi/spi_master.h</itemPath>
@@ -31,6 +31,7 @@
         <itemPath>instruments/logicanalyzer.h</itemPath>
         <itemPath>instruments/oscilloscope.h</itemPath>
         <itemPath>instruments/wavegenerator.h</itemPath>
+        <itemPath>instruments/powersource.h</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -102,7 +103,7 @@
       </logicalFolder>
       <logicalFolder name="bus" displayName="bus" projectFiles="true">
         <logicalFolder name="i2c" displayName="i2c" projectFiles="true">
-          <itemPath>bus/i2c/i2c1.c</itemPath>
+          <itemPath>bus/i2c/i2c.c</itemPath>
         </logicalFolder>
         <logicalFolder name="spi" displayName="spi" projectFiles="true">
           <itemPath>bus/spi/spi_master.c</itemPath>
@@ -123,6 +124,7 @@
         <itemPath>instruments/multimeter.c</itemPath>
         <itemPath>instruments/wavegenerator.c</itemPath>
         <itemPath>instruments/oscilloscope.c</itemPath>
+        <itemPath>instruments/powersource.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">

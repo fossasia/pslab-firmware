@@ -3,6 +3,7 @@
 #include "helpers/device.h"
 #include "instruments/multimeter.h"
 #include "instruments/oscilloscope.h"
+#include "instruments/powersource.h"
 #include "instruments/wavegenerator.h"
 #include "registers/system/pin_manager.h"
 
@@ -152,20 +153,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,           Undefined,       Undefined,       Undefined,
     },
     { // 6 DAC
-     // 0          1 SET_DAC      2 SET_CALIBRATED_DAC      3
-        Undefined, Unimplemented, Unimplemented,            Undefined,
-     // 4          5              6                         7
-        Undefined, Undefined,     Undefined,                Undefined,
-     // 8          9              10                        11
-        Undefined, Undefined,     Undefined,                Undefined,
-     // 12         13             14                        15
-        Undefined, Undefined,     Undefined,                Undefined,
-     // 16         17             18                        19
-        Undefined, Undefined,     Undefined,                Undefined,
-     // 20         21             22                        23
-        Undefined, Undefined,     Undefined,                Undefined,
-     // 24         25             26                        27
-        Undefined, Undefined,     Undefined,                Undefined,
+     // 0          1 SET_DAC              2 SET_CALIBRATED_DAC      3
+        Undefined, POWER_SOURCE_SetPower, Removed,                  Undefined,
+     // 4          5                      6                         7
+        Undefined, Undefined,             Undefined,                Undefined,
+     // 8          9                      10                        11
+        Undefined, Undefined,             Undefined,                Undefined,
+     // 12         13                     14                        15
+        Undefined, Undefined,             Undefined,                Undefined,
+     // 16         17                     18                        19
+        Undefined, Undefined,             Undefined,                Undefined,
+     // 20         21                     22                        23
+        Undefined, Undefined,             Undefined,                Undefined,
+     // 24         25                     26                        27
+        Undefined, Undefined,             Undefined,                Undefined,
     },
     { // 7 WAVEGEN
      // 0                            1 SET_WG                   2                             3 SET_SQR1

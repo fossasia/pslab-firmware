@@ -94,6 +94,8 @@
 #define I2C_SCL_GetValue()             _RB4
 #define I2C_SCL_SetDigitalInput()      (_TRISB4 = 1)
 #define I2C_SCL_SetDigitalOutput()     (_TRISB4 = 0)
+#define I2C_SCL_SetAsOpenDrain()       (_ODCB4 = 1)
+#define I2C_SCL_PullUp()               (_CNPUB4 = 1)
 
 #define I2C_SDA_SetHigh()              (_LATA8 = 1)
 #define I2C_SDA_SetLow()               (_LATA8 = 0)
@@ -101,6 +103,8 @@
 #define I2C_SDA_GetValue()             _RA8
 #define I2C_SDA_SetDigitalInput()      (_TRISA8 = 1)
 #define I2C_SDA_SetDigitalOutput()     (_TRISA8 = 0)
+#define I2C_SDA_SetAsOpenDrain()       (_ODCA8 = 1)
+#define I2C_SDA_PullUp()               (_CNPUA8 = 1)
 
 /*******************************************************************************
  * UART
