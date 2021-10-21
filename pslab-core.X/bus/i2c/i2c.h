@@ -1,12 +1,15 @@
-#ifndef _I2C1_H
-#define _I2C1_H
+#ifndef _I2C_H
+#define _I2C_H
 
 #include <stdint.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <xc.h>
 
-#ifdef __cplusplus  // Provide C++ Compatibility
+#define SLAVE_I2C_GENERIC_RETRY_MAX           100
+#define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50
+
+#ifdef __cplusplus
 extern "C" {
 #endif
 
@@ -14,8 +17,7 @@ extern "C" {
       I2C Driver Message Status Type Enumeration
 
       @Summary
-        Defines the different message status when processing
-        TRBs.
+        Defines the different message status when processing TRBs.
 
       @Description
         This type enumeration specifies the different types of status
@@ -23,18 +25,16 @@ extern "C" {
         transaction, the status of that transaction is available.
         Based on the status, new transactions can be requested to the
         driver or a recovery can be performed to resend the transaction.
-
      */
-
     typedef enum {
-        I2C1_MESSAGE_FAIL,
-        I2C1_MESSAGE_PENDING,
-        I2C1_MESSAGE_COMPLETE,
-        I2C1_STUCK_START,
-        I2C1_MESSAGE_ADDRESS_NO_ACK,
-        I2C1_DATA_NO_ACK,
-        I2C1_LOST_STATE
-    } I2C1_MESSAGE_STATUS;
+        I2C_MESSAGE_FAIL,
+        I2C_MESSAGE_PENDING,
+        I2C_MESSAGE_COMPLETE,
+        I2C_STUCK_START,
+        I2C_MESSAGE_ADDRESS_NO_ACK,
+        I2C_DATA_NO_ACK,
+        I2C_LOST_STATE
+    } I2C_MESSAGE_STATUS;
 
     /**
       I2C Driver Transaction Request Block (TRB) type definition.
@@ -45,30 +45,32 @@ extern "C" {
 
       @Description
         This data type is the i2c Transaction Request Block (TRB) that
-        the needs to be built and sent to the driver to handle each i2c requests.
+        needs to be built and sent to the driver to handle each i2c requests.
         Using the TRB, simple to complex i2c transactions can be constructed
         and sent to the i2c bus. This data type is only used by the master mode.
-
      */
     typedef struct {
-        uint16_t address; // Bits <10:1> are the 10 bit address.
+        // Bits <10:1> are the 10 bit address.
         // Bits <7:1> are the 7 bit address
         // Bit 0 is R/W (1 for read)
-        uint8_t length; // the # of bytes in the buffer
-        uint8_t *pbuffer; // a pointer to a buffer of length bytes
-    } I2C1_TRANSACTION_REQUEST_BLOCK;
+        uint16_t address;
+        // the # of bytes in the buffer
+        uint8_t length;
+        // a pointer to a buffer of length bytes
+        uint8_t *pbuffer;
+    } I2C_TRANSACTION_REQUEST_BLOCK;
 
     /**
       Section: Interface Routines
      */
     /**
       @Summary
-        Initializes the I2C instance : 1
+        Initializes the I2C instance
 
       @Description
-        This routine initializes the i2c1 driver instance for : 1
+        This routine initializes the i2c driver instance for
         index, making it ready for clients to open and use it.
-        This routine must be called before any other I2C1 routine is called.
+        This routine must be called before any other I2C routine is called.
         This routine should only be called once during system initialization.
 
       @Preconditions
@@ -86,7 +88,7 @@ extern "C" {
             #define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50   // define slave timeout 
  
             // initialize the module
-            I2C1_Initialize();
+            I2C_Initialize();
 
             // write to an EEPROM Device
         
@@ -102,7 +104,7 @@ extern "C" {
             uint8_t         *pD;
             uint16_t        counter, timeOut, slaveTimeOut;
 
-            I2C1_MESSAGE_STATUS status = I2C1_MESSAGE_PENDING;
+            I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
 
             dataAddress = 0x10;             // starting EEPROM address 
             pD = sourceData;                // initialize the source of the data
@@ -110,7 +112,6 @@ extern "C" {
 
             for (counter = 0; counter < nCount; counter++)
             {
-
                 // build the write buffer first
                 // starting address of the EEPROM memory
                 writeBuffer[0] = (dataAddress >> 8);                // high address
@@ -125,17 +126,15 @@ extern "C" {
                 timeOut = 0;
                 slaveTimeOut = 0;
  
-                while(status != I2C1_MESSAGE_FAIL)
-                {
+                while(status != I2C_MESSAGE_FAIL) {
                     // write one byte to EEPROM (3 is the number of bytes to write)
-                    I2C1_MasterWrite(  writeBuffer,
-                                            3,
-                                            slaveDeviceAddress,
-                                            &status);
+                    I2C_MasterWrite(writeBuffer,
+                                    3,
+                                    slaveDeviceAddress,
+                                    &status);
 
                     // wait for the message to be sent or status has changed.
-                    while(status == I2C1_MESSAGE_PENDING)
-                    {
+                    while(status == I2C_MESSAGE_PENDING) {
                         // add some delay here
 
                         // timeout checking
@@ -146,11 +145,11 @@ extern "C" {
                             slaveTimeOut++;
                     } 
                     if ((slaveTimeOut == SLAVE_I2C_GENERIC_DEVICE_TIMEOUT) || 
-                        (status == I2C1_MESSAGE_COMPLETE))
+                        (status == I2C_MESSAGE_COMPLETE))
                         break;
 
-                    // if status is  I2C1_MESSAGE_ADDRESS_NO_ACK,
-                    //               or I2C1_DATA_NO_ACK,
+                    // if status is  I2C_MESSAGE_ADDRESS_NO_ACK, or
+                    //               I2C_DATA_NO_ACK,
                     // The device may be busy and needs more time for the last
                     // write so we can retry writing the data, this is why we
                     // use a while loop here
@@ -162,19 +161,17 @@ extern "C" {
                         timeOut++;
                 }
 
-                if (status == I2C1_MESSAGE_FAIL)
-                {
+                if (status == I2C_MESSAGE_FAIL) {
                     break;
                 }
                 dataAddress++;
-
             }
-
         </code>
-
      */
-    void I2C1_Initialize(void);
+    void I2C_Initialize(void);
 
+    void I2C_InitializeCON(void);
+    void I2C_InitializeSTAT(void);
 
     /**
         @Summary
@@ -196,27 +193,26 @@ extern "C" {
             length - The length of the data block to be sent
     
         @Param
-     *pdata - A pointer to the block of data to be sent
+            *pdata - A pointer to the block of data to be sent
     
         @Param
-     *pstatus - A pointer to the status variable that the i2c driver
+            *pstatus - A pointer to the status variable that the i2c driver
                 updates during the execution of the message.
 
         @Returns
-            I2C1_MESSAGE_STATUS
+            I2C_MESSAGE_STATUS
 
          @Example
             <code>
-                Refer to I2C1_Initialize() and 
-                I2C1_MasterRead() for an examples	
+                Refer to I2C_Initialize() and 
+                I2C_MasterRead() for an examples	
             </code>
-
      */
-    void I2C1_MasterWrite(
+    void I2C_MasterWrite(
             uint8_t *pdata,
             uint8_t length,
             uint16_t address,
-            I2C1_MESSAGE_STATUS *pstatus);
+            I2C_MESSAGE_STATUS *pstatus);
 
     /**
         @Summary
@@ -238,30 +234,29 @@ extern "C" {
             length - The length of the data block to be sent
     
         @Param
-     *pdata - A pointer to the memory location where received data will
+            *pdata - A pointer to the memory location where received data will
                      be stored
 
         @Param
-     *pstatus - A pointer to the status variable that the i2c driver
+            *pstatus - A pointer to the status variable that the i2c driver
                 updates during the execution of the message.
 
         @Returns
-            I2C1_MESSAGE_STATUS
+            I2C_MESSAGE_STATUS
 
         @Example
             <code>
- 
                 #define MCHP24AA512_RETRY_MAX       100  // define the retry count
                 #define MCHP24AA512_ADDRESS         0x50 // slave device address
                 #define MCHP24AA512_DEVICE_TIMEOUT  50   // define slave timeout 
 
 
                 uint8_t MCHP24AA512_Read(
-                                                uint16_t address,
-                                                uint8_t *pData,
-                                                uint16_t nCount)
+                                         uint16_t address,
+                                         uint8_t *pData,
+                                         uint16_t nCount)
                 {
-                    I2C1_MESSAGE_STATUS status;
+                    I2C_MESSAGE_STATUS status;
                     uint8_t     writeBuffer[3];
                     uint16_t    retryTimeOut, slaveTimeOut;
                     uint16_t    counter;
@@ -269,9 +264,7 @@ extern "C" {
 
                     pD = pData;
 
-                    for (counter = 0; counter < nCount; counter++)
-                    {
-
+                    for (counter = 0; counter < nCount; counter++) {
                         // build the write buffer first
                         // starting address of the EEPROM memory
                         writeBuffer[0] = (address >> 8);                // high address
@@ -283,17 +276,15 @@ extern "C" {
                         retryTimeOut = 0;
                         slaveTimeOut = 0;
 
-                        while(status != I2C1_MESSAGE_FAIL)
-                        {
+                        while(status != I2C_MESSAGE_FAIL) {
                             // write one byte to EEPROM (2 is the count of bytes to write)
-                            I2C1_MasterWrite(    writeBuffer,
-                                                    2,
-                                                    MCHP24AA512_ADDRESS,
-                                                    &status);
+                            I2C_MasterWrite(writeBuffer,
+                                            2,
+                                            MCHP24AA512_ADDRESS,
+                                            &status);
 
                             // wait for the message to be sent or status has changed.
-                            while(status == I2C1_MESSAGE_PENDING)
-                            {
+                            while(status == I2C_MESSAGE_PENDING) {
                                 // add some delay here
 
                                 // timeout checking
@@ -304,11 +295,11 @@ extern "C" {
                                     slaveTimeOut++;
                             }
 
-                            if (status == I2C1_MESSAGE_COMPLETE)
+                            if (status == I2C_MESSAGE_COMPLETE)
                                 break;
 
-                            // if status is  I2C1_MESSAGE_ADDRESS_NO_ACK,
-                            //               or I2C1_DATA_NO_ACK,
+                            // if status is  I2C_MESSAGE_ADDRESS_NO_ACK, or
+                            //               I2C_DATA_NO_ACK,
                             // The device may be busy and needs more time for the last
                             // write so we can retry writing the data, this is why we
                             // use a while loop here
@@ -320,24 +311,21 @@ extern "C" {
                                 retryTimeOut++;
                         }
 
-                        if (status == I2C1_MESSAGE_COMPLETE)
-                        {
+                        if (status == I2C_MESSAGE_COMPLETE) {
 
                             // this portion will read the byte from the memory location.
                             retryTimeOut = 0;
                             slaveTimeOut = 0;
 
-                            while(status != I2C1_MESSAGE_FAIL)
-                            {
+                            while(status != I2C_MESSAGE_FAIL) {
                                 // write one byte to EEPROM (2 is the count of bytes to write)
-                                I2C1_MasterRead(     pD,
-                                                        1,
-                                                        MCHP24AA512_ADDRESS,
-                                                        &status);
+                                I2C_MasterRead(pD,
+                                               1,
+                                               MCHP24AA512_ADDRESS,
+                                               &status);
 
                                 // wait for the message to be sent or status has changed.
-                                while(status == I2C1_MESSAGE_PENDING)
-                                {
+                                while(status == I2C_MESSAGE_PENDING) {
                                     // add some delay here
 
                                     // timeout checking
@@ -348,11 +336,11 @@ extern "C" {
                                         slaveTimeOut++;
                                 }
 
-                                if (status == I2C1_MESSAGE_COMPLETE)
+                                if (status == I2C_MESSAGE_COMPLETE)
                                     break;
 
-                                // if status is  I2C1_MESSAGE_ADDRESS_NO_ACK,
-                                //               or I2C1_DATA_NO_ACK,
+                                // if status is  I2C_MESSAGE_ADDRESS_NO_ACK, or
+                                //               I2C_DATA_NO_ACK,
                                 // The device may be busy and needs more time for the last
                                 // write so we can retry writing the data, this is why we
                                 // use a while loop here
@@ -366,29 +354,22 @@ extern "C" {
                         }
 
                         // exit if the last transaction failed
-                        if (status == I2C1_MESSAGE_FAIL)
-                        {
+                        if (status == I2C_MESSAGE_FAIL) {
                             return(0);
                             break;
                         }
-
                         pD++;
                         address++;
-
                     }
                     return(1);
-
                 }
-   
-  
             </code>
-
      */
-    void I2C1_MasterRead(
+    void I2C_MasterRead(
             uint8_t *pdata,
             uint8_t length,
             uint16_t address,
-            I2C1_MESSAGE_STATUS *pstatus);
+            I2C_MESSAGE_STATUS *pstatus);
 
     /**
         @Summary
@@ -408,41 +389,38 @@ extern "C" {
 
             The transaction is inserted into the list only if there is space
             in the list. If there is no space, the function exits with the
-            flag set to I2C1_MESSAGE_FAIL.
+            flag set to I2C_MESSAGE_FAIL.
 
         @Preconditions
             None
 
         @Param
-            count - The numer of transaction requests in the trb_list.
+            count - The number of transaction requests in the trb_list.
 
         @Param
-     *ptrb_list - A pointer to an array of transaction requests (TRB).
-                See I2C1_TRANSACTION_REQUEST_BLOCK definition for details.
+            *ptrb_list - A pointer to an array of transaction requests (TRB).
+                See I2C_TRANSACTION_REQUEST_BLOCK definition for details.
     
         @Param
-     *pflag - A pointer to a completion flag.
+            *pflag - A pointer to a completion flag.
 
         @Returns
             None
 
         @Example
-            <code>
-
-  
-                uint8_t EMULATED_EEPROM_Read(
-                                               uint16_t slaveDeviceAddress,
-                                               uint16_t dataAddress,
-                                               uint8_t *pData,
-                                               uint16_t nCount)
+            <code>  
+                uint8_t EMULATED_EEPROM_Read(uint16_t slaveDeviceAddress,
+                                             uint16_t dataAddress,
+                                             uint8_t *pData,
+                                             uint16_t nCount)
                 {
-                    I2C1_MESSAGE_STATUS status;
-                    I2C1_TRANSACTION_REQUEST_BLOCK readTRB[2];
+                    I2C_MESSAGE_STATUS status;
+                    I2C_TRANSACTION_REQUEST_BLOCK readTRB[2];
                     uint8_t     writeBuffer[3];
                     uint16_t    timeOut, slaveTimeOut;
 
                     // this initial value is important
-                    status = I2C1_MESSAGE_PENDING;
+                    status = I2C_MESSAGE_PENDING;
 
                     // build the write buffer first
                     // starting address of the EEPROM memory
@@ -451,27 +429,25 @@ extern "C" {
 
                     // we need to create the TRBs for a random read sequence to the EEPROM
                     // Build TRB for sending address
-                    I2C1_MasterWriteTRBBuild(    &readTRB[0],
-                                                    writeBuffer,
-                                                    2,
-                                                    slaveDeviceAddress);
+                    I2C_MasterWriteTRBBuild(&readTRB[0],
+                                            writeBuffer,
+                                            2,
+                                            slaveDeviceAddress);
                     // Build TRB for receiving data
-                    I2C1_MasterReadTRBBuild(     &readTRB[1],
-                                                    pData,
-                                                    nCount,
-                                                    slaveDeviceAddress);
+                    I2C_MasterReadTRBBuild(&readTRB[1],
+                                           pData,
+                                           nCount,
+                                           slaveDeviceAddress);
 
                     timeOut = 0;
                     slaveTimeOut = 0;
 
-                    while(status != I2C1_MESSAGE_FAIL)
-                    {
+                    while(status != I2C_MESSAGE_FAIL) {
                         // now send the transactions
-                        I2C1_MasterTRBInsert(2, readTRB, &status);
+                        I2C_MasterTRBInsert(2, readTRB, &status);
 
                         // wait for the message to be sent or status has changed.
-                        while(status == I2C1_MESSAGE_PENDING)
-                        {
+                        while(status == I2C_MESSAGE_PENDING) {
                             // add some delay here
 
                             // timeout checking
@@ -482,11 +458,11 @@ extern "C" {
                                 slaveTimeOut++;
                         }
 
-                        if (status == I2C1_MESSAGE_COMPLETE)
+                        if (status == I2C_MESSAGE_COMPLETE)
                             break;
 
-                        // if status is  I2C1_MESSAGE_ADDRESS_NO_ACK,
-                        //               or I2C1_DATA_NO_ACK,
+                        // if status is  I2C_MESSAGE_ADDRESS_NO_ACK, or
+                        //               I2C_DATA_NO_ACK,
                         // The device may be busy and needs more time for the last
                         // write so we can retry writing the data, this is why we
                         // use a while loop here
@@ -496,19 +472,15 @@ extern "C" {
                             return (0);
                         else
                             timeOut++;
-
                     }
                     return (1);
-
                 }   
-  
             </code>
-
      */
-    void I2C1_MasterTRBInsert(
+    void I2C_MasterTRBInsert(
             uint8_t count,
-            I2C1_TRANSACTION_REQUEST_BLOCK *ptrb_list,
-            I2C1_MESSAGE_STATUS *pflag);
+            I2C_TRANSACTION_REQUEST_BLOCK *ptrb_list,
+            I2C_MESSAGE_STATUS *pflag);
 
     /**
         @Summary
@@ -522,16 +494,16 @@ extern "C" {
             operation.
 
             This function does not send the transaction. To send the transaction,
-            the TRB insert function (I2C1_MasterTRBInsert()) must be called.
+            the TRB insert function (I2C_MasterTRBInsert()) must be called.
 
         @Preconditions
             None
 
         @Param
-     *ptrb - A pointer to a caller supplied TRB.
+            *ptrb - A pointer to a caller supplied TRB.
 
         @Param
-     *pdata - A pointer to the block of data to be received
+            *pdata - A pointer to the block of data to be received
 
         @Param
             length - The length of the data block to be received
@@ -544,12 +516,12 @@ extern "C" {
 
         @Example
             <code>
-                Refer to I2C1_MasterTRBInsert() for an example	
+                Refer to I2C_MasterTRBInsert() for an example	
             </code>
 
      */
-    void I2C1_MasterReadTRBBuild(
-            I2C1_TRANSACTION_REQUEST_BLOCK *ptrb,
+    void I2C_MasterReadTRBBuild(
+            I2C_TRANSACTION_REQUEST_BLOCK *ptrb,
             uint8_t *pdata,
             uint8_t length,
             uint16_t address);
@@ -566,16 +538,16 @@ extern "C" {
             write operation.
 
             This function does not send the transaction. To send the transaction,
-            the TRB insert function (I2C1_MasterTRBInsert()) must be called.
+            the TRB insert function (I2C_MasterTRBInsert()) must be called.
 
         @Preconditions
             None
 
         @Param
-     *ptrb - A pointer to a caller supplied TRB.
+            *ptrb - A pointer to a caller supplied TRB.
 
         @Param
-     *pdata - A pointer to the block of data to be sent
+            *pdata - A pointer to the block of data to be sent
 
         @Param
             length - The length of the data block to be sent
@@ -588,12 +560,12 @@ extern "C" {
 
         @Example
             <code>
-                Refer to I2C1_MasterTRBInsert() for an example	
+                Refer to I2C_MasterTRBInsert() for an example	
             </code>
 
      */
-    void I2C1_MasterWriteTRBBuild(
-            I2C1_TRANSACTION_REQUEST_BLOCK *ptrb,
+    void I2C_MasterWriteTRBBuild(
+            I2C_TRANSACTION_REQUEST_BLOCK *ptrb,
             uint8_t *pdata,
             uint8_t length,
             uint16_t address);
@@ -622,18 +594,16 @@ extern "C" {
                 #define MCHP24AA512_ADDRESS    0x50 // slave device address
 
                 // check until queue is empty
-                while(I2C1_MasterQueueIsEmpty() == false);
+                while(I2C_MasterQueueIsEmpty() == false);
             
                 // now send more data (assume readBuffer is initialized)
-                I2C1_MasterRead(   readBuffer,
-                                        3,
-                                        MCHP24AA512_ADDRESS,
-                                        &status);   
-  
+                I2C_MasterRead(readBuffer,
+                               3,
+                               MCHP24AA512_ADDRESS,
+                               &status);   
             </code>
-
      */
-    bool I2C1_MasterQueueIsEmpty(void);
+    bool I2C_MasterQueueIsEmpty(void);
 
     /**
         @Summary
@@ -660,20 +630,39 @@ extern "C" {
                 #define MCHP24AA512_ADDRESS    0x50 // slave device address
  
                 // check until queue has space
-                while(I2C1_MasterQueueIsFull() == true);
+                while(I2C_MasterQueueIsFull() == true);
             
                 // now send more data (assume readBuffer is initialized)
-                I2C1_MasterRead(   readBuffer,
-                                        3,
-                                        MCHP24AA512_ADDRESS,
-                                        &status); 
+                I2C_MasterRead(readBuffer,
+                               3,
+                               MCHP24AA512_ADDRESS,
+                               &status); 
             </code>
-
      */
-    bool I2C1_MasterQueueIsFull(void);
+    bool I2C_MasterQueueIsFull(void);
+    
+    inline static void I2C_InterruptDisable(void) {
+        IEC3bits.MI2C2IE = 0;
+    }
+    
+    inline static void I2C_InterruptEnable(void) {
+        IEC3bits.MI2C2IE = 1;
+    }
+    
+    inline static void I2C_InterruptFlagClear(void) {
+        IFS3bits.MI2C2IF = 0;
+    }
+    
+    inline static void I2C_InterruptFlagSet(void) {
+        IFS3bits.MI2C2IF = 1;
+    }
+    
+    // Getter and setter for variables
+    void I2C_SetBaudRate(uint16_t V);
+    uint16_t I2C_GetBaudRate(void);
 
-#ifdef __cplusplus  // Provide C++ Compatibility
+#ifdef __cplusplus
 }
 #endif
 
-#endif //_I2C1_H
+#endif //_I2C_H

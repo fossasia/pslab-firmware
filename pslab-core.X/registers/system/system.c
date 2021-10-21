@@ -35,7 +35,7 @@
 #include "../converters/adc1.h"
 #include "../../bus/spi/spi_master.h"
 #include "../../bus/spi/spi_driver.h"
-#include "../../bus/i2c/i2c1.h"
+#include "../../bus/i2c/i2c.h"
 #include "../../bus/uart/uart1.h"
 #include "../../bus/uart/uart2.h"
 #include "../timers/tmr1.h"
@@ -92,7 +92,7 @@ void SYSTEM_Initialize(void) {
     IC3_Initialize();
     IC4_Initialize();
 
-    I2C1_Initialize();
+    I2C_Initialize();
 
     CVR_Initialize();
 
