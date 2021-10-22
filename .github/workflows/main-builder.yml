@@ -69,5 +69,5 @@ jobs:
             - name: Publish build files
               uses: actions/upload-artifact@v2
               with:
-                name: production-files
-                path: pslab-core.X/dist/default/production/
+                name: production-file
+                path: pslab-core.X/dist/default/production/*.hex
