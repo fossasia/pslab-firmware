@@ -69,7 +69,7 @@ extern "C" {
         DMA_PERIPHERAL_IRQ_IC1 = 0x1,
         DMA_PERIPHERAL_IRQ_INT0 = 0x0,
     } DMA_PERIPHERAL_IRQ_NUMBER;
-    
+
     /**
       Section: Interface Routines
      */
@@ -320,9 +320,9 @@ extern "C" {
             default: break;
         }
     }
-    
+
     /**
-     @Summary
+      @Summary
       Enables one-shot mode.
 
      @Description
