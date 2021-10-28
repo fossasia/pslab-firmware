@@ -3,6 +3,8 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <xc.h>
+
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {
@@ -173,6 +175,35 @@ extern "C" {
         Refer to UART2_Initialize(); for an example
      */
     void UART2_Disable(void);
+    
+    /**
+     * @Summary
+     *   Discard incoming serial traffic
+     * 
+     * @Description
+     *   Reads out the RX buffer and clear it for incoming serial traffic at the
+     *   startup.
+     * 
+     * @Returns
+     *   None.
+     */
+    void UART2_ClearBuffer(void);
+    
+    inline static void UART2_InterruptEnable(void) {
+        IEC1bits.U2RXIE = 1;
+    }
+    
+    inline static void UART2_InterruptDisable(void) {
+        IEC1bits.U2RXIE = 0;
+    }
+    
+    inline static void UART2_InterruptFlagClear(void) {
+        IFS1bits.U2RXIF = 0;
+    }
+    
+    // Getter and Setter for UART2 baud rate parameter
+    void SetUART2_BAUD_RATE(uint16_t);
+    uint16_t GetUART2_BAUD_RATE(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }

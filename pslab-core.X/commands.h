@@ -17,7 +17,7 @@ extern "C" {
  * This is used to set the dimensions of the command table, and to sanitize
  * received commands.
  */
-#define NUM_PRIMARY_CMDS 11
+#define NUM_PRIMARY_CMDS 12
 #define NUM_FLASH_CMDS 4
 #define NUM_ADC_CMDS 23
 #define NUM_SPI_CMDS 7
@@ -29,6 +29,7 @@ extern "C" {
 #define NUM_DIN_CMDS 2
 #define NUM_TIMING_CMDS 17
 #define NUM_COMMON_CMDS 27
+#define NUM_PASSTHRU_CMDS 1
 #define NUM_SECONDARY_CMDS_MAX NUM_COMMON_CMDS // Change if necessary.
 
 /**

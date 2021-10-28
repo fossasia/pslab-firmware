@@ -4,30 +4,26 @@
 
 void __attribute__((__interrupt__, no_auto_psv)) _U1RXInterrupt(void) {
     WATCHDOG_TimerClear();
+    // Wait until UART2 finish sending out data
     while (U2STAbits.UTXBF);
+    // Load what's received from UART1 interface to UART2 transmit buffer
     U2TXREG = U1RXREG;
-    _U1RXIF = 0;
-}
-
-void __attribute__((__interrupt__, no_auto_psv)) _U2RXInterrupt(void) {
-    WATCHDOG_TimerClear();
-    while (U1STAbits.UTXBF);
-    U1TXREG = U2RXREG;
-    _U2RXIF = 0;
+    // Clear the interrupt flag and await more data from UART1 interface
+    UART1_InterruptFlagClear();
 }
 
 void UART1_Initialize(void) {
-    // UARTx is disabled; all UARTx pins are controlled by PORT latches; 
-    // UARTx power consumption is minimal
+    // UART1 is disabled; all UART1 pins are controlled by PORT latches; 
+    // UART1 power consumption is minimal
     U1MODEbits.UARTEN = 0;
     // Continues module operation in Idle mode
     U1MODEbits.USIDL = 0;
     // IrDA encoder and decoder are disabled
     U1MODEbits.IREN = 0;
-    // UxRTS pin is in Flow Control mode
+    // U1RTS pin is in Flow Control mode
     U1MODEbits.RTSMD = 0;
-    // UxTX and UxRX pins are enabled and used; 
-    // UxCTS and UxRTS/BCLKx pins are controlled by PORT latches
+    // U1TX and U1RX pins are enabled and used; 
+    // U1CTS and U1RTS/BCLKx pins are controlled by PORT latches
     U1MODEbits.UEN = 0b00;
     // No wake-up is enabled
     U1MODEbits.WAKE = 0;
@@ -35,7 +31,7 @@ void UART1_Initialize(void) {
     U1MODEbits.LPBACK = 0;
     // Baud rate measurement is disabled or completed
     U1MODEbits.ABAUD = 0;
-    // UxRX Idle state is '1'
+    // U1RX Idle state is '1'
     U1MODEbits.URXINV = 0;
     // BRG generates 16 clocks per bit period (16x baud clock, Standard mode)
     U1MODEbits.BRGH = 1;
@@ -48,7 +44,7 @@ void UART1_Initialize(void) {
     // :this implies there is at least one character open in the transmit buffer
     U1STAbits.UTXISEL1 = 0;
     U1STAbits.UTXISEL0 = 0;
-    // UxTX Idle state is '1'
+    // U1TX Idle state is '1'
     U1STAbits.UTXINV = 0;
     // Sync Break transmission is disabled or completed
     U1STAbits.UTXBRK = 0;
@@ -60,7 +56,7 @@ void UART1_Initialize(void) {
     // Transmit Shift Register isn't empty, a transmission is in progress/queued
     U1STAbits.TRMT = 0;
     // Interrupt is set when any character is received and transferred from the 
-    // UxRSR to the receive buffer; receive buffer has one or more characters
+    // U1RSR to the receive buffer; receive buffer has one or more characters
     U1STAbits.URXISEL = 0b00;
     // Address Detect mode is disabled
     U1STAbits.ADDEN = 0;
@@ -76,7 +72,7 @@ void UART1_Initialize(void) {
     // Receive buffer is empty
     U1STAbits.URXDA = 0;
 
-    // UxBRG = [FCY / (16 * BAUD)] - 1
+    // U1BRG = [FCY / (16 * BAUD)] - 1
     // BaudRate = 1000000; Frequency = 64000000 Hz; BRG 15;
     U1BRG = 0x0F;
 
