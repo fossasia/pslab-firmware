@@ -1,50 +1,41 @@
 #include "ic4.h"
 
-/**
-  IC Mode.
-
-  @Summary
-    Defines the IC Mode.
-
-  @Description
-    This data type defines the IC Mode of operation.
-
- */
-
-static uint16_t gIC4Mode;
-
-/**
-  Section: Driver Interface
- */
-
 void IC4_Initialize(void) {
-    // ICSIDL disabled; ICM Off; ICTSEL TMR3; ICI Every; 
-    IC4CON1 = 0x00;
-    // SYNCSEL TMR3; TRIGSTAT disabled; IC32 disabled; ICTRIG Sync; 
-    IC4CON2 = 0x0D;
-
-    gIC4Mode = IC4CON1bits.ICM;
-
+    IC4_InitializeCON1();
+    IC4_InitializeCON2();
 }
 
-void __attribute__((weak)) IC4_CallBack(void) {
-    // Add your custom callback code here
+void IC4_InitializeCON1(void) {
+    // Input capture continues to operate in CPU idle mode
+    IC4CON1bits.ICSIDL = 0;
+    // Input capture clock source is set to timer 3
+    IC4CON1bits.ICTSEL = IC_PARAMS_CAPTURE_TIMER3;
+    // Interrupt on every capture event
+    IC4CON1bits.ICI = IC_PARAMS_CAPTURE_INTERRUPT_EVERY_EVENT;
+    // Capture event flags (Read Only; but settable)
+    IC4CON1bits.ICOV = 0; // No overflow
+    IC4CON1bits.ICBNE = 0; // Buffer empty
+    // Input capture mode is turned off
+    IC4CON1bits.ICM = IC_PARAMS_CAPTURE_MODE_OFF;
 }
 
-void IC4_Tasks(void) {
-    if (IFS2bits.IC4IF) {
-        // IC4 callback function 
-        IC4_CallBack();
-        IFS2bits.IC4IF = 0;
-    }
+void IC4_InitializeCON2(void) {
+    // Input capture modules are not concatenated
+    IC4CON2bits.IC32 = 0;
+    // Input source is used to sync the capture timer
+    IC4CON2bits.ICTRIG = 0;
+    // IC4TMR is cleared and not triggered
+    IC4CON2bits.TRIGSTAT = 0;
+    // Input capture source is none
+    IC4CON2bits.SYNCSEL = IC_PARAMS_CAPTURE_SOURCE_NONE;
 }
 
-void IC4_Start(void) {
-    IC4CON1bits.ICM = gIC4Mode;
+void IC4_Start(IC_PARAMS_CAPTURE_MODE mode) {
+    IC4CON1bits.ICM = mode;
 }
 
 void IC4_Stop(void) {
-    IC4CON1bits.ICM = 0;
+    IC4CON1bits.ICM = IC_PARAMS_CAPTURE_MODE_OFF;
 }
 
 uint16_t IC4_CaptureDataRead(void) {
@@ -56,18 +47,17 @@ void IC4_ManualTriggerSet(void) {
 }
 
 bool IC4_TriggerStatusGet(void) {
-    return ( IC4CON2bits.TRIGSTAT);
+    return (IC4CON2bits.TRIGSTAT);
 }
 
 void IC4_TriggerStatusClear(void) {
-    /* Clears the trigger status */
     IC4CON2bits.TRIGSTAT = 0;
 }
 
 bool IC4_HasCaptureBufferOverflowed(void) {
-    return ( IC4CON1bits.ICOV);
+    return (IC4CON1bits.ICOV);
 }
 
 bool IC4_IsCaptureBufferEmpty(void) {
-    return ( !IC4CON1bits.ICBNE);
+    return (!IC4CON1bits.ICBNE);
 }
