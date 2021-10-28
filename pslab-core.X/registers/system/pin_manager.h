@@ -228,6 +228,8 @@
 #define CAP_OUT_GetValue()             _RC0
 #define CAP_OUT_SetDigitalInput()      (_TRISC0 = 1)
 #define CAP_OUT_SetDigitalOutput()     (_TRISC0 = 0)
+#define CAP_OUT_SetDigital()           (_ANSC0 = 0)
+#define CAP_OUT_SetAnalog()            (_ANSC0 = 1)
 
 #define RES_SetHigh()                  (_LATC1 = 1)
 #define RES_SetLow()                   (_LATC1 = 0)

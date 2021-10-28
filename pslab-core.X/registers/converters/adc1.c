@@ -3,15 +3,124 @@
 #include "../timers/tmr5.h"
 #include "../../helpers/delay.h"
 #include "../../commands.h"
+#include "../system/pin_manager.h"
 
 // Current ADC operation mode variables
-static uint8_t current_mode, current_channel_0, current_channel_123;
+static uint8_t CURRENT_MODE = 0;
+static uint8_t CURRENT_CHANNEL_0 = CH0_CHANNEL_CH1;
+static uint8_t CURRENT_CHANNEL_123 = 0;
+
+/* Static globals */
+static uint16_t volatile* ADCVALS[MAX_CHANNELS] = {
+    &ADC1BUF0, &ADC1BUF1, &ADC1BUF2, &ADC1BUF3
+};
 
 /* Static function prototypes */
 static void Init10BitMode(void);
 static void InitDMAMode(ADC1_RESOLUTION_TYPE resolution);
 static void InitModesCommon(void);
 static void EnableDMA(void);
+
+static uint8_t volatile TRIGGERED = 0;
+void SetTRIGGERED(uint8_t V) { TRIGGERED = V; }
+uint8_t GetTRIGGERED(void) { return TRIGGERED; }
+
+static uint16_t volatile TRIGGER_WAITING = 0;
+void SetTRIGGER_WAITING(uint16_t V) { TRIGGER_WAITING = V; }
+uint16_t GetTRIGGER_WAITING(void) { return TRIGGER_WAITING; }
+
+static uint8_t TRIGGER_CHANNEL = 0;
+void SetTRIGGER_CHANNEL(uint8_t V) { TRIGGER_CHANNEL = V; }
+uint8_t GetTRIGGER_CHANNEL(void) { return TRIGGER_CHANNEL; }
+
+static uint8_t volatile TRIGGER_READY = 0;
+void SetTRIGGER_READY(uint8_t V) { TRIGGER_READY = V; }
+uint8_t GetTRIGGER_READY(void) { return TRIGGER_READY; }
+
+static uint16_t TRIGGER_LEVEL = 0;
+void SetTRIGGER_LEVEL(uint16_t V) { TRIGGER_LEVEL = V; }
+uint16_t GetTRIGGER_LEVEL(void) { return TRIGGER_LEVEL; }
+
+static uint16_t TRIGGER_PRESCALER = 0;
+void SetTRIGGER_PRESCALER(uint16_t V) { TRIGGER_PRESCALER = V; }
+uint16_t GetTRIGGER_PRESCALER(void) { return TRIGGER_PRESCALER; }
+
+static uint8_t CHANNELS = 0;
+void SetCHANNELS(uint8_t V) { CHANNELS = V; }
+uint8_t GetCHANNELS(void) { return CHANNELS; }
+
+static uint16_t SAMPLES_REQUESTED;
+void SetSAMPLES_REQUESTED(uint16_t V) { SAMPLES_REQUESTED = V; }
+uint16_t GetSAMPLES_REQUESTED(void) { return SAMPLES_REQUESTED; }
+
+static uint16_t volatile SAMPLES_CAPTURED;
+void SetSAMPLES_CAPTURED(uint16_t V) { SAMPLES_CAPTURED = V; }
+uint16_t GetSAMPLES_CAPTURED(void) { return SAMPLES_CAPTURED; }
+
+static uint16_t DELAY;
+void SetDELAY(uint16_t V) { DELAY = V; }
+uint16_t GetDELAY(void) { return DELAY; }
+
+static uint8_t CONVERSION_DONE = 1;
+void SetCONVERSION_DONE(uint8_t V) { CONVERSION_DONE = V; }
+uint8_t GetCONVERSION_DONE(void) { return CONVERSION_DONE; }
+
+static int16_t volatile* volatile BUFFER_IDX[MAX_CHANNELS];
+void SetBUFFER_IDX(uint8_t idx, volatile int16_t *V) {
+    BUFFER_IDX[idx] = V;
+}
+
+/**
+ * @brief Handle trigger and data collection from ADC.
+ * 
+ * @description
+ * This interrupt handler is called every time the ADC finishes a conversion, if
+ * the ADC interrupt is enabled. It checks if the trigger condition is
+ * fulfilled, and if so copies ADC values into the buffer.
+ */
+void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
+    int i;
+
+    ADC1_InterruptFlagClear();
+
+    if (CONVERSION_DONE) {
+        // Usually in methods like capacitance measurement, this ISR will be
+        // triggered, but no need to process further. Hence abort and return.
+        return;
+    }
+    LED_SetHigh();
+
+    if (TRIGGERED) {
+        for (i = 0; i <= CHANNELS; i++) *(BUFFER_IDX[i]++) = *ADCVALS[i];
+
+        SAMPLES_CAPTURED++;
+        LED_SetLow();
+        if (SAMPLES_CAPTURED == SAMPLES_REQUESTED) {
+            ADC1_InterruptDisable();
+            ADC1_InterruptFlagClear();
+            CONVERSION_DONE = 1;
+            LED_SetHigh();
+        }
+    } else {
+        uint16_t adval;
+        for (i = 0; i < MAX_CHANNELS; i++) {
+            if (TRIGGER_CHANNEL & (1 << i)) adval = *ADCVALS[i];
+        }
+
+        // If the trigger hasn't timed out, check for trigger condition.
+        if (TRIGGER_WAITING < TRIGGER_TIMEOUT) {
+            TRIGGER_WAITING += (DELAY >> TRIGGER_PRESCALER);
+            if (!TRIGGER_READY && adval > TRIGGER_LEVEL + 10) TRIGGER_READY = 1;
+            else if (adval <= TRIGGER_LEVEL && TRIGGER_READY) {
+                TRIGGERED = 1;
+            }
+        } 
+        // If the trigger has timed out, then proceed to data acquisition.
+        else {
+            TRIGGERED = 1;
+        }
+    }
+}
 
 void ADC1_Initialize(void) {
 
@@ -96,23 +205,24 @@ void ADC1_SetOperationMode(
         ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123) {
 
     // Save time by prevent reinitialization of registers
-    if (current_mode == mode && current_channel_0 == channel_0 &&
-            current_channel_123 == channel_123) {
+    if (CURRENT_MODE == mode && CURRENT_CHANNEL_0 == channel_0 &&
+            CURRENT_CHANNEL_123 == channel_123) {
         return;
     }
 
-    if (current_channel_0 == 7 || current_channel_0 == 5) {
+    if (CURRENT_CHANNEL_0 == CH0_CHANNEL_RES || 
+            CURRENT_CHANNEL_0 == CH0_CHANNEL_CAP) {
         CM4CONbits.CON = 0;
         PMD3bits.CMPMD = 1;
     }
     // Save current mode settings
-    current_mode = mode;
-    current_channel_0 = channel_0;
-    current_channel_123 = channel_123;
+    CURRENT_MODE = mode;
+    CURRENT_CHANNEL_0 = channel_0;
+    CURRENT_CHANNEL_123 = channel_123;
 
     ADC1_Initialize();
 
-    switch (current_mode) {
+    switch (CURRENT_MODE) {
         case ADC1_10BIT_SIMULTANEOUS_MODE:
             Init10BitMode();
             break;
@@ -130,11 +240,11 @@ void ADC1_SetOperationMode(
             break;
         case ADC1_12BIT_AVERAGING_MODE:
             // Disable DMA channel
-            DMA0CONbits.CHEN = 0;
+            DMA_ChannelDisable(DMA_CHANNEL_0);
             ADC1_ResolutionModeSet(ADC1_RESOLUTION_12_BIT);
             //Set input channels
-            ADC1_ChannelSelectSet(current_channel_0);
-            ADC1_Positive123ChannelSelect(current_channel_123);
+            ADC1_ChannelSelectSet(CURRENT_CHANNEL_0);
+            ADC1_Positive123ChannelSelect(CURRENT_CHANNEL_123);
             // Channel 0 negative input is VREFL
             AD1CHS0bits.CH0NA = 0;
             // Internal counter ends sampling and starts auto conversion
@@ -143,10 +253,20 @@ void ADC1_SetOperationMode(
             AD1CON2bits.SMPI = 0b01111;
             // Clock settings
             AD1CON3bits.SAMC = 0b10000; // 16*TAD auto sample time
-            AD1CON3bits.ADCS = 0b00001010; // TAD = Tp*10 = 156.25 ns
+            ADC1_ConversionClockPrescalerSet(10 + 1); // TAD = X*11 = 171.875 ns
             break;
         case ADC1_CTMU_MODE:
-            // initADCCTMU()
+            // Disable DMA channel
+            DMA_ChannelDisable(DMA_CHANNEL_0);
+            ADC1_ResolutionModeSet(ADC1_RESOLUTION_12_BIT);
+            // Disable Comparator module
+            CM4CONbits.CON = 0;
+            PMD3bits.CMPMD = 1;
+            // Set input channel
+            ADC1_ChannelSelectSet(CURRENT_CHANNEL_0);
+            // Clock settings
+            AD1CON3bits.SAMC = 0b10000; // 16*TAD auto sample time
+            ADC1_ConversionClockPrescalerSet(10 + 1); // TAD = X*11 = 171.875 ns
             break;
         default:
             break;
@@ -173,8 +293,8 @@ static void InitModesCommon(void) {
     ADC1_SelectSampleTrigger(ADC1_TMR5_SOURCE);
     ADC1_AutomaticSamplingEnable();
     ADC1_SimultaneousSamplingEnable();
-    ADC1_ChannelSelectSet(current_channel_0);
-    ADC1_Positive123ChannelSelect(current_channel_123);
+    ADC1_ChannelSelectSet(CURRENT_CHANNEL_0);
+    ADC1_Positive123ChannelSelect(CURRENT_CHANNEL_123);
     ADC1_Negative123ChannelSelect(0);
     ADC1_ConversionClockPrescalerSet(2); // Conversion rate = 16 MHz
     ADC1_Enable();
@@ -184,4 +304,10 @@ static void InitModesCommon(void) {
 static void EnableDMA(void) {
     AD1CON1bits.ADDMABM = 1;
     AD1CON4bits.ADDMAEN = 1;
+}
+
+void ADC1_WaitForInterruptEvent(void) {
+    ADC1_InterruptFlagClear();
+    while (!_AD1IF);
+    ADC1_InterruptFlagClear();
 }

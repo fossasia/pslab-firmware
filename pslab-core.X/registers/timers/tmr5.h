@@ -4,25 +4,11 @@
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "timer_params.h"
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {
 #endif
-
-    /**
-      @Summary
-       List of available prescalers.
-
-      @Description
-       These prescalers can be passed to the TMR5_SetPrescaler routine in order to
-       slow down the TMR by a certain factor.
-     */
-    typedef enum {
-        TMR5_PRESCALER_1,
-        TMR5_PRESCALER_8,
-        TMR5_PRESCALER_64,
-        TMR5_PRESCALER_256,
-    } TMR5_PRESCALER;
 
     /**
       @Summary
@@ -159,12 +145,12 @@ extern "C" {
         This routine sets a prescaler which slows down the TMR by a factor.
 
       @Param
-        Pass the desired prescaler from the TMR5_PRESCALER list.
+        Pass the desired prescaler from the TIMER_PARAMS_PRESCALER list.
 
       @Returns
         None
      */
-    inline static void TMR5_SetPrescaler(TMR5_PRESCALER prescaler) {
+    inline static void TMR5_SetPrescaler(TIMER_PARAMS_PRESCALER prescaler) {
         T5CONbits.TCKPS = prescaler;
     }
 
@@ -184,7 +170,7 @@ extern "C" {
     inline static void TMR5_InterruptDisable(void) {
         IEC1bits.T5IE = 0;
     }
-    
+
     /**
       @Summary
         Clears the TMR interrupt flag.
@@ -201,6 +187,10 @@ extern "C" {
     inline static void TMR5_InterruptFlagClear(void) {
         IFS1bits.T5IF = 0;
     }
+    
+    void TMR5_PrescalerSet(TIMER_PARAMS_PRESCALER scale);
+    
+    void TMR5_WaitForInterruptEvent(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }

@@ -8,146 +8,81 @@
 #include "../helpers/buffer.h"
 #include "../commands.h"
 
-#define MAX_CHANNELS 4
-
-/* Static globals */
-static uint8_t volatile TRIGGERED = 0;
-static uint8_t volatile TRIGGER_READY = 0;
-static uint8_t TRIGGER_CHANNEL = 0;
-static uint8_t CHANNELS = 0;
-
-static uint16_t DELAY;
-static const uint16_t TRIGGER_TIMEOUT = 50000;
-static uint16_t volatile TRIGGER_WAITING = 0;
-static uint16_t TRIGGER_LEVEL = 0;
-static uint16_t TRIGGER_PRESCALER = 0;
-
-static int16_t volatile* volatile BUFFER_IDX[MAX_CHANNELS];
-static uint16_t volatile* ADCVALS[MAX_CHANNELS] = {
-    &ADC1BUF0, &ADC1BUF1, &ADC1BUF2, &ADC1BUF3
-};
-static uint16_t volatile SAMPLES_CAPTURED;
-static uint16_t SAMPLES_REQUESTED;
-
 /* Static function prototypes */
 static void Capture(void);
 static void ResetTrigger(void);
 static void SetTimeGap(void);
 static void SetCS(uint8_t channel, uint8_t value);
 
-/**
- * @brief Handle trigger and data collection from ADC.
- * 
- * @description
- * This interrupt handler is called every time the ADC finishes a conversion, if
- * the ADC interrupt is enabled. It checks if the trigger condition is
- * fulfilled, and if so copies ADC values into the buffer.
- */
-void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
-    uint16_t adval;
-    int i;
-    
-    ADC1_InterruptFlagClear();
-    LED_SetHigh();
-    
-    if (TRIGGERED) {
-        for (i = 0; i <= CHANNELS; i++) *(BUFFER_IDX[i]++) = *ADCVALS[i];
-        
-        SAMPLES_CAPTURED++;
-        LED_SetLow();
-        if (SAMPLES_CAPTURED == SAMPLES_REQUESTED) {
-            ADC1_InterruptDisable();
-            LED_SetHigh();
-        }
-    } else {
-        for (i = 0; i < MAX_CHANNELS; i++) {
-            if (TRIGGER_CHANNEL & 1 << i) adval = *ADCVALS[i];
-        }
-
-        // If the trigger hasn't timed out, check for trigger condition.
-        if (TRIGGER_WAITING < TRIGGER_TIMEOUT) {
-            TRIGGER_WAITING += (DELAY >> TRIGGER_PRESCALER);
-            if (!TRIGGER_READY && adval > TRIGGER_LEVEL + 10)TRIGGER_READY = 1;
-            else if (adval <= TRIGGER_LEVEL && TRIGGER_READY) {
-                TRIGGERED = 1;
-            }
-        }
-        // If the trigger has timed out, then proceed to data acquisition.
-        else {
-            TRIGGERED = 1;
-        }
-    }
-}
-
 response_t OSCILLOSCOPE_CaptureOne(void) {
-    CHANNELS = 0; // Capture one channel.
+    SetCHANNELS(0); // Capture one channel.
     Capture();    
     return SUCCESS;
 }
 
 response_t OSCILLOSCOPE_CaptureTwo(void) {
-    CHANNELS = 1; // Capture two channels.
+    SetCHANNELS(1); // Capture two channels.
     Capture();
     return SUCCESS;
 }
 
 response_t OSCILLOSCOPE_CaptureThree(void) {
-    CHANNELS = 2; // Capture four channels, but ignore the fourth.
+    SetCHANNELS(2); // Capture four channels, but ignore the fourth.
     Capture();
     return SUCCESS;
 }
 
 response_t OSCILLOSCOPE_CaptureFour(void) {
-    CHANNELS = 3; // Capture four channels.
+    SetCHANNELS(3);  // Capture four channels.
     Capture();
     return SUCCESS;
 }
 
 static void Capture(void) {
     uint8_t config = UART1_Read();
-    SAMPLES_REQUESTED = UART1_ReadInt();
-    DELAY = UART1_ReadInt();  // Wait DELAY / 8 us between samples.
+    SetSAMPLES_REQUESTED(UART1_ReadInt());
+    SetDELAY(UART1_ReadInt()); // Wait DELAY / 8 us between samples.
 
     uint8_t ch0sa = config & 0x0F;
     uint8_t ch123sa = config & 0x10;
     uint8_t trigger = config & 0x80;
 
     ADC1_SetOperationMode(ADC1_10BIT_SIMULTANEOUS_MODE, ch0sa, ch123sa);
-    ADC1_ConversionChannelsSet(CHANNELS);
+    ADC1_ConversionChannelsSet(GetCHANNELS());
 
     if (trigger) ResetTrigger();
-    else TRIGGERED = 1;
+    else SetTRIGGERED(1);
 
     int i;
-    for (i = 0; i <= CHANNELS; i++) {
-        BUFFER_IDX[i] = &BUFFER[i * SAMPLES_REQUESTED];
+    for (i = 0; i <= GetCHANNELS(); i++) {
+        SetBUFFER_IDX(i, &BUFFER[i * GetSAMPLES_REQUESTED()]);
     }
     
-    SAMPLES_CAPTURED = 0;
-    BUFFER_IDX[0] = &BUFFER[0];
+    SetSAMPLES_CAPTURED(0);
+    SetBUFFER_IDX(0, &BUFFER[0]);
     SetTimeGap();
     LED_SetLow();
 }
 
 response_t OSCILLOSCOPE_CaptureDMA(void) {
     uint8_t config = UART1_Read();
-    SAMPLES_REQUESTED = UART1_ReadInt();
-    DELAY = UART1_ReadInt();  // Wait DELAY / 8 us between samples.
+    SetSAMPLES_REQUESTED(UART1_ReadInt());
+    SetDELAY(UART1_ReadInt());  // Wait DELAY / 8 us between samples.
 
     uint8_t ch0sa = config & 0x0F;
     uint8_t mode = config & 0x80 ? ADC1_12BIT_DMA_MODE : ADC1_10BIT_DMA_MODE;
 
-    CHANNELS = 0; // Capture one channel.
+    SetCHANNELS(0);  // Capture one channel.
     ADC1_SetOperationMode(mode, ch0sa, 0);
 
     DMA_StartAddressASet(DMA_CHANNEL_0, (uint16_t) &BUFFER[0]);
     DMA_PeripheralAddressSet(DMA_CHANNEL_0, (uint16_t) &ADC1BUF0);
-    DMA_TransferCountSet(DMA_CHANNEL_0, SAMPLES_REQUESTED - 1);
+    DMA_TransferCountSet(DMA_CHANNEL_0, GetSAMPLES_REQUESTED() - 1);
     DMA_FlagInterruptClear(DMA_CHANNEL_0);
     DMA_InterruptEnable(DMA_CHANNEL_0);
     DMA_ChannelEnable(DMA_CHANNEL_0);
 
-    SAMPLES_CAPTURED = SAMPLES_REQUESTED; // Assume it's all over already.
+    SetSAMPLES_CAPTURED(GetSAMPLES_REQUESTED()); // Assume it's all over already.
     SetTimeGap();
     LED_SetLow();
     
@@ -155,34 +90,32 @@ response_t OSCILLOSCOPE_CaptureDMA(void) {
 }
 
 static void ResetTrigger(void) {
-    TRIGGER_WAITING = 0;
-    TRIGGER_READY = 0;
-    TRIGGERED = 0;
+    SetTRIGGER_WAITING(0);
+    SetTRIGGER_READY(0);
+    SetTRIGGERED(0);
 }
 
 static void SetTimeGap(void) {
     TMR5_Initialize();
     TMR5_StopWhenIdle();
-    TMR5_Period16BitSet(DELAY - 1);
-    TMR5_SetPrescaler(TMR5_PRESCALER_8);
+    TMR5_Period16BitSet(GetDELAY() - 1);
+    TMR5_SetPrescaler(TMR_PRESCALER_8);
     TMR5_InterruptFlagClear();
     TMR5_InterruptDisable();
     TMR5_Start();
 }
 
 response_t OSCILLOSCOPE_GetCaptureStatus(void) {
-    uint8_t conversion_done;
-    conversion_done = SAMPLES_CAPTURED == SAMPLES_REQUESTED;
-    UART1_Write(conversion_done);
-    UART1_WriteInt(SAMPLES_CAPTURED);
+    UART1_Write(GetCONVERSION_DONE());
+    UART1_WriteInt(GetSAMPLES_CAPTURED());
     return SUCCESS;
 }
 
 response_t OSCILLOSCOPE_ConfigureTrigger(void) {
     uint8_t config = UART1_Read();
-    TRIGGER_CHANNEL = config & 0x03;
-    TRIGGER_PRESCALER = config >> 4;
-    TRIGGER_LEVEL = UART1_ReadInt();
+    SetTRIGGER_CHANNEL(config & 0x03);
+    SetTRIGGER_PRESCALER(config >> 4);
+    SetTRIGGER_LEVEL(UART1_ReadInt());
     return SUCCESS;
 }
 

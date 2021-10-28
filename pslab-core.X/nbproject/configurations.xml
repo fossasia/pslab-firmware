@@ -51,6 +51,7 @@
         <logicalFolder name="converters" displayName="converters" projectFiles="true">
           <itemPath>registers/converters/adc1.h</itemPath>
           <itemPath>registers/converters/adc_module_features.h</itemPath>
+          <itemPath>registers/converters/ctmu.h</itemPath>
         </logicalFolder>
         <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.h</itemPath>
@@ -69,6 +70,7 @@
           <itemPath>registers/timers/tmr1.h</itemPath>
           <itemPath>registers/timers/tmr2.h</itemPath>
           <itemPath>registers/timers/tmr5.h</itemPath>
+          <itemPath>registers/timers/timer_params.h</itemPath>
         </logicalFolder>
       </logicalFolder>
       <logicalFolder name="sdcard" displayName="sdcard" projectFiles="true">
@@ -142,6 +144,7 @@
         </logicalFolder>
         <logicalFolder name="converters" displayName="converters" projectFiles="true">
           <itemPath>registers/converters/adc1.c</itemPath>
+          <itemPath>registers/converters/ctmu.c</itemPath>
         </logicalFolder>
         <logicalFolder name="memory" displayName="memory" projectFiles="true">
           <itemPath>registers/memory/dma.c</itemPath>

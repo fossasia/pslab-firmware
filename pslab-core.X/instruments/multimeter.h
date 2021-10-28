@@ -16,6 +16,18 @@ extern "C" {
      * @return SUCCESS
      */
     response_t MULTIMETER_GetVoltageSummed(void);
+    
+    /**
+     * @brief Charge or discharge capacitor through a resistor
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_ChargeCapacitor(void);
+    
+    /**
+     * @brief Use CTMU to measure capacitance value and read it
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_GetCapacitance(void);
 
 #ifdef	__cplusplus
 }

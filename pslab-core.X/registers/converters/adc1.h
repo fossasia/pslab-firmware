@@ -9,6 +9,9 @@
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {
 #endif
+    
+#define MAX_CHANNELS    4
+#define TRIGGER_TIMEOUT 50000
 
     /** Scan Selected Macro Definition
  
@@ -41,6 +44,30 @@ extern "C" {
         channel_AN1, //Channel Name:AN1   Assigned to:Dedicated Channel2
         channel_AN2, //Channel Name:AN2   Assigned to:Dedicated Channel3
     } ADC1_CHANNEL;
+    
+    typedef enum {
+        CH0_CHANNEL_CH2                   = 0b00000,
+        CH0_CHANNEL_CH3                   = 0b00001,
+        CH0_CHANNEL_MIC                   = 0b00010,
+        CH0_CHANNEL_CH1                   = 0b00011,
+        CH0_CHANNEL_RGB                   = 0b00100,
+        CH0_CHANNEL_CAP                   = 0b00101,
+        CH0_CHANNEL_AN6                   = 0b00110, // CAP Resistor
+        CH0_CHANNEL_RES                   = 0b00111,
+        CH0_CHANNEL_VOL                   = 0b01000,
+        CH0_CHANNEL_AN9                   = 0b01001,
+        CH0_CHANNEL_AN10                  = 0b01010,
+        CH0_CHANNEL_AN11                  = 0b01011,
+        CH0_CHANNEL_AN12                  = 0b01100,
+        CH0_CHANNEL_AN13                  = 0b01101,
+        CH0_CHANNEL_AN14                  = 0b01110,
+        CH0_CHANNEL_AN15                  = 0b01111,
+        CH0_CHANNEL_OA1                   = 0b11000,
+        CH0_CHANNEL_OA2                   = 0b11001,
+        CH0_CHANNEL_OA3                   = 0b11010,
+        CH0_CHANNEL_CTMU_Temp             = 0b11110,
+        CH0_CHANNEL_CTMU                  = 0b11111,
+    } ADC1_CH0_CHANNEL;
 
     /** PSLab ADC operation modes
  
@@ -438,7 +465,7 @@ extern "C" {
             ADC1_Disable(); 
         </code>
      */
-    inline static bool ADC1_IsConversionComplete(ADC1_CHANNEL channel) {
+    inline static bool ADC1_IsConversionComplete(void) {
         bool status;
 
         status = AD1CON1bits.DONE;
@@ -724,13 +751,13 @@ extern "C" {
         None
 
       @Param
-        Pass in required channel from the ADC1_CHANNEL list
+        Pass in required channel from the ADC1_CH0_CHANNEL list
   
       @Example
         Refer to ADC1_Initialize(); for an example
  
      */
-    inline static void ADC1_ChannelSelectSet(ADC1_CHANNEL channel) {
+    inline static void ADC1_ChannelSelectSet(ADC1_CH0_CHANNEL channel) {
         AD1CHS0bits.CH0SA = channel;
     }
 
@@ -904,7 +931,7 @@ extern "C" {
         AD1CON1bits.ASAM = 0;
     }
 
-        /**
+    /**
       @Summary
          Selects the trigger source that ends sampling and starts conversion.
 
@@ -1032,7 +1059,57 @@ extern "C" {
 
     void ADC1_SetOperationMode(
             ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123);
+    
+    /**
+      @Summary
+        Wait until the AD1IF flag is set
+      @Description
+        This routine enters into an idle stage until the interrupt flag is set
+        by an external operation. 
+      @Param
+        None
+      @Returns
+        None
+     */
+    void ADC1_WaitForInterruptEvent(void);
+    
+    // Getters and Setters for ADC Interrupt Service Routine variables
+    
+    void SetTRIGGERED(uint8_t);
+    uint8_t GetTRIGGERED(void);
 
+    void SetTRIGGER_WAITING(uint16_t);
+    uint16_t GetTRIGGER_WAITING(void);    
+
+    void SetTRIGGER_CHANNEL(uint8_t);
+    uint8_t GetTRIGGER_CHANNEL(void);
+
+    void SetTRIGGER_READY(uint8_t);
+    uint8_t GetTRIGGER_READY(void);
+
+    void SetTRIGGER_LEVEL(uint16_t);
+    uint16_t GetTRIGGER_LEVEL(void);
+
+    void SetTRIGGER_PRESCALER(uint16_t);
+    uint16_t GetTRIGGER_PRESCALER(void);   
+
+    void SetCHANNELS(uint8_t);
+    uint8_t GetCHANNELS(void);
+
+    void SetSAMPLES_REQUESTED(uint16_t);
+    uint16_t GetSAMPLES_REQUESTED(void);
+    
+    void SetSAMPLES_CAPTURED(uint16_t);
+    uint16_t GetSAMPLES_CAPTURED(void);
+    
+    void SetDELAY(uint16_t);
+    uint16_t GetDELAY(void);
+    
+    void SetCONVERSION_DONE(uint8_t V);
+    uint8_t GetCONVERSION_DONE(void);
+    
+    void SetBUFFER_IDX(uint8_t, volatile int16_t*);
+    
 #ifdef __cplusplus  // Provide C++ Compatibility
 }
 #endif
