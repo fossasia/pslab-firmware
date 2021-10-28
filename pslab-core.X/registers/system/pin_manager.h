@@ -280,6 +280,22 @@
 #define SQR4_SetDigitalInput()         (_TRISC9 = 1)
 #define SQR4_SetDigitalOutput()        (_TRISC9 = 0)
 
+/*******************************************************************************
+ * Digital Pin Mappings
+ ******************************************************************************/
+#define PIN_MANAGER_DIGITAL_PINS_LA1     42 // I/O
+#define PIN_MANAGER_DIGITAL_PINS_LA2     43 // I/O
+#define PIN_MANAGER_DIGITAL_PINS_LA3     44 // I
+#define PIN_MANAGER_DIGITAL_PINS_LA4     45 // I
+#define PIN_MANAGER_DIGITAL_PINS_COMP4    4 // Virtual
+#define PIN_MANAGER_DIGITAL_PINS_SPI_CS  52 // I
+#define PIN_MANAGER_DIGITAL_PINS_FREQ    46 // I
+
+/**
+    Section: Variable Prototypes
+ */
+extern uint8_t PIN_MANAGER_DIGITAL_PINS[];
+
 /**
     Section: Function Prototypes
  */

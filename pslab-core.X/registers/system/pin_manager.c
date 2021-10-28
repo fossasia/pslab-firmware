@@ -3,6 +3,16 @@
 #include "pin_manager.h"
 #include "../../bus/uart/uart1.h"
 
+uint8_t PIN_MANAGER_DIGITAL_PINS[] = {
+    PIN_MANAGER_DIGITAL_PINS_LA1,
+    PIN_MANAGER_DIGITAL_PINS_LA2,
+    PIN_MANAGER_DIGITAL_PINS_LA3,
+    PIN_MANAGER_DIGITAL_PINS_LA4,
+    PIN_MANAGER_DIGITAL_PINS_COMP4,
+    PIN_MANAGER_DIGITAL_PINS_SPI_CS,
+    PIN_MANAGER_DIGITAL_PINS_FREQ
+};
+
 void PIN_MANAGER_Initialize(void) {
 
     // PTG WatchDogTimer is disabled

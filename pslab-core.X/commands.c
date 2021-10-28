@@ -5,6 +5,7 @@
 #include "instruments/oscilloscope.h"
 #include "instruments/wavegenerator.h"
 #include "registers/system/pin_manager.h"
+#include "instruments/sensors.h"
 
 /**
  * This is used to check that a received secondary command does not exceed the
@@ -246,7 +247,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 20 GET_ALTERNATE_HIGH_FREQUENCY  21                        22 SETRGB3                  23 START_CTMU
         Unimplemented,                   Undefined,                Unimplemented,              Unimplemented,
      // 24 STOP_CTMU                     25 START_COUNTING         26 FETCH_COUNT              27 FILL_BUFFER
-        Unimplemented,                   Unimplemented,            Unimplemented,              Unimplemented,
+        Unimplemented,                   SENSORS_StartCounter,     SENSORS_GetCounter,         Unimplemented,
     },
     { // 12 PASSTHROUGH
      // 0          1                        2          3
