@@ -11,12 +11,10 @@ void CVR_Initialize(void) {
     CVRCONbits.CVR1OE = 0;
     // CVRSRC/32 step-size
     CVRCONbits.CVRR = 0;
-    // Comparator voltage reference source, CVRSRC = AVDD ? AVSS
+    // Comparator voltage reference source, CVRSRC = AVDD - AVSS
     CVRCONbits.CVRSS = 0;
     // CVREFIN = (CVRSRC/4) + (CVR[3:0]/32) x (CVRSRC)
     CVRCONbits.CVR = 0b000;
-    // CVRR 0.25 CVRSRC to 0.75 CVRSRC, with CVRSRC/32 step size; CVR 0; CVR1OE disabled; CVR2OE enabled;     
-    CVRCON = 0x4080;
 }
 
 void CVR_ComparatorReference1Connection(bool connect) {

@@ -61,6 +61,14 @@ extern "C" {
      */
     void CVR_ComparatorReference2Connection(bool connect);
 
+    inline static void CVR_ComparatorPowerUp(void) {
+      CVRCONbits.CVREN = 1;
+    }
+
+    inline static void CVR_SetReferenceVoltage(uint8_t V) {
+      CVRCONbits.CVR = V;
+    }
+ 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }
 #endif 

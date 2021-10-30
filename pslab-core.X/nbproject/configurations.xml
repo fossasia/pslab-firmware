@@ -49,6 +49,7 @@
           <itemPath>registers/comparators/cmp4.h</itemPath>
           <itemPath>registers/comparators/cvr.h</itemPath>
           <itemPath>registers/comparators/ic_params.h</itemPath>
+          <itemPath>registers/comparators/cmp_params.h</itemPath>
         </logicalFolder>
         <logicalFolder name="converters" displayName="converters" projectFiles="true">
           <itemPath>registers/converters/adc1.h</itemPath>
