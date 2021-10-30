@@ -29,9 +29,29 @@ extern "C" {
     
      */
     void CMP4_Initialize(void);
+    
+    void CMP4_InitializeStatus(void);
+    void CMP4_InitializeControl(void);
+    void CMP4_InitializeMaskSource(void);
+    void CMP4_InitializeMaskGatingControl(void);
+    void CMP4_InitializeFilterControl(void);
+
     /**
-        void CMP4_Initialize(void)
+      @Summary
+        This function setup CMP4 module as a voltage comparator
+
+      @Description
+        This routine sets the bits in CMP4 configuration registers to enable the
+        module as a voltage comparator sensitive to an external source pin (RES)
+        and set output value in C4OUT pin 
+
+      @Param
+        None.
+
+      @Returns 
+        None
      */
+    void CMP4_SetupComparator(void);
 
     /**
       @Summary

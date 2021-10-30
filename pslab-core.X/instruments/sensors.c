@@ -3,6 +3,8 @@
  * instruments
  ******************************************************************************/
 
+#include "../registers/comparators/cmp4.h"
+#include "../registers/comparators/cvr.h"
 #include "../registers/comparators/ic1.h"
 #include "../registers/comparators/ic2.h"
 #include "../registers/comparators/ic3.h"
@@ -59,7 +61,11 @@ response_t SENSORS_StartCounter(void) {
     T2CONbits.TCS = 1;
 
     if (channel == 4) {
-        // TODO: Enable comparator
+        CVR_Initialize();
+        CVR_SetReferenceVoltage(7); // ~ 1.54V
+        CVR_ComparatorPowerUp();
+        // Configure CMP4 comparator module
+        CMP4_SetupComparator();
     }
 
     // Map incoming pin to TMR2 
