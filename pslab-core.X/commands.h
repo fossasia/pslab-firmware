@@ -30,6 +30,7 @@ extern "C" {
 #define NUM_TIMING_CMDS 17
 #define NUM_COMMON_CMDS 27
 #define NUM_PASSTHRU_CMDS 1
+#define NUM_SENSOR_CMDS 4
 #define NUM_SECONDARY_CMDS_MAX NUM_COMMON_CMDS // Change if necessary.
 
 /**
