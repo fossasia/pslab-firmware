@@ -1,4 +1,5 @@
 #include "i2c.h"
+#include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"
 
 /**
@@ -32,8 +33,6 @@ typedef struct {
     uint8_t count; // a count of trb's in the trb list
     I2C_TRANSACTION_REQUEST_BLOCK *ptrb_list; // pointer to the trb list
     I2C_MESSAGE_STATUS *pTrFlag; // set with the error of the last trb sent.
-    // if all trb's are sent successfully,
-    // then this is I2C_MESSAGE_COMPLETE
 } I2C_TR_QUEUE_ENTRY;
 
 /**
@@ -90,20 +89,20 @@ typedef enum {
 #endif
 
 // Writing the I2C2TRN register starts a master transmission
-#define I2C_TRANSMIT_REG                       I2C2TRN			    // Defines the transmit register used to send data.
-#define I2C_RECEIVE_REG                        I2C2RCV	            // Defines the receive register used to receive data.
+#define I2C_TRANSMIT_REG                       I2C2TRN              // Defines the transmit register used to send data.
+#define I2C_RECEIVE_REG                        I2C2RCV              // Defines the receive register used to receive data.
 
 // The following control bits are used in the I2C state machine to manage
 // the I2C module and determine next states.
-#define I2C_WRITE_COLLISION_STATUS_BIT         I2C2STATbits.IWCOL	// Defines the write collision status bit.
-#define I2C_ACKNOWLEDGE_STATUS_BIT             I2C2STATbits.ACKSTAT	// I2C ACK status bit.
+#define I2C_WRITE_COLLISION_STATUS_BIT         I2C2STATbits.IWCOL   // Defines the write collision status bit.
+#define I2C_ACKNOWLEDGE_STATUS_BIT             I2C2STATbits.ACKSTAT // I2C ACK status bit.
 
-#define I2C_START_CONDITION_ENABLE_BIT         I2C2CONbits.SEN		// I2C START control bit.
-#define I2C_REPEAT_START_CONDITION_ENABLE_BIT  I2C2CONbits.RSEN	    // I2C Repeated START control bit.
-#define I2C_RECEIVE_ENABLE_BIT                 I2C2CONbits.RCEN	    // I2C Receive enable control bit.
-#define I2C_STOP_CONDITION_ENABLE_BIT          I2C2CONbits.PEN		// I2C STOP control bit.
-#define I2C_ACKNOWLEDGE_ENABLE_BIT             I2C2CONbits.ACKEN 	// I2C ACK start control bit.
-#define I2C_ACKNOWLEDGE_DATA_BIT               I2C2CONbits.ACKDT	// I2C ACK data control bit.
+#define I2C_START_CONDITION_ENABLE_BIT         I2C2CONbits.SEN      // I2C START control bit.
+#define I2C_REPEAT_START_CONDITION_ENABLE_BIT  I2C2CONbits.RSEN     // I2C Repeated START control bit.
+#define I2C_RECEIVE_ENABLE_BIT                 I2C2CONbits.RCEN     // I2C Receive enable control bit.
+#define I2C_STOP_CONDITION_ENABLE_BIT          I2C2CONbits.PEN      // I2C STOP control bit.
+#define I2C_ACKNOWLEDGE_ENABLE_BIT             I2C2CONbits.ACKEN    // I2C ACK start control bit.
+#define I2C_ACKNOWLEDGE_DATA_BIT               I2C2CONbits.ACKDT    // I2C ACK data control bit.
 
 /**
  Section: Local Functions
@@ -114,7 +113,7 @@ static void I2C_Stop(I2C_MESSAGE_STATUS completion_code);
 /**
  Section: Local Variables
  */
-static uint16_t I2C_BRG = 0x272;
+static uint16_t I2C_BRG = I2C_BAUD_RATE_100KHZ;
 void I2C_SetBaudRate(uint16_t V) { I2C_BRG = V; }
 uint16_t I2C_GetBaudRate(void) { return I2C_BRG; }
 
@@ -217,6 +216,14 @@ void I2C_InitializeSTAT(void) {
     I2C2STATbits.TBF = 0;
 }
 
+void I2C_InitializeIfNot(I2C_BAUD_RATES baud_rate, bool interrupts) {
+    if (I2C_GetBaudRate() != baud_rate) {
+        I2C_SetBaudRate(baud_rate);
+        I2C_Initialize();
+    }
+    interrupts ? I2C_InterruptEnable() : I2C_InterruptDisable();
+}
+
 uint8_t I2C_ErrorCountGet(void) {
     uint8_t ret;
     ret = i2c_object.i2cErrors;
@@ -239,7 +246,7 @@ void __attribute__((interrupt, no_auto_psv)) _MI2C2Interrupt(void) {
     static uint8_t i2c_bytes_left;
     static uint8_t i2c_10bit_address_restart = 0;
 
-    IFS3bits.MI2C2IF = 0;
+    I2C_InterruptFlagClear();
 
     // Check first if there was a collision.
     // If we have a Write Collision, reset and go to idle state */
@@ -583,4 +590,74 @@ bool I2C_MasterQueueIsEmpty(void) {
 
 bool I2C_MasterQueueIsFull(void) {
     return ((bool) i2c_object.trStatus.s.full);
+}
+
+response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
+    
+    I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
+
+    LED_SetLow();
+    // Retry transmission
+    uint16_t timeOut = 0;
+    uint16_t slaveTimeOut = 0;
+
+    while (status != I2C_MESSAGE_FAIL) {
+        I2C_MasterWrite(pdata, length, address, &status);
+        while (status == I2C_MESSAGE_PENDING) {
+            DELAY_us(100);
+            if (slaveTimeOut == SLAVE_I2C_GENERIC_DEVICE_TIMEOUT) break;
+            else slaveTimeOut++;
+        }
+        if ((slaveTimeOut == SLAVE_I2C_GENERIC_DEVICE_TIMEOUT) ||
+                (status == I2C_MESSAGE_COMPLETE)) break;
+        if (timeOut == SLAVE_I2C_GENERIC_RETRY_MAX) break;
+        else timeOut++;
+    }
+    LED_SetHigh();
+    
+    if (status == I2C_MESSAGE_FAIL || 
+            status == I2C_STUCK_START || 
+            status == I2C_MESSAGE_ADDRESS_NO_ACK || 
+            status == I2C_DATA_NO_ACK || 
+            status == I2C_LOST_STATE) {
+        return FAILED;
+    }
+    return SUCCESS;
+}
+
+response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length) {
+
+    I2C_TRANSACTION_REQUEST_BLOCK readTRB[2];
+    I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
+
+    uint16_t timeOut = 0;
+    uint16_t slaveTimeOut = 0;
+
+    I2C_MasterWriteTRBBuild(&readTRB[0], start, 1 , address);
+    I2C_MasterReadTRBBuild(&readTRB[1], pdata, length, address);
+
+    LED_SetLow();
+    while (status != I2C_MESSAGE_FAIL) {
+        I2C_MasterTRBInsert(2, readTRB, &status);
+        while (status == I2C_MESSAGE_PENDING) {
+            DELAY_us(100);
+            if (slaveTimeOut == SLAVE_I2C_GENERIC_DEVICE_TIMEOUT) break;
+            else slaveTimeOut++;
+        }
+
+        if (status == I2C_MESSAGE_COMPLETE) break;
+
+        if (timeOut == SLAVE_I2C_GENERIC_RETRY_MAX) break;
+        else timeOut++;
+    }
+    LED_SetHigh();
+    
+    if (status == I2C_MESSAGE_FAIL || 
+            status == I2C_STUCK_START || 
+            status == I2C_MESSAGE_ADDRESS_NO_ACK || 
+            status == I2C_DATA_NO_ACK || 
+            status == I2C_LOST_STATE) {
+        return FAILED;
+    }
+    return SUCCESS;
 }

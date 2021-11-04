@@ -18,3 +18,4 @@ pslab-core.X/nbproject/Package-*
 pslab-core.X/nbproject/private
 
 *.dump
+pslab-core.X/.vscode/*

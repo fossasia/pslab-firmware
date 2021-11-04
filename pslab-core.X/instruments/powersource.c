@@ -6,9 +6,8 @@
 #include "../registers/system/pin_manager.h"
 #include "powersource.h"
 
-static bool has_previous_power_source_config = false;
+response_t POWER_SOURCE_SetPower(void) {
 
-    LED_SetLow();
     uint8_t buffer[3];
     buffer[0] = 0x58 | ((UART1_Read() & 0x03) << 1); // Channel
     uint16_t power = UART1_ReadInt();
@@ -17,8 +16,5 @@ static bool has_previous_power_source_config = false;
 
     I2C_InitializeIfNot(I2C_BAUD_RATE_400KHZ, true);
     
-    response_t result = I2C_BulkWrite(buffer, 3, MCP4728_I2C_DEVICE_ADDRESS);
-    LED_SetHigh();
-
-    return result;
+    return I2C_BulkWrite(buffer, 3, MCP4728_I2C_DEVICE_ADDRESS);
 }

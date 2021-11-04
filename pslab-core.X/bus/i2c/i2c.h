@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <xc.h>
 
+#include "../../commands.h"
+
 #define SLAVE_I2C_GENERIC_RETRY_MAX           100
 #define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50
 
@@ -13,6 +15,11 @@
 extern "C" {
 #endif
 
+    typedef enum {
+        I2C_BAUD_RATE_100KHZ = 0x272,
+        I2C_BAUD_RATE_400KHZ = 0x90,
+        I2C_BAUD_RATE_1MHZ   = 0x32
+    } I2C_BAUD_RATES;
     /**
       I2C Driver Message Status Type Enumeration
 
@@ -172,6 +179,34 @@ extern "C" {
 
     void I2C_InitializeCON(void);
     void I2C_InitializeSTAT(void);
+
+    /**
+     *  @Summary 
+     *      Initialize I2C interface if it is not initialized before
+     * 
+     *  @Description
+     *      This method will help making I2C transactions execute faster by
+     *      reinitializing registers only if the settings are new. The only
+     *      setting that can be changed is the baud rate and if it is the 
+     *      same for a different transactions, this will skip the initialization
+     *      process to move right away to transaction.
+     * 
+     *  @Param
+     *      baud_rate - Speed at which the communication takes place. Could be
+     *      I2C_BAUD_RATE_100KHZ or I2C_BAUD_RATE_400KHZ or I2C_BAUD_RATE_1MHZ
+     * 
+     *  @Param
+     *      interrupts - Boolean condition to whether enable or disable
+     *      interrupts. Note that it is necessary to enable interrupts with
+     *      newly implemented I2C_BulkRead and I2C_BulkWrite functions. However
+     *      interrupts should be disabled for generic I2C access functions.
+     *      Support for generic I2C functions will be depreciated in a future
+     *      release.
+     * 
+     *  @Returns
+     *      None
+     */
+    void I2C_InitializeIfNot(I2C_BAUD_RATES baud_rate, bool interrupts);
 
     /**
         @Summary
@@ -518,7 +553,6 @@ extern "C" {
             <code>
                 Refer to I2C_MasterTRBInsert() for an example	
             </code>
-
      */
     void I2C_MasterReadTRBBuild(
             I2C_TRANSACTION_REQUEST_BLOCK *ptrb,
@@ -641,6 +675,56 @@ extern "C" {
      */
     bool I2C_MasterQueueIsFull(void);
     
+    /**
+        @Summary
+            This function writes and control data transfer from master(PSLab) to
+            a slave device.
+
+        @Description
+            Using primitive I2C functions, this method initiates a multiple write 
+            transaction and retry and wait until it is either failed or completed. 
+            The return value will show if it's failed or not.
+
+        @Preconditions
+            I2C interface needs to be initiated
+
+        @Param
+            *pdata - A pointer to the block of data to be received
+
+        @Param
+            length - The length of the data block to be transmitted
+
+        @Param
+            address - The address of the i2c peripheral to be accessed
+     */
+    response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address);
+
+    /**
+        @Summary
+            This function reads consecutive registers from a slave device
+
+        @Description
+            Using primitive I2C functions, this method initiates a multiple read 
+            transaction and retry and wait until it is either failed or completed.
+            The return value will show if it's failed or not.
+
+        @Preconditions
+            I2C interface needs to be initiated
+
+        @Param
+            start - Start address of the register block
+
+        @Param
+            address - The address of the i2c peripheral to be accessed
+
+        @Param
+            *pdata - A pointer to the block of data to be received
+
+        @Param
+            length - The length of the data block to be received
+     */
+    response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length);
+    
     inline static void I2C_InterruptDisable(void) {
         IEC3bits.MI2C2IE = 0;
     }
@@ -658,8 +742,8 @@ extern "C" {
     }
     
     // Getter and setter for variables
-    void I2C_SetBaudRate(uint16_t V);
-    uint16_t I2C_GetBaudRate(void);
+    void I2C_SetBaudRate(I2C_BAUD_RATES V);
+    I2C_BAUD_RATES I2C_GetBaudRate(void);
 
 #ifdef __cplusplus
 }

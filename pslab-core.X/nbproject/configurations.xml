@@ -25,6 +25,7 @@
         <itemPath>helpers/delay.h</itemPath>
         <itemPath>helpers/buffer.h</itemPath>
         <itemPath>helpers/device.h</itemPath>
+        <itemPath>helpers/rtc.h</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.h</itemPath>
@@ -124,6 +125,7 @@
         <itemPath>helpers/delay.c</itemPath>
         <itemPath>helpers/buffer.c</itemPath>
         <itemPath>helpers/device.c</itemPath>
+        <itemPath>helpers/rtc.c</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.c</itemPath>
