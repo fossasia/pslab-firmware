@@ -11,9 +11,17 @@
 #define SLAVE_I2C_GENERIC_RETRY_MAX           100
 #define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50
 
+#define ENABLE_INTERRUPTS                     true
+#define DISABLE_INTERRUPTS                    false
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+    typedef enum {
+        I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE = 0,
+        I2C_RESPONSE_ACKNOWLEDGE          = 1
+    } I2C_RESPONSE;
 
     typedef enum {
         I2C_BAUD_RATE_100KHZ = 0x272,
@@ -724,7 +732,413 @@ extern "C" {
             length - The length of the data block to be received
      */
     response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length);
-    
+
+    /***************************************************************************
+     * Commands for state machine
+     **************************************************************************/
+    /**
+        @Summary
+            This function starts the I2C bus with interrupts disabled
+
+        @Description
+            This function uses pre-stored baudrate for I2C bus to initiate the
+            I2C module and disables interrupts to use raw I2C commands
+
+        @Preconditions
+            None
+
+        @Return
+            If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
+     */
+    response_t I2C_CommandStart(void);
+
+    /**
+        @Summary
+            This function stops the I2C bus
+
+        @Description
+            This function uses raw I2C commands to stop the I2C bus transactions
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandStop(void);
+
+    /**
+        @Summary
+            This function wait for a transaction to complete
+
+        @Description
+            This function uses raw I2C commands to hold other operations until
+            the current transaction is complete before a timer elapsed
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandWait(void);
+
+    /**
+        @Summary
+            This function sends out a byte over I2C bus
+
+        @Description
+            This function takes one argument over serial to transmit the data 
+            over the I2C bus using raw I2C commands.
+            1. (uint8) data
+               Data byte the needs to be transferred to slave device
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
+     */
+    response_t I2C_CommandSend(void);
+
+    /**
+        @Summary
+            This function sends out a byte over I2C bus without waiting for ACK
+
+        @Description
+            This function takes one argument over serial to transmit the data 
+            over the I2C bus using raw I2C commands without waiting for an 
+            acknowledgement from the slave device.
+            1. (uint8) data
+               Data byte the needs to be transferred to slave device
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandSendBurst(void);
+
+    /**
+        @Summary
+            This function sends out a restart signal
+
+        @Description
+            This function takes one argument over serial to initiate a restart
+            on the I2C bus using raw I2C commands.
+            1. (uint8) address
+               Slave device address
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
+     */
+    response_t I2C_CommandRestart(void);
+
+    /**
+        @Summary
+            This function reads a byte in continous mode
+
+        @Description
+            This function does not take any argument over serial. It will read
+            from I2C slave device and sends out an ACK to signal the slave that
+            the transaction is not finished yet.
+            This method should be followed by I2C_CommandReadEnd() to signal the
+            end of transaction.
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandReadMore(void);
+
+    /**
+        @Summary
+            This function reads the final byte from slave device
+
+        @Description
+            This function does not take any argument over serial. It will read
+            the last byte in a transaction from a slave device and sends out an
+            NACK signal to the slave indicating that the current transaction is
+            over.
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandReadEnd(void);
+
+    /**
+        @Summary
+            This function will re-initiate the I2C bus with a new baud rate
+
+        @Description
+            This function takes one argument over serial to re-initialize the
+            I2C bus with a new baud rate value.
+            1. (uint16) baud_rate
+               Baud rate value to be set
+
+        @Preconditions
+            None
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandConfig(void);
+
+    /**
+        @Summary
+            This function reads the STATUS register
+
+        @Description
+            This function reads and transmit over serial the Status register bits
+            on I2C module
+
+        @Preconditions
+            None
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandStatus(void);
+
+    /**
+        @Summary
+            This function reads a continous byte stream from slave device
+
+        @Description
+            This function takes three argument over serial to read the data 
+            over the I2C bus using raw I2C commands and the data is transmitted
+            back to host over serial byte by byte.
+            1. (uint8) device
+               Slave device address without tamperting the R/W bit (LSB)
+            2. (uint8) address
+               Slave device register address
+            3. (uint8) count
+               Number of bytes to read
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandReadBulk(void);
+
+    /**
+        @Summary
+            This function writes a continous byte stream to slave device
+
+        @Description
+            This function initially takes two argument over serial to write the 
+            data over the I2C bus using raw I2C commands.
+            1. (uint8) device
+               Slave device address without tamperting the R/W bit (LSB)
+            2. (uint8) count
+               Number of bytes to write
+            Then it will keep on transmitting the receiving bytes from serial for
+            count number of times.
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandWriteBulk(void);
+
+    /**
+        @Summary
+            This function enables I2C SMBus
+
+        @Description
+            This function takes no argument over serial. It will enable the 
+            system management bus subprotocol
+
+        @Preconditions
+            None
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandEnableSMBus(void);
+
+    /**
+        @Summary
+            This function disables I2C SMBus
+
+        @Description
+            This function takes no argument over serial. It will disable the 
+            system management bus subprotocol
+
+        @Preconditions
+            None
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandDisableSMBus(void);
+
+    /**
+        @Summary
+            This function initialize the I2C bus
+
+        @Description
+            This function takes no argument over serial. It will initialize the
+            I2C bus.
+
+        @Preconditions
+            None
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandInit(void);
+
+    /**
+        @Summary
+            This function will convert the clock line to an input
+
+        @Description
+            This function takes one argument over serial. It will set the SCL
+            pin to an input after setting it low for a period of time defined by
+            user.
+            1. (uint16) delay
+               Time to hold the SCL line low
+
+        @Preconditions
+            None
+
+        @Return
+            SUCCESS
+     */
+    response_t I2C_CommandPullDown(void);
+
+    /***************************************************************************
+     * Support functions for state machine commands
+     **************************************************************************/
+    /**
+        @Summary
+            This function starts the I2C bus
+
+        @Description
+            This function uses timers to enable and wait until the I2C bus is
+            ready for transmission
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_StartSignal(void);
+
+    /**
+        @Summary
+            This function stops the I2C bus
+
+        @Description
+            This function uses timers to disable and wait until the I2C bus is
+            stopped after a transaction
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_StopSignal(void);
+
+    /**
+        @Summary
+            This function sends out a repeated start signal
+
+        @Description
+            This function uses timers to send out a repeated start signal needed
+            when reading from I2C slaves
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_RestartSignal(void);
+
+    /**
+        @Summary
+            This function sends out an acknowldegement signal
+
+        @Description
+            This function uses timers to transmit an acknowledgement signal to 
+            slave device
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_AcknowledgeSignal(void);
+
+    /**
+        @Summary
+            This function sends out a negative acknowldegement signal
+
+        @Description
+            This function uses timers to transmit a negative acknowledgement 
+            signal to slave devices indicating it's a transaction complete from
+            master device
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_NAcknowledgeSignal(void);
+
+    /**
+        @Summary
+            This function wait until transmission is in progress
+
+        @Description
+            This function uses timers to stay idle until the transmit buffer is
+            empty
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_WaitSignal(void);
+
+    /**
+        @Summary
+            This function sends out a data byte over I2C bus
+
+        @Description
+            This function takes a byte as input argument and pass it onto I2C bus
+            and wait until it is out
+        
+        @Params
+            data: uint8_t data byte
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    void I2C_Transmit(uint8_t data);
+
+    /**
+        @Summary
+            This function reads from the receive buffer
+
+        @Description
+            This function reads from I2C RX buffer and return the data captured.
+            It will take an I2C_RESPONSE as argument to determine if it's the
+            last byte to read or continous read
+
+        @Params
+            I2C_RESPONSE: Response type from master (ACK or NACK)
+
+        @Preconditions
+            I2C interface needs to be initiated with interrupts disabled
+     */
+    uint8_t I2C_Receive(I2C_RESPONSE);
+
+    /***************************************************************************
+     * Interrupt flags and settings
+     **************************************************************************/
     inline static void I2C_InterruptDisable(void) {
         IEC3bits.MI2C2IE = 0;
     }
