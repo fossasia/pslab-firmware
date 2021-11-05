@@ -1,4 +1,5 @@
 #include "commands.h"
+#include "bus/i2c/i2c.h"
 #include "helpers/buffer.h"
 #include "helpers/device.h"
 #include "helpers/rtc.h"
@@ -125,20 +126,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,      Undefined,            Undefined,         Undefined,
     },
     { // 4 I2C
-     // 0                     1 I2C_START          2 I2C_SEND       3 I2C_STOP
-        Undefined,            Unimplemented,       Unimplemented,   Unimplemented,
-     // 4 I2C_RESTART         5 I2C_READ_END       6 I2C_READ_MORE  7 I2C_WAIT
-        Unimplemented,        Unimplemented,       Unimplemented,   Unimplemented,
-     // 8 I2C_SEND_BURST      9 I2C_CONFIG         10 I2C_STATUS    11 I2C_READ_BULK
-        Unimplemented,        Unimplemented,       Unimplemented,   Unimplemented,
-     // 12 I2C_WRITE_BULK     13 I2C_ENABLE_SMBUS  14 I2C_INIT      15 PULLDOWN_SCL
-        Unimplemented,        Unimplemented,       Unimplemented,   Unimplemented,
-     // 16 I2C_DISABLE_SMBUS  17                   18               19
-        Unimplemented,        Undefined,           Undefined,       Undefined,
-     // 20                    21                   22               23
-        Undefined,            Undefined,           Undefined,       Undefined,
-     // 24                    25                   26               27
-        Undefined,            Undefined,           Undefined,       Undefined,
+     // 0                               1 I2C_START                     2 I2C_SEND                      3 I2C_STOP
+        Undefined,                      I2C_CommandStart,               I2C_CommandSend,                I2C_CommandStop,
+     // 4 I2C_RESTART                   5 I2C_READ_END                  6 I2C_READ_MORE                 7 I2C_WAIT
+        I2C_CommandRestart,             I2C_CommandReadEnd,             I2C_CommandReadMore,            I2C_CommandWait,
+     // 8 I2C_SEND_BURST                9 I2C_CONFIG                    10 I2C_STATUS                   11 I2C_READ_BULK
+        I2C_CommandSendBurst,           I2C_CommandConfig,              I2C_CommandStatus,              I2C_CommandReadBulk,
+     // 12 I2C_WRITE_BULK               13 I2C_ENABLE_SMBUS             14 I2C_INIT                     15 PULLDOWN_SCL
+        I2C_CommandWriteBulk,           I2C_CommandEnableSMBus,         I2C_CommandInit,                I2C_CommandPullDown,
+     // 16 I2C_DISABLE_SMBUS            17                              18                              19
+        I2C_CommandDisableSMBus,        Undefined,                      Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 5 UART2
      // 0                    1 SEND_CHAR      2 SEND_INT       3 SEND_ADDRESS
@@ -157,20 +158,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,           Undefined,       Undefined,       Undefined,
     },
     { // 6 DAC
-     // 0          1 SET_DAC              2 SET_CALIBRATED_DAC      3 SET_POWER
-        Undefined, Unimplemented,         Removed,                  POWER_SOURCE_SetPower,
-     // 4          5                      6                         7
-        Undefined, Undefined,             Undefined,                Undefined,
-     // 8          9                      10                        11
-        Undefined, Undefined,             Undefined,                Undefined,
-     // 12         13                     14                        15
-        Undefined, Undefined,             Undefined,                Undefined,
-     // 16         17                     18                        19
-        Undefined, Undefined,             Undefined,                Undefined,
-     // 20         21                     22                        23
-        Undefined, Undefined,             Undefined,                Undefined,
-     // 24         25                     26                        27
-        Undefined, Undefined,             Undefined,                Undefined,
+     // 0                               1 SET_DAC                       2 SET_CALIBRATED_DAC            3 SET_POWER
+        Undefined,                      POWER_SOURCE_SetDAC,            Removed,                        POWER_SOURCE_SetPower,
+     // 4                               5                               6                               7
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 8                               9                               10                              11
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 12                              13                              14                              15
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 16                              17                              18                              19
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 7 WAVEGEN
      // 0                            1 SET_WG                   2                             3 SET_SQR1
@@ -269,19 +270,19 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined, Undefined,               Undefined, Undefined,
     },
     { // 12 SENSORS
-     // 0                           1                           2                           3
-        Undefined,                  RTC_SetTime,                RTC_SetDigit,               RTC_GetTime,
-     // 4                           5                           6                           7
-        RTC_GetDigit,               Undefined,                  Undefined,                  Undefined,
-     // 8                           9                           10                          11
-        Undefined,                  Undefined,                  Undefined,                  Undefined,
-     // 12                          13                          14                          15
-        Undefined,                  Undefined,                  Undefined,                  Undefined,
-     // 16                          17                          18                          19
-        Undefined,                  Undefined,                  Undefined,                  Undefined,
-     // 20                          21                          22                          23
-        Undefined,                  Undefined,                  Undefined,                  Undefined,
-     // 24                          25                          26                          27
-        Undefined,                  Undefined,                  Undefined,                  Undefined,
+     // 0                               1 RTC_SETTIME                   2 RTC_SETDIGIT                  3 RTC_GETTIME
+        Undefined,                      RTC_SetTime,                    RTC_SetDigit,                   RTC_GetTime,
+     // 4 RTC_GETDIGIT                  5 HCSR04                        6 AM2302                        7 BMP180
+        RTC_GetDigit,                   Unimplemented,                  Unimplemented,                  Unimplemented,
+     // 8 TSL2591                       9 TCD1304                       10                              11
+        Unimplemented,                  Unimplemented,                  Undefined,                      Undefined,
+     // 12                              13                              14                              15
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 16                              17                              18                              19
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
 };

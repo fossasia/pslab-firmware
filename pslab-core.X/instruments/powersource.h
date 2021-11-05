@@ -31,6 +31,29 @@ extern "C" {
      * @return SUCCESS, FAILED
      */
     response_t POWER_SOURCE_SetPower(void);
+
+    /**
+     * @brief This method uses the legacy implementation to setup power source
+     * 
+     * @description
+     * This command takes three argument over serial
+     * 1. (uint8) address
+     *    This is the I2C device address for MCP4728 module
+     * 2. (uint8)  channel
+     *    This could be one of the four DAC channels 
+     *      - PCS - 0 (0b00)
+     *      - PV3 - 1 (0b01)
+     *      - PV2 - 2 (0b10)
+     *      - PV1 - 3 (0b11)
+     * 2. (uint16) power level
+     *    This is an integer value between 0 and 4095 correspond to the voltage 
+     * ratio.
+     * 
+     * It returns nothing over serial.
+     * 
+     * @return SUCCESS
+     */
+    response_t POWER_SOURCE_SetDAC(void);
     
 #ifdef	__cplusplus
 }
