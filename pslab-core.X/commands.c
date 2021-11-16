@@ -2,6 +2,7 @@
 #include "bus/i2c/i2c.h"
 #include "helpers/buffer.h"
 #include "helpers/device.h"
+#include "helpers/light.h"
 #include "helpers/rtc.h"
 #include "instruments/multimeter.h"
 #include "instruments/oscilloscope.h"
@@ -238,20 +239,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,              Undefined,                Undefined,               Undefined,
     },
     { // 11 COMMON
-     // 0                                1 GET_CTMU_VOLTAGE        2 GET_CAPACITANCE           3 GET_FREQUENCY
-        Undefined,                       Unimplemented,            MULTIMETER_GetCapacitance,  Unimplemented,
-     // 4 GET_INDUCTANCE                 5 GET_VERSION             6                           7
-        Unimplemented,                   DEVICE_GetVersion,        Undefined,                  Undefined,
-     // 8 RETRIEVE_BUFFER                9 GET_HIGH_FREQUENCY      10 CLEAR_BUFFER             11 SETRGB
-        BUFFER_Retrieve,                 Unimplemented,            Unimplemented,              Unimplemented,
-     // 12 READ_PROGRAM_ADDRESS          13 WRITE_PROGRAM_ADDRESS  14 READ_DATA_ADDRESS        15 WRITE_DATA_ADDRESS
-        Removed,                         Removed,                  DEVICE_ReadRegisterData,    DEVICE_WriteRegisterData,
-     // 16 GET_CAP_RANGE                 17 SETRGB2                18 READ_LOG                 19 RESTORE_STANDALONE
-        Unimplemented,                   Unimplemented,            Unimplemented,              DEVICE_Reset,
-     // 20 GET_ALTERNATE_HIGH_FREQUENCY  21                        22 SETRGB3                  23 START_CTMU
-        Unimplemented,                   Undefined,                Unimplemented,              Unimplemented,
-     // 24 STOP_CTMU                     25 START_COUNTING         26 FETCH_COUNT              27 FILL_BUFFER
-        Unimplemented,                   SENSORS_StartCounter,     SENSORS_GetCounter,         Unimplemented,
+     // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
+        Undefined,                      Unimplemented,                  MULTIMETER_GetCapacitance,      Unimplemented,
+     // 4 GET_INDUCTANCE                5 GET_VERSION                   6                               7
+        Unimplemented,                  DEVICE_GetVersion,              Undefined,                      Undefined,
+     // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SETRGB
+        BUFFER_Retrieve,                Unimplemented,                  Unimplemented,                  LIGHT_Onboard,
+     // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
+        Removed,                        Removed,                        DEVICE_ReadRegisterData,        DEVICE_WriteRegisterData,
+     // 16 GET_CAP_RANGE                17 SETRGB2                      18 READ_LOG                     19 RESTORE_STANDALONE
+        Unimplemented,                  LIGHT_One,                      Removed,                        DEVICE_Reset,
+     // 20 GET_ALTERNATE_HIGH_FREQUENCY 21                              22 SETRGB3                      23 START_CTMU
+        Unimplemented,                  Undefined,                      LIGHT_Two,                      Unimplemented,
+     // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
+        Unimplemented,                  SENSORS_StartCounter,           SENSORS_GetCounter,             Unimplemented,
     },
     { // 12 PASSTHROUGH
      // 0          1                        2          3
