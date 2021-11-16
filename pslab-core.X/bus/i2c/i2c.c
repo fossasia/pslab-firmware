@@ -800,6 +800,7 @@ response_t I2C_CommandEnableSMBus(void) {
     I2C2CONbits.SMEN = 1;
     // Enables I2C2 module and configure SDA2 and SCL2 as serial port pins
     I2C2CONbits.I2CEN = 1;
+    return SUCCESS;
 }
 
 response_t I2C_CommandDisableSMBus(void) {
