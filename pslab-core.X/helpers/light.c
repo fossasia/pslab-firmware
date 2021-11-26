@@ -4,38 +4,53 @@
 #include "../registers/system/pin_manager.h"
 #include "light.h"
 
+#define SendZero(pin) do {\
+            pin = 1;\
+            __asm__ __volatile__("repeat #22");\
+            Nop();\
+            pin = 0;\
+            __asm__ __volatile__("repeat #51");\
+            Nop();\
+        } while(0)
+
+#define SendOne(pin) do {\
+            pin = 1;\
+            __asm__ __volatile__("repeat #45");\
+            Nop();\
+            pin = 0;\
+            __asm__ __volatile__("repeat #38");\
+            Nop();\
+        } while(0)
+
+#define SendLatch(pin) do {\
+            pin = 0;\
+            __asm__ volatile ("repeat #3264");\
+            Nop();\
+        } while(0)
+
+#define RGBCommon(red, green, blue, pin) do {\
+            uint8_t data[] = {green, red, blue};\
+            uint8_t location;\
+            \
+            SendLatch(pin);\
+            \
+            for (location = 0; location < 3; location++) {\
+                uint8_t bit;\
+                bit = data[location];\
+                uint8_t byte;\
+                for (byte = 0; byte < 8; byte++) {\
+                    if (bit & 0x80) {\
+                        SendOne(pin);\
+                    } else {\
+                        SendZero(pin);\
+                    }\
+                    bit = bit << 1;\
+                }\
+            }\
+        } while(0)
+
 void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue) {
-    uint8_t data[] = {green, red, blue};
-    uint8_t location;
-
-    RGB_LED_SetLow();
-
-    __asm__ volatile ("repeat #3264");
-    Nop();
-
-    for (location = 0; location < 3; location++) {
-        uint8_t bit;
-        bit = data[location];
-        uint8_t byte;
-        for (byte = 0; byte < 8; byte++) {
-            if (bit & 0x80) {
-                RGB_LED_SetHigh();
-                __asm__ __volatile__("repeat #45");
-                Nop();
-                RGB_LED_SetLow();
-                __asm__ __volatile__("repeat #38");
-                Nop();
-            } else {
-                RGB_LED_SetHigh();
-                __asm__ __volatile__("repeat #22");
-                Nop();
-                RGB_LED_SetLow();
-                __asm__ __volatile__("repeat #51");
-                Nop();
-            }
-            bit = bit << 1;
-        }
-    }
+    RGBCommon(red, green, blue, RGB_LED_Setter);
 }
 
 response_t LIGHT_Onboard(void) {
@@ -51,37 +66,7 @@ response_t LIGHT_Onboard(void) {
     INTERRUPT_GlobalDisable();
     
     for (i = 0; i < count; i = i + 3) {
-        uint8_t data[] = {colors[i+1], colors[i], colors[i+2]};
-        uint8_t location;
-
-        RGB_LED_SetLow();
-
-        __asm__ volatile ("repeat #3264");
-        Nop();
-
-        for (location = 0; location < 3; location++) {
-            uint8_t bit;
-            bit = data[location];
-            uint8_t byte;
-            for (byte = 0; byte < 8; byte++) {
-                if (bit & 0x80) {
-                    RGB_LED_SetHigh();
-                    __asm__ __volatile__("repeat #45");
-                    Nop();
-                    RGB_LED_SetLow();
-                    __asm__ __volatile__("repeat #38");
-                    Nop();
-                } else {
-                    RGB_LED_SetHigh();
-                    __asm__ __volatile__("repeat #22");
-                    Nop();
-                    RGB_LED_SetLow();
-                    __asm__ __volatile__("repeat #51");
-                    Nop();
-                }
-                bit = bit << 1;
-            }
-        }
+        RGBCommon(colors[i+1], colors[i], colors[i+2], RGB_LED_Setter);
     }
     
     INTERRUPT_GlobalEnable();
@@ -102,37 +87,7 @@ response_t LIGHT_One(void) {
     INTERRUPT_GlobalDisable();
     
     for (i = 0; i < count; i = i + 3) {
-        uint8_t data[] = {colors[i+1], colors[i], colors[i+2]};
-        uint8_t location;
-
-        SQR1_SetLow();
-
-        __asm__ volatile ("repeat #3264");
-        Nop();
-
-        for (location = 0; location < 3; location++) {
-            uint8_t bit;
-            bit = data[location];
-            uint8_t byte;
-            for (byte = 0; byte < 8; byte++) {
-                if (bit & 0x80) {
-                    SQR1_SetHigh();
-                    __asm__ __volatile__("repeat #45");
-                    Nop();
-                    SQR1_SetLow();
-                    __asm__ __volatile__("repeat #38");
-                    Nop();
-                } else {
-                    SQR1_SetHigh();
-                    __asm__ __volatile__("repeat #22");
-                    Nop();
-                    SQR1_SetLow();
-                    __asm__ __volatile__("repeat #51");
-                    Nop();
-                }
-                bit = bit << 1;
-            }
-        }
+        RGBCommon(colors[i+1], colors[i], colors[i+2], SQR1_Setter);
     }
     
     INTERRUPT_GlobalEnable();
@@ -153,37 +108,7 @@ response_t LIGHT_Two(void) {
     INTERRUPT_GlobalDisable();
     
     for (i = 0; i < count; i = i + 3) {
-        uint8_t data[] = {colors[i+1], colors[i], colors[i+2]};
-        uint8_t location;
-
-        SQR2_SetLow();
-
-        __asm__ volatile ("repeat #3264");
-        Nop();
-
-        for (location = 0; location < 3; location++) {
-            uint8_t bit;
-            bit = data[location];
-            uint8_t byte;
-            for (byte = 0; byte < 8; byte++) {
-                if (bit & 0x80) {
-                    SQR2_SetHigh();
-                    __asm__ __volatile__("repeat #45");
-                    Nop();
-                    SQR2_SetLow();
-                    __asm__ __volatile__("repeat #38");
-                    Nop();
-                } else {
-                    SQR2_SetHigh();
-                    __asm__ __volatile__("repeat #22");
-                    Nop();
-                    SQR2_SetLow();
-                    __asm__ __volatile__("repeat #51");
-                    Nop();
-                }
-                bit = bit << 1;
-            }
-        }
+        RGBCommon(colors[i+1], colors[i], colors[i+2], SQR2_Setter);
     }
     
     INTERRUPT_GlobalEnable();

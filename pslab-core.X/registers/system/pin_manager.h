@@ -15,6 +15,7 @@
 #define LED_SetDigitalInput()          (_TRISB15 = 1)
 #define LED_SetDigitalOutput()         (_TRISB15 = 0)
 
+#define RGB_LED_Setter                 _LATB2
 #define RGB_LED_SetHigh()              (_LATB2 = 1)
 #define RGB_LED_SetLow()               (_LATB2 = 0)
 #define RGB_LED_Toggle()               (_LATB2 ^= 1)
@@ -256,6 +257,7 @@
 /*******************************************************************************
  * Wave Generator
  ******************************************************************************/
+#define SQR1_Setter                    _LATC6
 #define SQR1_SetHigh()                 (_LATC6 = 1)
 #define SQR1_SetLow()                  (_LATC6 = 0)
 #define SQR1_Toggle()                  (_LATC6 ^= 1)
@@ -263,6 +265,7 @@
 #define SQR1_SetDigitalInput()         (_TRISC6 = 1)
 #define SQR1_SetDigitalOutput()        (_TRISC6 = 0)
 
+#define SQR2_Setter                    _LATC7
 #define SQR2_SetHigh()                 (_LATC7 = 1)
 #define SQR2_SetLow()                  (_LATC7 = 0)
 #define SQR2_Toggle()                  (_LATC7 ^= 1)
