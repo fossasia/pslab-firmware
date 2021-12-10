@@ -49,12 +49,19 @@
             }\
         } while(0)
 
+typedef enum {
+    ONBOARD,
+    SQR1,
+    SQR2,
+    SQR3,
+    SQR4,
+} PINSELECT;
+
 void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue) {
     RGBCommon(red, green, blue, RGB_LED_Setter);
 }
 
-response_t LIGHT_Onboard(void) {
-    
+response_t LIGHT_RGBPin(void) {
     uint8_t count = UART1_Read();
     uint8_t colors[count];
     
@@ -62,53 +69,30 @@ response_t LIGHT_Onboard(void) {
     for (i = 0; i < count; i++) {
         colors[i] = UART1_Read();
     }
+    PINSELECT pin = UART1_Read();
     
     INTERRUPT_GlobalDisable();
     
     for (i = 0; i < count; i = i + 3) {
-        RGBCommon(colors[i+1], colors[i], colors[i+2], RGB_LED_Setter);
-    }
-    
-    INTERRUPT_GlobalEnable();
-    
-    return SUCCESS;
-}
-
-response_t LIGHT_One(void) {
-    
-    uint8_t count = UART1_Read();
-    uint8_t colors[count];
-    
-    uint8_t i;
-    for (i = 0; i < count; i++) {
-        colors[i] = UART1_Read();
-    }
-    
-    INTERRUPT_GlobalDisable();
-    
-    for (i = 0; i < count; i = i + 3) {
-        RGBCommon(colors[i+1], colors[i], colors[i+2], SQR1_Setter);
-    }
-    
-    INTERRUPT_GlobalEnable();
-    
-    return SUCCESS;
-}
-
-response_t LIGHT_Two(void) {
-    
-    uint8_t count = UART1_Read();
-    uint8_t colors[count];
-    
-    uint8_t i;
-    for (i = 0; i < count; i++) {
-        colors[i] = UART1_Read();
-    }
-    
-    INTERRUPT_GlobalDisable();
-    
-    for (i = 0; i < count; i = i + 3) {
-        RGBCommon(colors[i+1], colors[i], colors[i+2], SQR2_Setter);
+        switch (pin) {
+        case ONBOARD:
+            RGBCommon(colors[i+1], colors[i], colors[i+2], RGB_LED_Setter);
+            break;
+        case SQR1:
+            RGBCommon(colors[i+1], colors[i], colors[i+2], SQR1_Setter);
+            break;
+        case SQR2:
+            RGBCommon(colors[i+1], colors[i], colors[i+2], SQR2_Setter);
+            break;
+        case SQR3:
+            RGBCommon(colors[i+1], colors[i], colors[i+2], SQR3_Setter);
+            break;
+        case SQR4:
+            RGBCommon(colors[i+1], colors[i], colors[i+2], SQR4_Setter);
+            break;
+        default:
+            break;
+        }
     }
     
     INTERRUPT_GlobalEnable();

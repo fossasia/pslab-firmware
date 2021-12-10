@@ -273,6 +273,7 @@
 #define SQR2_SetDigitalInput()         (_TRISC7 = 1)
 #define SQR2_SetDigitalOutput()        (_TRISC7 = 0)
 
+#define SQR3_Setter                    _LATC8
 #define SQR3_SetHigh()                 (_LATC8 = 1)
 #define SQR3_SetLow()                  (_LATC8 = 0)
 #define SQR3_Toggle()                  (_LATC8 ^= 1)
@@ -280,6 +281,7 @@
 #define SQR3_SetDigitalInput()         (_TRISC8 = 1)
 #define SQR3_SetDigitalOutput()        (_TRISC8 = 0)
 
+#define SQR4_Setter                    _LATC9
 #define SQR4_SetHigh()                 (_LATC9 = 1)
 #define SQR4_SetLow()                  (_LATC9 = 0)
 #define SQR4_Toggle()                  (_LATC9 ^= 1)

@@ -243,14 +243,14 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                      Unimplemented,                  MULTIMETER_GetCapacitance,      Unimplemented,
      // 4 GET_INDUCTANCE                5 GET_VERSION                   6                               7
         Unimplemented,                  DEVICE_GetVersion,              Undefined,                      Undefined,
-     // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SETRGB
-        BUFFER_Retrieve,                Unimplemented,                  Unimplemented,                  LIGHT_Onboard,
+     // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
+        BUFFER_Retrieve,                Unimplemented,                  Unimplemented,                  Removed,
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
         Removed,                        Removed,                        DEVICE_ReadRegisterData,        DEVICE_WriteRegisterData,
-     // 16 GET_CAP_RANGE                17 SETRGB2                      18 READ_LOG                     19 RESTORE_STANDALONE
-        Unimplemented,                  LIGHT_One,                      Removed,                        DEVICE_Reset,
-     // 20 GET_ALTERNATE_HIGH_FREQUENCY 21                              22 SETRGB3                      23 START_CTMU
-        Unimplemented,                  Undefined,                      LIGHT_Two,                      Unimplemented,
+     // 16 GET_CAP_RANGE                17 SET_RGB2                     18 READ_LOG                     19 RESTORE_STANDALONE
+        Unimplemented,                  Removed,                        Removed,                        DEVICE_Reset,
+     // 20 GET_ALTERNATE_HIGH_FREQUENCY 21 SET_RGB_COMMON               22 SET_RGB3                     23 START_CTMU
+        Unimplemented,                  LIGHT_RGBPin,                   Removed,                        Unimplemented,
      // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
         Unimplemented,                  SENSORS_StartCounter,           SENSORS_GetCounter,             Unimplemented,
     },

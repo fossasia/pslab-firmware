@@ -25,56 +25,26 @@ extern "C" {
      * @brief Controls the on-board RGB LED
      * 
      * @description
-     * This routine takes two types of arguments over serial.
-     * 1. (uint8) count
-     *    Number of color levels. This always has to be 3. It is implemented this
-     * way to have backward compatibility with old firmware and python backend.
-     * 2. (uint8 [count]) color levels
-     *    This a sequence of bytes with the amount determined by count variable.
-     * In this case it will be three bytes in series. These will define red, green
-     * and blue colors of the LED.
-     * 
-     * It will not return anything over serial. An acknowledgment will be passed.
-     * 
-     * @return none
-     */
-    response_t LIGHT_Onboard(void);
-    
-    /**
-     * @brief Controls an RGB LED stripe from SQR1 pin
-     * 
-     * @description
-     * This routine takes two types of arguments over serial.
+     * This routine takes three types of arguments over serial.
      * 1. (uint8) count
      *    Number of color levels. This has to be a multiple of 3 since each LED 
-     * has three colors to control.
+     *    has three colors to control.
      * 2. (uint8 [count]) color levels
      *    This a sequence of bytes with the amount determined by count variable.
-     * These will define red, green and blue colors of each of the LEDs.
+     *    These will define red, green and blue colors of each of the LEDs.
+     * 3. (uint8) pin
+     *    The pin to which the RGB LED's DIN is connected.
+     *    0: Onboard RGB,
+     *    1: SQ1,
+     *    2: SQ2,
+     *    3: SQ3,
+     *    4: SQ4
      * 
      * It will not return anything over serial. An acknowledgment will be passed.
      * 
      * @return none
      */
-    response_t LIGHT_One(void);
-    
-    /**
-     * @brief Controls an RGB LED stripe from SQR2 pin
-     * 
-     * @description
-     * This routine takes two types of arguments over serial.
-     * 1. (uint8) count
-     *    Number of color levels. This has to be a multiple of 3 since each LED 
-     * has three colors to control.
-     * 2. (uint8 [count]) color levels
-     *    This a sequence of bytes with the amount determined by count variable.
-     * These will define red, green and blue colors of each of the LEDs.
-     * 
-     * It will not return anything over serial. An acknowledgment will be passed.
-     * 
-     * @return none
-     */
-    response_t LIGHT_Two(void);
+    response_t LIGHT_RGBPin(void);
     
 #ifdef	__cplusplus
 }
