@@ -23,6 +23,36 @@ extern "C" {
     * @return SUCCESS
     */
     response_t BUFFER_Retrieve(void);
+    
+    /**
+    * @brief Populate BUFFER array
+    * 
+    * @description
+    * This command function takes two arguments over serial:
+    * 1. The starting index in the buffer from which to fill values.
+    * 2. The number of values to be sent.
+    * 
+    * It does not return anything over serial.
+    * It sends an acknowledge byte (SUCCESS)
+    * 
+    * @return SUCCESS
+    */
+    response_t BUFFER_Fill(void);
+    
+    /**
+    * @brief Clear BUFFER array
+    * 
+    * @description
+    * This command function takes two arguments over serial:
+    * 1. The starting index in the buffer from which it should be emptied
+    * 2. The number of indices need cleared.
+    *
+    * It does not return anything over serial.
+    * It sends an acknowledge byte (SUCCESS)
+    * 
+    * @return SUCCESS
+    */
+    response_t BUFFER_Clear(void);
 
 #ifdef	__cplusplus
 }
