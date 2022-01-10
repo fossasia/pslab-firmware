@@ -284,6 +284,10 @@ extern "C" {
         IC2CON2bits.IC32 = 1;
     }
     
+    inline static void IC2_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
+        IC2CON2bits.ICTRIG = t;
+    }
+    
     inline static void IC2_InterruptFlagClear(void) {
         IFS0bits.IC2IF = 0;
     }

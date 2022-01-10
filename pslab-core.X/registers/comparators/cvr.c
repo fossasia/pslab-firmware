@@ -26,3 +26,9 @@ void CVR_ComparatorReference2Connection(bool connect) {
     // (AVDD - AVSS)/2 is dis/connect at the CVREF2O pin
     CVRCONbits.CVR2OE = connect;
 }
+
+void CVR_SetupComparator(void) {
+    CVR_Initialize();
+    CVR_SetReferenceVoltage(7); // ~ 1.54V
+    CVR_ComparatorPowerUp();
+}

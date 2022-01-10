@@ -283,9 +283,25 @@ extern "C" {
     inline static void IC4_CombineOddEvenICModules(void) {
         IC4CON2bits.IC32 = 1;
     }
+    
+    inline static void IC4_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
+        IC4CON2bits.ICTRIG = t;
+    }
 
     inline static void IC4_InterruptFlagClear(void) {
         IFS2bits.IC4IF = 0;
+    }
+    
+    inline static void IC4_InterruptEnable(void) {
+        IEC2bits.IC4IE = 1;
+    }
+    
+    inline static void IC4_InterruptDisable(void) {
+        IEC2bits.IC4IE = 0;
+    }
+    
+    inline static void IC4_InterruptHighPriority(void) {
+        IPC9bits.IC4IP = 7;
     }
     
 #ifdef __cplusplus  // Provide C++ Compatibility

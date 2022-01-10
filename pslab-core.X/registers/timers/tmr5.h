@@ -188,7 +188,9 @@ extern "C" {
         IFS1bits.T5IF = 0;
     }
     
-    void TMR5_PrescalerSet(TIMER_PARAMS_PRESCALER scale);
+    inline static void TMR5_PrescalerSet(TIMER_PARAMS_PRESCALER scale) {
+        T5CONbits.TCKPS = scale;
+    }
     
     void TMR5_WaitForInterruptEvent(void);
 

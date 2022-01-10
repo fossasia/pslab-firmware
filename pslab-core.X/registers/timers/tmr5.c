@@ -41,10 +41,6 @@ void TMR5_Stop(void) {
     T5CONbits.TON = false;
 }
 
-void TMR5_PrescalerSet(TIMER_PARAMS_PRESCALER scale) {
-    T5CONbits.TCKPS = scale;
-}
-
 void TMR5_WaitForInterruptEvent(void) {
     _T5IF = 0;
     while (!_T5IF);

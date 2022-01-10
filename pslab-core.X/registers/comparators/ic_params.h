@@ -57,11 +57,37 @@ extern "C" {
     } IC_PARAMS_CAPTURE_TIMER;
 
     typedef enum {
-      IC_PARAMS_CAPTURE_INTERRUPT_EVERY_EVENT           = 0b00,
-      IC_PARAMS_CAPTURE_INTERRUPT_EVERY_SECOND          = 0b01,
-      IC_PARAMS_CAPTURE_INTERRUPT_EVERY_THIRD           = 0b10,
-      IC_PARAMS_CAPTURE_INTERRUPT_EVERY_FOURTH          = 0b11
+        IC_PARAMS_CAPTURE_INTERRUPT_EVERY_EVENT         = 0b00,
+        IC_PARAMS_CAPTURE_INTERRUPT_EVERY_SECOND        = 0b01,
+        IC_PARAMS_CAPTURE_INTERRUPT_EVERY_THIRD         = 0b10,
+        IC_PARAMS_CAPTURE_INTERRUPT_EVERY_FOURTH        = 0b11
     } IC_PARAMS_CAPTURE_INTERRUPT;
+    
+    typedef enum {
+        IC_PARAMS_SOURCE_TASK_SYNC                      = 0b0,
+        IC_PARAMS_SOURCE_TASK_TRIGGER                   = 0b1,
+    } IC_PARAMS_SOURCE_TASK;
+
+    /***************************************************************************
+     * Common functions used altogether by all ICx registers
+     ***************************************************************************/
+     void IC_PARAMS_InitiateAll(void);     
+
+     void IC_PARAMS_StopAllModules(void);
+
+     void IC_PARAMS_ClearTriggerStatus(void);
+
+     void IC_PARAMS_ClearBufferOverflow(void);
+
+     void IC_PARAMS_DisableAllModules(void);
+
+     void IC_PARAMS_ManualTriggerAll(void);
+     
+     void IC_PARAMS_UseSourceTo(IC_PARAMS_SOURCE_TASK);
+     
+     void IC_PARAMS_CombineOddEvenModules(void);
+     
+     void IC_PARAMS_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER);
     
 #ifdef	__cplusplus
 }

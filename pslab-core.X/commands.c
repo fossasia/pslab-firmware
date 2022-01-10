@@ -2,11 +2,14 @@
 #include "bus/i2c/i2c.h"
 #include "helpers/buffer.h"
 #include "helpers/device.h"
+#include "helpers/interval.h"
 #include "helpers/light.h"
 #include "helpers/rtc.h"
+#include "instruments/logicanalyzer.h"
 #include "instruments/multimeter.h"
 #include "instruments/oscilloscope.h"
 #include "instruments/powersource.h"
+#include "instruments/sensors.h"
 #include "instruments/wavegenerator.h"
 #include "registers/system/pin_manager.h"
 #include "instruments/sensors.h"
@@ -224,20 +227,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined, Undefined,     Undefined,                 Undefined,
     },
     { // 10 TIMING
-     // 0                       1 GET_TIMING              2                        3
-        Undefined,              Unimplemented,            Undefined,               Undefined,
-     // 4 START_ONE_CHAN_LA     5 START_TWO_CHAN_LA       6 START_FOUR_CHAN_LA     7 FETCH_DMA_DATA
-        Unimplemented,          Unimplemented,            Unimplemented,           Unimplemented,
-     // 8 FETCH_INT_DMA_DATA    9 FETCH_LONG_DMA_DATA     10 COMPARATOR_TO_LA      11 GET_INITIAL_STATES
-        Unimplemented,          Unimplemented,            Unimplemented,           Unimplemented,
-     // 12 TIMING_MEASUREMENTS  13 INTERVAL_MEASUREMENTS  14 CONFIGURE_COMPARATOR  15 START_ALTERNATE_ONE_CHAN_LA
-        Unimplemented,          Unimplemented,            Unimplemented,           Unimplemented,
-     // 16 START_THREE_CHAN_LA  17 STOP_LA                18                       19
-        Unimplemented,          Unimplemented,            Undefined,               Undefined,
-     // 20                      21                        22                       23
-        Undefined,              Undefined,                Undefined,               Undefined,
-     // 24                      25                        26                       27
-        Undefined,              Undefined,                Undefined,               Undefined,
+     // 0                               1 GET_TIMING                    2                               3
+        Undefined,                      Unimplemented,                  Undefined,                      Undefined,
+     // 4 START_ONE_CHAN_LA             5 START_TWO_CHAN_LA             6 START_FOUR_CHAN_LA            7 FETCH_DMA_DATA
+        LOGICANALYZER_OneChannel,       LOGICANALYZER_TwoChannel,       LOGICANALYZER_FourChannel,      Removed,
+     // 8 FETCH_INT_DMA_DATA            9 FETCH_LONG_DMA_DATA           10 COMPARATOR_TO_LA             11 GET_INITIAL_STATES
+        BUFFER_FetchInt,                BUFFER_FetchLong,               Unimplemented,                  INTERVAL_GetState,
+     // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
+        Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_OneChannelAlt,
+     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
+        LOGICANALYZER_ThreeChannel,     LOGICANALYZER_Stop,             Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 11 COMMON
      // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
