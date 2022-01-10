@@ -1,3 +1,4 @@
+#include <string.h>
 #include "../bus/uart/uart1.h"
 #include "../commands.h"
 #include "../registers/system/pin_manager.h"
@@ -12,6 +13,29 @@ response_t BUFFER_Retrieve(void) {
     while (idx != end) UART1_WriteInt(*(idx++));
     
     LED_SetHigh();
+    
+    return SUCCESS;
+}
+
+response_t BUFFER_Fill(void) {
+    
+    uint16_t start = UART1_ReadInt();
+    uint16_t end = UART1_ReadInt();
+    
+    uint16_t i;
+    for (i = start; i < start + end; i++) {
+        BUFFER[i] = UART1_ReadInt();
+    }
+    
+    return SUCCESS;
+}
+
+response_t BUFFER_Clear(void) {
+    
+    uint16_t start = UART1_ReadInt();
+    uint16_t end = UART1_ReadInt();
+    
+    memset((void *) &BUFFER[start], 0, end - start);
     
     return SUCCESS;
 }

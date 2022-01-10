@@ -6,6 +6,7 @@
 #include "../registers/memory/dma.h"
 #include "../registers/system/pin_manager.h"
 #include "../registers/timers/tmr5.h"
+#include "multimeter.h"
 
 #define CHARGE      0
 #define DISCHARGE   1
@@ -70,6 +71,30 @@ void GetCapacitance_ConfigADC_CTMU_TMR5() {
     TMR5_WaitForInterruptEvent();
 }
 
+uint16_t GetVoltage_Summed(uint8_t channel) {
+    
+    ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, channel, 0);
+
+    ADC1_Enable();
+    DELAY_us(20);
+    ADC1_AutomaticSamplingEnable();
+
+    ADC1_WaitForInterruptEvent();
+
+    while (!ADC1_IsConversionComplete());
+
+    ADC1_AutomaticSamplingDisable();
+    ADC1_Disable();
+
+    uint16_t voltage_sum =
+            (ADC1BUF0) + (ADC1BUF1) + (ADC1BUF2) + (ADC1BUF3) +
+            (ADC1BUF4) + (ADC1BUF5) + (ADC1BUF6) + (ADC1BUF7) +
+            (ADC1BUF8) + (ADC1BUF9) + (ADC1BUFA) + (ADC1BUFB) +
+            (ADC1BUFC) + (ADC1BUFD) + (ADC1BUFE) + (ADC1BUFF);
+    
+    return voltage_sum;
+}
+
 response_t MULTIMETER_GetVoltage(void) {
 
     uint8_t channel = UART1_Read();
@@ -113,26 +138,8 @@ response_t MULTIMETER_GetVoltage(void) {
 response_t MULTIMETER_GetVoltageSummed(void) {
 
     uint8_t channel = UART1_Read();
-
-    ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, channel, 0);
-
-    ADC1_Enable();
-    DELAY_us(20);
-    ADC1_AutomaticSamplingEnable();
-
-    ADC1_WaitForInterruptEvent();
-
-    while (!ADC1_IsConversionComplete());
-
-    ADC1_AutomaticSamplingDisable();
-    ADC1_Disable();
-
-    uint16_t voltage_sum =
-            (ADC1BUF0) + (ADC1BUF1) + (ADC1BUF2) + (ADC1BUF3) +
-            (ADC1BUF4) + (ADC1BUF5) + (ADC1BUF6) + (ADC1BUF7) +
-            (ADC1BUF8) + (ADC1BUF9) + (ADC1BUFA) + (ADC1BUFB) +
-            (ADC1BUFC) + (ADC1BUFD) + (ADC1BUFE) + (ADC1BUFF);
-
+    
+    uint16_t voltage_sum = GetVoltage_Summed(channel);
     UART1_WriteInt(voltage_sum);
 
     return SUCCESS;
@@ -183,5 +190,34 @@ response_t MULTIMETER_GetCapacitance(void) {
 
     LED_SetHigh();
 
+    return SUCCESS;
+}
+
+response_t MULTIMETER_GetCTMUVolts(void) {
+    
+    uint8_t config = UART1_Read();
+    
+    CTMU_Initialize();
+    // Edge delay generation
+    CTMUCON1bits.TGEN = (config >> 7) & 0x1;
+    // Current source output
+    CTMUICONbits.IRNG = (config >> 5) & 0x3;
+    
+    // Internal temperature
+    if ((config & 0x1F) == 30) CTMU_EnableEdge2();
+    
+    CTMU_Enable();
+    DELAY_us(1000);
+    CTMU_DrainOutput();
+    DELAY_us(1500);
+    CTMU_FloatOutput();
+    CTMU_EnableEdge1();
+    
+    uint16_t result = GetVoltage_Summed(config & 0x1F);
+
+    CTMU_DisableModule();
+    
+    UART1_WriteInt(result);
+    
     return SUCCESS;
 }

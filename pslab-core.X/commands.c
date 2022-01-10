@@ -10,6 +10,7 @@
 #include "instruments/wavegenerator.h"
 #include "registers/system/pin_manager.h"
 #include "instruments/sensors.h"
+#include "registers/converters/ctmu.h"
 
 /**
  * This is used to check that a received secondary command does not exceed the
@@ -240,19 +241,19 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 11 COMMON
      // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
-        Undefined,                      Unimplemented,                  MULTIMETER_GetCapacitance,      Unimplemented,
+        Undefined,                      MULTIMETER_GetCTMUVolts,        MULTIMETER_GetCapacitance,      Unimplemented,
      // 4 GET_INDUCTANCE                5 GET_VERSION                   6                               7
         Unimplemented,                  DEVICE_GetVersion,              Undefined,                      Undefined,
      // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
-        BUFFER_Retrieve,                Unimplemented,                  Unimplemented,                  Removed,
+        BUFFER_Retrieve,                Unimplemented,                  BUFFER_Clear,                   Removed,
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
         Removed,                        Removed,                        DEVICE_ReadRegisterData,        DEVICE_WriteRegisterData,
      // 16 GET_CAP_RANGE                17 SET_RGB2                     18 READ_LOG                     19 RESTORE_STANDALONE
         Unimplemented,                  Removed,                        Removed,                        DEVICE_Reset,
      // 20 GET_ALTERNATE_HIGH_FREQUENCY 21 SET_RGB_COMMON               22 SET_RGB3                     23 START_CTMU
-        Unimplemented,                  LIGHT_RGBPin,                   Removed,                        Unimplemented,
+        Unimplemented,                  LIGHT_RGBPin,                   Removed,                        CTMU_Start,
      // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
-        Unimplemented,                  SENSORS_StartCounter,           SENSORS_GetCounter,             Unimplemented,
+        CTMU_Stop,                      SENSORS_StartCounter,           SENSORS_GetCounter,             BUFFER_Fill,
     },
     { // 12 PASSTHROUGH
      // 0          1                        2          3
