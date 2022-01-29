@@ -61,10 +61,7 @@ response_t SENSORS_StartCounter(void) {
     T2CONbits.TCS = 1;
 
     if (channel == 4) {
-        CVR_Initialize();
-        CVR_SetReferenceVoltage(7); // ~ 1.54V
-        CVR_ComparatorPowerUp();
-        // Configure CMP4 comparator module
+        CVR_SetupComparator();
         CMP4_SetupComparator();
     }
 

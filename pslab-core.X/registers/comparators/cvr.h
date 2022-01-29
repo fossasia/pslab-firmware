@@ -60,6 +60,21 @@ extern "C" {
         None
      */
     void CVR_ComparatorReference2Connection(bool connect);
+    
+    /**
+      @Summary
+        Configure and power up comparator
+       
+      @Description
+        This routine will setup 1.54 V as reference for comparator and turn it on
+     
+      @Param
+        None
+      
+      @Returns
+        None
+     */
+    void CVR_SetupComparator(void);
 
     inline static void CVR_ComparatorPowerUp(void) {
       CVRCONbits.CVREN = 1;

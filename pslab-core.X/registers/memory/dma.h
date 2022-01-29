@@ -5,17 +5,33 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdlib.h>
-#include "../../instruments/logicanalyzer.h"
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 extern "C" {
-
 #endif
 
     /**
       Section: Data Types
      */
+
+    /** DMA Modes
+ 
+     @Summary 
+       Defines the current DMA mode in use
+ 
+     @Description
+       This routine defines the current mode that is used to handle during
+       interrupt events
+ 
+     Remarks:
+       None
+     */
+    typedef enum {
+        DMA_MODES_ONE_CHANNEL,
+        DMA_MODES_TWO_CHANNEL,
+        DMA_MODES_THREE_CHANNEL,
+        DMA_MODES_FOUR_CHANNEL
+    } DMA_MODES;
 
     /** DMA Channel Definition
  
@@ -32,9 +48,26 @@ extern "C" {
         DMA_CHANNEL_0 = 0,
         DMA_CHANNEL_1 = 1,
         DMA_CHANNEL_2 = 2,
-        DMA_CHANNEL_3 = 3,
-        DMA_NUMBER_OF_CHANNELS = 4
+        DMA_CHANNEL_3 = 3
     } DMA_CHANNEL;
+
+    /** DMA Operating Modes Definition
+ 
+     @Summary 
+       Defines the operating modes for DMA modules
+ 
+     @Description
+       This routine defines the order of block transfers from/to DMA buffer
+ 
+     Remarks:
+       None
+     */
+    typedef enum {
+        DMA_OPERATING_MODE_CONTINUOUS            = 0b00,
+        DMA_OPERATING_MODE_ONE_SHOT              = 0b01,
+        DMA_OPERATING_MODE_CONTINUOUS_PING_PONG  = 0b10,
+        DMA_OPERATING_MODE_ONE_SHOT_PINT_PONG    = 0b11
+    } DMA_OPERATING_MODE;
 
     /** DMA Peripheral IRQ Number
  
@@ -48,26 +81,26 @@ extern "C" {
        None
      */
     typedef enum {
-        DMA_PERIPHERAL_IRQ_IC4 = 0x26,
-        DMA_PERIPHERAL_IRQ_IC3 = 0x25,
-        DMA_PERIPHERAL_IRQ_SPI2 = 0x21,
-        DMA_PERIPHERAL_IRQ_UART2_TX = 0x1f,
-        DMA_PERIPHERAL_IRQ_UART2_RX = 0x1e,
-        DMA_PERIPHERAL_IRQ_TMR5 = 0x1c,
-        DMA_PERIPHERAL_IRQ_TMR4 = 0x1b,
-        DMA_PERIPHERAL_IRQ_OC4 = 0x1a,
-        DMA_PERIPHERAL_IRQ_OC3 = 0x19,
-        DMA_PERIPHERAL_IRQ_ADC1 = 0xd,
-        DMA_PERIPHERAL_IRQ_UART1_TX = 0xc,
-        DMA_PERIPHERAL_IRQ_UART1_RX = 0xb,
-        DMA_PERIPHERAL_IRQ_SPI1 = 0xa,
-        DMA_PERIPHERAL_IRQ_TMR3 = 0x8,
-        DMA_PERIPHERAL_IRQ_TMR2 = 0x7,
-        DMA_PERIPHERAL_IRQ_OC2 = 0x6,
-        DMA_PERIPHERAL_IRQ_IC2 = 0x5,
-        DMA_PERIPHERAL_IRQ_OC1 = 0x2,
-        DMA_PERIPHERAL_IRQ_IC1 = 0x1,
-        DMA_PERIPHERAL_IRQ_INT0 = 0x0,
+        DMA_PERIPHERAL_IRQ_INT0         = 0x00,
+        DMA_PERIPHERAL_IRQ_IC1          = 0x01,
+        DMA_PERIPHERAL_IRQ_IC2          = 0x05,
+        DMA_PERIPHERAL_IRQ_IC3          = 0x25,
+        DMA_PERIPHERAL_IRQ_IC4          = 0x26,
+        DMA_PERIPHERAL_IRQ_OC1          = 0x02,
+        DMA_PERIPHERAL_IRQ_OC2          = 0x06,
+        DMA_PERIPHERAL_IRQ_OC3          = 0x19,
+        DMA_PERIPHERAL_IRQ_OC4          = 0x1A,
+        DMA_PERIPHERAL_IRQ_TMR2         = 0x07,
+        DMA_PERIPHERAL_IRQ_TMR3         = 0x08,
+        DMA_PERIPHERAL_IRQ_TMR4         = 0x1B,
+        DMA_PERIPHERAL_IRQ_TMR5         = 0x1C,
+        DMA_PERIPHERAL_IRQ_SPI1         = 0x0A,
+        DMA_PERIPHERAL_IRQ_SPI2         = 0x21,
+        DMA_PERIPHERAL_IRQ_UART1_TX     = 0x0C,
+        DMA_PERIPHERAL_IRQ_UART1_RX     = 0x0B,
+        DMA_PERIPHERAL_IRQ_UART2_TX     = 0x1F,
+        DMA_PERIPHERAL_IRQ_UART2_RX     = 0x1E,
+        DMA_PERIPHERAL_IRQ_ADC1         = 0x0D
     } DMA_PERIPHERAL_IRQ_NUMBER;
 
     /**
@@ -122,6 +155,8 @@ extern "C" {
      */
     void DMA_Initialize(void);
 
+    void DMA_InitializeChannel0(void);
+    void DMA_InitializeChannel1(void);
     void DMA_InitializeChannel2(void);
     void DMA_InitializeChannel3(void);
 
@@ -831,12 +866,120 @@ extern "C" {
       @Returns
         None
      */
-    void DMA_SetLogicAnalyzerChannelMode(LOGICANALYZER_DMA_MODES mode);
+    void DMA_SetLogicAnalyzerChannelMode(DMA_MODES mode);
+
+    /**
+      @Summary
+        Prepares DMA0 channel to connect with IC1 module
+
+      @Description
+        This routine prepares pads and sources to capture timer values in IC1
+        upon a signal requesting the DMA module to start a transfer
+
+      @Preconditions
+        DMA0 channel should be turned off prior to calling this routine and the
+        channel could be turned on after this routine is complete
+
+      @Param
+        count: number of transfers
+
+        address: pointer to the buffer location to store data
+
+        trigger: signal source to generate a data transfer action
+
+      @Returns
+        None
+     */
+    void DMA_PrepareChannel0(uint16_t count, volatile uint16_t* low_address,  
+                                            DMA_PERIPHERAL_IRQ_NUMBER trigger);
+
+    /**
+      @Summary
+        Prepares DMA1 channel to connect with IC2 module
+
+      @Description
+        This routine prepares pads and sources to capture timer values in IC2
+        upon a signal requesting the DMA module to start a transfer
+
+      @Preconditions
+        DMA0 channel should be turned off prior to calling this routine and the
+        channel could be turned on after this routine is complete
+
+      @Param
+        count: number of transfers
+
+        address: pointer to the buffer location to store data
+
+        trigger: signal source to generate a data transfer action
+
+      @Returns
+        None
+     */
+    void DMA_PrepareChannel1(uint16_t count, volatile uint16_t* low_address,  
+                                            DMA_PERIPHERAL_IRQ_NUMBER trigger);
+
+    /**
+      @Summary
+        Prepares DMA2 channel to connect with IC3 module
+
+      @Description
+        This routine prepares pads and sources to capture timer values in IC3
+        upon a signal requesting the DMA module to start a transfer
+
+      @Preconditions
+        DMA0 channel should be turned off prior to calling this routine and the
+        channel could be turned on after this routine is complete
+
+      @Param
+        count: number of transfers
+
+        address: pointer to the buffer location to store data
+
+        trigger: signal source to generate a data transfer action
+
+      @Returns
+        None
+     */
+    void DMA_PrepareChannel2(uint16_t count, volatile uint16_t* low_address, 
+                                            DMA_PERIPHERAL_IRQ_NUMBER trigger);
+
+    /**
+      @Summary
+        Prepares DMA3 channel to connect with IC4 module
+
+      @Description
+        This routine prepares pads and sources to capture timer values in IC4
+        upon a signal requesting the DMA module to start a transfer
+
+      @Preconditions
+        DMA0 channel should be turned off prior to calling this routine and the
+        channel could be turned on after this routine is complete
+
+      @Param
+        count: number of transfers
+
+        address: pointer to the buffer location to store data
+
+        trigger: signal source to generate a data transfer action
+
+      @Returns
+        None
+     */
+    void DMA_PrepareChannel3(uint16_t count, volatile uint16_t* low_address, 
+                                            DMA_PERIPHERAL_IRQ_NUMBER trigger);
+    
+    // Enable all four channels in one go
+    void DMA_EnableAllChannels(void);
+    
+    // Disable all four channels in one go
+    void DMA_DisableAllChannels(void);
+
+    // Getters and Setters
+    void SetDMA_MODE(DMA_MODES mode);
+    DMA_MODES GetDMA_MODE(void);
 
 #ifdef __cplusplus  // Provide C++ Compatibility
-
 }
-
 #endif
 
 #endif  // DMA_H

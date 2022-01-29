@@ -65,8 +65,8 @@ static uint8_t CONVERSION_DONE = 1;
 void SetCONVERSION_DONE(uint8_t V) { CONVERSION_DONE = V; }
 uint8_t GetCONVERSION_DONE(void) { return CONVERSION_DONE; }
 
-static int16_t volatile* volatile BUFFER_IDX[MAX_CHANNELS];
-void SetBUFFER_IDX(uint8_t idx, volatile int16_t *V) {
+static uint16_t volatile* volatile BUFFER_IDX[MAX_CHANNELS];
+void SetBUFFER_IDX(uint8_t idx, volatile uint16_t *V) {
     BUFFER_IDX[idx] = V;
 }
 
@@ -285,7 +285,7 @@ static void InitDMAMode(ADC1_RESOLUTION_TYPE resolution) {
     DMA_Initialize();
     DMA_SetOneShotMode(DMA_CHANNEL_0);
     DMA_PeripheralIrqNumberSet(DMA_CHANNEL_0, DMA_PERIPHERAL_IRQ_ADC1);
-    DMA_SetLogicAnalyzerChannelMode(DMA_LA_ONE_CHAN);
+    DMA_SetLogicAnalyzerChannelMode(DMA_MODES_ONE_CHANNEL);
     EnableDMA();
 }
 

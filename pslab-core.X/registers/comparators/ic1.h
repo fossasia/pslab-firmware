@@ -278,6 +278,10 @@ extern "C" {
         IC1CON2bits.IC32 = 1;
     }
     
+    inline static void IC1_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
+        IC1CON2bits.ICTRIG = t;
+    }
+    
     inline static void IC1_InterruptFlagClear(void) {
         IFS0bits.IC1IF = 0;
     }

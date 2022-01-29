@@ -26,6 +26,7 @@
         <itemPath>helpers/buffer.h</itemPath>
         <itemPath>helpers/device.h</itemPath>
         <itemPath>helpers/rtc.h</itemPath>
+        <itemPath>helpers/interval.h</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.h</itemPath>
@@ -126,6 +127,7 @@
         <itemPath>helpers/buffer.c</itemPath>
         <itemPath>helpers/device.c</itemPath>
         <itemPath>helpers/rtc.c</itemPath>
+        <itemPath>helpers/interval.c</itemPath>
       </logicalFolder>
       <logicalFolder name="instruments" displayName="instruments" projectFiles="true">
         <itemPath>instruments/multimeter.c</itemPath>
@@ -133,6 +135,7 @@
         <itemPath>instruments/oscilloscope.c</itemPath>
         <itemPath>instruments/sensors.c</itemPath>
         <itemPath>instruments/powersource.c</itemPath>
+        <itemPath>instruments/logicanalyzer.c</itemPath>
       </logicalFolder>
       <logicalFolder name="registers" displayName="registers" projectFiles="true">
         <logicalFolder name="comparators" displayName="comparators" projectFiles="true">
@@ -149,6 +152,7 @@
           <itemPath>registers/comparators/cmp3.c</itemPath>
           <itemPath>registers/comparators/cmp4.c</itemPath>
           <itemPath>registers/comparators/cvr.c</itemPath>
+          <itemPath>registers/comparators/ic_params.c</itemPath>
         </logicalFolder>
         <logicalFolder name="converters" displayName="converters" projectFiles="true">
           <itemPath>registers/converters/adc1.c</itemPath>

@@ -4,6 +4,7 @@
 #include <xc.h>
 #include <stdint.h>
 #include <stdbool.h>
+#include "timer_params.h"
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 extern "C" {
@@ -116,6 +117,10 @@ extern "C" {
         None
      */
     void TMR2_Stop(void);
+    
+    inline static void TMR2_PrescalerSet(TIMER_PARAMS_PRESCALER scale) {
+        T2CONbits.TCKPS = scale;
+    }
 
 #ifdef __cplusplus  // Provide C++ Compatibility
 }

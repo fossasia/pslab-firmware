@@ -1108,7 +1108,7 @@ extern "C" {
     void SetCONVERSION_DONE(uint8_t V);
     uint8_t GetCONVERSION_DONE(void);
     
-    void SetBUFFER_IDX(uint8_t, volatile int16_t*);
+    void SetBUFFER_IDX(uint8_t, volatile uint16_t*);
     
 #ifdef __cplusplus  // Provide C++ Compatibility
 }
