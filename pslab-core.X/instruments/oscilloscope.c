@@ -58,9 +58,12 @@ static void Capture(void) {
         SetBUFFER_IDX(i, &BUFFER[i * GetSAMPLES_REQUESTED()]);
     }
     
+    SetCONVERSION_DONE(0);
     SetSAMPLES_CAPTURED(0);
     SetBUFFER_IDX(0, &BUFFER[0]);
     SetTimeGap();
+    ADC1_InterruptFlagClear();
+    ADC1_InterruptEnable();
     LED_SetLow();
 }
 
@@ -82,7 +85,8 @@ response_t OSCILLOSCOPE_CaptureDMA(void) {
     DMA_InterruptEnable(DMA_CHANNEL_0);
     DMA_ChannelEnable(DMA_CHANNEL_0);
 
-    SetSAMPLES_CAPTURED(GetSAMPLES_REQUESTED()); // Assume it's all over already.
+    SetSAMPLES_CAPTURED(GetSAMPLES_REQUESTED());
+    SetCONVERSION_DONE(1); // Assume it's all over already.
     SetTimeGap();
     LED_SetLow();
     
