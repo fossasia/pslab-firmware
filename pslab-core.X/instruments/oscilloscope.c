@@ -117,7 +117,7 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void) {
 
 response_t OSCILLOSCOPE_ConfigureTrigger(void) {
     uint8_t config = UART1_Read();
-    SetTRIGGER_CHANNEL(config & 0x03);
+    SetTRIGGER_CHANNEL(config & 0x0F);
     SetTRIGGER_PRESCALER(config >> 4);
     SetTRIGGER_LEVEL(UART1_ReadInt());
     return SUCCESS;
