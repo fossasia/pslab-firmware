@@ -61,7 +61,7 @@ static uint16_t DELAY;
 void SetDELAY(uint16_t V) { DELAY = V; }
 uint16_t GetDELAY(void) { return DELAY; }
 
-static uint8_t CONVERSION_DONE = 1;
+static uint8_t volatile CONVERSION_DONE = 1;
 void SetCONVERSION_DONE(uint8_t V) { CONVERSION_DONE = V; }
 uint8_t GetCONVERSION_DONE(void) { return CONVERSION_DONE; }
 
