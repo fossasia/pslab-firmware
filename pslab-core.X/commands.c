@@ -228,13 +228,13 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 10 TIMING
      // 0                               1 GET_TIMING                    2                               3
-        Undefined,                      Unimplemented,                  Undefined,                      Undefined,
+        Undefined,                      INTERVAL_UntilEvent,            Undefined,                      Undefined,
      // 4 START_ONE_CHAN_LA             5 START_TWO_CHAN_LA             6 START_FOUR_CHAN_LA            7 FETCH_DMA_DATA
         LOGICANALYZER_OneChannel,       LOGICANALYZER_TwoChannel,       LOGICANALYZER_FourChannel,      Removed,
      // 8 FETCH_INT_DMA_DATA            9 FETCH_LONG_DMA_DATA           10 COMPARATOR_TO_LA             11 GET_INITIAL_STATES
         BUFFER_FetchInt,                BUFFER_FetchLong,               Unimplemented,                  INTERVAL_GetState,
      // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
-        Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_OneChannelAlt,
+        INTERVAL_TimeMeasure,           INTERVAL_IntervalMeasure,       Removed,                        LOGICANALYZER_OneChannelAlt,
      // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
         LOGICANALYZER_ThreeChannel,     LOGICANALYZER_Stop,             Undefined,                      Undefined,
      // 20                              21                              22                              23

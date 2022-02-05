@@ -89,6 +89,12 @@ extern "C" {
     
     response_t INTERVAL_GetState(void);
     
+    response_t INTERVAL_IntervalMeasure(void);
+    
+    response_t INTERVAL_TimeMeasure(void);
+    
+    response_t INTERVAL_UntilEvent(void);
+    
     // Getters and setters
     
     void SetDIGITAL_STATES(uint8_t);

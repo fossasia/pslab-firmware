@@ -140,7 +140,7 @@ response_t LOGICANALYZER_FourChannel(void) {
     INTERVAL_CaptureFour(points, mode, prescaler);
     
     if (trigger & 1) {
-        LA_TRIGGER_STATE = trigger & 2 ? RISING_EDGE : FALLING_EDGE;
+        LA_TRIGGER_STATE = trigger & 2 ? FALLING_EDGE : RISING_EDGE;
         LA_TRIGGER_CHANNEL = 0;
         
         if ((trigger >> 2) & 1) {

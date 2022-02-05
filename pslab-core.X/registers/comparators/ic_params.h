@@ -88,6 +88,16 @@ extern "C" {
      void IC_PARAMS_CombineOddEvenModules(void);
      
      void IC_PARAMS_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER);
+     
+     void IC_PARAMS_ConfigureIntervalCaptureWithIC1AndIC2(uint8_t pin, 
+        IC_PARAMS_CAPTURE_TIMER timer, 
+        IC_PARAMS_CAPTURE_INTERRUPT intrpt,
+        IC_PARAMS_CAPTURE_MODE mode);
+     
+     void IC_PARAMS_ConfigureIntervalCaptureWithIC3AndIC4(uint8_t pin, 
+        IC_PARAMS_CAPTURE_TIMER timer, 
+        IC_PARAMS_CAPTURE_INTERRUPT intrpt,
+        IC_PARAMS_CAPTURE_MODE mode);
     
 #ifdef	__cplusplus
 }

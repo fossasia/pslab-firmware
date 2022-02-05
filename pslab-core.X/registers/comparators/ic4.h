@@ -296,6 +296,10 @@ extern "C" {
         IEC2bits.IC4IE = 1;
     }
     
+    inline static void IC4_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT i) {
+        IC4CON1bits.ICI = i;
+    }
+    
     inline static void IC4_InterruptDisable(void) {
         IEC2bits.IC4IE = 0;
     }

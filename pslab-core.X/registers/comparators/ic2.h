@@ -284,6 +284,10 @@ extern "C" {
         IC2CON2bits.IC32 = 1;
     }
     
+    inline static void IC2_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT i) {
+        IC2CON1bits.ICI = i;
+    }
+    
     inline static void IC2_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
         IC2CON2bits.ICTRIG = t;
     }
