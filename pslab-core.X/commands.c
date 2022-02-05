@@ -179,20 +179,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 7 WAVEGEN
-     // 0                            1 SET_WG                   2                             3 SET_SQR1
-        Undefined,                   Unimplemented,             Undefined,                    WAVEGENERATOR_SetSquare1,
-     // 4 SET_SQR2                   5 SET_SQRS                 6                             7 SQR4
-        WAVEGENERATOR_SetSquare2,    Removed,                   Undefined,                    WAVEGENERATOR_SetSquareAll,
-     // 8 MAP_REFERENCE              9 SET_WG_PHASE             10 SET_WAVEFORM_TYPE          11 SELECT_FREQ_REGISTER
-        WAVEGENERATOR_MapReference,  WAVEGENERATOR_SetSineDual, Unimplemented,                Unimplemented,
-     // 12 DELAY_GENERATOR           13 SET_SINE1               14 SET_SINE2                  15 LOAD_WAVEFORM1
-        Unimplemented,               WAVEGENERATOR_SetSine1,    WAVEGENERATOR_SetSine2,       WAVEGENERATOR_LoadWaveForm1,
-     // 16 LOAD_WAVEFORM2            17 SQR1_PATTERN            18 READ_WAVEFORM1             19 READ_WAVEFORM2
-        WAVEGENERATOR_LoadWaveForm2, Removed,                   WAVEGENERATOR_ReadWaveForm1,  WAVEGENERATOR_ReadWaveForm2,
-     // 20                           21                         22                            23
-        Undefined,                   Undefined,                 Undefined,                    Undefined,
-     // 24                           25                         26                            27
-        Undefined,                   Undefined,                 Undefined,                    Undefined,
+     // 0                               1 SET_WG                        2                               3 SET_SQR1
+        Undefined,                      Unimplemented,                  Undefined,                      WAVEGENERATOR_SetSquare1,
+     // 4 SET_SQR2                      5 SET_SQRS                      6                               7 SQR4
+        WAVEGENERATOR_SetSquare2,       Removed,                        Undefined,                      WAVEGENERATOR_SetSquareAll,
+     // 8 MAP_REFERENCE                 9 SET_WG_PHASE                  10 SET_WAVEFORM_TYPE            11 SELECT_FREQ_REGISTER
+        WAVEGENERATOR_MapReference,     WAVEGENERATOR_SetSineDual,      Unimplemented,                  Unimplemented,
+     // 12 DELAY_GENERATOR              13 SET_SINE1                    14 SET_SINE2                    15 LOAD_WAVEFORM1
+        Unimplemented,                  WAVEGENERATOR_SetSine1,         WAVEGENERATOR_SetSine2,         WAVEGENERATOR_LoadWaveForm1,
+     // 16 LOAD_WAVEFORM2               17 SQR1_PATTERN                 18 READ_WAVEFORM1               19 READ_WAVEFORM2
+        WAVEGENERATOR_LoadWaveForm2,    Removed,                        WAVEGENERATOR_ReadWaveForm1,    WAVEGENERATOR_ReadWaveForm2,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 8 DOUT
      // 0          1 SET_STATE                  2          3
@@ -259,26 +259,26 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         CTMU_Stop,                      SENSORS_StartCounter,           SENSORS_GetCounter,             BUFFER_Fill,
     },
     { // 12 PASSTHROUGH
-     // 0          1                        2          3
-        Undefined, DEVICE_UARTPassThrough,  Undefined, Undefined,
-     // 4          5                        6          7
-        Undefined, Undefined,               Undefined, Undefined,
-     // 8          9                        10         11
-        Undefined, Undefined,               Undefined, Undefined,
-     // 12         13                       14         15
-        Undefined, Undefined,               Undefined, Undefined,
-     // 16         17                       18         19
-        Undefined, Undefined,               Undefined, Undefined,
-     // 20         21                       22         23
-        Undefined, Undefined,               Undefined, Undefined,
-     // 24         25                       26         27
-        Undefined, Undefined,               Undefined, Undefined,
+     // 0                               1                               2                               3
+        Undefined,                      DEVICE_UARTPassThrough,         Undefined,                      Undefined,
+     // 4                               5                               6                               7
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 8                               9                               10                              11
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 12                              13                              14                              15
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 16                              17                              18                              19
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 12 SENSORS
      // 0                               1 RTC_SETTIME                   2 RTC_SETDIGIT                  3 RTC_GETTIME
         Undefined,                      RTC_SetTime,                    RTC_SetDigit,                   RTC_GetTime,
      // 4 RTC_GETDIGIT                  5 HCSR04                        6 AM2302                        7 BMP180
-        RTC_GetDigit,                   Unimplemented,                  Unimplemented,                  Unimplemented,
+        RTC_GetDigit,                   SENSORS_HCSR04,                 Unimplemented,                  Unimplemented,
      // 8 TSL2591                       9 TCD1304                       10                              11
         Unimplemented,                  Unimplemented,                  Undefined,                      Undefined,
      // 12                              13                              14                              15

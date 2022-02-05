@@ -62,7 +62,7 @@ extern "C" {
         IC_PARAMS_CAPTURE_INTERRUPT_EVERY_THIRD         = 0b10,
         IC_PARAMS_CAPTURE_INTERRUPT_EVERY_FOURTH        = 0b11
     } IC_PARAMS_CAPTURE_INTERRUPT;
-    
+
     typedef enum {
         IC_PARAMS_SOURCE_TASK_SYNC                      = 0b0,
         IC_PARAMS_SOURCE_TASK_TRIGGER                   = 0b1,

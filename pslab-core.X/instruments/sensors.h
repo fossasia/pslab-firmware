@@ -4,6 +4,10 @@
 #include <xc.h>
 #include "../registers/comparators/ic_params.h"
 
+#ifdef	__cplusplus
+extern "C" {
+#endif
+
     /**
      * @brief This method will configure all 4 Input Capture modules to listen
      * to state changes in pin1 and pin2. The state changes are defined in 
@@ -14,14 +18,14 @@
      * user using a different routine.
      * 
      * @param pin1 First pin connected to a Digital pin
-     * @param pin2 Second pin connected to a Digital pin
      * @param pin1_edge Triggering transition on pin 1
+     * @param pin2 Second pin connected to a Digital pin
      * @param pin2_edge Triggering transition on pin 2
      * 
      * @return None
      */
-    void SENSORS_ConfigureInterval(uint8_t pin1, uint8_t pin2,
-            IC_PARAMS_CAPTURE_MODE pin1_edge, IC_PARAMS_CAPTURE_MODE pin2_edge);
+    void SENSORS_ConfigureInterval(uint8_t pin1, IC_PARAMS_CAPTURE_MODE pin1_edge,
+        uint8_t pin2, IC_PARAMS_CAPTURE_MODE pin2_edge);
     
     /**
      * @brief This method will implement a counter using logic level variations
@@ -56,5 +60,33 @@
      */
     response_t SENSORS_GetCounter(void);
 
-#endif	/* SENSORS_H */
+    /**
+     * @brief Setup and measure timing from an HCSR04 ultrasonic sensor
+     * 
+     * Pin Connection
+     * ==========================================
+     > VCC  : +5V
+     > TRIG : SQ1
+     > ECHO : LA1
+     > GND  : GND
+     * 
+     * Timing measurement diagram
+     * ==========================================
+     > Trigger Pin (SQR1)
+        _|------|__________________________________
+          <10us>
+        ________|-|-|-|-|-|-|-|-|__________________
+                 <--- Burst --->
+     >  Echo Pin (LA1)
+        ________________________|--------...----|__
+                                 < Reflections >
+     *
+     * @return SUCCESS
+     */
+    response_t SENSORS_HCSR04(void);
 
+#ifdef	__cplusplus
+}
+#endif
+
+#endif	/* SENSORS_H */
