@@ -74,8 +74,6 @@ void SetBUFFER_IDX(uint8_t idx, volatile uint16_t *V) {
  * fulfilled, and if so copies ADC values into the buffer.
  */
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
-    int i;
-
     ADC1_InterruptFlagClear();
 
     if (CONVERSION_DONE) {
@@ -83,38 +81,29 @@ void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
         // triggered, but no need to process further. Hence abort and return.
         return;
     }
-    LED_SetHigh();
+    
+    LED_Toggle();
 
     if (TRIGGERED) {
-        for (i = 0; i <= CHANNELS; i++) *(BUFFER_IDX[i]++) = *ADCVALS[i];
+        int i;
+        for (i = 0; i <= CHANNELS; i++) {
+            *(BUFFER_IDX[i]++) = *ADCVALS[i];
+        }
 
-        SAMPLES_CAPTURED++;
-        LED_SetLow();
-        if (SAMPLES_CAPTURED == SAMPLES_REQUESTED) {
+        if (++SAMPLES_CAPTURED == SAMPLES_REQUESTED) {
             ADC1_InterruptDisable();
-            ADC1_InterruptFlagClear();
             CONVERSION_DONE = 1;
             LED_SetHigh();
         }
-    } else {
-        uint16_t adval;
-        for (i = 0; i < MAX_CHANNELS; i++) {
-            if (TRIGGER_CHANNEL & (1 << i)) adval = *ADCVALS[i];
-        }
-
-        // If the trigger hasn't timed out, check for trigger condition.
-        if (TRIGGER_WAITING < TRIGGER_TIMEOUT) {
-            TRIGGER_WAITING += (DELAY >> TRIGGER_PRESCALER);
-            if (!TRIGGER_READY && adval > TRIGGER_LEVEL + 10) TRIGGER_READY = 1;
-            else if (adval <= TRIGGER_LEVEL && TRIGGER_READY) {
-                TRIGGERED = 1;
-            }
-        } 
-        // If the trigger has timed out, then proceed to data acquisition.
-        else {
-            TRIGGERED = 1;
-        }
+        return;
     }
+
+    // Trigger timed out, proceed to data acquisition.
+    TRIGGERED |= TRIGGER_WAITING >= TRIGGER_TIMEOUT;
+    TRIGGER_WAITING += DELAY >> TRIGGER_PRESCALER;
+    TRIGGER_READY |= *ADCVALS[TRIGGER_CHANNEL] > TRIGGER_LEVEL;
+    // Trigger condition met, proceed to data acquisition.
+    TRIGGERED |= TRIGGER_READY && *ADCVALS[TRIGGER_CHANNEL] <= TRIGGER_LEVEL;
 }
 
 void ADC1_Initialize(void) {
