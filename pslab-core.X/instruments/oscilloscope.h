@@ -103,17 +103,19 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void);
  * This command function takes two arguments over serial.
  * 1. (uint8)  Configuration byte:
  *             | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0  |
- *             |   Prescaler   | - | - |  CHSEL |
+ *             |   Prescaler   |      CHSEL     |
  *             Prescaler: The trigger times out (i.e. capture starts) after:
  *                        timeout = DELAY * (50000 / (DELAY >> prescaler)) / 8 us
  *                        If DELAY >> prescaler == 0 trigger does not time out.
  *             CHSEL: Trigger channel select.
- *                    0: Trigger on CH0SA,
- *                    1: Trigger on CH123SA[0],
- *                    2: Trigger on CH123SA[1],
- *                    3. Trigger on CH123SA[2],
- *                    Note that it is not necessary to sample the trigger
- *                    channel.
+ *                    b0000: Disable trigger,
+ *                    b0001: Trigger on CH0SA,
+ *                    b0010: Trigger on CH123SA[0],
+ *                    b0100: Trigger on CH123SA[1],
+ *                    b1000. Trigger on CH123SA[2],
+ *                    It is not necessary to sample the trigger channel, but
+ *                    the trigger channel must still be converted which affects
+ *                    the sample rate.
  * 2. (uint16) Trigger voltage.
  * It returns nothing over serial.
  *

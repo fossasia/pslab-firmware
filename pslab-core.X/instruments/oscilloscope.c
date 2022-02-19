@@ -48,10 +48,19 @@ static void Capture(void) {
     uint8_t trigger = config & 0x80;
 
     ADC1_SetOperationMode(ADC1_10BIT_SIMULTANEOUS_MODE, ch0sa, ch123sa);
-    ADC1_ConversionChannelsSet(GetCHANNELS());
 
-    if (trigger) ResetTrigger();
-    else SetTRIGGERED(1);
+    /* Check if the trigger channel is sampled. If not, convert the trigger
+     * channel in addition to the sampled channels. */
+    if (trigger && GetTRIGGER_CHANNEL() > GetCHANNELS()) {
+        ADC1_ConversionChannelsSet(GetTRIGGER_CHANNEL());
+        ResetTrigger();
+    } else if (trigger) {
+        ADC1_ConversionChannelsSet(GetCHANNELS());
+        ResetTrigger();
+    } else {
+        ADC1_ConversionChannelsSet(GetCHANNELS());
+        SetTRIGGERED(1);
+    }
 
     int i;
     for (i = 0; i <= GetCHANNELS(); i++) {
@@ -117,9 +126,19 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void) {
 
 response_t OSCILLOSCOPE_ConfigureTrigger(void) {
     uint8_t config = UART1_Read();
-    SetTRIGGER_CHANNEL(config & 0x0F);
+    uint8_t channelbits = config & 0x0F;
+
+    int i;
+    for (i = 0; i < MAX_CHANNELS; i++) {
+        if (channelbits && (1 << i)) {
+            SetTRIGGER_CHANNEL(i);
+            break;
+        }
+    }
+
     SetTRIGGER_PRESCALER(config >> 4);
     SetTRIGGER_LEVEL(UART1_ReadInt());
+
     return SUCCESS;
 }
 
