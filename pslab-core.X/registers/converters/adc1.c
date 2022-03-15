@@ -5,11 +5,6 @@
 #include "../../commands.h"
 #include "../system/pin_manager.h"
 
-// Current ADC operation mode variables
-static uint8_t CURRENT_MODE = 0;
-static uint8_t CURRENT_CHANNEL_0 = CH0_CHANNEL_CH1;
-static uint8_t CURRENT_CHANNEL_123 = 0;
-
 /* Static globals */
 static uint16_t volatile* ADCVALS[MAX_CHANNELS] = {
     &ADC1BUF0, &ADC1BUF1, &ADC1BUF2, &ADC1BUF3
@@ -202,27 +197,20 @@ void ADC1_InitializeCON4(void) {
 }
 
 void ADC1_SetOperationMode(
-        ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123) {
-
-    // Save time by prevent reinitialization of registers
-    if (CURRENT_MODE == mode && CURRENT_CHANNEL_0 == channel_0 &&
-            CURRENT_CHANNEL_123 == channel_123) {
-        return;
-    }
-
-    if (CURRENT_CHANNEL_0 == CH0_CHANNEL_RES || 
-            CURRENT_CHANNEL_0 == CH0_CHANNEL_CAP) {
+        ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123) { 
+    if (
+            channel_0 == CH0_CHANNEL_RES || 
+            channel_0 == CH0_CHANNEL_CAP) {
         CM4CONbits.CON = 0;
         PMD3bits.CMPMD = 1;
     }
-    // Save current mode settings
-    CURRENT_MODE = mode;
-    CURRENT_CHANNEL_0 = channel_0;
-    CURRENT_CHANNEL_123 = channel_123;
 
     ADC1_Initialize();
+    // Set input channels.
+    ADC1_ChannelSelectSet(channel_0);
+    ADC1_Positive123ChannelSelect(channel_123);
 
-    switch (CURRENT_MODE) {
+    switch (mode) {
         case ADC1_10BIT_SIMULTANEOUS_MODE:
             Init10BitMode();
             break;
@@ -242,11 +230,6 @@ void ADC1_SetOperationMode(
             // Disable DMA channel
             DMA_ChannelDisable(DMA_CHANNEL_0);
             ADC1_ResolutionModeSet(ADC1_RESOLUTION_12_BIT);
-            //Set input channels
-            ADC1_ChannelSelectSet(CURRENT_CHANNEL_0);
-            ADC1_Positive123ChannelSelect(CURRENT_CHANNEL_123);
-            // Channel 0 negative input is VREFL
-            AD1CHS0bits.CH0NA = 0;
             // Internal counter ends sampling and starts auto conversion
             AD1CON1bits.SSRC = 0b111;
             // Generate interrupt after 16th sample conversion
@@ -262,8 +245,6 @@ void ADC1_SetOperationMode(
             // Disable Comparator module
             CM4CONbits.CON = 0;
             PMD3bits.CMPMD = 1;
-            // Set input channel
-            ADC1_ChannelSelectSet(CURRENT_CHANNEL_0);
             // Clock settings
             AD1CON3bits.SAMC = 0b10000; // 16*TAD auto sample time
             ADC1_ConversionClockPrescalerSet(10 + 1); // TAD = X*11 = 171.875 ns
@@ -293,9 +274,6 @@ static void InitModesCommon(void) {
     ADC1_SelectSampleTrigger(ADC1_TMR5_SOURCE);
     ADC1_AutomaticSamplingEnable();
     ADC1_SimultaneousSamplingEnable();
-    ADC1_ChannelSelectSet(CURRENT_CHANNEL_0);
-    ADC1_Positive123ChannelSelect(CURRENT_CHANNEL_123);
-    ADC1_Negative123ChannelSelect(0);
     ADC1_ConversionClockPrescalerSet(2); // Conversion rate = 16 MHz
     ADC1_Enable();
     DELAY_us(20);
