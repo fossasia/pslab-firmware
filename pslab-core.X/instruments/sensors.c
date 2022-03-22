@@ -81,7 +81,7 @@ response_t SENSORS_HCSR04(void) {
     
     uint16_t timeout = UART1_ReadInt();
     
-    // Unassign SQR1 pin from it's original functions and reuse with HCSR04
+    // Unassign SQR1 pin from its original functions and reuse with HCSR04
     RPOR5bits.RP54R = RPN_DEFAULT_PORT;
     // Disable DMA functions on Channel 2 and Channel 3
     DMA_ChannelDisable(DMA_CHANNEL_2);
@@ -104,13 +104,18 @@ response_t SENSORS_HCSR04(void) {
     
     // Wait until IC1 captures the rising edge from ECHO pin to start timing
     while ((!_IC1IF) && (IC2TMR < timeout));
-    UART1_WriteInt(IC1_CaptureDataRead());
-    UART1_WriteInt(IC2_CaptureDataRead());
+    uint16_t reading_1 = IC1_CaptureDataRead();
+    uint16_t reading_2 = IC2_CaptureDataRead();
 
     // Wait until IC3 captures the falling edge from ECHO pin to stop the timer
     while ((!_IC3IF) && (IC4TMR < timeout));
-    UART1_WriteInt(IC3_CaptureDataRead());
-    UART1_WriteInt(IC4_CaptureDataRead());
+    uint16_t reading_3 = IC3_CaptureDataRead();
+    uint16_t reading_4 = IC4_CaptureDataRead();
+
+    UART1_WriteInt(reading_1);
+    UART1_WriteInt(reading_2);
+    UART1_WriteInt(reading_3);
+    UART1_WriteInt(reading_4);
     // Fetch the timer value from IC2 module to measure ToF from python side
     UART1_WriteInt(IC2TMR);
 
