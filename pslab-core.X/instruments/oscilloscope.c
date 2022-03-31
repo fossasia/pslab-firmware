@@ -130,7 +130,7 @@ response_t OSCILLOSCOPE_ConfigureTrigger(void) {
 
     int i;
     for (i = 0; i < MAX_CHANNELS; i++) {
-        if (channelbits && (1 << i)) {
+        if (channelbits & (1 << i)) {
             SetTRIGGER_CHANNEL(i);
             break;
         }
