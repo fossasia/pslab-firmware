@@ -13,28 +13,12 @@ jobs:
             - name: Download project files
               uses: actions/checkout@v2
 
-            - name: Cache MPLAB-X IDE
-              id: cache-ide
-              uses: actions/cache@v2
-              with:
-                path: ~/.cache/mplab-ide/
-                key: mplab-v5.45-cache
-
             - name: Cache XC-16 Compiler
               id: cache-compiler
               uses: actions/cache@v2
               with:
                 path: ~/.cache/mplab-xc
                 key: xc16-v1.70-cache
-
-            - name: Download MPLAB-X IDE
-              if: steps.cache-ide.outputs.cache-hit != 'true'
-              run: |
-                mkdir -p ~/.cache/mplab-ide
-                cd ~/.cache/mplab-ide
-                wget https://ww1.microchip.com/downloads/en/DeviceDoc/MPLABX-v5.45-linux-installer.tar
-                tar -xvf MPLABX-v5.45-linux-installer.tar
-                rm -rf MPLABX-v5.45-linux-installer.tar
 
             - name: Download XC16 Compiler
               if: steps.cache-compiler.outputs.cache-hit != 'true'
@@ -44,30 +28,34 @@ jobs:
                 wget https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.70-full-install-linux64-installer.run
                 chmod +x xc16-v1.70-full-install-linux64-installer.run
 
-            - name: Install MPLAB-X IDE
-              run: |
-                cd ~/.cache/mplab-ide
-                sudo ./MPLABX-v5.45-linux-installer.sh -- --mode unattended --unattendedmodeui minimal --debuglevel 0 --8bitmcu 0 --32bitmcu 0 --othermcu 0
-
             - name: Install XC16 Compiler
               run: |
                 cd ~/.cache/mplab-xc
                 sudo ./xc16-v1.70-full-install-linux64-installer.run --mode unattended --netservername dontknow
 
+            - name: Set up cmake-microchip submodules
+              run: |
+                git submodule init
+                git submodule update
+
             - name: Build Bootloader project
               run: |
                 cd pslab-bootloader.X
-                /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
-                /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
+                mkdir build
+                cd build
+                cmake ..
+                make
 
             - name: Build Core application
               run: |
                 cd pslab-core.X
-                /opt/microchip/mplabx/v5.45/mplab_platform/bin/prjMakefilesGenerator.sh .
-                /opt/microchip/mplabx/v5.45/mplab_platform/bin/make
+                mkdir build
+                cd build
+                cmake ..
+                make
                 
             - name: Publish build files
               uses: actions/upload-artifact@v2
               with:
                 name: production-file
-                path: pslab-core.X/dist/default/production/*.hex
+                path: pslab-core.X/build/*.hex
