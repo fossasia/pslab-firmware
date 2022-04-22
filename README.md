@@ -69,9 +69,6 @@ PSLab is a tiny pocket science lab that provides an array of test and measuremen
 ```
 ## Requirements 
 
-### Development Environment
-The source files in this repository were generated and developed using MPLAB X IDE V5.45. The latest version of this IDE can be downloaded from [MPLAB-X-IDE](https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-x-ide#tabs) page.
-
 ### Compiler
 The 16-bit microcontroller architecture uses XC-16 compiler and the source in this repository is compiled using XC16 compiler V1.70 and this can be downloaded from [XC16 Compiler](https://www.microchip.com/en-us/development-tools-tools-and-software/mplab-xc-compilers#Downloads) page.
 
