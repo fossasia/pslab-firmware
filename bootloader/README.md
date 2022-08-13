@@ -1,12 +1,15 @@
-# PSLab Firmware
+# PSLab Bootloader
 
-This repository contains firmware for the
+This repository contains the bootloader of the
 [Pocket Science Lab (PSLab)](https://pslab.io) open hardware platform.
 
-![Build Status](https://github.com/fossasia/pslab-firmware/actions/workflows/main-builder.yml/badge.svg)
+![Build Status](https://github.com/fossasia/pslab-bootloader/actions/workflows/main-builder.yml/badge.svg)
 [![Gitter](https://badges.gitter.im/fossasia/pslab.svg)](https://gitter.im/fossasia/pslab?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 [![Mailing List](https://img.shields.io/badge/Mailing%20List-FOSSASIA-blue.svg)](https://groups.google.com/forum/#!forum/pslab-fossasia)
-![Twitter Follow](https://img.shields.io/twitter/follow/pslabio.svg?style=social&label=Follow&maxAge=259)
+[![Twitter Follow](https://img.shields.io/twitter/follow/pslabio.svg?style=social&label=Follow&maxAge=259)
+
+The bootloader makes it possible to flash new firmware to the device over a USB
+connection, whereas without it a special programming tool is required.
 
 ## Pocket Science Lab
 
@@ -16,8 +19,8 @@ oscilloscope, a waveform generator, a frequency counter, programmable voltage
 and current sources, and a logic analyzer. The PSLab also has UART, I2C, and SPI
 buses, via which external devices can be connected and controlled.
 
-The PSLab is a fully open device, and FOSSASIA provices a complete hardware and
-software stack under open source licenses:
+The PSLab is a fully open device, and a FOSSASIA provices a complete hardware
+and software stack under open source licenses:
 
 -   [Hardware](https://github.com/fossasia/pslab-hardware)
 -   [Bootloader](https://github.com/fossasia/pslab-bootloader)
@@ -42,7 +45,7 @@ software stack under open source licenses:
 
 ## Dependencies
 
-The following tools are required to build the firmware:
+The following tools are required to build the bootloader:
 
 -   xc16 compiler
 -   cmake
@@ -58,7 +61,7 @@ git submodule update
 ```
 
 This will populate the `external/cmake-microchip` directory, after which the
-firmware can be built:
+bootloader can be built:
 
 ```bash
 mkdir build
@@ -68,40 +71,26 @@ make
 ```
 
 This will create a build artifact in the `build` directory:
-`pslab-firmware.hex`.
+`pslab-bootloader.hex`.
+
+### Creating a combined HEX file
+
+It is possible to create a HEX file containing both the bootloader and the
+firmware. To do this, follow these steps:
+
+1.  Build the bootloader
+
+2.  Build the firmware
+
+3.  Move firmware.hex into the `build/` directory of the bootloader repository
+
+4.  Run `combine_hex.sh`. The `hexmate` program, distributed as part of
+    MPLAB-X, needs to be in your $PATH. Alternatively, modify `combine_hex.sh`
+    to include the full pathname to `hexmate`.
 
 ## Flashing
 
-The firmware can be flashed over USB or by using a programmer such as the
-PICkit3.
-
-### Over USB
-
-Firmware can be flashed over USB if the device already has the
-[bootloader](https://github.com/fossasia/pslab-bootloader) installed.
-
-Flashing the firmware requires the pslab-python library. See
-[pslab-python](https://github.com/fossasia/pslab-python) for installation
-instructions.
-
-Follow these steps to flash new firmware:
-
-1.  Ground the BOOT pin
-2.  Reset or power cycle the device
-3.  Run `pslab flash --port <portname> firmware.hex`
-4.  Unground the BOOT pin
-5.  Reset or power cycle the device
-
-### Using a programmer
-
-> **Warning**  
-> If your device contains a bootloader, flashing just the firmware HEX with a
-> programmer will OVERWRITE the bootloader. If for some reason you are unable
-> to flash over USB, it is a better idea to first create a combined HEX file
-> containing both the bootloader and the firmware and flash that, rather than
-> flashing the pure firmare HEX. See the
-> [bootloader repository](bootloader#creating-a-combined-hex-file)
-> for instructions on how to create a combined HEX.
+Flashing the bootloader requires a programmer such as the PICkit3.
 
 Flashing with a programmer requires the mdb.sh script, which is distributed as
 part of Microchip's MPLAB-X software suite. On Linux, the default installation
@@ -120,29 +109,11 @@ HEX.
 ## Repository structure
 
 ```shell
-📦pslab-firmware
- ┣ 📂src                        # PSLab firmware source code
- ┃ ┣ 📂bus                      # Communication specific source files
- ┃ ┃ ┣ 📜 ...
- ┃ ┃ ┗ 📜i2c.c
- ┃ ┣ 📂helpers                  # Supplementary functions
- ┃ ┃ ┣ 📜 ...
- ┃ ┃ ┗ 📜version.c
- ┃ ┣ 📂instruments              # Instrument specific source files
- ┃ ┃ ┣ 📜 ...
- ┃ ┃ ┗ 📜multimeter.c
- ┃ ┣ 📂registers                # PIC specific register entry files
- ┃ ┃ ┣ 📂comparators
- ┃ ┃ ┃ ┣ 📜 ...
- ┃ ┃ ┃ ┗ 📜ic1.c
- ┃ ┃ ┣ 📂 ...                   # includes converters, memory, system
- ┃ ┃ ┣ 📂timers
- ┃ ┃ ┃ ┣ 📜 ...
- ┃ ┃ ┃ ┗ 📜tmr1.c
- ┃ ┣ 📂sdcard                   # SD Card specific file handling source files
+📦pslab-bootloader
+ ┣ 📂src                        # PSLab bootloader source code
+ ┃ ┣ 📂mcc_generated_files      # Source C files
  ┃ ┣ 📜 ...
- ┃ ┣ 📜main.c                   # Entry point to PSLab Core
- ┃ ┣ 📜commands.c               # Entry point to function implementations
+ ┃ ┣ 📜main.c                   # Entry point to PSLab Bootloader
  ┣ 📂external
  ┃ ┣ 📂cmake-microchip          # Toolchain submodule
  ┣ 📜CMakeLists.txt

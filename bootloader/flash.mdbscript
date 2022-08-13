@@ -1,0 +1,6 @@
+device PIC24EP256GP204
+hwtool PICkit3 -p
+program build/pslab-bootloader.hex
+sleep 1000
+reset
+quit

@@ -1,6 +1,6 @@
-[submodule "pslab-core.X/external/cmake-microchip"]
-	path = pslab-core.X/external/cmake-microchip
-	url = https://github.com/fossasia/cmake-microchip.git
-[submodule "pslab-bootloader.X/external/cmake-microchip"]
-	path = pslab-bootloader.X/external/cmake-microchip
-	url = https://github.com/fossasia/cmake-microchip.git
+[submodule "firmware/external/cmake-microchip"]
+	path = firmware/external/cmake-microchip
+	url = https://github.com/fossasia/cmake-microchip
+[submodule "bootloader/external/cmake-microchip"]
+	path = bootloader/external/cmake-microchip
+	url = https://github.com/fossasia/cmake-microchip
