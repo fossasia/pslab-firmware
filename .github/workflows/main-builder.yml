@@ -38,17 +38,17 @@ jobs:
                 git submodule init
                 git submodule update
 
-            - name: Build Bootloader project
+            - name: Build bootloader
               run: |
-                cd pslab-bootloader.X
+                cd bootloader
                 mkdir build
                 cd build
                 cmake ..
                 make
 
-            - name: Build Core application
+            - name: Build firmware
               run: |
-                cd pslab-core.X
+                cd firmware
                 mkdir build
                 cd build
                 cmake ..
@@ -58,4 +58,4 @@ jobs:
               uses: actions/upload-artifact@v2
               with:
                 name: production-file
-                path: pslab-core.X/build/*.hex
+                path: firmware/build/*.hex
