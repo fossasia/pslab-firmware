@@ -100,7 +100,7 @@ Follow these steps to flash new firmware:
 > to flash over USB, it is a better idea to first create a combined HEX file
 > containing both the bootloader and the firmware and flash that, rather than
 > flashing the pure firmare HEX. See the
-> [bootloader repository](bootloader#creating-a-combined-hex-file)
+> [bootloader repository](https://github.com/fossasia/pslab-bootloader/#creating-a-combined-hex-file)
 > for instructions on how to create a combined HEX.
 
 Flashing with a programmer requires the mdb.sh script, which is distributed as
