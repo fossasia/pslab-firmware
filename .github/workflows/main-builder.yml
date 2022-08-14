@@ -38,17 +38,8 @@ jobs:
                 git submodule init
                 git submodule update
 
-            - name: Build bootloader
-              run: |
-                cd bootloader
-                mkdir build
-                cd build
-                cmake ..
-                make
-
             - name: Build firmware
               run: |
-                cd firmware
                 mkdir build
                 cd build
                 cmake ..

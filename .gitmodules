@@ -1,6 +1,3 @@
-[submodule "firmware/external/cmake-microchip"]
-	path = firmware/external/cmake-microchip
-	url = https://github.com/fossasia/cmake-microchip
-[submodule "bootloader/external/cmake-microchip"]
-	path = bootloader/external/cmake-microchip
+[submodule "external/cmake-microchip"]
+	path = external/cmake-microchip
 	url = https://github.com/fossasia/cmake-microchip
