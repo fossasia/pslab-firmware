@@ -2,9 +2,9 @@ name: pslab-firmware
 
 on:
     push:
-        branches: [ bootloader ]
+        branches: [ main ]
     pull_request:
-        branches: [ bootloader ]
+        branches: [ main ]
 
 jobs:
     build:
