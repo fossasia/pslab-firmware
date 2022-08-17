@@ -16,7 +16,7 @@ oscilloscope, a waveform generator, a frequency counter, programmable voltage
 and current sources, and a logic analyzer. The PSLab also has UART, I2C, and SPI
 buses, via which external devices can be connected and controlled.
 
-The PSLab is a fully open device, and FOSSASIA provices a complete hardware
+The PSLab is a fully open device, and FOSSASIA provides a complete hardware
 and software stack under open source licenses:
 
 -   [Hardware](https://github.com/fossasia/pslab-hardware)
