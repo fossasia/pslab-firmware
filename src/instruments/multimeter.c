@@ -16,6 +16,7 @@ void ChargeCapacitor(uint8_t charge, uint16_t period);
 void GetCapacitance_InitCTMU_TMR5(uint8_t current_range, uint8_t trim,
         uint16_t charge_time);
 void GetCapacitance_ConfigADC_CTMU_TMR5();
+void GetCapacitor_Range(uint16_t charge_time);
 
 void ChargeCapacitor(uint8_t charge, uint16_t period) {
     CAP_OUT_SetDigitalOutput();
@@ -93,6 +94,33 @@ uint16_t GetVoltage_Summed(uint8_t channel) {
             (ADC1BUFC) + (ADC1BUFD) + (ADC1BUFE) + (ADC1BUFF);
     
     return voltage_sum;
+}
+
+uint16_t GetCapacitor_Range(uint16_t charge_time) {
+
+    ChargeCapacitor(0, 50000);
+    ChargeCapacitor(0, 50000); // TODO: Check if we need two of these
+
+    ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, CH0_CHANNEL_CAP, 0);
+
+    TMR5_Initialize();
+    TMR5_Period16BitSet(charge_time);
+    TMR5_SetPrescaler(TMR_PRESCALER_64);
+    TMR5_Start();
+
+    // Start charging the capacitor through 10K resistor
+    CAP_OUT_SetDigitalOutput();
+    CAP_OUT_SetHigh();
+
+    TMR5_WaitForInterruptEvent();
+
+    // Stop the charging process
+    CAP_OUT_SetDigitalInput();
+    CAP_OUT_SetLow();
+
+    uint16_t total = GetVoltage_Summed(CH0_CHANNEL_CAP);
+
+    return total;
 }
 
 response_t MULTIMETER_GetVoltage(void) {
@@ -189,6 +217,16 @@ response_t MULTIMETER_GetCapacitance(void) {
     UART1_WriteInt(reading);
 
     LED_SetHigh();
+
+    return SUCCESS;
+}
+
+response_t MULTIMETER_GetCapRange(void) {
+
+    uint16_t charge_time = UART1_ReadInt(); // in microseconds
+
+    uint16_t range = GetCapacitor_Range(charge_time);
+    UART1_WriteInt(range);
 
     return SUCCESS;
 }

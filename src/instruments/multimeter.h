@@ -28,6 +28,19 @@ extern "C" {
      * @return SUCCESS
      */
     response_t MULTIMETER_GetCapacitance(void);
+
+    /**
+     * @brief Get an estimate of the capacitor range
+     *
+     * @description
+     * This command takes only one argument over serial:
+     * 1. (uint16) Charge time
+     *
+     * It returns the range value as uint16.
+     *
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_GetCapRange(void);
     
     /**
      * @brief Measurements using Charge Time Measurement Unit
