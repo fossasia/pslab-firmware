@@ -28,7 +28,23 @@ extern "C" {
      * @return SUCCESS
      */
     response_t MULTIMETER_GetCapacitance(void);
-    
+
+    /**
+     * @brief Get an estimate of the capacitor range
+     *
+     * @description
+     * This function can be used to get an estimate of how large a 
+     * capacitor is. One use case could be to compare two different
+     * capacitors without having to evaluate the exact capacitance.
+     * This command takes only one argument over serial:
+     * 1. (uint16) Charge time in micro seconds
+     *
+     * It returns the range value as uint16.
+     *
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_GetCapRange(void);
+
     /**
      * @brief Measurements using Charge Time Measurement Unit
      *

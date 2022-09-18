@@ -155,6 +155,35 @@ response_t MULTIMETER_ChargeCapacitor(void) {
     return SUCCESS;
 }
 
+response_t MULTIMETER_GetCapRange(void) {
+
+    uint16_t charge_time = UART1_ReadInt();
+
+    ChargeCapacitor(CHARGE, 50000);
+
+    ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, CH0_CHANNEL_CAP, 0);
+
+    TMR5_Initialize();
+    TMR5_Period16BitSet(charge_time);
+    TMR5_SetPrescaler(TMR_PRESCALER_64);
+    TMR5_Start();
+
+    // Start charging the capacitor through 10K resistor
+    CAP_OUT_SetDigitalOutput();
+    CAP_OUT_SetHigh();
+
+    TMR5_WaitForInterruptEvent();
+
+    // Stop the charging process
+    CAP_OUT_SetDigitalInput();
+    CAP_OUT_SetLow();
+
+    uint16_t range = GetVoltage_Summed(CH0_CHANNEL_CAP);
+    UART1_WriteInt(range);
+
+    return SUCCESS;
+}
+
 response_t MULTIMETER_GetCapacitance(void) {
 
     uint8_t current_range = UART1_Read();
@@ -189,16 +218,6 @@ response_t MULTIMETER_GetCapacitance(void) {
     UART1_WriteInt(reading);
 
     LED_SetHigh();
-
-    return SUCCESS;
-}
-
-response_t MULTIMETER_GetCapRange(void) {
-
-    uint16_t charge_time = UART1_ReadInt(); // in microseconds
-
-    uint16_t range = GetCapacitor_Range(charge_time);
-    UART1_WriteInt(range);
 
     return SUCCESS;
 }
