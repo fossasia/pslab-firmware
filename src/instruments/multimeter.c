@@ -193,16 +193,6 @@ response_t MULTIMETER_GetCapacitance(void) {
     return SUCCESS;
 }
 
-response_t MULTIMETER_GetCapRange(void) {
-
-    uint16_t charge_time = UART1_ReadInt(); // in microseconds
-
-    uint16_t range = GetCapacitor_Range(charge_time);
-    UART1_WriteInt(range);
-
-    return SUCCESS;
-}
-
 response_t MULTIMETER_GetCTMUVolts(void) {
     
     uint8_t config = UART1_Read();
