@@ -252,7 +252,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
         Removed,                        Removed,                        DEVICE_ReadRegisterData,        DEVICE_WriteRegisterData,
      // 16 GET_CAP_RANGE                17 SET_RGB2                     18 READ_LOG                     19 RESTORE_STANDALONE
-        Unimplemented,                  Removed,                        Removed,                        DEVICE_Reset,
+        MULTIMETER_GetCapRange,         Removed,                        Removed,                        DEVICE_Reset,
      // 20 GET_ALTERNATE_HIGH_FREQUENCY 21 SET_RGB_COMMON               22 SET_RGB3                     23 START_CTMU
         Unimplemented,                  LIGHT_RGBPin,                   Removed,                        CTMU_Start,
      // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
