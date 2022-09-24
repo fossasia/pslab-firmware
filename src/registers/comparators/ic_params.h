@@ -88,6 +88,56 @@ extern "C" {
      void IC_PARAMS_CombineOddEvenModules(void);
      
      void IC_PARAMS_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER);
+
+    /**
+      @Summary
+        Combines IC1 and IC2 modules to enable concatenated operation
+
+      @Description
+        This routine combines both IC1 and IC2 capture modules to act
+        them as 32-bit counters
+
+      @Preconditions
+        None
+
+      @Param
+        pin: source pin for the input capture clock module (PIN_MANAGER_DIGITAL_PINS)
+        timer: timer to run the capture modules (IC_PARAMS_CAPTURE_TIMER)
+        interrupt: interrupt trigger event (IC_PARAMS_CAPTURE_INTERRUPT)
+        mode: capture event (IC_PARAMS_CAPTURE_MODE)
+
+      @Returns
+        None.
+     */
+     void IC_PARAMS_ConfigureIntervalCaptureWithIC1AndIC2(uint8_t pin, 
+        IC_PARAMS_CAPTURE_TIMER timer, 
+        IC_PARAMS_CAPTURE_INTERRUPT interrupt,
+        IC_PARAMS_CAPTURE_MODE mode);
+
+    /**
+      @Summary
+        Combines IC3 and IC4 modules to enable concatenated operation
+
+      @Description
+        This routine combines both IC3 and IC4 capture modules to act
+        them as 32-bit counters
+
+      @Preconditions
+        None
+
+      @Param
+        pin: source pin for the input capture clock module (PIN_MANAGER_DIGITAL_PINS)
+        timer: timer to run the capture modules (IC_PARAMS_CAPTURE_TIMER)
+        interrupt: interrupt trigger event (IC_PARAMS_CAPTURE_INTERRUPT)
+        mode: capture event (IC_PARAMS_CAPTURE_MODE)
+
+      @Returns
+        None.
+     */
+     void IC_PARAMS_ConfigureIntervalCaptureWithIC3AndIC4(uint8_t pin, 
+        IC_PARAMS_CAPTURE_TIMER timer, 
+        IC_PARAMS_CAPTURE_INTERRUPT interrupt,
+        IC_PARAMS_CAPTURE_MODE mode);
     
 #ifdef	__cplusplus
 }

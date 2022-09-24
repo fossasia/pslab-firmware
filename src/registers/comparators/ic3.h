@@ -283,11 +283,66 @@ extern "C" {
     inline static void IC3_CombineOddEvenICModules(void) {
         IC3CON2bits.IC32 = 1;
     }
-    
+
+    /**
+    @Summary
+        Sets the trigger event for capture complete interrupt
+
+      @Description
+        This routine sets the trigger event for the input capture module to
+        notify the ISR that a capture event is complete
+
+      @Preconditions
+        IC3_Initialize function should have been called
+
+      @Param
+        IC_PARAMS_CAPTURE_INTERRUPT
+
+      @Returns
+        None
+     */
+    inline static void IC3_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT i) {
+        IC3CON1bits.ICI = i;
+    }
+
+    /**
+    @Summary
+        Defines the purpose of input capture pin source
+
+    @Description
+        This routine defines if the pin attached to IC module is used either to
+        trigger the IC3TMR or to synchronize the timer with another timer module.
+
+    @Preconditions
+        IC3_Initialize function should have been called
+
+    @Param
+        IC_PARAMS_SOURCE_TASK
+
+    @Returns
+        None
+    */
     inline static void IC3_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
         IC3CON2bits.ICTRIG = t;
     }
-    
+
+    /**
+    @Summary
+        Clears the set interrupt flag of IC3 capture interrupt
+
+      @Description
+        This routine will clear the interrupt flag of the IC3 capture
+        module.
+
+      @Preconditions
+        IC3_Initialize function should have been called
+
+      @Param
+        None
+
+      @Returns
+        None
+     */
     inline static void IC3_InterruptFlagClear(void) {
         IFS2bits.IC3IF = 0;
     }
