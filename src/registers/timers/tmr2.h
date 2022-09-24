@@ -117,8 +117,58 @@ extern "C" {
         None
      */
     void TMR2_Stop(void);
-    
-    inline static void TMR2_PrescalerSet(TIMER_PARAMS_PRESCALER scale) {
+
+    /**
+      @Summary
+        Combines Timer 2 and Timer 3 modules
+
+      @Description
+        This routine combines Timer 2 and Timer 3 modules to form
+        a 32-bit timer module
+
+      @Param
+        None
+
+      @Returns
+        None.
+     */
+    inline static void TMR2_CombineWithTimer3(void) {
+        T2CONbits.T32 = 1;
+    }
+
+    /**
+      @Summary
+        Enable an external pin as timer clock source
+
+      @Description
+        This routine enables one of the available external pins
+        to become the clock source for the Timer 2 module
+
+      @Param
+        None
+
+      @Returns
+        None.
+     */
+    inline static void TMR2_SetExternalClockAsSource(void) {
+        T2CONbits.TCS = 1;
+    }
+
+    /**
+      @Summary
+        Sets pre-scaler for Timer 2 module
+
+      @Description
+        This routine defines the down sample rate for the operating frequency
+        of Timer 2 module
+
+      @Param
+        scale: pre-scaler ratio (TIMER_PARAMS_PRESCALER)
+
+      @Returns
+        None.
+     */
+    inline static void TMR2_SetPrescaler(TIMER_PARAMS_PRESCALER scale) {
         T2CONbits.TCKPS = scale;
     }
 
