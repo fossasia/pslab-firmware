@@ -86,6 +86,26 @@ extern "C" {
         16-bit current counter value
      */
     uint16_t TMR3_Counter16BitGet(void);
+    
+    /**
+      @Summary
+        Provides 16-bit hold carry counter value
+
+      @Description
+        When TMR2 and TMR3 are cascaded to form a single 32-bit timer,
+        TMR2 hold the Least Significant Word (LSW) and TMR3 holds the
+        Most Significant Word (MSW). When the LSW is read from TMR2,
+        the current value of TMR3 is moved to the TMR3HLD register.
+        The MSW can then be read from TMR3HLD without worrying about
+        the delay between reads.
+
+      @Param
+        None.
+
+      @Returns
+        16-bit current hold carry value
+     */
+    uint16_t TMR3_Carry16BitGet(void);
 
     /**
       @Summary

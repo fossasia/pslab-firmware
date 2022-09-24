@@ -170,6 +170,23 @@ extern "C" {
     inline static void TMR5_InterruptDisable(void) {
         IEC1bits.T5IE = 0;
     }
+    
+    /**
+      @Summary
+        Enables the TMR interrupt.
+
+      @Description
+        This routine enables the TMR interrupt.
+
+      @Param
+        None.
+
+      @Returns
+        None
+     */
+    inline static void TMR5_InterruptEnable(void) {
+        IEC1bits.T5IE = 1;
+    }
 
     /**
       @Summary

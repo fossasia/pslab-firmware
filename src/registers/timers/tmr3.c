@@ -2,8 +2,9 @@
 #include "tmr3.h"
 
 void TMR3_Initialize(void) {
-    // Clear timer 4 register
+    // Clear timer 3 register
     TMR3 = 0x00;
+    TMR3HLD = 0x00;
     //Period = 0 s; Frequency = 64000000 Hz; PR4 0; 
     PR3 = 0x00;
     // Stops timer
@@ -16,6 +17,9 @@ void TMR3_Initialize(void) {
     T3CONbits.TCKPS = 0b00;
     // Internal clock (FP)
     T3CONbits.TCS = 0;
+    // Disable interrupts
+    _T3IE = 0;
+    _T3IF = 0;
 }
 
 void TMR3_Period16BitSet(uint16_t value) {
@@ -34,6 +38,10 @@ void TMR3_Counter16BitSet(uint16_t value) {
 
 uint16_t TMR3_Counter16BitGet(void) {
     return (TMR3);
+}
+
+uint16_t TMR3_Carry16BitGet(void) {
+    return TMR3HLD;
 }
 
 void TMR3_Start(void) {
