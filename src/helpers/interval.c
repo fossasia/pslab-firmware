@@ -170,7 +170,7 @@ void INTERVAL_CaptureFour(uint16_t count, uint16_t mode, uint8_t prescaler) {
     RPINR8bits.IC4R = PIN_MANAGER_DIGITAL_PINS_LA4;
     
     TMR2_Initialize();
-    TMR2_PrescalerSet(prescaler & 0xF);
+    TMR2_SetPrescaler(prescaler & 0xF);
     TMR2_Counter16BitSet(1);
 
     IC_PARAMS_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER2);

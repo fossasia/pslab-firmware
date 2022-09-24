@@ -47,7 +47,7 @@ void GetCapacitance_InitCTMU_TMR5(uint8_t current_range, uint8_t trim,
     CTMUICONbits.IRNG = current_range;
 
     TMR5_Initialize();
-    TMR5_PrescalerSet(TMR_PRESCALER_64);
+    TMR5_SetPrescaler(TMR_PRESCALER_64);
     TMR5_Period16BitSet(charge_time);
 }
 
