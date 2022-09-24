@@ -283,17 +283,88 @@ extern "C" {
     inline static void IC4_CombineOddEvenICModules(void) {
         IC4CON2bits.IC32 = 1;
     }
-    
+
+    /**
+    @Summary
+        Defines the purpose of input capture pin source
+
+    @Description
+        This routine defines if the pin attached to IC module is used either to
+        trigger the IC4TMR or to synchronize the timer with another timer module.
+
+    @Preconditions
+        IC4_Initialize function should have been called
+
+    @Param
+        IC_PARAMS_SOURCE_TASK
+
+    @Returns
+        None
+    */
     inline static void IC4_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
         IC4CON2bits.ICTRIG = t;
     }
 
+    /**
+    @Summary
+        Clears the set interrupt flag of IC4 capture interrupt
+
+      @Description
+        This routine will clear the interrupt flag of the IC4 capture
+        module.
+
+      @Preconditions
+        IC4_Initialize function should have been called
+
+      @Param
+        None
+
+      @Returns
+        None
+     */
     inline static void IC4_InterruptFlagClear(void) {
         IFS2bits.IC4IF = 0;
     }
-    
+
+    /**
+    @Summary
+        Enable IC4 interrupt
+
+      @Description
+        This routine will enable IC4 interrupt.
+
+      @Preconditions
+        IC4_Initialize function should have been called
+
+      @Param
+        None
+
+      @Returns
+        None
+     */
     inline static void IC4_InterruptEnable(void) {
         IEC2bits.IC4IE = 1;
+    }
+
+    /**
+    @Summary
+        Sets the trigger event for capture complete interrupt
+
+      @Description
+        This routine sets the trigger event for the input capture module to
+        notify the ISR that a capture event is complete
+
+      @Preconditions
+        IC4_Initialize function should have been called
+
+      @Param
+        IC_PARAMS_CAPTURE_INTERRUPT
+
+      @Returns
+        None
+     */
+    inline static void IC4_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT i) {
+        IC4CON1bits.ICI = i;
     }
     
     inline static void IC4_InterruptDisable(void) {

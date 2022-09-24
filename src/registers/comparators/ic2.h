@@ -283,11 +283,66 @@ extern "C" {
     inline static void IC2_CombineOddEvenICModules(void) {
         IC2CON2bits.IC32 = 1;
     }
-    
+
+    /**
+    @Summary
+        Sets the trigger event for capture complete interrupt
+
+      @Description
+        This routine sets the trigger event for the input capture module to
+        notify the ISR that a capture event is complete
+
+      @Preconditions
+        IC2_Initialize function should have been called
+
+      @Param
+        IC_PARAMS_CAPTURE_INTERRUPT
+
+      @Returns
+        None
+     */
+    inline static void IC2_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT i) {
+        IC2CON1bits.ICI = i;
+    }
+
+    /**
+    @Summary
+        Defines the purpose of input capture pin source
+
+    @Description
+        This routine defines if the pin attached to IC module is used either to
+        trigger the IC2TMR or to synchronize the timer with another timer module.
+
+    @Preconditions
+        IC2_Initialize function should have been called
+
+    @Param
+        IC_PARAMS_SOURCE_TASK
+
+    @Returns
+        None
+    */
     inline static void IC2_UseSourceTo(IC_PARAMS_SOURCE_TASK t) {
         IC2CON2bits.ICTRIG = t;
     }
-    
+
+    /**
+    @Summary
+        Clears the set interrupt flag of IC2 capture interrupt
+
+      @Description
+        This routine will clear the interrupt flag of the IC2 capture
+        module.
+
+      @Preconditions
+        IC2_Initialize function should have been called
+
+      @Param
+        None
+
+      @Returns
+        None
+     */
     inline static void IC2_InterruptFlagClear(void) {
         IFS0bits.IC2IF = 0;
     }
