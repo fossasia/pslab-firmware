@@ -1,5 +1,6 @@
 #include "commands.h"
 #include "bus/i2c/i2c.h"
+#include "bus/spi/spi1.h"
 #include "helpers/buffer.h"
 #include "helpers/device.h"
 #include "helpers/interval.h"
@@ -115,20 +116,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                 Undefined,                     Undefined,                      Undefined,
     },
     { // 3 SPI
-     // 0               1 START_SPI           2 SEND_SPI8        3 SEND_SPI16
-        Undefined,      Unimplemented,        Unimplemented,     Unimplemented,
-     // 4 STOP_SPI      5 SET_SPI_PARAMETERS  6 SEND_SPI8_BURST  7 SEND_SPI16_BURST
-        Unimplemented,  Unimplemented,        Removed,           Removed,
-     // 8               9                     10                 11
-        Undefined,      Undefined,            Undefined,         Undefined,
-     // 12              13                    14                 15
-        Undefined,      Undefined,            Undefined,         Undefined,
-     // 16              17                    18                 19
-        Undefined,      Undefined,            Undefined,         Undefined,
-     // 20              21                    22                 23
-        Undefined,      Undefined,            Undefined,         Undefined,
-     // 24              25                    26                 27
-        Undefined,      Undefined,            Undefined,         Undefined,
+     // 0                               1 START_SPI                     2 SEND_SPI8                     3 SEND_SPI16
+        Undefined,                      SPI1_Start,                     SPI1_Write8,                    Unimplemented,
+     // 4 STOP_SPI                      5 SET_SPI_PARAMETERS            6 SEND_SPI8_BURST               7 SEND_SPI16_BURST
+        SPI1_Stop,                      SPI1_SetParameters,             SPI1_Send8Burst,                Unimplemented,
+     // 8 WRITE_SPI8_BURST              9 WRITE_SPI16_BURST             10 READ_SPI8_BURST              11 READ_SPI16_BURST
+        SPI1_Write8Burst,               Unimplemented,                  SPI1_Read8Burst,                Unimplemented,
+     // 12                              13                              14                              15
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 16                              17                              18                              19
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 4 I2C
      // 0                               1 I2C_START                     2 I2C_SEND                      3 I2C_STOP
