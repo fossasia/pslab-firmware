@@ -72,6 +72,11 @@ void SetBUFFER_IDX(uint8_t idx, volatile uint16_t *V) {
  * This interrupt handler is called every time the ADC finishes a conversion, if
  * the ADC interrupt is enabled. It checks if the trigger condition is
  * fulfilled, and if so copies ADC values into the buffer.
+ * 
+ * @warning
+ * If this compilation unit is built with -O0 the ADC1_Interrupt
+ * functions won't be inlined. This causes call overhead which
+ * significantly reduces the oscilloscope sample rate.
  */
 void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
     ADC1_InterruptFlagClear();
@@ -85,9 +90,17 @@ void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
     LED_Toggle();
 
     if (TRIGGERED) {
-        int i;
-        for (i = 0; i <= CHANNELS; i++) {
-            *(BUFFER_IDX[i]++) = *ADCVALS[i];
+        /* Aweful-looking nested if clause ahead. This turns out to be faster
+        * than a for loop or a switch case, so we're stuck with it. */
+        *(BUFFER_IDX[0]++) = *ADCVALS[0];
+        if (CHANNELS >= 1) {
+            *(BUFFER_IDX[1]++) = *ADCVALS[1];
+            if (CHANNELS >= 2) {
+                *(BUFFER_IDX[2]++) = *ADCVALS[2];
+                if (CHANNELS >= 3) {
+                    *(BUFFER_IDX[3]++) = *ADCVALS[3];
+                }
+            }
         }
 
         if (++SAMPLES_CAPTURED == SAMPLES_REQUESTED) {
