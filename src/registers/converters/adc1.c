@@ -252,7 +252,7 @@ static void InitDMAMode(ADC1_RESOLUTION_TYPE resolution) {
     ADC1_ResolutionModeSet(resolution);
     InitModesCommon();
 
-    DMA_Initialize();
+    DMA_InitializeChannel0();
     DMA_SetOneShotMode(DMA_CHANNEL_0);
     DMA_PeripheralIrqNumberSet(DMA_CHANNEL_0, DMA_PERIPHERAL_IRQ_ADC1);
     DMA_SetLogicAnalyzerChannelMode(DMA_MODES_ONE_CHANNEL);
