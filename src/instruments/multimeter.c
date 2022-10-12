@@ -1,10 +1,19 @@
 #include "../commands.h"
 #include "../bus/uart/uart1.h"
 #include "../helpers/delay.h"
+#include "../helpers/interval.h"
+#include "../registers/comparators/ic1.h"
+#include "../registers/comparators/ic2.h"
+#include "../registers/comparators/ic_params.h"
 #include "../registers/converters/adc1.h"
 #include "../registers/converters/ctmu.h"
+#include "../registers/comparators/cmp4.h"
+#include "../registers/comparators/cvr.h"
 #include "../registers/memory/dma.h"
 #include "../registers/system/pin_manager.h"
+#include "../registers/timers/timer_params.h"
+#include "../registers/timers/tmr2.h"
+#include "../registers/timers/tmr3.h"
 #include "../registers/timers/tmr5.h"
 #include "multimeter.h"
 
@@ -218,6 +227,140 @@ response_t MULTIMETER_GetCapacitance(void) {
     UART1_WriteInt(reading);
 
     LED_SetHigh();
+
+    return SUCCESS;
+}
+
+response_t MULTIMETER_HighFrequency(void) {
+    
+    uint8_t config = UART1_Read();
+    
+    LED_SetLow();
+    
+    if ((config & 0xF) == 4) {
+        CVR_SetupComparator();
+        CMP4_SetupComparator();
+    }
+    
+    RPINR3bits.T2CKR = PIN_MANAGER_DIGITAL_PINS[config & 0xF];
+    
+    TMR2_Initialize();
+    TMR3_Initialize();
+    TMR5_Initialize();
+
+    TMR2_CombineWithTimer3();
+    TMR2_SetExternalClockAsSource();
+    TMR2_SetPrescaler((config >> 4) & 0x4);
+    TMR5_SetPrescaler(TMR_PRESCALER_256);
+    TMR5_Period16BitSet(25000); // 100 millisecond sampling
+
+    _T5IP = 0x01; // Set Timer5 Interrupt Priority Level
+    TMR5_InterruptEnable();
+    TMR2_Start();
+    TMR5_Start();
+
+    TMR5_WaitForInterruptEvent();
+    
+    LED_SetHigh();
+    UART1_Write(1); // Scaling factor
+    UART1_WriteInt(TMR2_Counter16BitGet());
+    UART1_WriteInt(TMR3_Carry16BitGet());
+    
+    return SUCCESS;
+}
+
+response_t MULTIMETER_HighFrequencyAlt(void) {
+    
+    uint8_t config = UART1_Read();
+    
+    LED_SetLow();
+    
+    if ((config & 0xF) == 4) {
+        CVR_SetupComparator();
+        CMP4_SetupComparator();
+    }
+    
+    TMR2_Initialize();
+    TMR2_SetExternalClockAsSource();
+    TMR2_SetPrescaler((config >> 4) & 0x4);
+    TMR5_Initialize();
+    IC1_Initialize();
+    IC2_Initialize();
+    
+    RPINR7bits.IC1R = RPN_DEFAULT_PORT;
+    RPINR7bits.IC2R = RPN_DEFAULT_PORT;
+    RPINR3bits.T2CKR = PIN_MANAGER_DIGITAL_PINS[config & 0xF];
+
+    IC1_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER2);
+    IC1_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT_EVERY_SECOND);
+    IC1_CombineOddEvenICModules();
+    IC1_UseSourceTo(IC_PARAMS_SOURCE_TASK_TRIGGER);
+    IC1_SetCaptureMode(IC_PARAMS_CAPTURE_MODE_EVERY_16TH_RISING_EDGE);
+    
+    IC2_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER2);
+    IC2_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT_EVERY_SECOND);
+    IC2_CombineOddEvenICModules();
+    IC2_UseSourceTo(IC_PARAMS_SOURCE_TASK_TRIGGER);
+    IC2_SetCaptureMode(IC_PARAMS_CAPTURE_MODE_EVERY_16TH_RISING_EDGE);
+    
+    TMR5_SetPrescaler(TMR_PRESCALER_256);
+    TMR5_Period16BitSet(25000); // 100 millisecond sampling
+
+    _T5IP = 0x01;
+    TMR2_Start();
+    TMR5_Start();
+    IC1_ManualTriggerSet();
+    IC2_ManualTriggerSet();
+    
+    TMR5_WaitForInterruptEvent();
+    
+    LED_SetHigh();
+    UART1_Write(1); // Scaling factor
+    UART1_WriteInt(IC1TMR);
+    UART1_WriteInt(IC2TMR);
+    
+    return SUCCESS;
+}
+
+response_t MULTIMETER_LowFrequency(void) {
+    
+    uint16_t timeout = UART1_ReadInt();
+    uint8_t config = UART1_Read();
+    
+    RPINR7bits.IC1R = PIN_MANAGER_DIGITAL_PINS[config & 0xF];
+    
+    IC1_Initialize();
+    IC1_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER_PERIPHERAL);
+    IC1_CombineOddEvenICModules();
+    IC1_SetCaptureMode(IC_PARAMS_CAPTURE_MODE_EVERY_16TH_RISING_EDGE);
+    IC1_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT_EVERY_SECOND);
+    
+    IC2_Initialize();
+    IC2_SetCaptureTimer(IC_PARAMS_CAPTURE_TIMER_PERIPHERAL);
+    IC2_CombineOddEvenICModules();
+    IC2_SetCaptureMode(IC_PARAMS_CAPTURE_MODE_EVERY_16TH_RISING_EDGE);
+    IC2_InputCaptureInterruptOn(IC_PARAMS_CAPTURE_INTERRUPT_EVERY_SECOND);
+
+    IC1_ManualTriggerSet();
+    IC2_ManualTriggerSet();
+    SetDefaultDIGITAL_STATES();
+    
+    IC1_InterruptFlagClear();
+    while ((IC2TMR < timeout) && (!_IC1IF));
+    IC1_InterruptFlagClear();
+    
+    RPINR7bits.IC1R = RPN_DEFAULT_PORT;
+    
+    if ((IC2TMR >= timeout) ||
+            (IC2_HasCaptureBufferOverflowed())) {
+        UART1_Write(1);
+    } else {
+        UART1_Write(0);
+    }
+    
+    UART1_WriteInt(IC1_CaptureDataRead());
+    UART1_WriteInt(IC2_CaptureDataRead());
+    IC_PARAMS_DisableAllModules();   
 
     return SUCCESS;
 }

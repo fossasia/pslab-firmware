@@ -228,13 +228,13 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 10 TIMING
      // 0                               1 GET_TIMING                    2                               3
-        Undefined,                      Unimplemented,                  Undefined,                      Undefined,
+        Undefined,                      INTERVAL_UntilEvent,            Undefined,                      Undefined,
      // 4 START_ONE_CHAN_LA             5 START_TWO_CHAN_LA             6 START_FOUR_CHAN_LA            7 FETCH_DMA_DATA
         LOGICANALYZER_OneChannel,       LOGICANALYZER_TwoChannel,       LOGICANALYZER_FourChannel,      Removed,
      // 8 FETCH_INT_DMA_DATA            9 FETCH_LONG_DMA_DATA           10 COMPARATOR_TO_LA             11 GET_INITIAL_STATES
         BUFFER_FetchInt,                BUFFER_FetchLong,               Unimplemented,                  INTERVAL_GetState,
      // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
-        Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_OneChannelAlt,
+        INTERVAL_TimeMeasure,           INTERVAL_IntervalMeasure,       Removed,                        LOGICANALYZER_OneChannelAlt,
      // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
         LOGICANALYZER_ThreeChannel,     LOGICANALYZER_Stop,             Undefined,                      Undefined,
      // 20                              21                              22                              23
@@ -244,17 +244,17 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 11 COMMON
      // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
-        Undefined,                      MULTIMETER_GetCTMUVolts,        MULTIMETER_GetCapacitance,      Unimplemented,
+        Undefined,                      MULTIMETER_GetCTMUVolts,        MULTIMETER_GetCapacitance,      MULTIMETER_LowFrequency,
      // 4 GET_INDUCTANCE                5 GET_VERSION                   6                               7
         Unimplemented,                  DEVICE_GetVersion,              Undefined,                      Undefined,
      // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
-        BUFFER_Retrieve,                Unimplemented,                  BUFFER_Clear,                   Removed,
+        BUFFER_Retrieve,                MULTIMETER_HighFrequency,       BUFFER_Clear,                   Removed,
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
         Removed,                        Removed,                        DEVICE_ReadRegisterData,        DEVICE_WriteRegisterData,
      // 16 GET_CAP_RANGE                17 SET_RGB2                     18 READ_LOG                     19 RESTORE_STANDALONE
         MULTIMETER_GetCapRange,         Removed,                        Removed,                        DEVICE_Reset,
      // 20 GET_ALTERNATE_HIGH_FREQUENCY 21 SET_RGB_COMMON               22 SET_RGB3                     23 START_CTMU
-        Unimplemented,                  LIGHT_RGBPin,                   Removed,                        CTMU_Start,
+        MULTIMETER_HighFrequencyAlt,    LIGHT_RGBPin,                   Removed,                        CTMU_Start,
      // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
         CTMU_Stop,                      SENSORS_StartCounter,           SENSORS_GetCounter,             BUFFER_Fill,
     },

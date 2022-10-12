@@ -30,6 +30,77 @@ extern "C" {
     response_t MULTIMETER_GetCapacitance(void);
 
     /**
+     * @brief Count the frequency (occurrence) of a signal over a
+     * 100 ms time period using only timer registers
+     *
+     * @description
+     * This command function takes one argument over serial:
+     * 1. (uint8)  Configuration byte:
+     *             | 7  | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *             |   PRE-SCALER   |      PIN      |
+     *             PIN: Pin from PIN_MANAGER_DIGITAL_PINS
+     *             PRE-SCALER: Scaling factor from TIMER_PARAMS_PRESCALER
+     *
+     * This method will output the following data over serial
+     * 1. (char) scaling factor
+     * 2. (int) TIMER 2 (Least significant potion)
+     * 3. (int) TIMER 3 (Most significant potion)
+     * Combine 3. and 2. to structure the full timing data
+     *
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_HighFrequency(void);
+
+    /**
+     * @brief Count the frequency (occurrence) of a signal over a
+     * 100 ms time period using input capture registers. Unlike
+     * `MULTIMETER_HighFrequency`, this method will down-sample the
+     * input signal frequency by a factor of 16 supporting higher
+     * frequency measurements.
+     *
+     * @description
+     * This command function takes one argument over serial:
+     * 1. (uint8)  Configuration byte:
+     *             | 7  | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *             |   PRE-SCALER   |      PIN      |
+     *             PIN: Pin from PIN_MANAGER_DIGITAL_PINS
+     *             PRE-SCALER: Scaling factor from TIMER_PARAMS_PRESCALER
+     *
+     * This method will output the following data over serial
+     * 1. (char) scaling factor
+     * 2. (int) IC1TMR (Least significant potion)
+     * 3. (int) IC2TMR (Most significant potion)
+     * Combine 3. and 2. to structure the full timing data
+     *
+     * @return SUCCESS
+     */
+    response_t MULTIMETER_HighFrequencyAlt(void);
+
+    /**
+    * @brief Count the frequency (occurrence) of a signal. This method
+    * is to be used for low frequency measurements as it only measures
+    * the time interval for 32 rising edges. This will have much finer
+    * granularity than high frequency measurement methods.
+    *
+    * @description
+    * This command function takes one argument over serial:
+    * 1. (uint16) Timeout: period of wait until the operation is aborted
+    * 1. (uint8)  Configuration byte:
+    *             | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+    *             | X | X | X | X |      PIN      |
+    *             PIN: Pin from PIN_MANAGER_DIGITAL_PINS
+    *
+    * This method will output the following data over serial
+    * 1. (char) overflow flag
+    * 2. (int) IC1BUF (Least significant potion)
+    * 3. (int) IC2BUF (Most significant potion)
+    * Combine 3. and 2. to structure the full timing data
+    *
+    * @return SUCCESS
+    */
+    response_t MULTIMETER_LowFrequency(void);
+
+    /**
      * @brief Get an estimate of the capacitor range
      *
      * @description
