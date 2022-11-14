@@ -241,6 +241,13 @@ extern "C" {
      */
     response_t SPI1_Read8Burst(void);
 
+    void SPI1_WordOperations(SPI1_OPERATION op, uint16_t count, uint16_t address);
+
+    response_t SPI1_Write16(void);
+    response_t SPI1_Write16Burst(void);
+    response_t SPI1_Send16Burst(void);
+    response_t SPI1_Read16Burst(void);
+
 #ifdef __cplusplus  // Provide C++ Compatibility
 }
 #endif

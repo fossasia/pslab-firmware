@@ -7,6 +7,14 @@
 
 uint8_t volatile __attribute__((section(".spi_buffer"), far)) SPI_BUFFER[SPI_BUFFER_SIZE];
 
+union {
+    uint16_t dataWord;
+    struct {
+        uint8_t byteMSB;
+        uint8_t byteLSB;
+    };
+} SPI1_DATA;
+
 static SPI1_PARAMETERS parameters = {
     SPI1_MODE_BYTE,
     SPI1_DATA_SAMPLE_AT_END,
@@ -136,6 +144,90 @@ response_t SPI1_Read8Burst(void) {
     uint16_t count = UART1_ReadInt();
 
     SPI1_ByteOperations(SPI1_OPERATION_READ, count, address);
+
+    return SUCCESS;
+}
+
+void SPI1_WordOperations(SPI1_OPERATION op, uint16_t count, uint16_t address) {
+
+    uint16_t i;
+    uint16_t turns = count;
+    if (op == SPI1_OPERATION_READ) {
+        turns = turns + 2;
+        memset((void *) &SPI_BUFFER[2], 0x00, turns);
+        SPI1_DATA.dataWord = address;
+        SPI_BUFFER[1] = SPI1_DATA.byteMSB;
+        SPI_BUFFER[0] = SPI1_DATA.byteLSB;
+    } else {
+        for (i = 0; i < 2 * turns; i = i + 2) {
+            SPI1_DATA.dataWord = UART1_ReadInt();
+            SPI_BUFFER[i+1] = SPI1_DATA.byteMSB;
+            SPI_BUFFER[i] = SPI1_DATA.byteLSB;
+        }
+    }
+
+    if (parameters.spiMode != SPI1_MODE_WORD) {
+        parameters.spiMode = SPI1_MODE_WORD;
+        SPI1_Initialize();
+    }
+    SPI1_EnableModule();
+
+    SPI1_ChipSelect();
+    for (i = 0; i < 2 * turns; i = i + 2) {
+        SPI1_DATA.byteMSB = SPI_BUFFER[i+1];
+        SPI1_DATA.byteLSB = SPI_BUFFER[i];
+        SPI1_DATA.dataWord = SPI_DRIVER_ExchangeWord(SPI1_DATA.dataWord);
+        SPI_BUFFER[i+1] = SPI1_DATA.byteMSB;
+        SPI_BUFFER[i] = SPI1_DATA.byteLSB;
+    }
+    SPI1_ChipDeselect();
+
+    if (op == SPI1_OPERATION_EXCHANGE) {
+        for (i = 0; i < 2 * turns; i = i + 2) {
+            SPI1_DATA.byteMSB = SPI_BUFFER[i+1];
+            SPI1_DATA.byteLSB = SPI_BUFFER[i];
+            UART1_WriteInt(SPI1_DATA.dataWord);
+        }
+    } else if (op == SPI1_OPERATION_READ) {
+        for (i = 2; i <= 2 * count; i = i + 2) {
+            SPI1_DATA.byteMSB = SPI_BUFFER[i+1];
+            SPI1_DATA.byteLSB = SPI_BUFFER[i];
+            UART1_WriteInt(SPI1_DATA.dataWord);
+        }
+    }
+}
+
+response_t SPI1_Write16(void) {
+
+    SPI1_WordOperations(SPI1_OPERATION_WRITE, 1, 0);
+
+    return SUCCESS;
+}
+
+response_t SPI1_Write16Burst(void) {
+
+    uint16_t counter = UART1_ReadInt();
+
+    SPI1_WordOperations(SPI1_OPERATION_WRITE, counter, 0);
+
+    return SUCCESS;
+}
+
+response_t SPI1_Send16Burst(void) {
+
+    uint16_t count = UART1_ReadInt();
+
+    SPI1_WordOperations(SPI1_OPERATION_EXCHANGE, count, 0);
+
+    return SUCCESS;
+}
+
+response_t SPI1_Read16Burst(void) {
+
+    uint16_t address = UART1_ReadInt();
+    uint16_t count = UART1_ReadInt();
+
+    SPI1_WordOperations(SPI1_OPERATION_READ, count, address);
 
     return SUCCESS;
 }

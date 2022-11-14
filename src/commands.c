@@ -117,11 +117,11 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 3 SPI
      // 0                               1 START_SPI                     2 SEND_SPI8                     3 SEND_SPI16
-        Undefined,                      SPI1_Start,                     SPI1_Write8,                    Unimplemented,
+        Undefined,                      SPI1_Start,                     SPI1_Write8,                    SPI1_Write16,
      // 4 STOP_SPI                      5 SET_SPI_PARAMETERS            6 SEND_SPI8_BURST               7 SEND_SPI16_BURST
-        SPI1_Stop,                      SPI1_SetParameters,             SPI1_Send8Burst,                Unimplemented,
+        SPI1_Stop,                      SPI1_SetParameters,             SPI1_Send8Burst,                SPI1_Send16Burst,
      // 8 WRITE_SPI8_BURST              9 WRITE_SPI16_BURST             10 READ_SPI8_BURST              11 READ_SPI16_BURST
-        SPI1_Write8Burst,               Unimplemented,                  SPI1_Read8Burst,                Unimplemented,
+        SPI1_Write8Burst,               SPI1_Write16Burst,              SPI1_Read8Burst,                SPI1_Read16Burst,
      // 12                              13                              14                              15
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 16                              17                              18                              19
