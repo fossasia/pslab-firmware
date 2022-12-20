@@ -1,6 +1,6 @@
 #include <stdbool.h>
 #include "../commands.h"
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../bus/i2c/i2c.h"
 #include "../helpers/delay.h"
 #include "../registers/system/pin_manager.h"

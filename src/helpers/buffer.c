@@ -1,5 +1,5 @@
 #include <string.h>
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../commands.h"
 #include "../registers/system/pin_manager.h"
 #include "buffer.h"

@@ -36,8 +36,7 @@
 #include "../../bus/spi/spi_master.h"
 #include "../../bus/spi/spi_driver.h"
 #include "../../bus/i2c/i2c.h"
-#include "../../bus/uart/uart1.h"
-#include "../../bus/uart/uart2.h"
+#include "../../bus/uart/uart.h"
 #include "../timers/tmr1.h"
 #include "../timers/tmr2.h"
 #include "../timers/tmr3.h"
@@ -71,8 +70,8 @@ void SYSTEM_Initialize(void) {
 
     INTERRUPT_Initialize();
 
-    UART1_Initialize();
-    UART2_Initialize();
+    UART_Initialize(U1SELECT);
+    UART_Initialize(U2SELECT);
 
     ADC1_Initialize();
 
@@ -104,5 +103,5 @@ void SYSTEM_Initialize(void) {
     DMA_Initialize();
     
     LIGHT_RGB(0, 20, 0);
-    UART1_ClearBuffer();
+    UART_ClearBuffer(U1SELECT);
 }

@@ -1,4 +1,4 @@
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../registers/comparators/cmp4.h"
 #include "../registers/comparators/cvr.h"
 #include "../registers/comparators/ic1.h"

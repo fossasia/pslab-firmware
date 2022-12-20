@@ -1,7 +1,6 @@
 #include <stdint.h>
 
-#include "../bus/uart/uart1.h"
-#include "../bus/uart/uart2.h"
+#include "../bus/uart/uart.h"
 #include "../commands.h"
 #include "../registers/system/pin_manager.h"
 #include "../registers/system/watchdog.h"

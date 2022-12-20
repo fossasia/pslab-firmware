@@ -4,7 +4,7 @@
 #include "../registers/system/pin_manager.h"
 #include "../registers/timers/tmr5.h"
 #include "../bus/spi/spi_driver.h"
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../helpers/buffer.h"
 #include "../commands.h"
 
