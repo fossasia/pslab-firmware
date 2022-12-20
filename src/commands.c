@@ -1,5 +1,6 @@
 #include "commands.h"
 #include "bus/i2c/i2c.h"
+#include "bus/uart/uart.h"
 #include "bus/spi/spi1.h"
 #include "helpers/buffer.h"
 #include "helpers/device.h"

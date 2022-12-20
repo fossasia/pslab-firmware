@@ -1,4 +1,4 @@
-#include "../../bus/uart/uart1.h"
+#include "../../bus/uart/uart.h"
 #include "../../commands.h"
 #include "../../helpers/delay.h"
 #include "ctmu.h"

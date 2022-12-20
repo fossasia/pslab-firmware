@@ -2,7 +2,7 @@
 #include <string.h>
 #include "spi1.h"
 #include "../spi/spi_driver.h"
-#include "../uart/uart1.h"
+#include "../uart/uart.h"
 #include "../../registers/system/pin_manager.h"
 
 uint8_t volatile __attribute__((section(".spi_buffer"), far)) SPI_BUFFER[SPI_BUFFER_SIZE];

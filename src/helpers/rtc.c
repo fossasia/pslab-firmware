@@ -1,7 +1,7 @@
 #include <stdint.h>
 
 #include "../bus/i2c/i2c.h"
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../commands.h"
 #include "../registers/system/pin_manager.h"
 #include "delay.h"

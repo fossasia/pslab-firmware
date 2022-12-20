@@ -1,5 +1,5 @@
 #include "i2c.h"
-#include "../../bus/uart/uart1.h"
+#include "../../bus/uart/uart.h"
 #include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"
 

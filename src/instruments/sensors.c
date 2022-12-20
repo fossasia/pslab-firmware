@@ -9,7 +9,7 @@
 #include "../registers/comparators/ic2.h"
 #include "../registers/comparators/ic3.h"
 #include "../registers/comparators/ic4.h"
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../registers/timers/tmr2.h"
 #include "../registers/system/pin_manager.h"
 

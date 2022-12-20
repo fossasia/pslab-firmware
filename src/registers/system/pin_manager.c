@@ -1,7 +1,7 @@
 #include <xc.h>
 #include <stdio.h>
 #include "pin_manager.h"
-#include "../../bus/uart/uart1.h"
+#include "../../bus/uart/uart.h"
 
 uint8_t PIN_MANAGER_DIGITAL_PINS[] = {
     PIN_MANAGER_DIGITAL_PINS_LA1,

@@ -1,5 +1,5 @@
 #include "../commands.h"
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../helpers/delay.h"
 #include "../registers/converters/adc1.h"
 #include "../registers/converters/ctmu.h"

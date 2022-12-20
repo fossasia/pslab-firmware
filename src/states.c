@@ -1,5 +1,5 @@
 #include "registers/system/system.h"
-#include "bus/uart/uart1.h"
+#include "bus/uart/uart.h"
 #include "registers/system/watchdog.h"
 #include "commands.h"
 #include "states.h"
@@ -9,7 +9,7 @@
  * @return STATE_STANDBY or STATE_RUNCOMMAND
  */
 state_t Standby(void) {
-    if (UART1_IsRxReady()) {
+    if (UART_IsRxReady(U1SELECT)) {
         return STATE_RUNCOMMAND;
     } else {
         WATCHDOG_TimerClear();

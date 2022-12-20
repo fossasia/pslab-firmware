@@ -1,5 +1,5 @@
 #include <xc.h>
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../registers/system/interrupt_manager.h"
 #include "../registers/system/pin_manager.h"
 #include "light.h"

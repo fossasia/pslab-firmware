@@ -1,5 +1,5 @@
 #include <stdint.h>
-#include "../bus/uart/uart1.h"
+#include "../bus/uart/uart.h"
 #include "../helpers/interval.h"
 #include "../registers/comparators/ic1.h"
 #include "../registers/comparators/ic2.h"
