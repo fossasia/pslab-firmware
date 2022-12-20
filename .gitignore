@@ -1,15 +1,13 @@
 .DS_Store
-*/.DS_Store
 
-*/.generated_files
+.generated_files
 build
-*/build
-*/dist
-*/nbproject
-*/Makefile
+dist
+nbproject
+Makefile
 
 *.dump
-*/.vscode/*
+.vscode/*
 
 *~* 
 \#*\#
