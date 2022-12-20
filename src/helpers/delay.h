@@ -1,3 +1,6 @@
+#ifndef DELAY_H
+#define	DELAY_H
+
 /**
  * @file delay.h
  * @brief Delay functions.
@@ -8,18 +11,11 @@
  * FCY and import <libpic30.h>.
  */
 
-#ifndef DELAY_H
-#define	DELAY_H
+#include "../registers/system/clock.h"
 
-#ifdef	__cplusplus
-extern "C" {
-#endif
+#define FCY (_XTAL_FREQ / 2)
 
-    void DELAY_ms(unsigned long d);
-    void DELAY_us(unsigned long d);
-
-#ifdef	__cplusplus
-}
-#endif
+void DELAY_ms(unsigned long d);
+void DELAY_us(unsigned long d);
 
 #endif	/* DELAY_H */
