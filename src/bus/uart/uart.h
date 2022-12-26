@@ -117,4 +117,73 @@ bool UART_IsRxReady(const EUxSelect select);
  */
 void UART_ClearBuffer(const EUxSelect select);
 
+/**
+ * @brief Read a byte from UART2 and write it to UART1.
+ * @return DO_NOT_BOTHER
+ */
+response_t UART2_Read(void);
+
+/**
+ * @brief Read a word from UART2 and write it to UART1.
+ * @return DO_NOT_BOTHER
+ */
+response_t UART2_ReadWord(void);
+
+/**
+ * @brief Read a byte from UART1 and write it to UART2.
+ * @param TxData One byte of data to write to UART2.
+ * @return DO_NOT_BOTHER
+ */
+response_t UART2_Write(void);
+
+/**
+ * @brief Read a word from UART1 and write it to UART2.
+ * @param TxData Two bytes of data, lsb first, to write to UART2.
+ * @return DO_NOT_BOTHER
+ */
+response_t UART2_WriteWord(void);
+
+/**
+ * @brief Check if data is available on UART2.
+ *
+ * Writes true (1) to UART1 if data is available, false (0) otherwise.
+ *
+ * @return DO_NOT_BOTHER
+ */
+response_t UART2_RxReady(void);
+
+/**
+ * @brief Set baudrate of UART2.
+ * @param baud A BRGVAL, typically one of EBaudrate.
+ * @return SUCCESS
+ */
+response_t UART2_SetBaud(void);
+
+/**
+ * @brief Set stop bits and parity of UART2.
+ * @param mode
+ *   One byte, where bit 0 is the stop bit configuration value, and bits two
+ *   and three are the parity configuration value.
+ *
+ * @return SUCCESS
+ */
+response_t UART2_SetMode(void);
+
+/**
+ * @brief Send all traffic from UART1 to UART2 and vice versa.
+ *
+ * After running this function, the normal functionality of the PSLab becomes
+ * unavailable. Since all data sent to UART1 is immediately passed to UART2,
+ * it is no longer possible to run any commands. To resume normal operation,
+ * the PSLab must be hard-reset.
+ *
+ * @param baud
+ *   BRGVAL for both UART1 and UART2. Note that the host device controlling
+ *   the PSLab must reconfigure its own UART interface to have the same
+ *   baudrate.
+ *
+ * @return DO_NOT_BOTHER
+ */
+response_t UART_Passthrough(void);
+
 #endif // _UART_H

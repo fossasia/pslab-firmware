@@ -397,7 +397,54 @@ void UART_ClearBuffer(const EUxSelect select) {
     while (regs.stabitsptr->URXDA) {*regs.rxptr;}
 }
 
+/*********************/
+/* Command functions */
+/*********************/
 
+response_t UART2_Read(void) {
+    UART_Write(U1SELECT, UART_Read(U2SELECT));
+    return DO_NOT_BOTHER;
 }
 
+
+response_t UART2_ReadWord(void) {
+    UART_WriteInt(U1SELECT, UART_ReadInt(U2SELECT));
+    return DO_NOT_BOTHER;
+}
+
+response_t UART2_Write(void) {
+    UART_Write(U2SELECT, UART_Read(U1SELECT));
+    return DO_NOT_BOTHER;
+}
+
+response_t UART2_WriteWord(void) {
+    UART_WriteInt(U2SELECT, UART_ReadInt(U1SELECT));
+    return DO_NOT_BOTHER;
+}
+
+response_t UART2_RxReady(void) {
+    UART_Write(U1SELECT, UART_IsRxReady(U2SELECT));
+    return DO_NOT_BOTHER;
+}
+
+response_t UART2_SetBaud(void) {
+    SetBaud(U2SELECT, UART_ReadInt(U1SELECT));
+    return SUCCESS;
+}
+
+response_t UART2_SetMode(void) {
+    const uint16_t mode = UART_Read(U1SELECT);
+    const EStopBits stop_bits = mode & 1;
+    const EParity parity_data_bits = (mode & 6) >> 1;
+    SetStop(U2SELECT, stop_bits);
+    SetParity(U2SELECT, parity_data_bits);
+    return SUCCESS;
+}
+
+response_t UART_Passthrough(void) {
+    const uint16_t baud = UART1_ReadInt();
+    SetBaud(U1SELECT, baud);
+    SetBaud(U2SELECT, baud);
+    EnableInterrupts();
+    return DO_NOT_BOTHER;
 }

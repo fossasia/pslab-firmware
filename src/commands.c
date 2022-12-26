@@ -149,20 +149,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 5 UART2
-     // 0                    1 SEND_CHAR      2 SEND_INT       3 SEND_ADDRESS
-        Undefined,           Unimplemented,   Unimplemented,   Unimplemented,
-     // 4 SET_BAUD           5 SET_MODE       6 READ_BYTE      7 READ_INT
-        Unimplemented,       Unimplemented,   Unimplemented,   Unimplemented,
-     // 8 READ_UART2_STATUS  9                10               11
-        Unimplemented,       Undefined,       Undefined,       Undefined,
-     // 12                   13               14               15
-        Undefined,           Undefined,       Undefined,       Undefined,
-     // 16                   17               18               19
-        Undefined,           Undefined,       Undefined,       Undefined,
-     // 20                   21               22               23
-        Undefined,           Undefined,       Undefined,       Undefined,
-     // 24                   25               26               27
-        Undefined,           Undefined,       Undefined,       Undefined,
+     // 0                     1 SEND_CHAR      2 SEND_INT       3 SEND_ADDRESS
+        Undefined,            UART2_Write,     UART2_WriteWord, Removed,
+     // 4 SET_BAUD            5 SET_MODE       6 READ_BYTE      7 READ_INT
+        UART2_SetBaud,        UART2_SetMode,   UART2_Read,      UART2_ReadWord,
+     // 8 READ_UART2_STATUS   9                10               11
+        UART2_RxReady,        Undefined,       Undefined,       Undefined,
+     // 12                    13               14               15
+        Undefined,            Undefined,       Undefined,       Undefined,
+     // 16                    17               18               19
+        Undefined,            Undefined,       Undefined,       Undefined,
+     // 20                    21               22               23
+        Undefined,            Undefined,       Undefined,       Undefined,
+     // 24                    25               26               27
+        Undefined,            Undefined,       Undefined,       Undefined,
     },
     { // 6 DAC
      // 0                               1 SET_DAC                       2 SET_CALIBRATED_DAC            3 SET_POWER
@@ -261,20 +261,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         CTMU_Stop,                      SENSORS_StartCounter,           SENSORS_GetCounter,             BUFFER_Fill,
     },
     { // 12 PASSTHROUGH
-     // 0          1                        2          3
-        Undefined, DEVICE_UARTPassThrough,  Undefined, Undefined,
-     // 4          5                        6          7
-        Undefined, Undefined,               Undefined, Undefined,
-     // 8          9                        10         11
-        Undefined, Undefined,               Undefined, Undefined,
-     // 12         13                       14         15
-        Undefined, Undefined,               Undefined, Undefined,
-     // 16         17                       18         19
-        Undefined, Undefined,               Undefined, Undefined,
-     // 20         21                       22         23
-        Undefined, Undefined,               Undefined, Undefined,
-     // 24         25                       26         27
-        Undefined, Undefined,               Undefined, Undefined,
+     // 0          1                 2          3
+        Undefined, UART_Passthrough, Undefined, Undefined,
+     // 4          5                 6          7
+        Undefined, Undefined,        Undefined, Undefined,
+     // 8          9                 10         11
+        Undefined, Undefined,        Undefined, Undefined,
+     // 12         13                14         15
+        Undefined, Undefined,        Undefined, Undefined,
+     // 16         17                18         19
+        Undefined, Undefined,        Undefined, Undefined,
+     // 20         21                22         23
+        Undefined, Undefined,        Undefined, Undefined,
+     // 24         25                26         27
+        Undefined, Undefined,        Undefined, Undefined,
     },
     { // 12 SENSORS
      // 0                               1 RTC_SETTIME                   2 RTC_SETDIGIT                  3 RTC_GETTIME
