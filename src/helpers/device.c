@@ -34,26 +34,3 @@ response_t DEVICE_WriteRegisterData(void) {
 
     return SUCCESS;
 }
-
-response_t DEVICE_UARTPassThrough(void) {
-    
-    uint8_t disableWDT = UART1_Read();
-    uint16_t baudRate = UART1_ReadInt();
-    
-    SetUART2_BAUD_RATE(baudRate);
-    UART2_Initialize();
-    UART2_ClearBuffer();
-    
-    // Enable receive interrupts for UART modules
-    UART1_InterruptEnable();
-    UART1_InterruptFlagClear();
-    UART2_InterruptEnable();
-    UART2_InterruptFlagClear();
-    
-    if (disableWDT) WATCHDOG_TimerSoftwareDisable();
-    
-    uint16_t i = 0;
-    while (1) {
-        if (!i++) LED_Toggle();
-    }
-}
