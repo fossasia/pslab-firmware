@@ -36,7 +36,6 @@ and software stack under open source licenses:
 ### Get in touch
 
 -   The PSLab [chat channel is on Gitter](https://gitter.im/fossasia/pslab)
-
 -   Please also join us on the
     [PSLab Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia)
 
