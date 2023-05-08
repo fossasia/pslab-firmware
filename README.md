@@ -19,33 +19,32 @@ buses, via which external devices can be connected and controlled.
 The PSLab is a fully open device, and FOSSASIA provides a complete hardware
 and software stack under open source licenses:
 
--   [Hardware](https://github.com/fossasia/pslab-hardware)
--   [Bootloader](https://github.com/fossasia/pslab-bootloader)
--   [Firmware](https://github.com/fossasia/pslab-firmware)
--   [Python library](https://github.com/fossasia/pslab-python)
--   [Graphical desktop application](https://github.com/fossasia/pslab-desktop)
--   [Android app](https://github.com/fossasia/pslab-android)
+- [Hardware](https://github.com/fossasia/pslab-hardware)
+- [Bootloader](https://github.com/fossasia/pslab-bootloader)
+- [Firmware](https://github.com/fossasia/pslab-firmware)
+- [Python library](https://github.com/fossasia/pslab-python)
+- [Graphical desktop application](https://github.com/fossasia/pslab-desktop)
+- [Android app](https://github.com/fossasia/pslab-android)
 
 ### Buy
 
--   You can get a Pocket Science Lab device from the
+- You can get a Pocket Science Lab device from the
     [FOSSASIA shop](https://fossasia.com/)
 
--   More resellers are listed on the [PSLab website](https://pslab.io/shop/)
+- More resellers are listed on the [PSLab website](https://pslab.io/shop/)
 
 ### Get in touch
 
--   The PSLab [chat channel is on Gitter](https://gitter.im/fossasia/pslab)
-
--   Please also join us on the
-    [PSLab Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia)
+- The PSLab [chat channel is on Gitter](https://gitter.im/fossasia/pslab)
+- Please also join us on the
+  [PSLab Mailing List](https://groups.google.com/forum/#!forum/pslab-fossasia)
 
 ## Dependencies
 
 The following tools are required to build the firmware:
 
--   xc16 compiler
--   cmake
+- xc16 compiler
+- cmake
 
 ## Building
 
@@ -86,15 +85,15 @@ instructions.
 
 Follow these steps to flash new firmware:
 
-1.  Ground the BOOT pin
-2.  Reset or power cycle the device
-3.  Run `pslab flash --port <portname> firmware.hex`
-4.  Unground the BOOT pin
-5.  Reset or power cycle the device
+1. Ground the BOOT pin
+2. Reset or power cycle the device
+3. Run `pslab flash --port <portname> firmware.hex`
+4. Unground the BOOT pin
+5. Reset or power cycle the device
 
 ### Using a programmer
 
-> **Warning**  
+> **Warning**
 > If your device contains a bootloader, flashing just the firmware HEX with a
 > programmer will OVERWRITE the bootloader. If for some reason you are unable
 > to flash over USB, it is a better idea to first create a combined HEX file
@@ -111,11 +110,11 @@ root. Before following the below steps, you may need to modify flash.mdbscript
 depending on which programmer you are using and the location of the firmware
 HEX.
 
-1.  Disconnect the device from any power source
-2.  Connect the programmer to the device's ICSP header
-3.  Power on the device via USB
-4.  Run `mdb.sh flash.mdbscript`
-5.  Disconnect the programmer
+1. Disconnect the device from any power source
+2. Connect the programmer to the device's ICSP header
+3. Power on the device via USB
+4. Run `mdb.sh flash.mdbscript`
+5. Disconnect the programmer
 
 ## Repository structure
 
