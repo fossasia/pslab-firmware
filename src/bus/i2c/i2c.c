@@ -673,7 +673,7 @@ response_t I2C_CommandStart(void) {
 
     uint8_t address = UART1_Read();
     
-    I2C_InitializeIfNot(I2C_GetBaudRate(), DISABLE_INTERRUPTS);
+    I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     I2C_StartSignal();
     I2C_Transmit(address);
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
@@ -740,7 +740,7 @@ response_t I2C_CommandReadEnd(void) {
 response_t I2C_CommandConfig(void) {
     
     uint16_t baud_rate = UART1_ReadInt();
-    I2C_InitializeIfNot(baud_rate, DISABLE_INTERRUPTS);
+    I2C_InitializeIfNot(baud_rate, I2C_DISABLE_INTERRUPTS);
 
     return SUCCESS;
 }
@@ -817,7 +817,7 @@ response_t I2C_CommandDisableSMBus(void) {
 
 response_t I2C_CommandInit(void) {
 
-    I2C_InitializeIfNot(I2C_GetBaudRate(), DISABLE_INTERRUPTS);
+    I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     return SUCCESS;
 }
 

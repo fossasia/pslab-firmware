@@ -14,8 +14,8 @@ response_t POWER_SOURCE_SetPower(void) {
     buffer[1] = (power >> 8) & 0x9F;
     buffer[2] = power & 0xFF;
 
-    I2C_InitializeIfNot(I2C_BAUD_RATE_400KHZ, ENABLE_INTERRUPTS);
-    
+    I2C_InitializeIfNot(I2C_BAUD_RATE_400KHZ, I2C_ENABLE_INTERRUPTS);
+
     return I2C_BulkWrite(buffer, 3, MCP4728_I2C_DEVICE_ADDRESS);
 }
 
@@ -25,7 +25,7 @@ response_t POWER_SOURCE_SetDAC(void) {
     uint8_t channel = UART1_Read();
     uint8_t power = UART1_ReadInt();
 
-    I2C_InitializeIfNot(I2C_BAUD_RATE_400KHZ, DISABLE_INTERRUPTS);
+    I2C_InitializeIfNot(I2C_BAUD_RATE_400KHZ, I2C_DISABLE_INTERRUPTS);
 
     I2C_StartSignal();
     I2C_Transmit(address);
