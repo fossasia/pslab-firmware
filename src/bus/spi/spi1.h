@@ -6,11 +6,9 @@
 #include <xc.h>
 
 #include "../../commands.h"
+#include "mux.h"
 
 #define SPI_BUFFER_SIZE     1000
-
-#define SPI1_ChipSelect()   CS_SPI_SetLow()
-#define SPI1_ChipDeselect() CS_SPI_SetHigh()
 
 #ifdef __cplusplus
 extern "C" {
@@ -137,19 +135,19 @@ extern "C" {
      * @return SUCCESS
      */
     response_t SPI1_SetParameters(void);
-    
+
     /**
-     * @brief Encapsulates read and write byte sized operations used in SPI 
+     * @brief Encapsulates read and write byte sized operations used in SPI
      * transactions. When reading back results, make sure to read one less byte
-     * as the first byte is assigned as register address. 
-     * 
+     * as the first byte is assigned as register address.
+     *
      * @param op Type of SPI operation mode (SPI1_OPERATION)
      * @param count Number of UART interactions
      * @param address Starting address of SPI register
-     * 
+     *
      * @return None
      */
-    void SPI1_ByteOperations(SPI1_OPERATION op, uint16_t count, uint8_t address);
+    void SPI1_ByteOperations(tMUX_CS cs, SPI1_OPERATION op, uint16_t count, uint8_t address);
 
     /**
      * @brief Writes a byte to a register address
@@ -161,19 +159,19 @@ extern "C" {
      * 2. (uint8) Data byte
      *
      * This will not return any result.
-     * 
+     *
      * It sends an acknowledge byte (SUCCESS).
      *
      * @return SUCCESS
      */
     response_t SPI1_Write8(void);
-    
+
     /**
      * @brief Writes a stream of bytes to consecutive register locations
      *
      * @description
-     * This method writes a byte stream to a set of consecutive register 
-     * locations starting from a specific SPI address. 
+     * This method writes a byte stream to a set of consecutive register
+     * locations starting from a specific SPI address.
      * This method can also be used to write to multiple registers that are not
      * located next to each other. In this case, user will create a stream of
      * pair of bytes with the first element being the register address and the
@@ -188,20 +186,20 @@ extern "C" {
      *            count in 1.
      *
      * This will not return any result.
-     * 
+     *
      * It sends an acknowledge byte (SUCCESS).
      *
      * @return SUCCESS
      */
     response_t SPI1_Write8Burst(void);
-    
+
     /**
-     * @brief Writes and reads a stream of bytes to and from consecutive 
+     * @brief Writes and reads a stream of bytes to and from consecutive
      * register locations
      *
      * @description
      * This method alternatively write and read from SPI data registers.
-     * writes a byte stream to a set of consecutive register 
+     * writes a byte stream to a set of consecutive register
      * locations starting from a specific SPI address.
      * This command takes three sets of arguments over serial.
      * 1. (uint16) Byte count:
@@ -213,9 +211,9 @@ extern "C" {
      *            byte count in 1.
      *
      * This will return a series of bytes correspond to each control byte sent
-     * as input. User must read one byte less than the byte count set as the 
+     * as input. User must read one byte less than the byte count set as the
      * first input in 1.
-     * 
+     *
      * It sends an acknowledge byte (SUCCESS).
      *
      * @return SUCCESS

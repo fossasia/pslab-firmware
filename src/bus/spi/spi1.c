@@ -1,6 +1,9 @@
 #include <xc.h>
+#include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 #include "spi1.h"
+#include "mux.h"
 #include "../spi/spi_driver.h"
 #include "../uart/uart.h"
 #include "../../registers/system/pin_manager.h"
@@ -58,28 +61,31 @@ response_t SPI1_SetParameters(void) {
 
 response_t SPI1_Start(void) {
 
-    SPI1_ChipSelect();
+    MUX_ChipSelect(MUX_HD);
 
     return DO_NOT_BOTHER;
 }
 
 response_t SPI1_Stop(void) {
 
-    SPI1_ChipDeselect();
+    MUX_ChipSelect(MUX_DEASSERT);
 
     return DO_NOT_BOTHER;
 }
 
-void SPI1_ByteOperations(SPI1_OPERATION op, uint16_t count, uint8_t address) {
-
-    uint16_t i;
+void SPI1_ByteOperations(
+    tMUX_CS cs,
+    SPI1_OPERATION op,
+    uint16_t count,
+    uint8_t address
+) {
     uint16_t turns = count;
     if (op == SPI1_OPERATION_READ) {
         turns = turns + 1;
         memset((void *) &SPI_BUFFER[1], 0x00, turns);
         SPI_BUFFER[0] = address;
     } else {
-        for (i = 0; i < turns; i++) {
+        for (size_t i = 0; i < turns; i++) {
             SPI_BUFFER[i] = UART1_Read();
         }
     }
@@ -90,16 +96,16 @@ void SPI1_ByteOperations(SPI1_OPERATION op, uint16_t count, uint8_t address) {
     }
     SPI1_EnableModule();
 
-    SPI1_ChipSelect();
+    MUX_ChipSelect(cs);
     SPI_DRIVER_ExchangeBlock((void *) SPI_BUFFER, turns);
-    SPI1_ChipDeselect();
+    MUX_ChipSelect(MUX_DEASSERT);
 
     if (op == SPI1_OPERATION_EXCHANGE) {
-        for (i = 1; i < turns; i++) {
+        for (size_t i = 1; i < turns; i++) {
             UART1_Write(SPI_BUFFER[i]);
         }
     } else if (op == SPI1_OPERATION_READ) {
-        for (i = 1; i <= count; i++) {
+        for (size_t i = 1; i <= count; i++) {
             UART1_Write(SPI_BUFFER[i]);
         }
     }
@@ -107,7 +113,7 @@ void SPI1_ByteOperations(SPI1_OPERATION op, uint16_t count, uint8_t address) {
 
 response_t SPI1_Write8(void) {
 
-    SPI1_ByteOperations(SPI1_OPERATION_WRITE, 2, 0);
+    SPI1_ByteOperations(MUX_HD, SPI1_OPERATION_WRITE, 2, 0);
 
     return SUCCESS;
 }
@@ -116,7 +122,7 @@ response_t SPI1_Write8Burst(void) {
 
     uint16_t count = UART1_ReadInt();
 
-    SPI1_ByteOperations(SPI1_OPERATION_WRITE, count, 0);
+    SPI1_ByteOperations(MUX_HD, SPI1_OPERATION_WRITE, count, 0);
 
     return SUCCESS;
 }
@@ -125,7 +131,7 @@ response_t SPI1_Send8Burst(void) {
 
     uint16_t count = UART1_ReadInt();
 
-    SPI1_ByteOperations(SPI1_OPERATION_EXCHANGE, count, 0);
+    SPI1_ByteOperations(MUX_HD, SPI1_OPERATION_EXCHANGE, count, 0);
 
     return SUCCESS;
 }
@@ -135,7 +141,7 @@ response_t SPI1_Read8Burst(void) {
     uint8_t address = UART1_Read();
     uint16_t count = UART1_ReadInt();
 
-    SPI1_ByteOperations(SPI1_OPERATION_READ, count, address);
+    SPI1_ByteOperations(MUX_HD, SPI1_OPERATION_READ, count, address);
 
     return SUCCESS;
 }
