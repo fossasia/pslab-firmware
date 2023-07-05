@@ -11,27 +11,27 @@ jobs:
         runs-on: ubuntu-latest
         steps:
             - name: Download project files
-              uses: actions/checkout@v2
+              uses: actions/checkout@v3
 
             - name: Cache XC-16 Compiler
               id: cache-compiler
-              uses: actions/cache@v2
+              uses: actions/cache@v3
               with:
                 path: ~/.cache/mplab-xc
-                key: xc16-v1.70-cache
+                key: xc16-v2.10-cache
 
             - name: Download XC16 Compiler
               if: steps.cache-compiler.outputs.cache-hit != 'true'
               run: |
                 mkdir -p ~/.cache/mplab-xc
                 cd ~/.cache/mplab-xc
-                wget https://ww1.microchip.com/downloads/en/DeviceDoc/xc16-v1.70-full-install-linux64-installer.run
-                chmod +x xc16-v1.70-full-install-linux64-installer.run
+                wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc16-v2.10-full-install-linux64-installer.run
+                chmod +x xc16-v2.10-full-install-linux64-installer.run
 
             - name: Install XC16 Compiler
               run: |
                 cd ~/.cache/mplab-xc
-                sudo ./xc16-v1.70-full-install-linux64-installer.run --mode unattended --netservername dontknow
+                sudo ./xc16-v2.10-full-install-linux64-installer.run --mode unattended --netservername dontknow
 
             - name: Set up cmake-microchip submodules
               run: |
@@ -44,9 +44,9 @@ jobs:
                 cd build
                 cmake ..
                 make
-                
+
             - name: Publish build files
-              uses: actions/upload-artifact@v2
+              uses: actions/upload-artifact@v3
               with:
                 name: production-file
                 path: build/*.hex
