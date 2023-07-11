@@ -3,9 +3,9 @@
 #include <stdbool.h>
 
 #include "../registers/system/pin_manager.h"
-#include "../bus/spi/spi_master.h"
 
 #include "sd_spi.h"
+#include "../bus/spi/spi.h"
 
 /******************************************************************************/
 /* SD Configuration                                                           */
@@ -17,12 +17,71 @@
 #define SD_NAC_TIMEOUT     (uint32_t)0x40000     //SPI byte times we should wait when performing read operations (should be at least 100ms for SD cards)
 #define SD_WRITE_TIMEOUT   (uint32_t)0xA0000     //SPI byte times to wait before timing out when the media is performing a write operation (should be at least 250ms for SD cards).
 
-#define SD_SPI_ChipSelect() SDCard_CS_SetLow()
-#define SD_SPI_ChipDeselect() SDCard_CS_SetHigh()
-#define SD_SPI_exchangeByte(data) spiMaster[SDFAST].exchangeByte(data)
-#define SD_SPI_exchangeBlock(data, length) spiMaster[SDFAST].exchangeBlock(data, length)
-#define SD_SPI_master_open(config) spiMaster[config].spiOpen()
-#define SD_SPI_close() spiMaster[SDFAST].spiClose()
+/******************************************************************************/
+/* SPI driver wrapper                                                         */
+/******************************************************************************/
+
+static void exchange_block(void* const block, size_t length)
+{
+    uint8_t* data = block;
+    while (length--)
+    {
+        SPI1BUF = *data;
+        while (!SPI1STATbits.SPIRBF) {;}
+        *data = SPI1BUF;
+        data++;
+    }
+}
+
+static uint8_t exchange_byte(const uint8_t data)
+{
+    uint8_t io = data;
+    exchange_block(&io, 1);
+    return io;
+}
+
+static bool open(const SPI1CON1BITS conf)
+{
+    if (SPI_configure(conf))
+    {
+        SPI1STATbits.SPIEN = 1;
+        return true;
+    }
+    return false;
+}
+
+const SPI_Config SDFAST = {{{
+    .PPRE = SPI_SCLK10666666 >> 3,
+    .SPRE = SPI_SCLK10666666 & 7,
+    .MSTEN = 1,
+    .CKP = 1,
+    .SSEN = 0,
+    .CKE = 0,
+    .SMP = 1,
+    .MODE16 = 0,
+    .DISSDO = 0,
+    .DISSCK = 0
+}}};
+
+const SPI_Config SDSLOW = {{{
+    .PPRE = SPI_SCLK333333 >> 3,
+    .SPRE = SPI_SCLK333333 & 7,
+    .MSTEN = 1,
+    .CKP = 1,
+    .SSEN = 0,
+    .CKE = 0,
+    .SMP = 1,
+    .MODE16 = 0,
+    .DISSDO = 0,
+    .DISSCK = 0
+}}};
+
+#define SD_SPI_ChipSelect() SPI_chip_select(SPI_SD)
+#define SD_SPI_ChipDeselect() SPI_chip_select(SPI_DESELECT)
+#define SD_SPI_exchangeByte(data) exchange_byte(data)
+#define SD_SPI_exchangeBlock(data, length) exchange_block(data, length)
+#define SD_SPI_master_open(config) open(config)
+#define SD_SPI_close() (SPI1STATbits.SPIEN = 0)
 #define SD_SPI_GetCardDetect() 1
 #define SD_SPI_GetWriteProtect() 0
 
@@ -33,7 +92,7 @@
 /* in SPI SLOW mode (<400kHz) 400kHz = 400 clocks for 1ms.
  * 8 clocks per byte = 50 bytes of dummy data results in at least 1ms
  * of delay. */
-#define SD_SLOW_CLOCK_DELAY_1MS_MIN 50u 
+#define SD_SLOW_CLOCK_DELAY_1MS_MIN 50u
 
 //Definition for a structure used when calling either SD_AsyncReadTasks()
 //function, or the SD_AsyncWriteTasks() function.
@@ -190,7 +249,7 @@ typedef union {
         unsigned CRC_ERR : 1; // CRC error flag
         unsigned ERASE_SEQ_ERR : 1; // Erase sequence error flag
         unsigned ADDRESS_ERR : 1; // Address error flag
-        unsigned PARAM_ERR : 1; // Parameter flag   
+        unsigned PARAM_ERR : 1; // Parameter flag
         unsigned B7 : 1; // Unused bit 7
     };
 } SD_RESPONSE_1;
@@ -260,7 +319,7 @@ typedef union {
             unsigned CRC_ERR : 1; // CRC error flag
             unsigned ERASE_SEQ_ERR : 1; // Erase sequence error flag
             unsigned ADDRESS_ERR : 1; // Address error flag
-            unsigned PARAM_ERR : 1; // Parameter flag   
+            unsigned PARAM_ERR : 1; // Parameter flag
             unsigned B7 : 1; // Unused bit 7
         } bits;
         uint32_t _returnVal;
@@ -490,7 +549,7 @@ bool SD_SPI_MediaInitialize(void) {
     //According to spec, CS should be high during the 74+ clock pulses.
     //In practice it is preferable to wait much longer than 1ms, in case of
     //contact bounce, or incomplete mechanical insertion (by the time we start
-    //accessing the media). 
+    //accessing the media).
     SD_SPI_DelayMilliseconds(SD_SPI_STARTUP_DELAY_MS);
 
     // Send CMD0 (with CS = 0) to reset the media and put SD cards into SPI mode.
@@ -498,7 +557,7 @@ bool SD_SPI_MediaInitialize(void) {
     do {
         //Toggle chip select, to make media abandon whatever it may have been doing
         //before.  This ensures the CMD0 is sent freshly after CS is asserted low,
-        //minimizing risk of SPI clock pulse master/slave synchronization problems, 
+        //minimizing risk of SPI clock pulse master/slave synchronization problems,
         //due to possible application noise on the SCK line.
         SD_SPI_ChipDeselect();
         (void) SD_SPI_exchangeByte(0xFF); //Send some "extraneous" clock pulses.  If a previous
@@ -516,7 +575,7 @@ bool SD_SPI_MediaInitialize(void) {
     //unless maybe the SD card was busy, because it was previously performing a
     //read or write operation, when it was interrupted by the microcontroller getting
     //reset or power cycled, without also resetting or power cycling the SD card.
-    //In this case, the SD card may still be busy (ex: trying to respond with the 
+    //In this case, the SD card may still be busy (ex: trying to respond with the
     //read request data), and may not be ready to process CMD0.  In this case,
     //we can try to recover by issuing CMD12 (STOP_TRANSMISSION).
     if (timeout == 0) {
@@ -534,11 +593,11 @@ bool SD_SPI_MediaInitialize(void) {
         if (response.r1._byte != 0x01) //Check if card in idle state now.
         {
             //Card failed to process CMD0 yet again.  At this point, the proper thing
-            //to do would be to power cycle the card and retry, if the host 
+            //to do would be to power cycle the card and retry, if the host
             //circuitry supports disconnecting the SD card power.  Since the
             //SD/MMC PICtail+ doesn't support software controlled power removal
             //of the SD card, there is nothing that can be done with this hardware.
-            //Therefore, we just give up now.  The user needs to physically 
+            //Therefore, we just give up now.  The user needs to physically
             //power cycle the media and/or the whole board.
             mediaInformation.errorCode = MEDIA_CANNOT_INITIALIZE;
 
@@ -557,7 +616,7 @@ bool SD_SPI_MediaInitialize(void) {
     //0x000001AA --> VHS = 0001b = 2.7V to 3.6V.  The 0xAA LSB is the check pattern, and is arbitrary, but 0xAA is recommended (good blend of 0's and '1's).
     //The SD card has to echo back the check pattern correctly however, in the R7 response.
     //If the SD card doesn't support the operating voltage range of the host, then it may not respond.
-    //If it does support the range, it will respond with a type R7 response packet (6 bytes/48 bits).	        
+    //If it does support the range, it will respond with a type R7 response packet (6 bytes/48 bits).
     //Additionally, if the SD card is MMC or SD card v1.x spec device, then it may respond with
     //invalid command.  If it is a v2.0 spec SD card, then it is mandatory that the card respond
     //to CMD8.
@@ -574,7 +633,7 @@ bool SD_SPI_MediaInitialize(void) {
 
         //Now that we have the OCR register value in the response packet, we could parse
         //the register contents and learn what voltage the SD card wants to run at.
-        //If our host circuitry has variable power supply capability, it could 
+        //If our host circuitry has variable power supply capability, it could
         //theoretically adjust the SD card Vdd to the minimum of the OCR to save power.
 
         //Now send CMD55/ACMD41 in a loop, until the card is finished with its internal initialization.
@@ -590,7 +649,7 @@ bool SD_SPI_MediaInitialize(void) {
 
             //The R1 response should be = 0x00, meaning the card is now in the "standby" state, instead of
             //the "idle" state (which is the default initialization state after CMD0 reset is issued).  Once
-            //in the "standby" state, the SD card is finished with basic initialization and is ready 
+            //in the "standby" state, the SD card is finished with basic initialization and is ready
             //for read/write and other commands.
             if (response.r1._byte == 0) {
                 break; //Break out of for() loop.  Card is finished initializing.
@@ -642,7 +701,7 @@ bool SD_SPI_MediaInitialize(void) {
             SD_SPI_ChipDeselect(); // deselect the devices
         } else {
             //Set read/write block length to 512 bytes.  Note: commented out since
-            //this theoretically isn't necessary, since all cards v1 and v2 are 
+            //this theoretically isn't necessary, since all cards v1 and v2 are
             //required to support 512 byte block size, and this is supposed to be
             //the default size selected on cards that support other sizes as well.
             //response = SD_SendCmd(SET_BLOCKLEN, 0x00000200);    //Set read/write block length to 512 bytes
@@ -667,7 +726,7 @@ bool SD_SPI_MediaInitialize(void) {
     } while ((response.r1._byte != 0x00) && (timeout != 0));
 
     if (timeout == 0x00) {
-        //Media failed to respond to the read CSD register operation.        
+        //Media failed to respond to the read CSD register operation.
         mediaInformation.errorCode = MEDIA_CANNOT_INITIALIZE;
 
         SD_SPI_ChipDeselect();
@@ -692,7 +751,7 @@ bool SD_SPI_MediaInitialize(void) {
 
     //Extract some fields from the response for computing the card capacity.
     //Note: The structure format depends on if it is a CSD V1 or V2 device.
-    //Therefore, need to first determine version of the specs that the card 
+    //Therefore, need to first determine version of the specs that the card
     //is designed for, before interpreting the individual fields.
 
     //-------------------------------------------------------------
@@ -701,26 +760,26 @@ bool SD_SPI_MediaInitialize(void) {
     //READ_BL_LEN = 1024 or 2048 bytes (and therefore WRITE_BL_LEN also
     //1024 or 2048).  However, even on these cards, 512 uint8_t partial reads
     //and 512 uint8_t write are required to be supported.
-    //On CSD structure v2 cards, it is always required that READ_BL_LEN 
+    //On CSD structure v2 cards, it is always required that READ_BL_LEN
     //(and therefore WRITE_BL_LEN) be 512 bytes, and partial reads and
     //writes are not allowed.
     //Therefore, all cards support 512 byte reads/writes, but only a subset
     //of cards support other sizes.  For best compatibility with all cards,
-    //and the simplest firmware design, it is therefore preferable to 
+    //and the simplest firmware design, it is therefore preferable to
     //simply ignore the READ_BL_LEN and WRITE_BL_LEN values altogether,
     //and simply hardcode the read/write block size as 512 bytes.
     //-------------------------------------------------------------
     mediaInformation.sectorSize = SD_MEDIA_BLOCK_SIZE;
 
     //Calculate the finalLBA (see SD card physical layer simplified spec 2.0, section 5.3.2).
-    //In USB mass storage applications, we will need this information to 
-    //correctly respond to SCSI get capacity requests.  Note: method of computing 
+    //In USB mass storage applications, we will need this information to
+    //correctly respond to SCSI get capacity requests.  Note: method of computing
     //finalLBA depends on CSD structure spec version (either v1 or v2).
     if (CSDResponse[0] & 0xC0) //Check CSD_STRUCTURE field for v2+ struct device
     {
         //Must be a v2 device (or a reserved higher version, that doesn't currently exist)
 
-        //Extract the C_SIZE field from the response.  It is a 22-bit number in bit position 69:48.  This is different from v1.  
+        //Extract the C_SIZE field from the response.  It is a 22-bit number in bit position 69:48.  This is different from v1.
         //It spans bytes 7, 8, and 9 of the response.
         c_size = (((uint32_t) CSDResponse[7] & 0x3F) << 16) | ((uint16_t) CSDResponse[8] << 8) | CSDResponse[9];
 
@@ -728,7 +787,7 @@ bool SD_SPI_MediaInitialize(void) {
     } else //if(CSDResponse[0] & 0xC0)	//Check CSD_STRUCTURE field for v1 struct device
     {
         //Must be a v1 device.
-        //Extract the C_SIZE field from the response.  It is a 12-bit number in bit position 73:62.  
+        //Extract the C_SIZE field from the response.  It is a 12-bit number in bit position 73:62.
         //Although it is only a 12-bit number, it spans bytes 6, 7, and 8, since it isn't byte aligned.
         c_size = ((uint32_t) CSDResponse[6] << 16) | ((uint16_t) CSDResponse[7] << 8) | CSDResponse[8]; //Get the bytes in the correct positions
         c_size &= 0x0003FFC0; //Clear all bits that aren't part of the C_SIZE
@@ -743,13 +802,13 @@ bool SD_SPI_MediaInitialize(void) {
         block_len = 1 << (block_len - 9); //-9 because we report the size in sectors of 512 bytes each
 
         //Calculate the finalLBA (see SD card physical layer simplified spec 2.0, section 5.3.2).
-        //In USB mass storage applications, we will need this information to 
+        //In USB mass storage applications, we will need this information to
         //correctly respond to SCSI get capacity requests (which will cause SD_CapacityRead() to get called).
-        mediaInformation.finalLBA = ((uint32_t) (c_size + 1) * (uint16_t) ((uint16_t) 1 << (c_size_mult + 2)) * block_len) - 1; //-1 on end is correction factor, since LBA = 0 is valid.		
+        mediaInformation.finalLBA = ((uint32_t) (c_size + 1) * (uint16_t) ((uint16_t) 1 << (c_size_mult + 2)) * block_len) - 1; //-1 on end is correction factor, since LBA = 0 is valid.
     }
 
     //Turn off CRC7 if we can, might be an invalid cmd on some cards (CMD59)
-    //Note: POR default for the media is normally with CRC checking off in SPI 
+    //Note: POR default for the media is normally with CRC checking off in SPI
     //mode anyway, so this is typically redundant.
     (void) SD_SendCmd(SD_CRC_ON_OFF, 0x0);
 
@@ -838,7 +897,7 @@ static uint8_t SD_SPI_AsyncReadTasks(struct SD_ASYNC_IO* info) {
                         return SD_ASYNC_READ_NEW_PACKET_READY;
                     } else {
                         //We got an unexpected non-0xFF, non-start token byte back?
-                        //Some kind of error must have occurred. 
+                        //Some kind of error must have occurred.
                         info->bStateVariable = SD_ASYNC_READ_ABORT;
                         return SD_ASYNC_READ_BUSY;
                     }
@@ -868,14 +927,14 @@ static uint8_t SD_SPI_AsyncReadTasks(struct SD_ASYNC_IO* info) {
                 ioInfo.dwBytesRemaining -= ioInfo.wNumBytes;
                 blockCounter -= ioInfo.wNumBytes;
 
-                //Now read a ioInfo.wNumbytes packet worth of SPI bytes, 
+                //Now read a ioInfo.wNumbytes packet worth of SPI bytes,
                 //and place the received bytes in the user specified pBuffer.
                 (void) memset(ioInfo.pBuffer, 0xFF, ioInfo.wNumBytes);
                 SD_SPI_exchangeBlock(ioInfo.pBuffer, ioInfo.wNumBytes);
 
-                //Check if we have received a multiple of the media block 
-                //size (ex: 512 bytes).  If so, the next two bytes are going to 
-                //be CRC values, rather than data bytes.  
+                //Check if we have received a multiple of the media block
+                //size (ex: 512 bytes).  If so, the next two bytes are going to
+                //be CRC values, rather than data bytes.
                 if (blockCounter == 0) {
                     //Read two bytes to receive the CRC-16 value on the data block.
                     (void) SD_SPI_exchangeByte(0xFF);
@@ -921,7 +980,7 @@ static uint8_t SD_SPI_AsyncReadTasks(struct SD_ASYNC_IO* info) {
             (void) SD_SPI_exchangeByte(0xFF);
             mediaInformation.state = SD_STATE_READY_FOR_COMMAND;
             return SD_ASYNC_READ_ERROR;
-    }//switch(info->stateVariable)    
+    }//switch(info->stateVariable)
 }
 
 static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
@@ -942,12 +1001,12 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
             mediaInformation.state = SD_STATE_BUSY; //Let other code in the app know that the media is busy (so it doesn't also try to send the SD card commands of it's own)
             blockCounter = SD_MEDIA_BLOCK_SIZE; //Initialize counter.  Will be used later for block boundary tracking.
 
-            //Copy input structure into a statically allocated global instance 
-            //of the structure, for faster local access of the parameters with 
+            //Copy input structure into a statically allocated global instance
+            //of the structure, for faster local access of the parameters with
             //smaller code size.
             ioInfo = *info;
 
-            //Check if we are writing only a single block worth of data, or 
+            //Check if we are writing only a single block worth of data, or
             //multiple blocks worth of data.
             if (ioInfo.dwBytesRemaining <= SD_MEDIA_BLOCK_SIZE) {
                 command = SD_WRITE_SINGLE_BLOCK;
@@ -961,8 +1020,8 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
                     preEraseBlockCount++;
                 }
 
-                //Should send CMD55/ACMD23 to let the media know how many blocks it should 
-                //pre-erase.  This isn't essential, but it allows for faster multi-block 
+                //Should send CMD55/ACMD23 to let the media know how many blocks it should
+                //pre-erase.  This isn't essential, but it allows for faster multi-block
                 //writes, and probably also reduces flash wear on the media.
                 response = SD_SendCmd(SD_APP_CMD, 0x00000000); //Send CMD55
                 if (response.r1._byte == 0x00) //Check if successful.
@@ -980,7 +1039,7 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
                 ioInfo.dwAddress <<= 9; //<< 9 multiplies by 512
             }
 
-            //Send the write single or write multi command, with the LBA or byte 
+            //Send the write single or write multi command, with the LBA or byte
             //address (depending upon SDHC or standard capacity card)
             response = SD_SendCmd(command, ioInfo.dwAddress);
 
@@ -1028,10 +1087,10 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
                 (void) SD_SPI_exchangeByte(0xFF);
                 (void) SD_SPI_exchangeByte(0xFF);
 
-                //Read response token byte from media, mask out top three don't 
+                //Read response token byte from media, mask out top three don't
                 //care bits, and check if there was an error
                 if ((SD_SPI_exchangeByte(0xFF) & SD_WRITE_RESPONSE_TOKEN_MASK) != SD_TOKEN_DATA_ACCEPTED) {
-                    //Something went wrong.  Try and terminate as gracefully as 
+                    //Something went wrong.  Try and terminate as gracefully as
                     //possible, so as allow possible recovery.
                     info->bStateVariable = SD_ASYNC_WRITE_ABORT;
                     return SD_ASYNC_WRITE_BUSY;
@@ -1045,7 +1104,7 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
                 return SD_ASYNC_WRITE_BUSY;
             }//if(blockCounter == 0)
 
-            //If we get to here, we haven't reached a block boundary yet.  Keep 
+            //If we get to here, we haven't reached a block boundary yet.  Keep
             //on requesting packets of data from the application.
             return SD_ASYNC_WRITE_SEND_PACKET;
 
@@ -1086,7 +1145,7 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
                         }
 
                     }
-                    //Else we have more data to write in the multi-block write.    
+                    //Else we have more data to write in the multi-block write.
                     info->bStateVariable = SD_ASYNC_WRITE_TRANSMIT_PACKET;
                     return SD_ASYNC_WRITE_SEND_PACKET;
                 } else {
@@ -1094,26 +1153,26 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
                     return SD_ASYNC_WRITE_BUSY;
                 }
             } else {
-                //Timeout occurred.  Something went wrong.  The media should not 
+                //Timeout occurred.  Something went wrong.  The media should not
                 //have taken this long to finish the write.
                 info->bStateVariable = SD_ASYNC_WRITE_ABORT;
                 return SD_ASYNC_WRITE_BUSY;
             }
 
         case SD_ASYNC_STOP_TOKEN_SENT_WAIT_BUSY:
-            //We already sent the stop transmit token for the multi-block write 
+            //We already sent the stop transmit token for the multi-block write
             //operation.  Now all we need to do, is keep waiting until the card
             //signals it is no longer busy.  Card will keep sending 0x00 bytes
             //until it is no longer busy.
             if (WriteTimeout != 0) {
                 WriteTimeout--;
                 data_byte = SD_SPI_exchangeByte(0xFF);
-                //Check if card is no longer busy.  
+                //Check if card is no longer busy.
                 if (data_byte != 0x00) {
                     //If we get to here, multi-block write operation is fully
-                    //complete now.  
+                    //complete now.
 
-                    //Should send CMD13 (SEND_STATUS) after a programming sequence, 
+                    //Should send CMD13 (SEND_STATUS) after a programming sequence,
                     //to confirm if it was successful or not inside the media.
 
                     //Prepare to receive the next command.
@@ -1139,7 +1198,7 @@ static uint8_t SD_SPI_AsyncWriteTasks(struct SD_ASYNC_IO* info) {
             //Used for SD_ASYNC_WRITE_ERROR case.
             mediaInformation.state = SD_STATE_READY_FOR_COMMAND; //Free the media for new commands, since we are now done with it
             return SD_ASYNC_WRITE_ERROR;
-    }//switch(info->stateVariable)    
+    }//switch(info->stateVariable)
 }
 
 static SD_RESPONSE SD_SendCmd(uint8_t cmd, uint32_t address) {
@@ -1162,14 +1221,14 @@ static SD_RESPONSE SD_SendCmd(uint8_t cmd, uint32_t address) {
     (void) SD_SPI_exchangeByte(sdmmc_cmdtable[cmd].CRC);
 
     //Special handling for CMD12 (STOP_TRANSMISSION).  The very first byte after
-    //sending the command packet may contain bogus non-0xFF data.  This 
+    //sending the command packet may contain bogus non-0xFF data.  This
     //"residual data" byte should not be interpreted as the R1 response byte.
     if (cmd == SD_STOP_TRANSMISSION) {
         (void) SD_SPI_exchangeByte(0xFF); //Perform dummy read to fetch the residual non R1 byte
     }
 
-    //Loop until we get a response from the media.  Delay (NCR) could be up 
-    //to 8 SPI byte times.  First byte of response is always the equivalent of 
+    //Loop until we get a response from the media.  Delay (NCR) could be up
+    //to 8 SPI byte times.  First byte of response is always the equivalent of
     //the R1 byte, even for R1b, R2, R3, R7 responses.
     timeout = SD_NCR_TIMEOUT;
     do {
@@ -1177,7 +1236,7 @@ static SD_RESPONSE SD_SendCmd(uint8_t cmd, uint32_t address) {
         timeout--;
     } while ((response.r1._byte == SD_TOKEN_FLOATING_BUS) && (timeout != 0));
 
-    //Check if we should read more bytes, depending upon the response type expected.  
+    //Check if we should read more bytes, depending upon the response type expected.
     if (sdmmc_cmdtable[cmd].responsetype == SD_RESPONSE_R2) {
         response.r2._byte1 = response.r1._byte; //We already received the first byte, just make sure it is in the correct location in the struct.
         response.r2._byte0 = SD_SPI_exchangeByte(0xFF); //Fetch the second byte of the response.
@@ -1187,7 +1246,7 @@ static SD_RESPONSE SD_SendCmd(uint8_t cmd, uint32_t address) {
         //A non-zero value means it is ready for the next command.
         //The R1b response is received after a CMD12 STOP_TRANSMISSION
         //command, where the media card may be busy writing its internal buffer
-        //to the flash memory.  This can typically take a few milliseconds, 
+        //to the flash memory.  This can typically take a few milliseconds,
         //with a recommended maximum timeout of 250ms or longer for SD cards.
         longTimeout = SD_WRITE_TIMEOUT;
         do {
@@ -1201,8 +1260,8 @@ static SD_RESPONSE SD_SendCmd(uint8_t cmd, uint32_t address) {
         //Fetch the other four bytes of the R3 or R7 response.
         //Note: The SD card argument response field is 32-bit, big endian format.
         //However, the C compiler stores 32-bit values in little endian in RAM.
-        //When writing to the _returnVal/argument bytes, make sure the order it 
-        //gets stored in is correct.      
+        //When writing to the _returnVal/argument bytes, make sure the order it
+        //gets stored in is correct.
         response.r7.bytewise.argument._byte3 = SD_SPI_exchangeByte(0xFF);
         response.r7.bytewise.argument._byte2 = SD_SPI_exchangeByte(0xFF);
         response.r7.bytewise.argument._byte1 = SD_SPI_exchangeByte(0xFF);

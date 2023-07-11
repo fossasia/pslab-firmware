@@ -30,10 +30,10 @@ void PIN_MANAGER_Initialize(void) {
     UART1_TX_SetHigh();
     UART2_TX_SetHigh();
 
-    CS_CH1_SetHigh();
-    CS_CH2_SetHigh();
-    CS_SPI_SetHigh();
-    SDCard_CS_SetHigh();
+    CS_MUX1_SetHigh();
+    CS_MUX2_SetHigh();
+    CS_MUX3_SetHigh();
+    CS_V5_SetHigh();
 
     BOOT_SetHigh();
 
@@ -54,10 +54,10 @@ void PIN_MANAGER_Initialize(void) {
 
     BOOT_SetDigitalOutput(); // Bootloader enable pin
 
-    CS_CH1_SetDigitalOutput(); // CH1 chip select
-    CS_CH2_SetDigitalOutput(); // CH2 chip select
-    CS_SPI_SetDigitalOutput(); // SPI chip select
-    SDCard_CS_SetDigitalOutput(); // SD card chip select
+    CS_MUX1_SetDigitalOutput();
+    CS_MUX2_SetDigitalOutput();
+    CS_MUX3_SetDigitalOutput();
+    CS_V5_SetDigitalOutput();
 
     OSC_CH1_SetDigitalInput(); // CH1
     OSC_CH2_SetDigitalInput(); // CH2

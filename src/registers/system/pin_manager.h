@@ -56,35 +56,18 @@
 #define SCK1_SetDigitalInput()         (_TRISC3 = 1)
 #define SCK1_SetDigitalOutput()        (_TRISC3 = 0)
 
-#define CS_CH1_Setter                  _LATA10
-#define CS_CH1_SetHigh()               (_LATA10 = 1)
-#define CS_CH1_SetLow()                (_LATA10 = 0)
-#define CS_CH1_Toggle()                (_LATA10 ^= 1)
-#define CS_CH1_GetValue()              _RA10
-#define CS_CH1_SetDigitalInput()       (_TRISA10 = 1)
-#define CS_CH1_SetDigitalOutput()      (_TRISA10 = 0)
+#define CS_MUX1_SetHigh()               (_LATA10 = 1)
+#define CS_MUX1_SetDigitalOutput()      (_TRISA10 = 0)
 
-#define CS_CH2_Setter                  _LATA7
-#define CS_CH2_SetHigh()               (_LATA7 = 1)
-#define CS_CH2_SetLow()                (_LATA7 = 0)
-#define CS_CH2_Toggle()                (_LATA7 ^= 1)
-#define CS_CH2_GetValue()              _RA7
-#define CS_CH2_SetDigitalInput()       (_TRISA7 = 1)
-#define CS_CH2_SetDigitalOutput()      (_TRISA7 = 0)
+#define CS_MUX2_SetHigh()               (_LATA7 = 1)
+#define CS_MUX2_SetDigitalOutput()      (_TRISA7 = 0)
 
-#define SDCard_CS_SetHigh()            (_LATB9 = 1)
-#define SDCard_CS_SetLow()             (_LATB9 = 0)
-#define SDCard_CS_Toggle()             (_LATB9 ^= 1)
-#define SDCard_CS_GetValue()           _RB9
-#define SDCard_CS_SetDigitalInput()    (_TRISB9 = 1)
-#define SDCard_CS_SetDigitalOutput()   (_TRISB9 = 0)
+#define CS_MUX3_SetHigh()               (_LATB9 = 1)
+#define CS_MUX3_SetDigitalOutput()      (_TRISB9 = 0)
 
-#define CS_SPI_SetHigh()               (_LATC4 = 1)
-#define CS_SPI_SetLow()                (_LATC4 = 0)
-#define CS_SPI_Toggle()                (_LATC4 ^= 1)
-#define CS_SPI_GetValue()              _RC4
-#define CS_SPI_SetDigitalInput()       (_TRISC4 = 1)
-#define CS_SPI_SetDigitalOutput()      (_TRISC4 = 0)
+// This pin is NC in V6.
+#define CS_V5_SetHigh()               (_LATC4 = 1)
+#define CS_V5_SetDigitalOutput()      (_TRISC4 = 0)
 
 /*******************************************************************************
  * I2C
@@ -399,7 +382,7 @@ typedef enum {
     RPN_C2OUT_PORT = 0b011001, // Comparator Output 2
     RPN_C3OUT_PORT = 0b011010, // Comparator Output 3
     RPN_SYNCO1_PORT = 0b101101, // PWM Primary Time Base Sync Output
-    RPN_QEI1CCMP_PORT = 0b101111, // QEI 1 Counter Comparator Output     
+    RPN_QEI1CCMP_PORT = 0b101111, // QEI 1 Counter Comparator Output
     RPN_REFCLKO_PORT = 0b110001, // Reference Clock Output
     RPN_C4OUT_PORT = 0b110010 // Comparator Output 4
 } RPN_TIE;

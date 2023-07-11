@@ -33,8 +33,6 @@
 #include "system_types.h"
 #include "../memory/dma.h"
 #include "../converters/adc1.h"
-#include "../../bus/spi/spi_master.h"
-#include "../../bus/spi/spi_driver.h"
 #include "../../bus/i2c/i2c.h"
 #include "../../bus/uart/uart.h"
 #include "../timers/tmr1.h"
@@ -101,7 +99,7 @@ void SYSTEM_Initialize(void) {
     OC4_Initialize();
 
     DMA_Initialize();
-    
+
     LIGHT_RGB(0, 20, 0);
     UART_ClearBuffer(U1SELECT);
 }
