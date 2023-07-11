@@ -1,9 +1,12 @@
+#include <stdbool.h>
 #include <stdint.h>
+#include <xc.h>
+
 #include "../registers/converters/adc1.h"
 #include "../registers/memory/dma.h"
 #include "../registers/system/pin_manager.h"
 #include "../registers/timers/tmr5.h"
-#include "../bus/spi/spi_driver.h"
+#include "../bus/spi/spi.h"
 #include "../bus/uart/uart.h"
 #include "../helpers/buffer.h"
 #include "../commands.h"
@@ -12,11 +15,10 @@
 static void Capture(void);
 static void ResetTrigger(void);
 static void SetTimeGap(void);
-static void SetCS(uint8_t channel, uint8_t value);
 
 response_t OSCILLOSCOPE_CaptureOne(void) {
     SetCHANNELS(0); // Capture one channel.
-    Capture();    
+    Capture();
     return SUCCESS;
 }
 
@@ -66,7 +68,7 @@ static void Capture(void) {
     for (i = 0; i <= GetCHANNELS(); i++) {
         SetBUFFER_IDX(i, &BUFFER[i * GetSAMPLES_REQUESTED()]);
     }
-    
+
     SetCONVERSION_DONE(0);
     SetSAMPLES_CAPTURED(0);
     SetBUFFER_IDX(0, &BUFFER[0]);
@@ -98,7 +100,7 @@ response_t OSCILLOSCOPE_CaptureDMA(void) {
     SetCONVERSION_DONE(1); // Assume it's all over already.
     SetTimeGap();
     LED_SetLow();
-    
+
     return SUCCESS;
 }
 
@@ -143,31 +145,30 @@ response_t OSCILLOSCOPE_ConfigureTrigger(void) {
 }
 
 response_t OSCILLOSCOPE_SetPGAGain(void) {
-    uint8_t channel = UART1_Read();
-    uint8_t gain = UART1_Read();
-    uint16_t write_register = 0x4000;
+    const tSPI_CS channel = UART1_Read();
+    const uint8_t gain = UART1_Read();
+    const uint16_t write_register = 0x4000;
     uint16_t cmd = write_register | gain;
 
-    SPI_DRIVER_Close();
-    SPI_DRIVER_Open(PGA_CONFIG);
-    SetCS(channel, 0);
-    SPI_DRIVER_ExchangeWord(cmd);
-    SetCS(channel, 1);
-    SPI_DRIVER_Close();
-    LED_SetHigh();
+    const SPI_Config pga_config = {{{
+        .PPRE = SPI_SCLK125000 >> 3,
+        .SPRE = SPI_SCLK125000 & 7,
+        .MSTEN = 1,
+        .CKP = 0,
+        .SSEN = 0,
+        .CKE = 1,
+        .SMP = 1,
+        .MODE16 = 1,
+        .DISSDO = 0,
+        .DISSCK = 0
+    }}};
+    const bool conf_ok = SPI_configure(pga_config);
 
-    return SUCCESS;
-}
-
-static void SetCS(uint8_t channel, uint8_t value) {
-    switch(channel) {
-        case 1:
-            CS_CH1_Setter = value;
-            break;
-        case 2:
-            CS_CH2_Setter = value;
-            break;
-        default:
-            return;
+    if (conf_ok)
+    {
+        SPI_exchange_int(channel, &cmd);
     }
+
+    LED_SetHigh();
+    return conf_ok ? SUCCESS : FAILED;
 }
