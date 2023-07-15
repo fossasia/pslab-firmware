@@ -114,7 +114,11 @@ typedef SPI1CON1BITS SPI_Config;
  *       alternative SPI implementations to use the chip select multiplexer.
  * @param cs One of tSPI_CS.
 */
+#ifdef V5_HW
+void SPI_chip_select(tSPI_CS cs);
+#else
 void SPI_chip_select(const tSPI_CS cs);
+#endif // V5_HW
 
 /**
  * @brief Set SPI1CON1 register.

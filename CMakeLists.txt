@@ -19,5 +19,9 @@ target_compile_options(pslab-firmware.elf PRIVATE
 target_link_options(pslab-firmware.elf PRIVATE
   "LINKER:-Map=pslab-firmware.map,--report-mem")
 
+if (LEGACY_HARDWARE)
+  add_compile_definitions(V5_HW)
+endif(LEGACY_HARDWARE)
+
 bin2hex(pslab-firmware.elf)
 
