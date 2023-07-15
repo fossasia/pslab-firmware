@@ -166,7 +166,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 6 DAC
      // 0                               1 SET_DAC                       2 SET_CALIBRATED_DAC            3 SET_POWER
-        Undefined,                      POWER_SOURCE_SetDAC,            Removed,                        POWER_SOURCE_SetPower,
+        Undefined,                      Removed,                        Removed,                        POWER_SOURCE_SetPower,
      // 4                               5                               6                               7
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 8                               9                               10                              11
