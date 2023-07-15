@@ -247,24 +247,28 @@ static response_t command(const enum Direction dir, const enum Width width)
  * SD:  SD-card
  * NC:  Not connected / All CS pins deselected.
  */
+#ifdef V5_HW
+void SPI_chip_select(tSPI_CS cs)
+#else
 void SPI_chip_select(const tSPI_CS cs)
+#endif // V5_HW
 {
     #ifdef V5_HW
-    switch cs {
-    case MUX_CH1:
+    switch (cs) {
+    case SPI_CH1:
         cs = _V5_CH1;
         break;
-    case MUX_CH2:
+    case SPI_CH2:
         cs = _V5_CH2;
         break;
-    case MUX_HD:
+    case SPI_HD:
         cs = _V5_HD;
         break;
-    case MUX_SD:
+    case SPI_SD:
         cs = _V5_SD;
         break;
     default:
-        cs = MUX_DEASSERT;
+        cs = SPI_DESELECT;
     }
     #endif // V5_HW
     struct MuxInput pins = {
