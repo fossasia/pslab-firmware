@@ -50,7 +50,7 @@ static bool open(const SPI1CON1BITS conf)
     return false;
 }
 
-const SPI_Config SDFAST = {{{
+static const SPI_Config SDFAST = {{{
     .PPRE = SPI_SCLK10666666 >> 3,
     .SPRE = SPI_SCLK10666666 & 7,
     .MSTEN = 1,
@@ -63,7 +63,7 @@ const SPI_Config SDFAST = {{{
     .DISSCK = 0
 }}};
 
-const SPI_Config SDSLOW = {{{
+static const SPI_Config SDSLOW = {{{
     .PPRE = SPI_SCLK333333 >> 3,
     .SPRE = SPI_SCLK333333 & 7,
     .MSTEN = 1,
