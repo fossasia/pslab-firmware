@@ -11,8 +11,8 @@
 #define SLAVE_I2C_GENERIC_RETRY_MAX           100
 #define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50
 
-#define ENABLE_INTERRUPTS                     true
-#define DISABLE_INTERRUPTS                    false
+#define I2C_ENABLE_INTERRUPTS                     true
+#define I2C_DISABLE_INTERRUPTS                    false
 
 #ifdef __cplusplus
 extern "C" {
