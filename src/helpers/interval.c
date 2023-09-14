@@ -9,6 +9,7 @@
 #include "../registers/memory/dma.h"
 #include "../registers/system/interrupt_manager.h"
 #include "../registers/system/pin_manager.h"
+#include "../registers/system/watchdog.h"
 #include "../registers/timers/tmr2.h"
 #include "buffer.h"
 
@@ -193,6 +194,114 @@ response_t INTERVAL_GetState(void) {
     UART1_WriteInt(DMA3STAL);
     UART1_Write(DIGITAL_STATES);
     UART1_Write(DIGITAL_STATES_ERROR);
+    
+    return SUCCESS;
+}
+
+response_t INTERVAL_IntervalMeasure(void) {
+    
+    uint16_t timeout = UART1_ReadInt(); // t * 64e6 >> 16
+    uint8_t pins = UART1_Read();
+    uint8_t modes = UART1_Read();
+    
+    IC_PARAMS_ConfigureIntervalCaptureWithIC1AndIC2(pins & 0xF, 
+            IC_PARAMS_CAPTURE_TIMER_PERIPHERAL, 
+            IC_PARAMS_CAPTURE_INTERRUPT_EVERY_EVENT, modes & 0x7);
+    IC_PARAMS_ConfigureIntervalCaptureWithIC3AndIC4((pins >> 4) & 0xF, 
+            IC_PARAMS_CAPTURE_TIMER_PERIPHERAL, 
+            IC_PARAMS_CAPTURE_INTERRUPT_EVERY_EVENT, (modes >> 3) & 0x7);
+    
+    IC_PARAMS_ManualTriggerAll();
+    
+    while ((!_IC1IF) && (IC2TMR < timeout)) WATCHDOG_TimerClear();
+    UART1_WriteInt(IC1BUF);
+    UART1_WriteInt(IC2BUF);
+    
+    while ((!_IC3IF) && (IC2TMR < timeout)) WATCHDOG_TimerClear();
+    UART1_WriteInt(IC3BUF);
+    UART1_WriteInt(IC4BUF);
+    UART1_WriteInt(IC2TMR);
+    
+    IC_PARAMS_DisableAllModules();
+    
+    return SUCCESS;
+}
+
+response_t INTERVAL_TimeMeasure(void) {
+    
+    uint16_t timeout = UART1_ReadInt(); // t * 64e6 >> 16
+    uint8_t pins = UART1_Read();
+    uint8_t modes = UART1_Read();
+    uint8_t intrpts = UART1_Read();
+    
+    if ((pins & 0xF) == 4 || ((pins >> 4) & 0xF) == 4) {
+        CMP4_SetupComparator();
+        CVR_SetupComparator();
+    }
+    
+    IC_PARAMS_ConfigureIntervalCaptureWithIC1AndIC2(pins & 0xF, 
+            IC_PARAMS_CAPTURE_TIMER2, (intrpts & 0xF) - 1, modes & 0x7);
+    IC_PARAMS_ConfigureIntervalCaptureWithIC3AndIC4((pins >> 4) & 0xF, 
+            IC_PARAMS_CAPTURE_TIMER2, ((intrpts >> 4) & 0xF) - 1, (modes >> 3) & 0x7);
+    
+    TMR2_Initialize();
+    
+    SetDefaultDIGITAL_STATES();
+    
+    IC_PARAMS_ManualTriggerAll();
+    TMR2_Start();
+    
+    if ((modes >> 6) & 0x1) {
+        RPOR5bits.RP54R = RPN_DEFAULT_PORT; // Disconnect SQR1 pin
+        ((modes >> 7) & 0x1) ? SQR1_SetHigh() : SQR1_SetLow();
+    }
+    
+    while ((!_IC1IF || !_IC3IF) && (IC2TMR < timeout)) WATCHDOG_TimerClear();
+    
+    uint8_t i;
+    for (i = 0; i < (intrpts & 0xF); i++) {
+        UART1_WriteInt(IC1BUF);
+        UART1_WriteInt(IC2BUF);
+    }
+    for (i = 0; i < ((intrpts >> 4) & 0xF); i++) {
+        UART1_WriteInt(IC3BUF);
+        UART1_WriteInt(IC4BUF);
+    }
+    
+    IC1_InterruptFlagClear();
+    IC3_InterruptFlagClear();
+    
+    UART1_WriteInt(IC2TMR);
+    
+    IC_PARAMS_DisableAllModules();
+    TMR2_Stop();
+    
+    return SUCCESS;
+}
+
+response_t INTERVAL_UntilEvent(void) {
+    
+    uint16_t timeout = UART1_ReadInt(); // t * 64e6 >> 16
+    uint8_t mode = UART1_Read();
+    uint8_t pin = UART1_Read();
+    
+    IC_PARAMS_ConfigureIntervalCaptureWithIC1AndIC2(pin & 0xF, 
+            IC_PARAMS_CAPTURE_TIMER_PERIPHERAL, (mode & 0x3) - 1, mode & 0x7);
+    
+    while (!_IC1IF && (IC2TMR < timeout)) WATCHDOG_TimerClear();
+    
+    IC1_InterruptFlagClear();
+    
+    UART1_WriteInt(IC2TMR);
+    
+    uint8_t i;
+    for (i = 0; i < (mode & 0x3); i++) {
+        UART1_WriteInt(IC1BUF);
+        UART1_WriteInt(IC2BUF);
+    }
+    
+    IC_PARAMS_DisableAllModules();
+    TMR2_Stop();
     
     return SUCCESS;
 }

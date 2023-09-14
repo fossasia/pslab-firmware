@@ -86,8 +86,126 @@ extern "C" {
      * @return None
      */
     void INTERVAL_CaptureFour(uint16_t count, uint16_t mode, uint8_t prescaler);
-    
+
+    /**
+     * @brief Reads DMA status registry data
+     *
+     * @description
+     * This method will sequentially read register addresses at BUFFER pointer
+     * and all four DMA channel pointers. It will also read digital state parameters.
+     *
+     * There are no input parameters to this method. The output of this method should
+     * be read over serial in the following order.
+     * 1. (int) BUFFER pointer
+     * 2. (int) DMA Channel 0 pointer
+     * 3. (int) DMA Channel 1 pointer
+     * 4. (int) DMA Channel 2 pointer
+     * 5. (int) DMA Channel 3 pointer
+     * 6. (char) Digital states
+     * 7. (char) Digital states error
+     *
+     * @return SUCCESS
+     */
     response_t INTERVAL_GetState(void);
+
+    /**
+     * @brief Measures the time interval between two pin state change events
+     *
+     * @description
+     * This method will count the time difference between two pin change events
+     * attached to two pins.
+     * The events can be any event defined at the list of events in `IC_PARAMS_CAPTURE_MODE`.
+     * The pins should be any pin in the list of `PIN_MANAGER_DIGITAL_PINS`.
+     *
+     * @param timeout : period of wait until the operation is aborted
+     * @param pins  : input pins defined at `PIN_MANAGER_DIGITAL_PINS`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              |  PIN EVENT 2  |  PIN EVENT 1  |
+     * @param modes : pin change event defined at `IC_PARAMS_CAPTURE_MODE`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              | X | X |  EVENT 2  |  EVENT 1  |
+     *
+     * The output of this method should be read over serial in the following order.
+     * 1. (int) IC1BUF - LSW
+     * 2. (int) IC2BUF - MSW
+     * Combine 1. and 2. to get the trigger time of the event 1
+     * 3. (int) IC3BUF - LSW
+     * 4. (int) IC4BUF - MSW
+     * Combine 3. and 4. to get the trigger time of the event 2
+     * 5. (int) IC2TMR
+     *
+     * @return SUCCESS
+     */
+    response_t INTERVAL_IntervalMeasure(void);
+
+    /**
+     * @brief Measures the time between multiple pin state change events
+     *
+     * @description
+     * This method will log time units for multiple changes occurred on
+     * defined digital pins. Unlike `INTERVAL_IntervalMeasure` where it
+     * measure only a single change of states, this method will measure
+     * upto 4 change of pin states.
+     * The events can be any event defined at the list of events in `IC_PARAMS_CAPTURE_MODE`.
+     * The pins should be any pin in the list of `PIN_MANAGER_DIGITAL_PINS`.
+     *
+     * @param timeout : period of wait until the operation is aborted
+     * @param pins : input pins defined at `PIN_MANAGER_DIGITAL_PINS`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              |  PIN EVENT 2  |  PIN EVENT 1  |
+     * @param modes : pin change event defined at `IC_PARAMS_CAPTURE_MODE`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              | X | X |  EVENT 2  |  EVENT 1  |
+     * @param intrpts  : input pins defined at `PIN_MANAGER_DIGITAL_PINS`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              |  INTERRUPT 2  |  INTERRUPT 1  |
+     *
+     * The output of this method should be read over serial in the following order.
+     * 1. (int) IC1BUF - LSW
+     * 2. (int) IC2BUF - MSW
+     * Combine 1. and 2. to get the trigger time of the change event. Depending on the
+     * intrpts, the two registers (1. and 2.) may need to be read repeatedly to capture
+     * timing data for each event occurrence.
+     * 3. (int) IC3BUF - LSW
+     * 4. (int) IC4BUF - MSW
+     * Combine 3. and 4. to get the trigger time of the change event. Depending on the
+     * intrpts, the two registers (3. and 4.) may need to be read repeatedly to capture
+     * timing data for each event occurrence.
+     * Note: ICxBUF is a 4-level buffer that can store time log for four change events.
+     * 5. (int) IC2TMR
+     *
+     * @return SUCCESS
+     */
+    response_t INTERVAL_TimeMeasure(void);
+
+    /**
+     * @brief Measures the time until a pin state change event occurs
+     *
+     * @description
+     * This method will stop counting time when the defined pin change event occurred.
+     * The event can be any event defined at the list of events in `IC_PARAMS_CAPTURE_MODE`.
+     * The pin should be any pin in the list of `PIN_MANAGER_DIGITAL_PINS`.
+     *
+     * @param timeout : period of wait until the operation is aborted
+     * @param mode : pin change event defined at `IC_PARAMS_CAPTURE_MODE`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              | X | X | X | X | X |   EVENT   |
+     * @param pin  : input pin defined at `PIN_MANAGER_DIGITAL_PINS`
+     *              | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
+     *              | X | X | X | X |   PIN EVENT   |
+     *
+     * The output of this method should be read over serial in the following order.
+     * 1. (int) IC2TMR
+     * 2. (int) IC1BUF - LSW
+     * 3. (int) IC2BUF - MSW
+     * Combine 2. and 3. to get the trigger time of the change event. Depending on the mode,
+     * the last two registers (2. and 3.) may need to be read repeatedly to capture timing
+     * data for each event occurrence.
+     * Note: ICxBUF is a 4-level buffer that can store time log for four change events.
+     *
+     * @return SUCCESS
+     */
+    response_t INTERVAL_UntilEvent(void);
     
     // Getters and setters
     
