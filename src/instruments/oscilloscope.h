@@ -25,7 +25,7 @@
  * 3. (uint16) The time to wait between samples in instruction cycles.
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
 response_t OSCILLOSCOPE_CaptureOne(void);
@@ -53,7 +53,7 @@ response_t OSCILLOSCOPE_CaptureFour(void);
 
 /**
  * @brief Capture samples on one channel as fast as possible.
- * 
+ *
  * @description
  * Direct memory access moves samples from ADC to RAM buffer as soon as
  * conversion is complete. Allows for faster sample rate than using ADC
@@ -64,7 +64,7 @@ response_t OSCILLOSCOPE_CaptureFour(void);
  *             | RES | - | - | - |     CH0SA     |
  *             RES: Sample resolution:
  *                  0: 10-bit,
- *                  1: 12-bit,                        
+ *                  1: 12-bit,
  *             CH0SA: First channel input map:
  *                    3: CH1,
  *                    0: CH2,
@@ -90,7 +90,7 @@ response_t OSCILLOSCOPE_CaptureDMA(void);
  * 1. (bool) True if all requested samples have been captured.
  * 2. (uint16) Number of captured samples.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
 response_t OSCILLOSCOPE_GetCaptureStatus(void);
@@ -124,26 +124,24 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void);
 response_t OSCILLOSCOPE_ConfigureTrigger(void);
 
 /**
- * @brief
- * Set gain.
+ * @brief Set gain on CH1 or CH2.
+ * @param channel uint8_t
+ *                1: CH1
+ *                2: CH2
+ * @param gain uint8_t
+ *             0: 1
+ *             1: 2
+ *             2: 4
+ *             3: 5
+ *             4: 8
+ *             5: 10
+ *             6: 16
+ *             7: 32
  *
- * @description
- * This command function takes two arguments over serial:
- * 1. (uint8) Channel:
- *            1: CH1,
- *            2: CH2,
- * 2. (uint8) Gain:
- *            0: 1,
- *            1: 2,
- *            2: 4,
- *            3: 5,
- *            4: 8,
- *            5: 10,
- *            6: 16,
- *            7: 32,
- * It returns nothing over serial.
- *
- * @return SUCCESS
+ * @return FAILED if channel is not 1 or 2.
+ *         FAILED if gain is greater than 7.
+ *         FAILED if SPI transaction fails.
+ *         SUCCESS otherwise.
  */
 response_t OSCILLOSCOPE_SetPGAGain(void);
 

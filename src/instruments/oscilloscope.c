@@ -144,31 +144,59 @@ response_t OSCILLOSCOPE_ConfigureTrigger(void) {
     return SUCCESS;
 }
 
+enum Gain {
+    GAIN_X1,
+    GAIN_X2,
+    GAIN_X4,
+    GAIN_X5,
+    GAIN_X8,
+    GAIN_X10,
+    GAIN_X16,
+    GAIN_X32,
+    GAIN_INVALID,
+};
+
 response_t OSCILLOSCOPE_SetPGAGain(void) {
-    const tSPI_CS channel = UART1_Read();
-    const uint8_t gain = UART1_Read();
-    const uint16_t write_register = 0x4000;
+    tSPI_CS channel;
+
+    switch (UART1_Read()) {
+    case 1:
+        channel = SPI_CH1;
+        break;
+    case 2:
+        channel = SPI_CH2;
+        break;
+    default:
+        UART1_Read(); // Consume remaining data.
+        return FAILED;
+    }
+
+    enum Gain const gain = UART1_Read();
+
+    if (gain >= GAIN_INVALID) {
+        return FAILED;
+    }
+
+    uint16_t const write_register = 0x4000;
     uint16_t cmd = write_register | gain;
 
-    const SPI_Config pga_config = {{{
+    SPI_Config const pga_config = {{{
         .PPRE = SPI_SCLK125000 >> 3,
         .SPRE = SPI_SCLK125000 & 7,
         .MSTEN = 1,
-        .CKP = 0,
+        .CKP = SPI_IDLE_LOW,
         .SSEN = 0,
-        .CKE = 1,
+        .CKE = SPI_SHIFT_TRAILING,
         .SMP = 1,
         .MODE16 = 1,
         .DISSDO = 0,
         .DISSCK = 0
     }}};
-    const bool conf_ok = SPI_configure(pga_config);
 
-    if (conf_ok)
-    {
-        SPI_exchange_int(channel, &cmd);
+    if (SPI_configure(pga_config)) {
+        LED_SetHigh();
+        return SPI_exchange_int(channel, &cmd);
     }
 
-    LED_SetHigh();
-    return conf_ok ? SUCCESS : FAILED;
+    return FAILED;
 }
