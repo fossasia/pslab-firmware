@@ -21,16 +21,11 @@ extern "C" {
      *        0 (0b00) - PCS
      *        1 (0b01) - PV3
      *        2 (0b10) - PV2
-     *        3 (0b11) - PV3
-     * @param power uint16
-     *        Integer value between 0 and 4095, corresponding to the voltage
-     *        ratio.
-     *        In the PSLab V5, the MSb determines if the voltage reference is
-     *        internal (1) or external (0). With internal reference, the
-     *        output range is 0 - 4.096 V with a resolution of 1 mV / bit;
-     *        with external reference, the range is 0 - 3.3 V with a resolution
-     *        of 806 µV / bit.
-     *        In the PSLab V6, only internal reference is available.
+     *        3 (0b11) - PV1
+     * @param voltage uint16
+     *        Integer value between 0 and 3300, corresponding to the channel's
+     *        output voltage with 0 corresponding to the lowest voltage and
+     *        3300 to the highest.
      *
      * @return SUCCESS, FAILED
      */
