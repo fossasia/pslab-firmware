@@ -8,7 +8,7 @@
 #include "powersource.h"
 
 
-#ifndef HW_V5
+#ifndef V5_HW
 
 /*********/
 /* Types */
@@ -107,4 +107,4 @@ response_t POWER_SOURCE_SetPower(void) {
     return I2C_BulkWrite(buffer, 3, MCP4728_I2C_DEVICE_ADDRESS);
 }
 
-#endif // HW_V5
+#endif // V5_HW
