@@ -143,29 +143,21 @@ static void uart_exchange(
      uint16_t (*uart_read)(EUxSelect usel);
      void (*uart_write)(EUxSelect usel, uint16_t data);
 
-    if (SPI1CON1bits.MODE16 == BYTE)
-    {
+    if (SPI1CON1bits.MODE16 == BYTE) {
         uart_read = uart_read_wrapper;
         uart_write = uart_write_wrapper;
-    }
-    else // WORD
-    {
+    } else { // WORD
         uart_read = UART_ReadInt;
         uart_write = UART_WriteInt;
     }
 
-    for (size_t i; i < count; i++)
-    {
-        if (dir == READ)
-        {
+    for (size_t i = 0; i < count; ++i) {
+        if (dir == READ) {
             uart_write(usel, exchange(0));
         }
-        else if (dir == WRITE)
-        {
+        else if (dir == WRITE) {
             exchange(uart_read(usel));
-        }
-        else // EXCHANGE
-        {
+        } else { // EXCHANGE
             uart_write(usel, exchange(uart_read(usel)));
         }
     }

@@ -72,7 +72,7 @@ bool OC2_IsCompareCycleComplete(void) {
 }
 
 bool OC2_FaultStatusGet(OC2_FAULTS faultNum) {
-    bool status;
+    bool status = true;
     /* Return the status of the fault condition */
 
     switch (faultNum) {
@@ -82,10 +82,8 @@ bool OC2_FaultStatusGet(OC2_FAULTS faultNum) {
         case OC2_FAULT1:
             status = OC2CON1bits.OCFLT1;
             break;
-        default:
-            break;
-
     }
+
     return (status);
 }
 
@@ -97,8 +95,6 @@ void OC2_FaultStatusClear(OC2_FAULTS faultNum) {
             break;
         case OC2_FAULT1:
             OC2CON1bits.OCFLT1 = 0;
-            break;
-        default:
             break;
     }
 }
