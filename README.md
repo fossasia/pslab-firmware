@@ -2,6 +2,7 @@
 
 This repository contains firmware for the
 [Pocket Science Lab (PSLab)](https://pslab.io) open hardware platform.
+Hardware version 5 and 6 are supported.
 
 ![Build Status](https://github.com/fossasia/pslab-firmware/actions/workflows/main-builder.yml/badge.svg)
 [![Gitter](https://badges.gitter.im/fossasia/pslab.svg)](https://gitter.im/fossasia/pslab?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -85,11 +86,18 @@ instructions.
 
 Follow these steps to flash new firmware:
 
+0. If using PSLab v5, see [Entering bootloader mode on PSLab v5](#entering-bootloader-mode-on-pslab-v5)
+
 1. Press and hold the 'BOOT' button
+
 2. Press the 'RESET' button
-   1. The 'Status' LED should start flashing, indicating the device is in bootloader mode
+   1. The 'Status' LED should start blinking, indicating that the device is
+      in bootloader mode
+
    2. Release the 'BOOT' button
+
 3. Run `pslab flash --port <portname> firmware.hex`
+
 4. After flashing is complete, reset or power cycle the device
 
 ### Using a programmer
@@ -116,6 +124,38 @@ HEX.
 3. Power on the device via USB
 4. Run `mdb.sh flash.mdbscript`
 5. Disconnect the programmer
+
+### Entering bootloader mode on PSLab v5
+
+The PSLab v5 lacks the BOOT button which is used to enter bootloader mode on
+the v6. The pin which is connected to the BOOT button on the v6 is present,
+however. It is therefore possible to enter bootloader mode on the v5 by
+following these steps.
+
+> **Note**
+> The PSLab v5 does not come with the bootloader preinstalled. These steps
+> will have no effect unless you have already installed the bootloader as
+> described [here](https://github.com/fossasia/pslab-bootloader#flashing).
+
+1. With the USB port to the top left of the board, the 5:th pin on the MCU's
+   left side is the BOOT pin, counting from the top. Immediately below it
+   (6:th from the top) is a conveniently located GND pin:
+   ![How to enter bootloader on PSLab v5](docs/images/bootloader_v5.png)
+
+2. Bridge these pins by touching both simultaneously with a small piece of
+   metal, such as the tip of a jump wire or a paper clip.
+
+3. Reset or power cycle the device. The v5 lacks a RESET button, but your can
+   soft-reset it through `pslab-python`:
+
+   ```python
+   import pslab
+   pslab.ScienceLab().reset()
+   ```
+
+4. The BOOT and GND pins must be bridged when the reset / power cycle happens.
+   If you did it right the SYSTEM LED will start blinking, indicating that the
+   PSLab is in bootloader mode.
 
 ## Repository structure
 
