@@ -85,11 +85,12 @@ instructions.
 
 Follow these steps to flash new firmware:
 
-1. Ground the BOOT pin
-2. Reset or power cycle the device
+1. Press and hold the 'BOOT' button
+2. Press the 'RESET' button
+   1. The 'Status' LED should start flashing, indicating the device is in bootloader mode
+   2. Release the 'BOOT' button
 3. Run `pslab flash --port <portname> firmware.hex`
-4. Unground the BOOT pin
-5. Reset or power cycle the device
+4. After flashing is complete, reset or power cycle the device
 
 ### Using a programmer
 
