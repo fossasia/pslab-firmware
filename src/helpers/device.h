@@ -12,6 +12,12 @@ extern "C" {
     response_t DEVICE_GetVersion(void);
     
     /**
+     * @brief Get firmware version.
+     * @return MAJOR (uint8_t), MINOR (uint8_t), PATCH (uint8_t)
+     */
+    response_t DEVICE_get_fw_version(void);
+
+    /**
      * @brief Reset the device by moving program counter to 0x0000
      * @return DO_NOT_BOTHER
      */
