@@ -20,8 +20,10 @@ target_link_options(pslab-firmware.elf PRIVATE
   "LINKER:-Map=pslab-firmware.map,--report-mem")
 
 if (LEGACY_HARDWARE)
+  message("Building for PSLab v5")
   add_compile_definitions(V5_HW)
+else()
+  message("Building for PSLab v6")
 endif(LEGACY_HARDWARE)
 
 bin2hex(pslab-firmware.elf)
-
