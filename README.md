@@ -145,7 +145,7 @@ following these steps.
 2. Bridge these pins by touching both simultaneously with a small piece of
    metal, such as the tip of a jump wire or a paper clip.
 
-3. Reset or power cycle the device. The v5 lacks a RESET button, but your can
+3. Reset or power cycle the device. The v5 lacks a RESET button, but you can
    soft-reset it through `pslab-python`:
 
    ```python
