@@ -247,7 +247,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     { // 11 COMMON
      // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
         Undefined,                      MULTIMETER_GetCTMUVolts,        MULTIMETER_GetCapacitance,      Unimplemented,
-     // 4 GET_INDUCTANCE                5 GET_VERSION                   6                               7
+     // 4 GET_INDUCTANCE                5 GET_VERSION                   6 GET_FW_VERSION                7
         Unimplemented,                  DEVICE_GetVersion,              DEVICE_get_fw_version,          Undefined,
      // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
         BUFFER_Retrieve,                Unimplemented,                  BUFFER_Clear,                   Removed,
