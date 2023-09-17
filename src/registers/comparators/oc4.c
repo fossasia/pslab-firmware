@@ -84,7 +84,7 @@ bool OC4_IsCompareCycleComplete(void) {
 }
 
 bool OC4_FaultStatusGet(OC4_FAULTS faultNum) {
-    bool status;
+    bool status = true;
     /* Return the status of the fault condition */
 
     switch (faultNum) {
@@ -94,10 +94,8 @@ bool OC4_FaultStatusGet(OC4_FAULTS faultNum) {
         case OC4_FAULT1:
             status = OC4CON1bits.OCFLT1;
             break;
-        default:
-            break;
-
     }
+
     return (status);
 }
 
@@ -109,8 +107,6 @@ void OC4_FaultStatusClear(OC4_FAULTS faultNum) {
             break;
         case OC4_FAULT1:
             OC4CON1bits.OCFLT1 = 0;
-            break;
-        default:
             break;
     }
 }
