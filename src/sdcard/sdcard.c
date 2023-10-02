@@ -30,31 +30,31 @@ response_t SDCARD_write_file(void) {
     }
 
     uint8_t mode = UART1_Read();
-    size_t data_length = UART1_ReadInt();
-    uint8_t data[data_length];
+    size_t data_size = UART1_ReadInt();
+    uint8_t data[data_size];
 
-    for (size_t i = 0; i < data_length; ++i) {
+    for (size_t i = 0; i < data_size; ++i) {
         data[i] = UART1_Read();
     }
 
     size_t bytes_written = 0;
-    FRESULT ret = f_mount(&drive, "0:", 1);
+    FRESULT result = f_mount(&drive, "0:", 1);
 
-    if (ret == FR_OK) {
-        ret = f_open(&file, filename, FA_WRITE | mode);
+    if (result == FR_OK) {
+        result = f_open(&file, filename, FA_WRITE | mode);
 
-        if (ret == FR_OK) {
-            f_write(&file, data, data_length, &bytes_written);
+        if (result == FR_OK) {
+            f_write(&file, data, data_size, &bytes_written);
             f_close(&file);
         }
 
         f_mount(0, "0:", 0);
     }
 
-    UART1_Write(ret);
+    UART1_Write(result);
     UART1_WriteInt(bytes_written);
 
-    return SUCCESS;
+    return result ? FAILED : SUCCESS;
 }
 
 response_t SDCARD_read_file(void) {
@@ -68,12 +68,12 @@ response_t SDCARD_read_file(void) {
     size_t bytes_to_read = UART1_ReadInt();
     char data[bytes_to_read];
     size_t bytes_read = 0;
-    FRESULT ret = f_mount(&drive, "0:", 1);
+    FRESULT result = f_mount(&drive, "0:", 1);
 
-    if (ret == FR_OK) {
-        ret = f_open(&file, filename, FA_READ);
+    if (result == FR_OK) {
+        result = f_open(&file, filename, FA_READ);
 
-        if (ret == FR_OK) {
+        if (result == FR_OK) {
             f_read(&file, &data, bytes_to_read, &bytes_read);
             f_close(&file);
         }
@@ -81,12 +81,12 @@ response_t SDCARD_read_file(void) {
         f_mount(0, "0:", 0);
     }
 
-    UART1_Write(ret);
+    UART1_Write(result);
     UART1_WriteInt(bytes_read);
 
     for (size_t i = 0; i < bytes_read; ++i) {
         UART1_Write(data[i]);
     }
 
-    return SUCCESS;
+    return result ? FAILED : SUCCESS;
 }
