@@ -31,7 +31,7 @@ void UART_Initialize(const EUxSelect select);
  *   calling this function.
  *   UART_IsRxReady() should be used to check if there is incoming data before
  *   calling this function. This function will block for up to 1 ms while
- *   waiting data to become available on UxRXREG.
+ *   waiting for data to become available on UxRXREG.
  *
  * @param select Either U1SELECT or U2SELECT.
  * @return
@@ -55,7 +55,7 @@ uint8_t UART1_Read(void);
  *   calling this function.
  *   UART_IsRxReady() should be used to check if there is incoming data before
  *   calling this function. This function will block for up to 2 ms while
- *   waiting data to become available on UxRXREG.
+ *   waiting for data to become available on UxRXREG.
  *
  * @param select Either U1SELECT or U2SELECT.
  * @return
@@ -69,6 +69,26 @@ uint16_t UART_ReadInt(const EUxSelect select);
  * @brief Convenience function, equivalent to UART_ReadInt(U1SELECT).
  */
 uint16_t UART1_ReadInt(void);
+
+/**
+ * @brief Read a uint32_t from UARTx.
+ *
+ * @pre
+ *   UART_Initialize() must have been called for UARTx before
+ *   calling this function.
+ *   UART_IsRxReady() should be used to check if there is incoming data before
+ *   calling this function. This function will block for up to 4 ms while
+ *   waiting for data to become available on UxRXREG.
+ *
+ * @param select Either U1SELECT or U2SELECT.
+ * @return uint32_t
+ */
+uint32_t UART_read_u32(EUxSelect const select);
+
+/**
+ * @brief Convenience function, equivalent to UART_read_u32(U1SELECT).
+ */
+uint32_t UART1_read_u32(void);
 
 /**
  * @brief Writes a byte of data to the UARTx.
@@ -103,6 +123,22 @@ void UART_WriteInt(const EUxSelect select, uint16_t txData);
  * @brief Convenience function, equivalent to UART_WriteInt(U1SELECT, data).
  */
 void UART1_WriteInt(uint16_t txData);
+
+/**
+ * @brief Writes a uint32_t to UARTx.
+ *
+ * @pre
+ *   UART2_Initialize() should have been called before calling this function.
+ *
+ * @param select Either U1SELECT or U2SELECT.
+ * @param txData Data word to write to UARTx.
+ */
+void UART_write_u32(EUxSelect const select, uint32_t const txdata);
+
+/**
+ * @brief Convenience function, equivalent to UART_write_u32(U1SELECT, data).
+ */
+void UART1_write_u32(uint32_t const txdata);
 
 /**
  * @brief Indicates whether there is data available to read.

@@ -360,13 +360,24 @@ uint8_t UART1_Read(void) {
 
 uint16_t UART_ReadInt(const EUxSelect select) {
     const uint8_t lsb = UART_Read(select);
-    const uint8_t msb = UART_Read(select);
+    const uint16_t msb = UART_Read(select);
     const uint16_t retval = (msb << 8) | lsb;
     return retval;
 }
 
 uint16_t UART1_ReadInt(void) {
     return UART_ReadInt(U1SELECT);
+}
+
+uint32_t UART_read_u32(EUxSelect const select) {
+    uint16_t const lsw = UART_ReadInt(select);
+    uint32_t const msw = UART_ReadInt(select);
+    uint32_t const retval = (msw << 16) | lsw;
+    return retval;
+}
+
+uint32_t UART1_read_u32(void) {
+    return UART_read_u32(U1SELECT);
 }
 
 void UART_Write(const EUxSelect select, const uint8_t txData) {
@@ -386,6 +397,15 @@ void UART_WriteInt(const EUxSelect select, const uint16_t txData) {
 
 void UART1_WriteInt(uint16_t txData) {
     UART_WriteInt(U1SELECT, txData);
+}
+
+void UART_write_u32(EUxSelect const select, uint32_t const txdata) {
+    UART_WriteInt(select, (uint16_t)(txdata & 0xFFFF));
+    UART_WriteInt(select, (uint16_t)(txdata >> 16));
+}
+
+void UART1_write_u32(uint32_t const txdata) {
+    UART_write_u32(U1SELECT, txdata);
 }
 
 bool UART_IsRxReady(const EUxSelect select) {
