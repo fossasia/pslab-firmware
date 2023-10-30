@@ -6,87 +6,132 @@
 #include "../commands.h"
 #include "fatfs/ff.h"
 
+#define BUF_SIZE 256
+
 static FATFS drive;
 static FIL file;
+static char buffer[BUF_SIZE];
 
-static bool get_filename(char filename[], uint8_t const filename_length) {
-    for (uint8_t i = 0; i < filename_length; ++i) {
-        filename[i] = UART1_Read();
+static void get_filename(void) {
+    for (uint8_t i = 0; i < BUF_SIZE; ++i) {
+        if (!(buffer[i] = UART1_Read())) {
+            // Received null-terminator.
+            return;
+        }
     }
+    // FatFS handles non-terminated strings gracefully, so no need to do a
+    // manual check for null-termination.
+}
 
-    if (filename[filename_length - 1]) {
-        return false; // String must be null terminated.
-    }
-
-    return true;
+/// @brief Discard new errors if one has already happened.
+/// @param old Pointer to FRESULT.
+/// @param new New FRESULT.
+static void keep_first_error(FRESULT* old, FRESULT new) {
+    *old || (*old = new);
 }
 
 response_t SDCARD_write_file(void) {
-    uint8_t filename_length = UART1_Read();
-    char filename[filename_length];
+    struct inbytes {
+        char* const filename;
+        uint8_t const mode;
+        size_t const data_size;
+        uint8_t* const data;
+    } const inbytes = {
+        .filename = buffer,
+        .mode = UART1_Read(),
+        .data_size = UART1_read_u32(),
+        .data = buffer,
+    };
+    struct outbytes {
+        FRESULT result;
+        size_t bytes_written;
+    } outbytes = {0};
 
-    if (!get_filename(filename, filename_length)) {
-        return FAILED;
+
+    get_filename();
+    keep_first_error(&outbytes.result, f_mount(&drive, "0:", 1));
+    keep_first_error(
+        &outbytes.result,
+        f_open(&file, inbytes.filename, FA_WRITE | inbytes.mode)
+    );
+
+    UART1_Write(outbytes.result);
+
+    if (outbytes.result) {
+        return DO_NOT_BOTHER;
     }
 
-    uint8_t mode = UART1_Read();
-    size_t data_size = UART1_ReadInt();
-    uint8_t data[data_size];
-
-    for (size_t i = 0; i < data_size; ++i) {
-        data[i] = UART1_Read();
-    }
-
-    size_t bytes_written = 0;
-    FRESULT result = f_mount(&drive, "0:", 1);
-
-    if (result == FR_OK) {
-        result = f_open(&file, filename, FA_WRITE | mode);
-
-        if (result == FR_OK) {
-            f_write(&file, data, data_size, &bytes_written);
-            f_close(&file);
+    for (
+        size_t block_size, remaining = inbytes.data_size;
+        block_size = remaining > BUF_SIZE ? BUF_SIZE : remaining,
+        remaining;
+        remaining -= block_size
+    ) {
+        for (size_t i = 0; i < block_size; ++i) {
+            inbytes.data[i] = UART1_Read();
         }
 
-        f_mount(0, "0:", 0);
+        uint8_t written = 0;
+        keep_first_error(
+            &outbytes.result,
+            f_write(&file, inbytes.data, block_size, &written)
+        );
+        outbytes.bytes_written += written;
     }
 
-    UART1_Write(result);
-    UART1_WriteInt(bytes_written);
+    keep_first_error(&outbytes.result, f_close(&file));
+    keep_first_error(&outbytes.result, f_mount(0, "0:", 0));
 
-    return result ? FAILED : SUCCESS;
+    UART1_write_u32(outbytes.bytes_written);
+    UART1_Write(outbytes.result);
+
+    return DO_NOT_BOTHER;
 }
 
 response_t SDCARD_read_file(void) {
-    uint8_t filename_length = UART1_Read();
-    char filename[filename_length];
+    struct inbytes {
+        char* const filename;
+    } const inbytes = {
+        .filename = buffer,
+    };
+    struct outbytes {
+        FRESULT result;
+        size_t bytes_read;
+        char* data;
+    } outbytes = {
+        .result = 0,
+        .bytes_read = 0,
+        .data = buffer,
+    };
 
-    if (!get_filename(filename, filename_length)) {
-        return FAILED;
-    }
+    get_filename();
+    keep_first_error(&outbytes.result, f_mount(&drive, "0:", 1));
+    keep_first_error(&outbytes.result, f_open(&file, inbytes.filename, FA_READ));
+    FILINFO info = {0};
+    keep_first_error(&outbytes.result, f_stat(inbytes.filename, &info));
+    UART1_write_u32(info.fsize);
 
-    size_t bytes_to_read = UART1_ReadInt();
-    char data[bytes_to_read];
-    size_t bytes_read = 0;
-    FRESULT result = f_mount(&drive, "0:", 1);
+    for (
+        size_t block_size, remaining = info.fsize;
+        block_size = remaining > BUF_SIZE ? BUF_SIZE : remaining,
+        remaining;
+        remaining -= block_size
+    ) {
+        uint8_t read = 0;
+        keep_first_error(&outbytes.result, f_read(&file, &buffer, block_size, &read));
 
-    if (result == FR_OK) {
-        result = f_open(&file, filename, FA_READ);
-
-        if (result == FR_OK) {
-            f_read(&file, &data, bytes_to_read, &bytes_read);
-            f_close(&file);
+        for (size_t i = 0; i < block_size; ++i) {
+            UART1_Write(buffer[i]);
         }
 
-        f_mount(0, "0:", 0);
+        outbytes.bytes_read += read;
     }
 
-    UART1_Write(result);
-    UART1_WriteInt(bytes_read);
+    keep_first_error(&outbytes.result, f_close(&file));
+    keep_first_error(&outbytes.result, f_mount(0, "0:", 0));
 
-    for (size_t i = 0; i < bytes_read; ++i) {
-        UART1_Write(data[i]);
-    }
+    UART1_write_u32(outbytes.bytes_read);
+    UART1_Write(outbytes.result);
 
-    return result ? FAILED : SUCCESS;
+    return DO_NOT_BOTHER;
 }
