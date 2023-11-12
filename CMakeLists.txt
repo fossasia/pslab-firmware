@@ -26,4 +26,9 @@ else()
   message("Building for PSLab v6")
 endif(LEGACY_HARDWARE)
 
+if (ENABLE_DEBUG)
+  message("Debug messages enabled")
+  add_compile_definitions(PSLAB_DEBUG)
+endif(ENABLE_DEBUG)
+
 bin2hex(pslab-firmware.elf)
