@@ -9,11 +9,9 @@
 #include "../helpers/debug.h"
 #include "../registers/system/watchdog.h"
 
-#define BUF_SIZE FF_MIN_SS
-
-static FATFS drive;
-static FIL file;
-static TCHAR buffer[BUF_SIZE];
+#define SFN_MAX 8
+#define SFN_SUFFIX_LEN 4 // Period + at most three chars.
+#define BUF_MAX FF_MIN_SS
 
 static void get_filename(TCHAR* const fn_buf, UINT const size) {
     for (UINT i = 0; i < size; ++i) {
@@ -27,10 +25,16 @@ static void get_filename(TCHAR* const fn_buf, UINT const size) {
 }
 
 response_t SDCARD_write_file(void) {
-    TCHAR* const filename = buffer;
-    get_filename(filename, BUF_SIZE);
+    // +1 is null-terminator.
+    size_t const filename_size = SFN_MAX + SFN_SUFFIX_LEN + 1;
+    TCHAR filename[filename_size];
+    get_filename(filename, filename_size);
     BYTE const mode = UART1_Read();
+
+    FATFS drive;
     DEBUG_write_u8(f_mount(&drive, "0:", 1));
+
+    FIL file;
     // Host must wait for f_open before sending data.
     UART1_Write(f_open(&file, filename, FA_WRITE | mode));
 
@@ -39,10 +43,12 @@ response_t SDCARD_write_file(void) {
 
     for (
         FSIZE_t block_size, remaining = data_size;
-        block_size = remaining > BUF_SIZE ? BUF_SIZE : remaining,
+        block_size = remaining > BUF_MAX ? BUF_MAX : remaining,
         remaining;
         remaining -= block_size
     ) {
+        TCHAR buffer[block_size];
+
         for (UINT i = 0; i < block_size; ++i) {
             buffer[i] = UART1_Read();
         }
@@ -52,7 +58,6 @@ response_t SDCARD_write_file(void) {
         // Host must wait for f_write before sending more data.
         UART1_Write(f_write(&file, buffer, (UINT)block_size, &written));
         bytes_written += written;
-        DEBUG_write_u32(remaining);
     }
 
     UART1_write_u32(bytes_written);
@@ -63,9 +68,13 @@ response_t SDCARD_write_file(void) {
 }
 
 response_t SDCARD_read_file(void) {
-    TCHAR* const filename = buffer;
-    get_filename(filename, BUF_SIZE);
+    TCHAR filename[SFN_MAX + SFN_SUFFIX_LEN + 1]; // +1 is null-terminator.
+    get_filename(filename, sizeof filename);
+
+    FATFS drive;
     DEBUG_write_u8(f_mount(&drive, "0:", 1));
+
+    FIL file;
     DEBUG_write_u8(f_open(&file, filename, FA_READ));
 
     FILINFO info = {0, 0, 0, 0, {0}};
@@ -75,20 +84,19 @@ response_t SDCARD_read_file(void) {
 
     for (
         FSIZE_t block_size, remaining = info.fsize;
-        block_size = remaining > BUF_SIZE ? BUF_SIZE : remaining,
+        block_size = remaining > BUF_MAX ? BUF_MAX : remaining,
         remaining;
         remaining -= block_size
     ) {
         WATCHDOG_TimerClear();
         UINT read = 0;
+        TCHAR buffer[block_size];
         f_read(&file, &buffer, (UINT)block_size, &read);
         bytes_read += read;
 
         for (UINT i = 0; i < block_size; ++i) {
             UART1_Write(buffer[i]);
         }
-
-        DEBUG_write_u32(remaining);
     }
 
     UART1_write_u32(bytes_read);

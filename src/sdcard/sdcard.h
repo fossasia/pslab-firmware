@@ -15,7 +15,6 @@
  *             loop until entire file written:
  *                 Rx[512] data
  *                 Tx[1]   result_write
- *     <DEBUG>     Tx[4]   remaining_bytes
  *             Tx[4]       total_bytes
  *     <DEBUG> Tx[1]       result_close
  *     <DEBUG> Tx[1]       result_unmount
@@ -58,7 +57,6 @@ response_t SDCARD_write_file(void);
  *             Tx[4]       data_size
  *             loop until entire file read:
  *                 Tx[512] data
- *     <DEBUG>     Tx[4]   remaining_bytes
  *             Tx[4]       total_bytes
  *     <DEBUG> Tx[1]       result_close
  *     <DEBUG> Tx[1]       result_unmount
