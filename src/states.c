@@ -1,3 +1,5 @@
+#include <stdlib.h>
+
 #include "registers/system/system.h"
 #include "bus/uart/uart.h"
 #include "registers/system/watchdog.h"
@@ -5,10 +7,18 @@
 #include "states.h"
 
 /**
+ * @brief Exit application and drop to bootloader.
+ * @return noreturn
+ */
+static _Noreturn state_t Exit(void) {
+    exit(EXIT_SUCCESS);
+}
+
+/**
  * @brief Wait for incoming serial traffic.
  * @return STATE_STANDBY or STATE_RUNCOMMAND
  */
-state_t Standby(void) {
+static state_t Standby(void) {
     if (UART_IsRxReady(U1SELECT)) {
         return STATE_RUNCOMMAND;
     } else {
@@ -21,9 +31,11 @@ state_t Standby(void) {
  * @brief Receive commands bytes, run command, and send response.
  * @return STATE_STANDBY
  */
-state_t RunCommand(void) {
+static state_t RunCommand(void) {
     command_t primary_cmd = UART1_Read();
     command_t secondary_cmd = UART1_Read();
+
+    if (((primary_cmd << 8) | secondary_cmd) == 0xDEAD) return STATE_EXIT;
 
     // Sanitize input.
     if (primary_cmd > NUM_PRIMARY_CMDS) return STATE_STANDBY;
@@ -37,6 +49,7 @@ state_t RunCommand(void) {
 }
 
 state_func_t* const state_table[NUM_STATES] = {
+    Exit,
     Standby,
     RunCommand,
 };

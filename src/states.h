@@ -14,6 +14,7 @@ extern "C" {
      * @brief States.
      */
     typedef enum {
+        STATE_EXIT,
         STATE_STANDBY,
         STATE_RUNCOMMAND,
         NUM_STATES
