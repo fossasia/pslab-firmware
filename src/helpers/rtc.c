@@ -23,7 +23,7 @@ uint8_t bcd(uint8_t data){
 
 response_t RTC_SetTime(void) {
 
-    const long unix_timestamp = (long) UART1_read_u32();
+    time_t  unix_timestamp = (time_t) UART1_read_u32();
     struct tm *tm_info;
 
     tm_info = gmtime(&unix_timestamp);
@@ -45,14 +45,14 @@ response_t RTC_SetTime(void) {
     // Default 24 hrs format.
     uint8_t buffer[9];
     buffer[0] = DS1307_DATA_REG_SECONDS;
-    buffer[1] = bcd(sec) & ~(1<<7)                      // seconds
-    buffer[2] = bcd(min)                                // minutes
-    buffer[3] = (bcd(hours) & (1<<5))                   // hours (hrs format)
-    buffer[4] = bcd(day)                                // day
-    buffer[5] = bcd(date)                               // date
-    buffer[6] = bcd(month)                              // month
-    buffer[7] = bcd(year)                               // year
-    buffer[8] = 0                                       // control
+    buffer[1] = bcd(sec) & ~(1<<7);                      // seconds
+    buffer[2] = bcd(min);                                // minutes
+    buffer[3] = (bcd(hours) & (1<<5));                   // hours (hrs format)
+    buffer[4] = bcd(day);                                // day
+    buffer[5] = bcd(date);                               // date
+    buffer[6] = bcd(month);                              // month
+    buffer[7] = bcd(year);                               // year
+    buffer[8] = 0;                                       // control
 
     I2C_InitializeIfNot(I2C_BAUD_RATE_100KHZ, I2C_ENABLE_INTERRUPTS);
 
@@ -88,7 +88,7 @@ response_t RTC_GetTime(void) {
 
         tm_info.tm_sec = tm_info.tm_sec & ~(1 << 7);
 
-        uint32_t unix_timestamp = (uint32_t) mktime(tm_info);
+        uint32_t unix_timestamp = (uint32_t) mktime(&tm_info);
         UART1_write_u32(unix_timestamp);
     } else return FAILED;
 
