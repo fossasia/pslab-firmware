@@ -79,9 +79,12 @@
 //
 DWORD get_fattime (void){
 
-    time_t unix_timestamp = (time_t) UART1_read_u32();
+    uint32_t unix_timestamp = 0;
+    RTC_GetTime(&unix_timestamp);
     struct tm *tm_info;
-    tm_info = gmtime(&unix_timestamp);
+
+    time_t timestamp = (time_t) (unix_timestamp);
+    tm_info = gmtime(&timestamp);
 
     DWORD fatTime;
 
