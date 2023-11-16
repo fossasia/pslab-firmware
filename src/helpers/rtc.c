@@ -9,24 +9,32 @@
 #include "light.h"
 #include "rtc.h"
 
-uint8_t bcd(uint8_t data){
-    uint8_t left,right;
+uint8_t data_to_bcd(uint8_t data){
     uint8_t bcd = data;
 
     if(data >= 10){
-        left = left / 10;
-        right = right % 10;
+        uint8_t left = left / 10;
+        uint8_t right = right % 10;
         bcd = (left << 4) | right;
     }
     return bcd;
 }
 
-response_t RTC_SetTime(void) {
+uint8_t bcd_to_data(uint8_t bcd){
+    uint8_t right = (0xF & bcd);
+    uint8_t left = (bcd >> 4) & 0xF;
 
-    time_t  unix_timestamp = (time_t) UART1_read_u32();
+    left *= 10;
+    left <<=4;
+    return left & right;
+}
+
+response_t RTC_SetTime(uint32_t *unix_timestamp) {
+
+    time_t timestamp = (time_t) *unix_timestamp;
     struct tm *tm_info;
 
-    tm_info = gmtime(&unix_timestamp);
+    tm_info = gmtime(&timestamp);
     uint8_t sec = tm_info->tm_sec;
     uint8_t min = tm_info->tm_min;
     uint8_t hours = tm_info->tm_hour;
@@ -45,18 +53,26 @@ response_t RTC_SetTime(void) {
     // Default 24 hrs format.
     uint8_t buffer[9];
     buffer[0] = DS1307_DATA_REG_SECONDS;
-    buffer[1] = bcd(sec) & ~(1<<7);                      // seconds
-    buffer[2] = bcd(min);                                // minutes
-    buffer[3] = (bcd(hours) & (1<<5));                   // hours (hrs format)
-    buffer[4] = bcd(day);                                // day
-    buffer[5] = bcd(date);                               // date
-    buffer[6] = bcd(month);                              // month
-    buffer[7] = bcd(year);                               // year
+    buffer[1] = data_to_bcd(sec) & ~(1<<7);                      // seconds
+    buffer[2] = data_to_bcd(min);                                // minutes
+    buffer[3] = (data_to_bcd(hours) & (1<<5));                   // hours (hrs format)
+    buffer[4] = data_to_bcd(day);                                // day
+    buffer[5] = data_to_bcd(date);                               // date
+    buffer[6] = data_to_bcd(month);                              // month
+    buffer[7] = data_to_bcd(year);                               // year
     buffer[8] = 0;                                       // control
 
     I2C_InitializeIfNot(I2C_BAUD_RATE_100KHZ, I2C_ENABLE_INTERRUPTS);
 
     return I2C_BulkWrite(buffer, 9, DS1307_I2C_DEVICE_ADDRESS);
+}
+
+response_t RTC_CmdSetTime(void) {
+    uint32_t unix_timestamp = UART1_read_u32();
+
+    response_t res = RTC_SetTime(&unix_timestamp);
+    UART1_Write(res);
+    return res;
 }
 
 response_t RTC_SetDigit(void) {
@@ -70,7 +86,7 @@ response_t RTC_SetDigit(void) {
     return I2C_BulkWrite(buffer, 2, DS1307_I2C_DEVICE_ADDRESS);
 }
 
-response_t RTC_GetTime(void) {
+response_t RTC_GetTime(uint32_t* unix_timestamp) {
 
     uint8_t buffer[7];
     struct tm tm_info;
@@ -78,21 +94,32 @@ response_t RTC_GetTime(void) {
     I2C_InitializeIfNot(I2C_BAUD_RATE_100KHZ, I2C_ENABLE_INTERRUPTS);
 
     if(I2C_BulkRead(DS1307_DATA_REG_SECONDS, DS1307_I2C_DEVICE_ADDRESS, buffer, 7) == SUCCESS) {
-        tm_info.tm_sec = buffer[0];
-        tm_info.tm_min = buffer[1];
-        tm_info.tm_hour = buffer[2];
-        tm_info.tm_wday = buffer[3] - 1;
-        tm_info.tm_mday = buffer[4];
-        tm_info.tm_mon = buffer[5] - 1;
-        tm_info.tm_year = 2000 + buffer[6];
+
+        // Need to convert from bcd to int.
+        tm_info.tm_sec = bcd_to_data(buffer[0]);
+        tm_info.tm_min = bcd_to_data(buffer[1]);
+        tm_info.tm_hour = bcd_to_data(buffer[2]);
+        tm_info.tm_wday = bcd_to_data(buffer[3] - 1);
+        tm_info.tm_mday = bcd_to_data(buffer[4]);
+        tm_info.tm_mon = bcd_to_data(buffer[5] - 1);
+        tm_info.tm_year = bcd_to_data(2000 + buffer[6]);
 
         tm_info.tm_sec = tm_info.tm_sec & ~(1 << 7);
 
-        uint32_t unix_timestamp = (uint32_t) mktime(&tm_info);
-        UART1_write_u32(unix_timestamp);
+        uint32_t timestamp = (uint32_t) mktime(&tm_info);
+        *unix_timestamp = timestamp;
     } else return FAILED;
 
     return SUCCESS;
+}
+
+response_t RTC_CmdGetTime(void){
+    uint32_t unix_timestamp;
+    response_t res = RTC_GetTime(&unix_timestamp);
+
+    // What if error occurs here, Returns fail.
+    UART1_write_u32(unix_timestamp);
+    return res;
 }
 
 response_t RTC_GetDigit(void) {

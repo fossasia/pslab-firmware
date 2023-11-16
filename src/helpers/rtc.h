@@ -63,8 +63,10 @@ extern "C" {
      * 
      * @return SUCCESS, FAILED
      */
-    response_t RTC_SetTime(void);
-    
+    response_t RTC_SetTime(uint32_t* unix_timestamp);
+
+    response_t RTC_CmdSetTime(void);
+
     /**
      * @brief Updates a single time parameter in DS1307 real-time clock
      * 
@@ -97,8 +99,9 @@ extern "C" {
      * 
      * @return SUCCESS, FAILED
      */
-    response_t RTC_GetTime(void);
-    
+    response_t RTC_GetTime(uint32_t* unix_timestamp);
+
+    response_t RTC_CmdGetTime(void);
     /**
      * @brief Fetch a single time parameter from DS1307 real-time clock
      * 
