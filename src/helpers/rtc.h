@@ -2,6 +2,7 @@
 #define	RTC_H
 
 #include <xc.h>
+#include "../commands.h"
 
 #define DS1307_I2C_DEVICE_ADDRESS        0x68
 

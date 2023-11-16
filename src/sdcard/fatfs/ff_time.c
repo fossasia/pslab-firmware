@@ -59,23 +59,43 @@
 */
 
 #include "ff.h"
+#include <time.h>
 #include <stdint.h>
+#include "../../helpers/rtc.h"
 
-static DWORD decimalToFatTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t seconds)
-{
+//static DWORD decimalToFatTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t seconds)
+//{
+//    DWORD fatTime;
+//
+//    fatTime = (seconds >> 1);
+//    fatTime |= ( ((DWORD)minute) << 5 );
+//    fatTime |= ( ((DWORD)hour) << 11 );
+//    fatTime |= ( ((DWORD)day) << 16 );
+//    fatTime |= ( ((DWORD)month) << 21 );
+//    fatTime |= ( ((DWORD)(year - 1980)) << 25 );
+//
+//    return fatTime;
+//}
+//
+DWORD get_fattime (void){
+
+    time_t unix_timestamp = (time_t) UART1_read_u32();
+    struct tm *tm_info;
+    tm_info = gmtime(&unix_timestamp);
+
     DWORD fatTime;
 
-    fatTime = (seconds >> 1);
-    fatTime |= ( ((DWORD)minute) << 5 );
-    fatTime |= ( ((DWORD)hour) << 11 );
-    fatTime |= ( ((DWORD)day) << 16 );
-    fatTime |= ( ((DWORD)month) << 21 );
-    fatTime |= ( ((DWORD)(year - 1980)) << 25 );
+    fatTime = (tm_info->tm_sec >> 1);
+    fatTime |= ( ((DWORD)tm_info->tm_min) << 5 );
+    fatTime |= ( ((DWORD)tm_info->tm_hour) << 11 );
+    fatTime |= ( ((DWORD)tm_info->tm_wday + 1) << 16 );
+    fatTime |= ( ((DWORD)tm_info->tm_mday) << 21 );
+    fatTime |= ( ((DWORD)(tm_info->tm_year - 1980)) << 25 );
 
     return fatTime;
 }
-
-DWORD get_fattime (void)
-{
-    return decimalToFatTime(2018, 6, 31, 5, 10, 30);
-}
+//
+//DWORD get_fattime (void)
+//{
+//    return decimalToFatTime(2018, 6, 31, 5, 10, 30);
+//}
