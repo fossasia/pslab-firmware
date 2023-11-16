@@ -71,7 +71,6 @@ response_t RTC_CmdSetTime(void) {
     uint32_t unix_timestamp = UART1_read_u32();
 
     response_t res = RTC_SetTime(&unix_timestamp);
-    UART1_Write(res);
     return res;
 }
 
