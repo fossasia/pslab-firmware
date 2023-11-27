@@ -13,8 +13,8 @@ uint8_t data_to_bcd(uint8_t data){
     uint8_t bcd = data;
 
     if(data >= 10){
-        uint8_t left = left / 10;
-        uint8_t right = right % 10;
+        uint8_t left = data / 10;
+        uint8_t right = data % 10;
         bcd = (left << 4) | right;
     }
     return bcd;
@@ -25,8 +25,7 @@ uint8_t bcd_to_data(uint8_t bcd){
     uint8_t left = (bcd >> 4) & 0xF;
 
     left *= 10;
-    left <<=4;
-    return left & right;
+    return left + right;
 }
 
 response_t RTC_SetTime(uint32_t const * const unix_timestamp) {
