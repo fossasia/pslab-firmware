@@ -29,7 +29,7 @@ uint8_t bcd_to_data(uint8_t bcd){
     return left & right;
 }
 
-response_t RTC_SetTime(uint32_t *unix_timestamp) {
+response_t RTC_SetTime(uint32_t const * const unix_timestamp) {
 
     time_t timestamp = (time_t) *unix_timestamp;
     struct tm *tm_info;

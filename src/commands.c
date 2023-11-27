@@ -279,7 +279,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
     },
     { // 12 SENSORS
      // 0                               1 RTC_SETTIME                   2 RTC_SETDIGIT                  3 RTC_GETTIME
-        Undefined,                      RTC_CmdSetTime,                    RTC_SetDigit,                   RTC_CmdGetTime,
+        Undefined,                      RTC_CmdSetTime,                 RTC_SetDigit,                   RTC_CmdGetTime,
      // 4 RTC_GETDIGIT                  5 HCSR04                        6 AM2302                        7 BMP180
         RTC_GetDigit,                   Unimplemented,                  Unimplemented,                  Unimplemented,
      // 8 TSL2591                       9 TCD1304                       10                              11
