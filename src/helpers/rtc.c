@@ -9,6 +9,9 @@
 #include "light.h"
 #include "rtc.h"
 
+// This bit is used to enable the oscillator. When negated, the oscillator is disabled.
+uint8_t oscillator_enable = 0x7F
+
 uint8_t data_to_bcd(uint8_t data){
     uint8_t bcd = data;
 
@@ -52,7 +55,7 @@ response_t RTC_SetTime(uint32_t const * const unix_timestamp) {
     // Default 24 hrs format.
     uint8_t buffer[9];
     buffer[0] = DS1307_DATA_REG_SECONDS;
-    buffer[1] = data_to_bcd(sec) & ~(1<<7);                      // seconds
+    buffer[1] = data_to_bcd(sec) & oscillator_enable;                      // seconds
     buffer[2] = data_to_bcd(min);                                // minutes
     buffer[3] = (data_to_bcd(hours) & (1<<5));                   // hours (hrs format)
     buffer[4] = data_to_bcd(day);                                // day
@@ -102,7 +105,7 @@ response_t RTC_GetTime(uint32_t* unix_timestamp) {
         tm_info.tm_mon = bcd_to_data(buffer[5] - 1);
         tm_info.tm_year = bcd_to_data(2000 + buffer[6]);
 
-        tm_info.tm_sec = tm_info.tm_sec & ~(1 << 7);
+        tm_info.tm_sec = tm_info.tm_sec & oscillator_enable;
 
         uint32_t timestamp = (uint32_t) mktime(&tm_info);
         *unix_timestamp = timestamp;
