@@ -10,9 +10,9 @@
 #include "rtc.h"
 
 // This bit is used to enable the oscillator. When negated, the oscillator is disabled.
-uint8_t oscillator_enable = 0x7F
+static uint8_t const oscillator_enable = 0x7F
 
-uint8_t data_to_bcd(uint8_t data){
+static uint8_t data_to_bcd(uint8_t data){
     uint8_t bcd = data;
 
     if(data >= 10){
@@ -23,7 +23,7 @@ uint8_t data_to_bcd(uint8_t data){
     return bcd;
 }
 
-uint8_t bcd_to_data(uint8_t bcd){
+static uint8_t bcd_to_data(uint8_t bcd){
     uint8_t right = (0xF & bcd);
     uint8_t left = (bcd >> 4) & 0xF;
 
