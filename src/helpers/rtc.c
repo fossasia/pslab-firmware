@@ -43,26 +43,22 @@ response_t RTC_SetTime(uint32_t const * const unix_timestamp) {
     uint8_t day = tm_info->tm_wday + 1;
     uint8_t date = tm_info->tm_mday;
     uint8_t month = tm_info->tm_mon + 1;
-
-    if(tm_info->tm_year < 2000 || tm_info->tm_year > 2099)
-        return ARGUMENT_ERROR;
-
-    uint8_t year = (tm_info->tm_year + 1900) % 100;
-
+    uint8_t year = tm_info->tm_year % 100; // Tm_year starts from 00 which means(1900).
+                                           // ds1307 only stores the last 2 digits.
     if(sec == 60)
         sec = 0;
 
     // Default 24 hrs format.
     uint8_t buffer[9];
     buffer[0] = DS1307_DATA_REG_SECONDS;
-    buffer[1] = data_to_bcd(sec) & oscillator_enable;                      // seconds
+    buffer[1] = data_to_bcd(sec) & oscillator_enable;            // seconds
     buffer[2] = data_to_bcd(min);                                // minutes
     buffer[3] = (data_to_bcd(hours) & (1<<5));                   // hours (hrs format)
     buffer[4] = data_to_bcd(day);                                // day
     buffer[5] = data_to_bcd(date);                               // date
     buffer[6] = data_to_bcd(month);                              // month
     buffer[7] = data_to_bcd(year);                               // year
-    buffer[8] = 0;                                       // control
+    buffer[8] = 0;                                               // control
 
     I2C_InitializeIfNot(I2C_BAUD_RATE_100KHZ, I2C_ENABLE_INTERRUPTS);
 
@@ -103,7 +99,7 @@ response_t RTC_GetTime(uint32_t* unix_timestamp) {
         tm_info.tm_wday = bcd_to_data(buffer[3] - 1);
         tm_info.tm_mday = bcd_to_data(buffer[4]);
         tm_info.tm_mon = bcd_to_data(buffer[5] - 1);
-        tm_info.tm_year = bcd_to_data(2000 + buffer[6]);
+        tm_info.tm_year = 100 + bcd_to_data(buffer[6]); // 100 means for year 2000 (2000 - 1900)
 
         tm_info.tm_sec = tm_info.tm_sec & oscillator_enable;
 
