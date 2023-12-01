@@ -79,7 +79,7 @@ DWORD get_fattime (void){
     fatTime |= ( ((DWORD)tm_info->tm_hour) << 11 );
     fatTime |= ( ((DWORD)tm_info->tm_wday + 1) << 16 );
     fatTime |= ( ((DWORD)tm_info->tm_mday) << 21 );
-    fatTime |= ( ((DWORD)(tm_info->tm_year - 1980)) << 25 );
+    fatTime |= ( ((DWORD)(tm_info->tm_year + 1900)) << 25 );
 
     return fatTime;
 }
