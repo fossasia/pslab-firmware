@@ -79,4 +79,22 @@ response_t SDCARD_write_file(void);
  */
 response_t SDCARD_read_file(void);
 
+/**
+ * @brief Get metadata of file on SD-card.
+ *
+ * @details See documentation of FatFS FILINFO.
+        UART transaction order:
+ *             Rx[1-12]    filename
+ *     <DEBUG> Tx[1]       result_mount
+ *     <DEBUG> Tx[1]       result_stat
+ *             Tx[4]       data_size
+ *             Tx[2]       modification_date
+ *             Tx[2]       modification_time
+ *             Tx[1]       file_attributes
+ *     <DEBUG> Tx[1]       result_unmount
+ *
+ * @return SUCCESS
+ */
+response_t SDCARD_get_file_info(void);
+
 #endif // _SDCARD_H

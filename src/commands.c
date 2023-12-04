@@ -296,8 +296,8 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
     { // 14 SDCARD
-     // 0                               1 READ_FILE                     2 WRITE_FILE                    3
-        Undefined,                      SDCARD_read_file,               SDCARD_write_file,              Undefined,
+     // 0                               1 READ_FILE                     2 WRITE_FILE                    3 GET_FILE_INFO
+        Undefined,                      SDCARD_read_file,               SDCARD_write_file,              SDCARD_get_file_info,
      // 4                               5                               6                               7
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 8                               9                               10                              11
