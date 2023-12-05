@@ -1,4 +1,5 @@
 #include "commands.h"
+#include "sdcard/sdcard.h"
 #include "bus/i2c/i2c.h"
 #include "bus/uart/uart.h"
 #include "bus/spi/spi.h"
@@ -37,6 +38,7 @@ unsigned char num_secondary_cmds[NUM_PRIMARY_CMDS + 1] = {
     NUM_COMMON_CMDS,
     NUM_PASSTHRU_CMDS,
     NUM_SENSOR_CMDS,
+    NUM_SDCARD_CMDS,
 };
 
 /**
@@ -277,7 +279,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 24         25                26         27
         Undefined, Undefined,        Undefined, Undefined,
     },
-    { // 12 SENSORS
+    { // 13 SENSORS
      // 0                               1 RTC_SETTIME                   2 RTC_SETDIGIT                  3 RTC_GETTIME
         Undefined,                      RTC_CmdSetTime,                 RTC_SetDigit,                   RTC_CmdGetTime,
      // 4 RTC_GETDIGIT                  5 HCSR04                        6 AM2302                        7 BMP180
@@ -293,4 +295,20 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 24                              25                              26                              27
         Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
+    { // 14 SDCARD
+     // 0                               1 READ_FILE                     2 WRITE_FILE                    3 GET_FILE_INFO
+        Undefined,                      SDCARD_read_file,               SDCARD_write_file,              SDCARD_get_file_info,
+     // 4                               5                               6                               7
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 8                               9                               10                              11
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 12                              13                              14                              15
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 16                              17                              18                              19
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 20                              21                              22                              23
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+     // 24                              25                              26                              27
+        Undefined,                      Undefined,                      Undefined,                      Undefined,
+    },    
 };

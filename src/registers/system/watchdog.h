@@ -1,6 +1,8 @@
 #ifndef WATCHDOG_H
 #define	WATCHDOG_H
 
+#include "system.h"
+
 /**
   Section: Type defines
  */
