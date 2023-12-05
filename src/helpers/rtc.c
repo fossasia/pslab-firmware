@@ -96,9 +96,9 @@ response_t RTC_GetTime(uint32_t* unix_timestamp) {
         tm_info.tm_sec = bcd_to_data(buffer[0]);
         tm_info.tm_min = bcd_to_data(buffer[1]);
         tm_info.tm_hour = bcd_to_data(buffer[2]);
-        tm_info.tm_wday = bcd_to_data(buffer[3] - 1);
+        tm_info.tm_wday = bcd_to_data(buffer[3]) - 1;
         tm_info.tm_mday = bcd_to_data(buffer[4]);
-        tm_info.tm_mon = bcd_to_data(buffer[5] - 1);
+        tm_info.tm_mon = bcd_to_data(buffer[5]) - 1;
         tm_info.tm_year = 100 + bcd_to_data(buffer[6]); // 100 means for year 2000 (2000 - 1900)
 
         tm_info.tm_sec = tm_info.tm_sec & oscillator_enable;
