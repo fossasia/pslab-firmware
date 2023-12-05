@@ -53,7 +53,7 @@ response_t RTC_SetTime(uint32_t const * const unix_timestamp) {
     buffer[0] = DS1307_DATA_REG_SECONDS;
     buffer[1] = data_to_bcd(sec) & oscillator_enable;            // seconds
     buffer[2] = data_to_bcd(min);                                // minutes
-    buffer[3] = (data_to_bcd(hours) | 0x20);                     // hours (hrs format)
+    buffer[3] = data_to_bcd(hours);                             // hours (hrs format)
     buffer[4] = data_to_bcd(day);                                // day
     buffer[5] = data_to_bcd(date);                               // date
     buffer[6] = data_to_bcd(month);                              // month
@@ -95,7 +95,7 @@ response_t RTC_GetTime(uint32_t* unix_timestamp) {
         // Need to convert from bcd to int.
         tm_info.tm_sec = bcd_to_data(buffer[0]);
         tm_info.tm_min = bcd_to_data(buffer[1]);
-        tm_info.tm_hour = bcd_to_data(buffer[2] & 0x1F); // Remove the Hour Factor.
+        tm_info.tm_hour = bcd_to_data(buffer[2]);
         tm_info.tm_wday = bcd_to_data(buffer[3] - 1);
         tm_info.tm_mday = bcd_to_data(buffer[4]);
         tm_info.tm_mon = bcd_to_data(buffer[5] - 1);
