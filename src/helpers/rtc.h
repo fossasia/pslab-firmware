@@ -2,6 +2,7 @@
 #define	RTC_H
 
 #include <xc.h>
+#include "../commands.h"
 
 #define DS1307_I2C_DEVICE_ADDRESS        0x68
 
@@ -60,11 +61,26 @@ extern "C" {
      *    | OUT (1) | XX (2) | SQWE (1) | XX (2) | RS1:0 (2) |
      * 
      * This method does not pass any messages over the serial back to host.
+     * This method decodes the unix_timestamp passed as param, converts it into RTC format and
+     * stores the value in RTC hardware.
+     *
+     * @Param
+     *      const* const unix_timestamp: Time to be stored in 32 bit unix timestamp format.
      * 
      * @return SUCCESS, FAILED
      */
-    response_t RTC_SetTime(void);
-    
+    response_t RTC_SetTime(uint32_t const* const unix_timestamp);
+
+    /**
+     * @brief Stores time in RTC Hardware.
+     *
+     * @description This method reads 32 bit unix timestamp unsigned integer from the host and
+     * stores the value in RTC Hardware by calling RTC_SetTime function.
+     *
+     * @return SUCCESS, FAILED
+     */
+    response_t RTC_CmdSetTime(void);
+
     /**
      * @brief Updates a single time parameter in DS1307 real-time clock
      * 
@@ -94,11 +110,23 @@ extern "C" {
      * 
      * This method will pass 8 unsigned bytes to the host over serial and host
      * will need to read all 7 bytes to complete the transaction.
+     *
+     * @param
+     * *unix_timestamp - Time in RTC hardware is converted to unix_timestamp and stored in the parameter
      * 
      * @return SUCCESS, FAILED
      */
-    response_t RTC_GetTime(void);
-    
+    response_t RTC_GetTime(uint32_t* unix_timestamp);
+
+    /**
+     * @Brief Fetches time from RTC Hardware in unix_timestamp format.
+     *
+     * @Description This method reads time from RTC Hardware and returns the value in unix_timestamp
+     * format by calling the RTC_GetTime function.
+     *
+     * @return SUCCESS, FAILED
+     */
+    response_t RTC_CmdGetTime(void);
     /**
      * @brief Fetch a single time parameter from DS1307 real-time clock
      * 

@@ -59,23 +59,27 @@
 */
 
 #include "ff.h"
+#include <time.h>
 #include <stdint.h>
+#include "../../helpers/rtc.h"
 
-static DWORD decimalToFatTime(uint16_t year, uint8_t month, uint8_t day, uint8_t hour, uint8_t minute, uint8_t seconds)
-{
+DWORD get_fattime (void){
+
+    uint32_t unix_timestamp = 0;
+    RTC_GetTime(&unix_timestamp);
+    struct tm *tm_info;
+
+    time_t timestamp = (time_t) (unix_timestamp);
+    tm_info = gmtime(&timestamp);
+
     DWORD fatTime;
 
-    fatTime = (seconds >> 1);
-    fatTime |= ( ((DWORD)minute) << 5 );
-    fatTime |= ( ((DWORD)hour) << 11 );
-    fatTime |= ( ((DWORD)day) << 16 );
-    fatTime |= ( ((DWORD)month) << 21 );
-    fatTime |= ( ((DWORD)(year - 1980)) << 25 );
+    fatTime = (tm_info->tm_sec >> 1);
+    fatTime |= ( ((DWORD)tm_info->tm_min) << 5 );
+    fatTime |= ( ((DWORD)tm_info->tm_hour) << 11 );
+    fatTime |= ( ((DWORD)tm_info->tm_mday) << 16 );
+    fatTime |= ( ((DWORD)tm_info->tm_mon + 1) << 21 );
+    fatTime |= ( ((DWORD)(tm_info->tm_year - 80)) << 25 );
 
     return fatTime;
-}
-
-DWORD get_fattime (void)
-{
-    return decimalToFatTime(2018, 6, 31, 5, 10, 30);
 }
