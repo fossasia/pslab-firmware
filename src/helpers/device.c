@@ -8,7 +8,12 @@
 
 #define SEMVERS 3
 
-static uint8_t const VERSION_HW[] = "PSLab V6"; /** Hardware version. **/
+static uint8_t const VERSION_HW[] =
+#ifndef V5_HW
+    "PSLab V6";
+#else
+    "PSLab V5";
+#endif // V5_HW
 static union {
     struct {
         uint8_t const major;
@@ -49,7 +54,7 @@ response_t DEVICE_Reset(void) {
 response_t DEVICE_ReadRegisterData(void) {
     uint16_t *address = (uint16_t *) (UART1_ReadInt() & 0xFFFF);
     UART1_WriteInt(*address);
-    
+
     return SUCCESS;
 }
 

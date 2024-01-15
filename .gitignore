@@ -1,7 +1,7 @@
 .DS_Store
 
 .generated_files
-build
+build*
 dist
 nbproject
 Makefile
