@@ -1,10 +1,6 @@
 #ifndef POWER_SOURCE_H
 #define	POWER_SOURCE_H
 
-#include <xc.h>
-
-#define MCP4728_I2C_DEVICE_ADDRESS        0x60
-
 #ifdef	__cplusplus
 extern "C" {
 #endif /* __cplusplus */
@@ -22,10 +18,18 @@ extern "C" {
      *        1 (0b01) - PV3
      *        2 (0b10) - PV2
      *        3 (0b11) - PV1
-     * @param voltage uint16
-     *        Integer value between 0 and 3300, corresponding to the channel's
-     *        output voltage with 0 corresponding to the lowest voltage and
-     *        3300 to the highest.
+     * @param output uint16
+     *      Channel output level in mV relative to the VDD line (3300 mV). A
+     *      value of 0 produces an output equal to the low end of the channel's
+     *      range; a value of 3300 produces an output equal to the high end of
+     *      the channel's range:
+     *          channel     output==0    output==3300
+     *          PV(S)1      -5 V        5 V
+     *          PV(S)2      -3.3 V      3.3 V
+     *          PV(S)3      0 V         3.3 V
+     *          PCS         3.3 mA      0 A
+     *      Note that the direction of the output range for the PCS channel is
+     *      inverted compared to the other channels.
      *
      * @return SUCCESS, FAILED
      */
@@ -36,4 +40,3 @@ extern "C" {
 #endif
 
 #endif	/* POWER_SOURCE_H */
-
