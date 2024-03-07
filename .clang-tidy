@@ -1,0 +1,96 @@
+Checks: [
+  bugprone*,
+
+  cert*,
+
+  cppcoreguidelines*,
+  # Need globals to communicate with interrupts
+  -cppcoreguidelines-avoid-non-const-global-variables,
+  # Covered by readability-magic-numbers
+  -cppcoreguidelines-avoid-magic-numbers,
+  # We use global aggregates to dispatch extern registers.
+  # This cannot cause order-of-initialization problems because
+  # registers are guaranteed to be initialized at reset.
+  -cppcoreguidelines-interfaces-global-init,
+
+  google*,
+
+  hicpp*,
+  # Bad warning: https://stackoverflow.com/questions/50399090/use-of-a-signed-integer-operand-with-a-binary-bitwise-operator-when-using-un
+  -hicpp-signed-bitwise,
+
+  llvm*,
+  # We use a different include guard style
+  -llvm-header-guard,
+
+  misc*,
+
+  modernize*,
+
+  performance*,
+
+  readability*,
+]
+
+CheckOptions:
+  - key: bugprone-easily-swappable-parameters.ModelImplicitConversions
+    value: false
+  - key: readability-function-cognitive-complexity.Threshold
+    value: '10'
+  - key: readability-function-size.LineThreshold
+    value: '80'
+
+  - key: readability-identifier-length.MinimumParameterNameLength
+    value: '1'
+  - key: readability-identifier-length.IgnoredVariableNames
+    value: '^dt|pu$'
+
+  - key: readability-magic-numbers.IgnorePowersOf2IntegerValues
+    value: 'true'
+  - key: readability-magic-numbers.IgnoredIntegerValues
+    value: '15;255;4095;65535;'
+
+    # Empty loops should look like this: while (condition) continue;
+  - key: readability-braces-around-statements.ShortStatementLines
+    value: '1'
+  - key: hicpp-braces-around-statements.ShortStatementLines
+    value: '1'
+
+  - key: readability-identifier-naming.EnumCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.FunctionCase
+    value: 'lower_case'
+  # Public functions have capitalized prefix
+  - key: readability-identifier-naming.GlobalFunctionCase
+    value: 'aNy_CasE'
+  # Interrupt service routines
+  - key: readability-identifier-naming.GlobalFunctionIgnoredRegexp
+    value: '_[A-Z0-9]+Interrupt'
+  - key: readability-identifier-naming.VariableCase
+    value: 'lower_case'
+  # Register names
+  - key: readability-identifier-naming.VariableIgnoredRegexp
+    value: '[A-Z][A-Z0-9]+(bits)?'
+  - key: readability-identifier-naming.StructCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.TypedefCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.TypedefIgnoredRegexp
+    value: '[A-Z]+_[a-zA-Z0-9]+'
+  - key: readability-identifier-naming.EnumIgnoredRegexp
+    value: '[A-Z]+_[a-zA-Z0-9]+'
+  - key: readability-identifier-naming.StructIgnoredRegexp
+    value: '[A-Z]+_[a-zA-Z0-9]+'
+  - key: readability-identifier-naming.UnionIgnoredRegexp
+    value: '[A-Z]+_[a-zA-Z0-9]+'
+  - key: readability-identifier-naming.UnionCase
+    value: 'CamelCase'
+  - key: readability-identifier-naming.GlobalConstantCase
+    value: 'UPPER_CASE'
+  - key: readability-identifier-naming.GlobalConstantPrefix
+    value: 'g_'
+  - key: readability-identifier-naming.MacroDefinitionCase
+    value: 'UPPER_CASE'
+
+FormatStyle:     file
+SystemHeaders:   false

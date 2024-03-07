@@ -1,0 +1,34 @@
+BasedOnStyle: LLVM
+IndentWidth: 4
+
+Language: Cpp
+
+# Yes: int *a;
+# No: int* a;
+# Absolutely not: int * a;
+DerivePointerAlignment: false
+PointerAlignment: Right
+
+# East const
+# Yes: int const a;
+# No: const int a;
+QualifierAlignment: Right
+
+# If parameters do not fit on one line, do this:
+# void func(
+#     int a,
+#     int b
+# )
+AlignAfterOpenBracket: BlockIndent
+BinPackArguments: false
+BinPackParameters: false
+ExperimentalAutoDetectBinPacking: false
+AllowAllParametersOfDeclarationOnNextLine: false
+PenaltyReturnTypeOnItsOwnLine: 1000
+
+# Attach braces to surrounding context, except on functions.
+BreakBeforeBraces: Linux
+
+AllowShortLoopsOnASingleLine: true
+
+BitFieldColonSpacing: Before
