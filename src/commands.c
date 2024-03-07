@@ -7,7 +7,7 @@
 #include "helpers/interval.h"
 #include "helpers/light.h"
 #include "helpers/rtc.h"
-#include "instruments/logicanalyzer.h"
+#include "instruments/logic_analyzer.h"
 #include "instruments/multimeter.h"
 #include "instruments/oscilloscope.h"
 #include "instruments/powersource.h"
@@ -239,13 +239,13 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 0                               1 GET_TIMING                    2                               3
         Undefined,                      Unimplemented,                  Undefined,                      Undefined,
      // 4 START_ONE_CHAN_LA             5 START_TWO_CHAN_LA             6 START_FOUR_CHAN_LA            7 FETCH_DMA_DATA
-        LOGICANALYZER_one_channel,      LOGICANALYZER_two_channel,      LOGICANALYZER_four_channel,     Removed,
+        LA_cmd_capture,                 Removed,                        Removed,                        LA_cmd_fetch,
      // 8 FETCH_INT_DMA_DATA            9 FETCH_LONG_DMA_DATA           10 COMPARATOR_TO_LA             11 GET_INITIAL_STATES
-        Removed,                        Removed,                        Unimplemented,                  INTERVAL_get_state,
+        Removed,                        Removed,                        Unimplemented,                  LA_cmd_get_initial_states,
      // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
-        Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_one_channel_alt,
-     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18 INTERVAL_FETCH_BUFFER        19
-        LOGICANALYZER_three_channel,    LOGICANALYZER_stop,             INTERVAL_fetch_buffer,          Undefined,
+        Unimplemented,                  Unimplemented,                  Removed,                        Removed,
+     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
+        Removed,                        LA_cmd_stop,                    Undefined,                      Undefined,
      // 20                              21                              22                              23
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 24                              25                              26                              27
