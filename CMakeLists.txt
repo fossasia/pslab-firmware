@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.16)
 set(CMAKE_TOOLCHAIN_FILE external/cmake-microchip/toolchain.cmake)
 set(MICROCHIP_MCU PIC24EP256GP204)
+set(CMAKE_SYSTEM_NAME Generic)
 
 project(PSLAB_FIRMWARE LANGUAGES C ASM)
 
