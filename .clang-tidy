@@ -1,7 +1,16 @@
 Checks: [
   bugprone*,
+  # False positives when receiving signed byte values over serial
+  -bugprone-signed-char-misuse,
 
   cert*,
+  # Alias of bugprone-signed-char-misuse
+  -cert-str34-c,
+
+  clang*,
+  # These don't play well with PIC24 address width
+  -clang-diagnostic-int-to-pointer-cast,
+  -clang-diagnostic-pointer-to-int-cast
 
   cppcoreguidelines*,
   # Need globals to communicate with interrupts
@@ -14,6 +23,7 @@ Checks: [
   -cppcoreguidelines-interfaces-global-init,
 
   google*,
+  -google-readability-todo,
 
   hicpp*,
   # Bad warning: https://stackoverflow.com/questions/50399090/use-of-a-signed-integer-operand-with-a-binary-bitwise-operator-when-using-un
@@ -28,6 +38,8 @@ Checks: [
   modernize*,
 
   performance*,
+  # Invalid for memory-mapped registers
+  -performance-no-int-to-ptr,
 
   readability*,
 ]
@@ -60,8 +72,8 @@ CheckOptions:
     value: 'CamelCase'
   - key: readability-identifier-naming.FunctionCase
     value: 'lower_case'
-  # Public functions have capitalized prefix
-  - key: readability-identifier-naming.GlobalFunctionCase
+  # Public functions and static inlines have capitalized prefix
+  - key: readability-identifier-naming.FunctionCase
     value: 'aNy_CasE'
   # Interrupt service routines
   - key: readability-identifier-naming.GlobalFunctionIgnoredRegexp
