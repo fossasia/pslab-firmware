@@ -209,7 +209,7 @@ response_t MULTIMETER_GetCapacitance(void) {
     ADC1_WaitForInterruptEvent();
     while (!ADC1_IsConversionComplete());
 
-    reading = (ADC1BUF0) & 0xFF;
+    reading = (ADC1BUF0) & 0xFFF;
 
     // Reset modules
     CTMU_Initialize();
