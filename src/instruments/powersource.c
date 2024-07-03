@@ -17,8 +17,8 @@
  *          2: PV2
  *          3: PV1
  *      V6 hardware has two pairs of paired channels:
- *          0: PVS1 & PVS3
- *          1: PVS2 & PCS
+ *          0: PCS & PVS2
+ *          1: PVS1 & PVS3
  *      Paired channels share relative output levels, i.e. if PV1 outputs 5 V
  *      then PV3 outputs 3.3 V.
  */
