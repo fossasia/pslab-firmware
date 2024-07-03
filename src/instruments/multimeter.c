@@ -8,8 +8,10 @@
 #include "../registers/timers/tmr5.h"
 #include "multimeter.h"
 
-#define CHARGE      0
-#define DISCHARGE   1
+enum {
+    DISCHARGE,
+    CHARGE,
+};
 
 /* Function prototypes */
 void ChargeCapacitor(uint8_t charge, uint16_t period);
