@@ -28,8 +28,8 @@ enum Channel {
     PV2,
     PV1,
     NUM_V5_CHANNELS,
-    PVS1_PVS3 = 0,
-    PVS2_PCS,
+    PVS2_PCS = 0,
+    PVS1_PVS3,
     NUM_V6_CHANNELS,
 };
 
