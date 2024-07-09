@@ -68,7 +68,7 @@ response_t BUFFER_Clear(void) {
     uint16_t start = UART1_ReadInt();
     uint16_t end = UART1_ReadInt();
     
-    memset((void *) &BUFFER[start], 0, end - start);
+    memset((void *) &BUFFER[start], 0, (end - start) * sizeof(int));
     
     return SUCCESS;
 }
