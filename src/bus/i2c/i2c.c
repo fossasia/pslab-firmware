@@ -768,7 +768,7 @@ response_t I2C_CommandReadBulk(void) {
     I2C_RestartSignal();
     I2C_Transmit((device << 1) | 1);
 
-    for (uint8_t i = 1; i < count; ++i) {
+    while (--count) {
         UART1_Write(I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
     }
     UART1_Write(I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE));
