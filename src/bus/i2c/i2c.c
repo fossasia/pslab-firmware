@@ -758,14 +758,17 @@ response_t I2C_CommandReadBulk(void) {
     uint8_t address = UART1_Read();
     uint8_t count = UART1_Read();
 
+    if (!count) {
+        return SUCCESS;
+    }
+
     I2C_StartSignal();
     I2C_Transmit(device << 1);
     I2C_Transmit(address);
     I2C_RestartSignal();
     I2C_Transmit((device << 1) | 1);
 
-    uint8_t i;
-    for (i = 0; i < count; i++) {
+    for (uint8_t i = 1; i < count; ++i) {
         UART1_Write(I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
     }
     UART1_Write(I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE));
