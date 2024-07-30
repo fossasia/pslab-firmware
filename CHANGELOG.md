@@ -21,5 +21,6 @@
 
 _Major refactorization of firmware._
 
-
+[3.0.2]: https://github.com/fossasia/pslab-firmware/releases/tag/3.0.2
+[3.0.1]: https://github.com/fossasia/pslab-firmware/releases/tag/3.0.1
 [3.0.0]: https://github.com/fossasia/pslab-firmware/releases/tag/v3.0.0
