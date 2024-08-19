@@ -125,8 +125,8 @@ void PIN_MANAGER_Initialize(void) {
      ***************************************************************************/
     RPOR2bits.RP39R = RPN_U1TX_PORT; //RB7->UART1:U1TX
     RPINR18bits.U1RXR = RPI_RP40; //RB8->UART1:U1RX
-    RPOR2bits.RP38R = RPN_U2TX_PORT; // RB6->UART2:U2TX
-    RPINR19bits.U2RXR = RPI_RP37; // RB5->UART2:U2RX
+    RPOR1bits.RP37R = RPN_U2TX_PORT; // RB5->UART2:U2TX
+    RPINR19bits.U2RXR = RPI_RP38; // RB6->UART2:U2RX
 
     LED_SetHigh();
 }

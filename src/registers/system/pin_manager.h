@@ -107,19 +107,19 @@
 #define UART1_TX_SetDigitalInput()     (_TRISB7 = 1)
 #define UART1_TX_SetDigitalOutput()    (_TRISB7 = 0)
 
-#define UART2_RX_SetHigh()             (_LATB5 = 1)
-#define UART2_RX_SetLow()              (_LATB5 = 0)
-#define UART2_RX_Toggle()              (_LATB5 ^= 1)
-#define UART2_RX_GetValue()            _RB5
-#define UART2_RX_SetDigitalInput()     (_TRISB5 = 1)
-#define UART2_RX_SetDigitalOutput()    (_TRISB5 = 0)
+#define UART2_RX_SetHigh()             (_LATB6 = 1)
+#define UART2_RX_SetLow()              (_LATB6 = 0)
+#define UART2_RX_Toggle()              (_LATB6 ^= 1)
+#define UART2_RX_GetValue()            _RB6
+#define UART2_RX_SetDigitalInput()     (_TRISB6 = 1)
+#define UART2_RX_SetDigitalOutput()    (_TRISB6 = 0)
 
-#define UART2_TX_SetHigh()             (_LATB6 = 1)
-#define UART2_TX_SetLow()              (_LATB6 = 0)
-#define UART2_TX_Toggle()              (_LATB6 ^= 1)
-#define UART2_TX_GetValue()            _RB6
-#define UART2_TX_SetDigitalInput()     (_TRISB6 = 1)
-#define UART2_TX_SetDigitalOutput()    (_TRISB6 = 0)
+#define UART2_TX_SetHigh()             (_LATB5 = 1)
+#define UART2_TX_SetLow()              (_LATB5 = 0)
+#define UART2_TX_Toggle()              (_LATB5 ^= 1)
+#define UART2_TX_GetValue()            _RB5
+#define UART2_TX_SetDigitalInput()     (_TRISB5 = 1)
+#define UART2_TX_SetDigitalOutput()    (_TRISB5 = 0)
 
 /*******************************************************************************
  * Oscilloscope
