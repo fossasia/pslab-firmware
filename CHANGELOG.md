@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.3] - 2024-08-19
+
+### Fixed
+
+- Fix UART2 pin mappings not matching labels ([`5728b36`](https://github.com/fossasia/pslab-firmware/commit/5728b36939f8dd76bfd83889c1cd94a57bab4329)) (Alexander Bessman)
+
 ## [3.0.2] - 2024-07-30
 
 ### Added
@@ -21,6 +27,7 @@
 
 _Major refactorization of firmware._
 
+[3.0.3]: https://github.com/fossasia/pslab-firmware/releases/tag/3.0.3
 [3.0.2]: https://github.com/fossasia/pslab-firmware/releases/tag/3.0.2
 [3.0.1]: https://github.com/fossasia/pslab-firmware/releases/tag/3.0.1
 [3.0.0]: https://github.com/fossasia/pslab-firmware/releases/tag/v3.0.0
