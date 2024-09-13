@@ -1,5 +1,6 @@
 #include <stdbool.h>
 #include <stdint.h>
+#include <string.h>
 #include <xc.h>
 
 #include "../registers/converters/adc1.h"
@@ -15,6 +16,74 @@
 static void Capture(void);
 static void ResetTrigger(void);
 static void SetTimeGap(void);
+
+struct CaptureArgs {
+    uint16_t samples;
+    uint16_t timegap;
+    uint8_t channels;
+    uint8_t ch0sa;
+    uint8_t trigger;
+    // 1 pad byte, total size 8 bytes.
+};
+
+struct FetchSamplesArgs {
+    uint16_t samples;
+};
+
+enum Status OSCILLOSCOPE_capture(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **const rets,
+    __attribute__((unused)) uint16_t *const rets_size
+) {
+    if (sizeof(struct CaptureArgs) != args_size) {return E_BAD_ARGSIZE;}
+    struct CaptureArgs arguments = {0};
+    memcpy(&arguments, args, sizeof(arguments));
+
+    SetCHANNELS(arguments.channels);
+    ADC1_SetOperationMode(ADC1_10BIT_SIMULTANEOUS_MODE, arguments.ch0sa, 0);
+
+    /* Check if the trigger channel is sampled. If not, convert the trigger
+     * channel in addition to the sampled channels. */
+    if (arguments.trigger && GetTRIGGER_CHANNEL() > GetCHANNELS()) {
+        ADC1_ConversionChannelsSet(GetTRIGGER_CHANNEL());
+        ResetTrigger();
+    } else if (arguments.trigger) {
+        ADC1_ConversionChannelsSet(GetCHANNELS());
+        ResetTrigger();
+    } else {
+        ADC1_ConversionChannelsSet(GetCHANNELS());
+        SetTRIGGERED(1);
+    }
+
+    for (int i = 0; i <= GetCHANNELS(); i++) {
+        SetBUFFER_IDX(i, &BUFFER[i * GetSAMPLES_REQUESTED()]);
+    }
+
+    SetCONVERSION_DONE(0);
+    SetSAMPLES_CAPTURED(0);
+    SetBUFFER_IDX(0, &BUFFER[0]);
+    SetTimeGap();
+    ADC1_InterruptFlagClear();
+    ADC1_InterruptEnable();
+    LED_SetLow();
+
+    return E_OK;
+}
+
+enum Status OSCILLOSCOPE_fetch_samples(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t **const rets,
+    uint16_t *const rets_size
+) {
+    if (sizeof(struct FetchSamplesArgs) != args_size) {return E_BAD_ARGSIZE;}
+    uint16_t samples = 0;
+    memcpy(&samples, args, args_size);
+    memcpy(rets, (uint16_t *)BUFFER, samples * sizeof(uint16_t));
+    *rets_size = samples;
+    return E_OK;
+}
 
 response_t OSCILLOSCOPE_CaptureOne(void) {
     SetCHANNELS(0); // Capture one channel.
