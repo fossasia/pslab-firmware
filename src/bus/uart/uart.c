@@ -386,7 +386,9 @@ enum Status UART_flush_rx(EUxSelect const select)
 
 uint8_t UART_Read(const EUxSelect select) {
     sUartRegs const regs = GetRegisters(select);
-    uint16_t timeout = 0;
+
+    // Wait for data to become available.
+    uint32_t timeout = 0;
 
     while (timeout++ < UART_READ_TIMEOUT) {
         WATCHDOG_TimerClear();
