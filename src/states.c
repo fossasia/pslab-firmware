@@ -1,6 +1,8 @@
 #include "registers/system/system.h"
 #include "bus/uart/uart.h"
+#include "helpers/light.h"
 #include "registers/system/watchdog.h"
+#include "transport/packet_handler.h"
 #include "commands.h"
 #include "states.h"
 
@@ -32,6 +34,18 @@ state_t RunCommand(void) {
     response_t response = cmd_table[primary_cmd][secondary_cmd]();
 
     if (response) UART1_Write(response);
+
+    return STATE_STANDBY;
+}
+
+state_t run_command(void)
+{
+    enum Status status;
+
+    if ( (status = PACKET_exchange()) ) {
+        // TODO: Add error handling.
+        LIGHT_RGB(20, 0, 0);
+    }
 
     return STATE_STANDBY;
 }

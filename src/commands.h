@@ -11,9 +11,11 @@
 extern "C" {
 #endif
 
+#include <stdint.h>
+
 /**
  * @brief Number of commands in each command group.
- * 
+ *
  * This is used to set the dimensions of the command table, and to sanitize
  * received commands.
  */
@@ -42,6 +44,48 @@ extern "C" {
 #define ARGUMENT_ERROR 2
 #define FAILED 3
 
+/** Function return codes. */
+enum Status {
+    E_OK,
+    E_FAILED,
+    E_HOST_READ,
+    E_HOST_RX_OVERRUN,
+    E_BAD_COMMAND,
+    E_BAD_SIZE,
+    E_BAD_ARGSIZE,
+    E_BAD_ARGUMENT,
+    E_UART_RX_FRAMING,
+    E_UART_RX_OVERRUN,
+    E_UART_RX_PARITY,
+    E_UART_RX_TIMEOUT,
+    STATUS_NUMEL
+};
+
+/**
+ * @brief Command functions are the main entry points for user actions.
+ *
+ * @param[in] args
+ *      Byte-array containing function arguments. The function may parse its
+ *      arguments from the array.
+ * @param args_size
+ *      Number of bytes in `args`.
+ * @param[out] rets
+ *      Pointer to an unallocated byte-array containing function return
+ *      values.
+ * @param[out] rets_size
+ *      Pointer to uint16_t holding the number of bytes in `rets`.
+ * @return enum Status
+ *      Exit code.
+ */
+typedef enum Status CmdFunc(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
+
+CmdFunc *COMMAND_get_func(uint16_t code);
+
 typedef unsigned char command_t; /**< Type for command bytes. */
 typedef unsigned char response_t; /**< Type for acknowledge bytes. */
 
@@ -56,7 +100,7 @@ typedef response_t command_func_t(void); /**< Type for command functions. */
  * @brief 2D array containing command functions.
  */
 extern command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1];
-    
+
 #ifdef	__cplusplus
 }
 #endif
