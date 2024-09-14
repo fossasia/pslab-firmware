@@ -6,7 +6,7 @@
 /**********/
 /* Macros */
 /**********/
-#define UART_READ_TIMEOUT (FCY / 1000)  // 1 ms
+#define UART_READ_TIMEOUT (FCY / 1000)  /** 1 ms */
 
 /**************/
 /* Interrupts */
@@ -67,7 +67,7 @@ typedef struct {
     uint16_t ADDEN : 1;
     uint16_t URXISEL : 2;
     uint16_t TRMT : 1;
-    uint16_t UTXBF : 1;
+    uint16_t UTXBF : 1; /** Transmit buffer full. */
     uint16_t UTXEN : 1;
     uint16_t UTXBRK : 1;
     uint16_t : 1;
@@ -327,9 +327,64 @@ void UART_Initialize(const EUxSelect select) {
     EnableUx(select);
 }
 
-uint8_t UART_Read(const EUxSelect select) {
-    // Wait for data to become available.
+enum Status UART_read(
+    EUxSelect const select,
+    uint8_t *const buffer,
+    uint16_t const size
+) {
+    // If either buffer is NULL or size is zero, this is a NOP.
+    if (!buffer) {return E_OK;}
+    if (!size) {return E_OK;}
+
+    sUartRegs const regs = GetRegisters(select);
     uint16_t timeout = 0;
+
+    for (uint16_t i = 0; i < size; ++i) {
+        if (regs.stabitsptr->FERR) {return E_UART_RX_FRAMING;}
+        if (regs.stabitsptr->OERR) {return E_UART_RX_OVERRUN;}
+        if (regs.stabitsptr->PERR) {return E_UART_RX_PARITY;}
+
+        while (!regs.stabitsptr->URXDA) {
+            if (timeout++ >= UART_READ_TIMEOUT) {return E_UART_RX_TIMEOUT;}
+        }
+
+        timeout = 0;
+        buffer[i] = *regs.rxptr;
+    }
+
+    return E_OK;
+}
+
+enum Status UART_write(
+    EUxSelect const select,
+    uint8_t const *const buffer,
+    uint16_t const size
+) {
+    // If either buffer is NULL or size is zero, this is a NOP.
+    if (!buffer) {return E_OK;}
+    if (!size) {return E_OK;}
+
+    sUartRegs const regs = GetRegisters(select);
+
+    for (uint16_t i = 0; i < size; ++i) {
+        while (regs.stabitsptr->UTXBF) {;}
+        *regs.txptr = buffer[i];
+    }
+
+    return E_OK;
+}
+
+enum Status UART_flush_rx(EUxSelect const select)
+{
+    sUartRegs const regs = GetRegisters(select);
+    while(regs.stabitsptr->URXDA || !regs.stabitsptr->RIDLE) {*regs.rxptr;}
+    return E_OK;
+}
+
+uint8_t UART_Read(const EUxSelect select) {
+    sUartRegs const regs = GetRegisters(select);
+    uint16_t timeout = 0;
+
     while (timeout++ < UART_READ_TIMEOUT) {
         if (UART_IsRxReady(select)) {
             break;
@@ -341,7 +396,6 @@ uint8_t UART_Read(const EUxSelect select) {
         return 0;
     }
 
-    const sUartRegs regs = GetRegisters(select);
     if (regs.stabitsptr->FERR) {
         // Try to recover from framing error.
         UART_ClearBuffer(select);
