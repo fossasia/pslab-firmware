@@ -80,8 +80,8 @@ enum Status OSCILLOSCOPE_fetch_samples(
     if (sizeof(struct FetchSamplesArgs) != args_size) {return E_BAD_ARGSIZE;}
     uint16_t samples = 0;
     memcpy(&samples, args, args_size);
-    memcpy(rets, (uint16_t *)BUFFER, samples * sizeof(uint16_t));
-    *rets_size = samples;
+    *rets = (uint8_t *)&BUFFER;
+    *rets_size = samples * sizeof(*BUFFER);
     return E_OK;
 }
 
