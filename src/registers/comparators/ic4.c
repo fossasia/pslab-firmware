@@ -1,14 +1,6 @@
 #include "ic4.h"
 #include "../../helpers/interval.h"
 
-void __attribute__((__interrupt__, no_auto_psv)) _IC4Interrupt(void) {
-    SetDefaultDIGITAL_STATES();
-    IC4_Stop();
-    IC4_InterruptFlagClear();
-    IC4_InterruptDisable();
-    SetDefaultDIGITAL_STATES_ERROR();
-}
-
 void IC4_Initialize(void) {
     IC4_InitializeCON1();
     IC4_InitializeCON2();

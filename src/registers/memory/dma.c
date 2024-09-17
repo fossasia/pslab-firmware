@@ -1,5 +1,4 @@
 #include "dma.h"
-#include "../../instruments/logicanalyzer.h"
 #include "../../registers/comparators/ic1.h"
 #include "../../registers/comparators/ic2.h"
 #include "../../registers/comparators/ic3.h"
@@ -8,46 +7,6 @@
 static DMA_MODES DMA_MODE;
 void SetDMA_MODE(DMA_MODES mode) { DMA_MODE = mode; }
 DMA_MODES GetDMA_MODE(void) { return DMA_MODE; }
-
-void __attribute__((__interrupt__, no_auto_psv)) _DMA0Interrupt(void) {
-    IC1_TriggerStatusClear();
-    IC1_Stop();
-    DMA_ChannelDisable(DMA_CHANNEL_0);
-    DMA_FlagInterruptClear(DMA_CHANNEL_0);
-    DMA_InterruptDisable(DMA_CHANNEL_0);
-
-    switch (DMA_MODE) {
-        case DMA_MODES_ONE_CHANNEL:
-        case DMA_MODES_TWO_CHANNEL:
-            IC2_Stop();
-            DMA_ChannelDisable(DMA_CHANNEL_1);
-            DMA_FlagInterruptClear(DMA_CHANNEL_1);
-            DMA_InterruptDisable(DMA_CHANNEL_1);
-            break;
-        default:
-            break;
-    }
-}
-
-void __attribute__((__interrupt__, no_auto_psv)) _DMA1Interrupt(void) {
-    IC2_TriggerStatusClear();
-    IC2_Stop();
-    DMA_ChannelDisable(DMA_CHANNEL_1);
-    DMA_FlagInterruptClear(DMA_CHANNEL_1);
-    DMA_InterruptDisable(DMA_CHANNEL_1);
-}
-
-void __attribute__((__interrupt__, no_auto_psv)) _DMA2Interrupt(void) {
-    IC3_TriggerStatusClear();
-    IC3_Stop();
-    DMA_FlagInterruptClear(DMA_CHANNEL_2);
-}
-
-void __attribute__((__interrupt__, no_auto_psv)) _DMA3Interrupt(void) {
-    IC4_TriggerStatusClear();
-    IC4_Stop();
-    DMA_FlagInterruptClear(DMA_CHANNEL_3);
-}
 
 void DMA_Initialize(void) {
     DMA_InitializeChannel0();
@@ -71,19 +30,19 @@ void DMA_InitializeChannel0(void) {
     DMA0CONbits.AMODE = 0b00;
     // DMA Channel operating mode is continuous with Ping-Pong modes disabled
     DMA0CONbits.MODE = DMA_OPERATING_MODE_CONTINUOUS;
-    // IRQSEL INT0; FORCE disabled; 
+    // IRQSEL INT0; FORCE disabled;
     DMA0REQ = DMA_PERIPHERAL_IRQ_INT0;
-    // STA 0; 
+    // STA 0;
     DMA0STAH = 0x00;
-    // STA 0; 
+    // STA 0;
     DMA0STAL = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA0STBH = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA0STBL = 0x00;
-    // PAD 0; 
+    // PAD 0;
     DMA0PAD = 0x00;
-    // CNT 0; 
+    // CNT 0;
     DMA0CNT = 0x00;
     // Clearing Channel 0 Interrupt Flag;
     IFS0bits.DMA0IF = false;
@@ -104,19 +63,19 @@ void DMA_InitializeChannel1(void) {
     DMA1CONbits.AMODE = 0b00;
     // DMA Channel operating mode is continuous with Ping-Pong modes disabled
     DMA1CONbits.MODE = DMA_OPERATING_MODE_CONTINUOUS;
-    // IRQSEL INT0; FORCE disabled; 
+    // IRQSEL INT0; FORCE disabled;
     DMA1REQ = DMA_PERIPHERAL_IRQ_INT0;
-    // STA 0; 
+    // STA 0;
     DMA1STAH = 0x00;
-    // STA 0; 
+    // STA 0;
     DMA1STAL = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA1STBH = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA1STBL = 0x00;
-    // PAD 0; 
+    // PAD 0;
     DMA1PAD = 0x00;
-    // CNT 0; 
+    // CNT 0;
     DMA1CNT = 0x00;
     // Clearing Channel 1 Interrupt Flag;
     IFS0bits.DMA1IF = false;
@@ -137,19 +96,19 @@ void DMA_InitializeChannel2(void) {
     DMA2CONbits.AMODE = 0b00;
     // DMA Channel operating mode is continuous with Ping-Pong modes disabled
     DMA2CONbits.MODE = DMA_OPERATING_MODE_CONTINUOUS;
-    // IRQSEL INT0; FORCE disabled; 
+    // IRQSEL INT0; FORCE disabled;
     DMA2REQ = DMA_PERIPHERAL_IRQ_INT0;
-    // STA 0; 
+    // STA 0;
     DMA2STAH = 0x00;
-    // STA 0; 
+    // STA 0;
     DMA2STAL = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA2STBH = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA2STBL = 0x00;
-    // PAD 0; 
+    // PAD 0;
     DMA2PAD = 0x00;
-    // CNT 0; 
+    // CNT 0;
     DMA2CNT = 0x00;
     // Clearing Channel 2 Interrupt Flag;
     IFS1bits.DMA2IF = false;
@@ -170,19 +129,19 @@ void DMA_InitializeChannel3(void) {
     DMA3CONbits.AMODE = 0b00;
     // DMA Channel operating mode is continuous with Ping-Pong modes disabled
     DMA3CONbits.MODE = DMA_OPERATING_MODE_CONTINUOUS;
-    // IRQSEL INT0; FORCE disabled; 
+    // IRQSEL INT0; FORCE disabled;
     DMA3REQ = DMA_PERIPHERAL_IRQ_INT0;
-    // STA 0; 
+    // STA 0;
     DMA3STAH = 0x00;
-    // STA 0; 
+    // STA 0;
     DMA3STAL = 0x1000;
-    // STB 0; 
+    // STB 0;
     DMA3STBH = 0x00;
-    // STB 0; 
+    // STB 0;
     DMA3STBL = 0x00;
-    // PAD 0; 
+    // PAD 0;
     DMA3PAD = 0x00;
-    // CNT 0; 
+    // CNT 0;
     DMA3CNT = 0x00;
     // Clearing Channel 3 Interrupt Flag;
     IFS2bits.DMA3IF = false;
@@ -192,7 +151,7 @@ void DMA_SetLogicAnalyzerChannelMode(DMA_MODES mode) {
     DMA_MODE = mode;
 }
 
-void DMA_PrepareChannel0(uint16_t count, volatile uint16_t* low_address, 
+void DMA_PrepareChannel0(uint16_t count, volatile uint16_t* low_address,
                                             DMA_PERIPHERAL_IRQ_NUMBER trigger) {
     DMA_InitializeChannel0();
     DMA0CONbits.MODE = DMA_OPERATING_MODE_ONE_SHOT;
@@ -207,7 +166,7 @@ void DMA_PrepareChannel0(uint16_t count, volatile uint16_t* low_address,
     DMA_InterruptDisable(DMA_CHANNEL_0);
 }
 
-void DMA_PrepareChannel1(uint16_t count, volatile uint16_t* low_address, 
+void DMA_PrepareChannel1(uint16_t count, volatile uint16_t* low_address,
                                             DMA_PERIPHERAL_IRQ_NUMBER trigger) {
     DMA_InitializeChannel1();
     DMA1CONbits.MODE = DMA_OPERATING_MODE_ONE_SHOT;
@@ -222,7 +181,7 @@ void DMA_PrepareChannel1(uint16_t count, volatile uint16_t* low_address,
     DMA_InterruptDisable(DMA_CHANNEL_1);
 }
 
-void DMA_PrepareChannel2(uint16_t count, volatile uint16_t* low_address, 
+void DMA_PrepareChannel2(uint16_t count, volatile uint16_t* low_address,
                                             DMA_PERIPHERAL_IRQ_NUMBER trigger) {
     DMA_InitializeChannel2();
     DMA2CONbits.MODE = DMA_OPERATING_MODE_ONE_SHOT;
@@ -237,7 +196,7 @@ void DMA_PrepareChannel2(uint16_t count, volatile uint16_t* low_address,
     DMA_InterruptDisable(DMA_CHANNEL_2);
 }
 
-void DMA_PrepareChannel3(uint16_t count, volatile uint16_t* low_address, 
+void DMA_PrepareChannel3(uint16_t count, volatile uint16_t* low_address,
                                             DMA_PERIPHERAL_IRQ_NUMBER trigger) {
     DMA_InitializeChannel3();
     DMA3CONbits.MODE = DMA_OPERATING_MODE_ONE_SHOT;

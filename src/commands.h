@@ -27,7 +27,7 @@ extern "C" {
 #define NUM_WAVEGEN_CMDS 19
 #define NUM_DOUT_CMDS 1
 #define NUM_DIN_CMDS 2
-#define NUM_TIMING_CMDS 17
+#define NUM_TIMING_CMDS 19
 #define NUM_COMMON_CMDS 27
 #define NUM_PASSTHRU_CMDS 1
 #define NUM_SENSOR_CMDS 9

@@ -1,7 +1,6 @@
 #include <xc.h>
 #include <stdbool.h>
 
-#include "../../instruments/logicanalyzer.h"
 #include "../timers/tmr2.h"
 #include "../../helpers/interval.h"
 #include "../comparators/ic_params.h"
@@ -10,29 +9,12 @@
 #define DISABLE     false
 #define ENABLE      true
 
-void __attribute__((__interrupt__, no_auto_psv)) _CNInterrupt(void) {
-    
-    if ((((PORTB >> 10) & GetLA_TRIGGER_CHANNEL()) > 0) == GetLA_TRIGGER_STATE()) {
-        INTERRUPT_LA1PinChange(DISABLE);
-        INTERRUPT_LA2PinChange(DISABLE);
-        INTERRUPT_LA3PinChange(DISABLE);
-        INTERRUPT_LA4PinChange(DISABLE);
-        INTERRUPT_DisablePinChangeInterrupts();
-        
-        TMR2_Start();
-        SetDefaultDIGITAL_STATES();
-        IC_PARAMS_ManualTriggerAll();
-        SetDefaultDIGITAL_STATES_ERROR();
-    }
-    INTERRUPT_ClearPinChangeInterruptsFlag();
-}
-
 void __attribute__((__interrupt__, no_auto_psv)) _INT2Interrupt(void) {
-    
+
     SetDefaultDIGITAL_STATES();
     IC_PARAMS_ManualTriggerAll();
     SetDefaultDIGITAL_STATES_ERROR();
-    
+
     INTERRUPT_ClearExternalInterrupt2Flag();
     INTERRUPT_DisableExternalInterrupt2();
 }
