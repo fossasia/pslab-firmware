@@ -54,7 +54,7 @@ void SENSORS_ConfigureInterval(uint8_t pin1, uint8_t pin2,
 
 response_t SENSORS_StartCounter(void) {
 
-    uint8_t channel = UART1_Read();
+    uint8_t channel = UART2_Read();
 
     TMR2_Initialize();
     // Select external source as clock source
@@ -74,6 +74,6 @@ response_t SENSORS_StartCounter(void) {
 
 response_t SENSORS_GetCounter(void) {
     // Fetch timer 2 value and send it over
-    UART1_WriteInt(TMR2_Counter16BitGet());
+    UART2_WriteInt(TMR2_Counter16BitGet());
     return SUCCESS;
 }

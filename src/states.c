@@ -22,8 +22,8 @@ state_t Standby(void) {
  * @return STATE_STANDBY
  */
 state_t RunCommand(void) {
-    command_t primary_cmd = UART1_Read();
-    command_t secondary_cmd = UART1_Read();
+    command_t primary_cmd = UART2_Read();
+    command_t secondary_cmd = UART2_Read();
 
     // Sanitize input.
     if (primary_cmd > NUM_PRIMARY_CMDS) return STATE_STANDBY;
@@ -31,7 +31,7 @@ state_t RunCommand(void) {
 
     response_t response = cmd_table[primary_cmd][secondary_cmd]();
 
-    if (response) UART1_Write(response);
+    if (response) UART2_Write(response);
 
     return STATE_STANDBY;
 }

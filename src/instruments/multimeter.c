@@ -99,7 +99,7 @@ uint16_t GetVoltage_Summed(uint8_t channel) {
 
 response_t MULTIMETER_GetVoltage(void) {
 
-    uint8_t channel = UART1_Read();
+    uint8_t channel = UART2_Read();
 
     ADC1_InterruptDisable();
     ADC1_InterruptFlagClear();
@@ -132,25 +132,25 @@ response_t MULTIMETER_GetVoltage(void) {
 
     while (!ADC1_IsConversionComplete());
 
-    UART1_WriteInt(ADC1_ConversionResultGet(channel_CTMU));
+    UART2_WriteInt(ADC1_ConversionResultGet(channel_CTMU));
 
     return SUCCESS;
 }
 
 response_t MULTIMETER_GetVoltageSummed(void) {
 
-    uint8_t channel = UART1_Read();
+    uint8_t channel = UART2_Read();
     
     uint16_t voltage_sum = GetVoltage_Summed(channel);
-    UART1_WriteInt(voltage_sum);
+    UART2_WriteInt(voltage_sum);
 
     return SUCCESS;
 }
 
 response_t MULTIMETER_ChargeCapacitor(void) {
 
-    uint8_t charge = UART1_Read();
-    uint16_t period = UART1_ReadInt();
+    uint8_t charge = UART2_Read();
+    uint16_t period = UART2_ReadInt();
 
     ChargeCapacitor(charge, period);
 
@@ -159,7 +159,7 @@ response_t MULTIMETER_ChargeCapacitor(void) {
 
 response_t MULTIMETER_GetCapRange(void) {
 
-    uint16_t charge_time = UART1_ReadInt();
+    uint16_t charge_time = UART2_ReadInt();
 
     ChargeCapacitor(CHARGE, 50000);
 
@@ -181,16 +181,16 @@ response_t MULTIMETER_GetCapRange(void) {
     CAP_OUT_SetLow();
 
     uint16_t range = GetVoltage_Summed(CH0_CHANNEL_CAP);
-    UART1_WriteInt(range);
+    UART2_WriteInt(range);
 
     return SUCCESS;
 }
 
 response_t MULTIMETER_GetCapacitance(void) {
 
-    uint8_t current_range = UART1_Read();
-    uint8_t trim = UART1_Read();
-    uint16_t charge_time = UART1_ReadInt();
+    uint8_t current_range = UART2_Read();
+    uint8_t trim = UART2_Read();
+    uint16_t charge_time = UART2_ReadInt();
 
     LED_SetLow();
 
@@ -217,7 +217,7 @@ response_t MULTIMETER_GetCapacitance(void) {
     CTMU_Initialize();
     ADC1_Disable();
 
-    UART1_WriteInt(reading);
+    UART2_WriteInt(reading);
 
     LED_SetHigh();
 
@@ -226,7 +226,7 @@ response_t MULTIMETER_GetCapacitance(void) {
 
 response_t MULTIMETER_GetCTMUVolts(void) {
     
-    uint8_t config = UART1_Read();
+    uint8_t config = UART2_Read();
     
     CTMU_Initialize();
     // Edge delay generation
@@ -248,7 +248,7 @@ response_t MULTIMETER_GetCTMUVolts(void) {
 
     CTMU_DisableModule();
     
-    UART1_WriteInt(result);
+    UART2_WriteInt(result);
     
     return SUCCESS;
 }

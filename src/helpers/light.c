@@ -62,14 +62,14 @@ void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue) {
 }
 
 response_t LIGHT_RGBPin(void) {
-    uint8_t count = UART1_Read();
+    uint8_t count = UART2_Read();
     uint8_t colors[count];
     
     uint8_t i;
     for (i = 0; i < count; i++) {
-        colors[i] = UART1_Read();
+        colors[i] = UART2_Read();
     }
-    PINSELECT pin = UART1_Read();
+    PINSELECT pin = UART2_Read();
     
     INTERRUPT_GlobalDisable();
     

@@ -41,9 +41,9 @@ response_t OSCILLOSCOPE_CaptureFour(void) {
 }
 
 static void Capture(void) {
-    uint8_t config = UART1_Read();
-    SetSAMPLES_REQUESTED(UART1_ReadInt());
-    SetDELAY(UART1_ReadInt()); // Wait DELAY / 8 us between samples.
+    uint8_t config = UART2_Read();
+    SetSAMPLES_REQUESTED(UART2_ReadInt());
+    SetDELAY(UART2_ReadInt()); // Wait DELAY / 8 us between samples.
 
     uint8_t ch0sa = config & 0x0F;
     uint8_t ch123sa = config & 0x10;
@@ -79,9 +79,9 @@ static void Capture(void) {
 }
 
 response_t OSCILLOSCOPE_CaptureDMA(void) {
-    uint8_t config = UART1_Read();
-    SetSAMPLES_REQUESTED(UART1_ReadInt());
-    SetDELAY(UART1_ReadInt());  // Wait DELAY / 8 us between samples.
+    uint8_t config = UART2_Read();
+    SetSAMPLES_REQUESTED(UART2_ReadInt());
+    SetDELAY(UART2_ReadInt());  // Wait DELAY / 8 us between samples.
 
     uint8_t ch0sa = config & 0x0F;
     uint8_t mode = config & 0x80 ? ADC1_12BIT_DMA_MODE : ADC1_10BIT_DMA_MODE;
@@ -121,13 +121,13 @@ static void SetTimeGap(void) {
 }
 
 response_t OSCILLOSCOPE_GetCaptureStatus(void) {
-    UART1_Write(GetCONVERSION_DONE());
-    UART1_WriteInt(GetSAMPLES_CAPTURED());
+    UART2_Write(GetCONVERSION_DONE());
+    UART2_WriteInt(GetSAMPLES_CAPTURED());
     return SUCCESS;
 }
 
 response_t OSCILLOSCOPE_ConfigureTrigger(void) {
-    uint8_t config = UART1_Read();
+    uint8_t config = UART2_Read();
     uint8_t channelbits = config & 0x0F;
 
     int i;
@@ -139,7 +139,7 @@ response_t OSCILLOSCOPE_ConfigureTrigger(void) {
     }
 
     SetTRIGGER_PRESCALER(config >> 4);
-    SetTRIGGER_LEVEL(UART1_ReadInt());
+    SetTRIGGER_LEVEL(UART2_ReadInt());
 
     return SUCCESS;
 }
@@ -159,7 +159,7 @@ enum Gain {
 response_t OSCILLOSCOPE_SetPGAGain(void) {
     tSPI_CS channel;
 
-    switch (UART1_Read()) {
+    switch (UART2_Read()) {
     case 1:
         channel = SPI_CH1;
         break;
@@ -167,11 +167,11 @@ response_t OSCILLOSCOPE_SetPGAGain(void) {
         channel = SPI_CH2;
         break;
     default:
-        UART1_Read(); // Consume remaining data.
+        UART2_Read(); // Consume remaining data.
         return FAILED;
     }
 
-    enum Gain const gain = UART1_Read();
+    enum Gain const gain = UART2_Read();
 
     if (gain >= GAIN_INVALID) {
         return FAILED;

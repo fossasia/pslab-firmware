@@ -177,8 +177,8 @@ static void uart_exchange(
 */
 static response_t command(const enum Direction dir, const enum Width width)
 {
-    tSPI_CS cs = UART1_Read();
-    uint16_t count = UART1_ReadInt();
+    tSPI_CS cs = UART2_Read();
+    uint16_t count = UART2_ReadInt();
 
     if (SPI1CON1bits.MODE16 != width)
     {
@@ -317,7 +317,7 @@ response_t SPI_conf(void)
         SPI1CON1BITS con1bits;
         uint16_t con1;
     } conf;
-    conf.con1 = UART1_ReadInt();
+    conf.con1 = UART2_ReadInt();
     bool conf_ok = SPI_configure(conf.con1bits);
 
     if (conf_ok)

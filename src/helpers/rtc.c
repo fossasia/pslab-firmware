@@ -66,7 +66,7 @@ response_t RTC_SetTime(uint32_t const * const unix_timestamp) {
 }
 
 response_t RTC_CmdSetTime(void) {
-    uint32_t unix_timestamp = UART1_read_u32();
+    uint32_t unix_timestamp = UART2_read_u32();
 
     response_t res = RTC_SetTime(&unix_timestamp);
     return res;
@@ -75,8 +75,8 @@ response_t RTC_CmdSetTime(void) {
 response_t RTC_SetDigit(void) {
 
     uint8_t buffer[2];
-    buffer[0] = UART1_Read();  // register address
-    buffer[1] = UART1_Read();  // data
+    buffer[0] = UART2_Read();  // register address
+    buffer[1] = UART2_Read();  // data
 
     I2C_InitializeIfNot(I2C_BAUD_RATE_100KHZ, I2C_ENABLE_INTERRUPTS);
 
@@ -115,20 +115,20 @@ response_t RTC_CmdGetTime(void){
     response_t res = RTC_GetTime(&unix_timestamp);
 
     // What if error occurs here, Returns fail.
-    UART1_write_u32(unix_timestamp);
+    UART2_write_u32(unix_timestamp);
     return res;
 }
 
 response_t RTC_GetDigit(void) {
 
     uint8_t buffer[1];
-    uint8_t reg = UART1_Read();  // register address
+    uint8_t reg = UART2_Read();  // register address
     uint8_t *pR = &reg;
 
     I2C_InitializeIfNot(I2C_BAUD_RATE_100KHZ, I2C_ENABLE_INTERRUPTS);
 
     if(I2C_BulkRead(pR, DS1307_I2C_DEVICE_ADDRESS, buffer, 1) == SUCCESS) {
-        UART1_Write(buffer[0]);
+        UART2_Write(buffer[0]);
     } else return FAILED;
 
     return SUCCESS;

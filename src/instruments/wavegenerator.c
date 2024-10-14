@@ -100,11 +100,11 @@ response_t WAVEGENERATOR_LoadWaveForm1(void) {
     uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        sine_table_1[i] = UART1_ReadInt();
+        sine_table_1[i] = UART2_ReadInt();
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        sine_table_1_short[i] = UART1_Read();
+        sine_table_1_short[i] = UART2_Read();
     }
 
     return SUCCESS;
@@ -115,11 +115,11 @@ response_t WAVEGENERATOR_ReadWaveForm1(void) {
     uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        UART1_WriteInt(sine_table_1[i]);
+        UART2_WriteInt(sine_table_1[i]);
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        UART1_Write(sine_table_1_short[i]);
+        UART2_Write(sine_table_1_short[i]);
     }
 
     return SUCCESS;
@@ -130,11 +130,11 @@ response_t WAVEGENERATOR_LoadWaveForm2(void) {
     uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        sine_table_2[i] = UART1_ReadInt();
+        sine_table_2[i] = UART2_ReadInt();
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        sine_table_2_short[i] = UART1_Read();
+        sine_table_2_short[i] = UART2_Read();
     }
 
     return SUCCESS;
@@ -145,11 +145,11 @@ response_t WAVEGENERATOR_ReadWaveForm2(void) {
     uint16_t i;
 
     for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        UART1_WriteInt(sine_table_2[i]);
+        UART2_WriteInt(sine_table_2[i]);
     }
 
     for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        UART1_Write(sine_table_2_short[i]);
+        UART2_Write(sine_table_2_short[i]);
     }
 
     return SUCCESS;
@@ -157,8 +157,8 @@ response_t WAVEGENERATOR_ReadWaveForm2(void) {
 
 response_t WAVEGENERATOR_SetSine1(void) {
 
-    uint8_t resolution = UART1_Read();
-    uint16_t wave_length = UART1_ReadInt();
+    uint8_t resolution = UART2_Read();
+    uint16_t wave_length = UART2_ReadInt();
     
     T2CONbits.T32 = 0;
     TMR3_Initialize();
@@ -222,8 +222,8 @@ response_t WAVEGENERATOR_SetSine1(void) {
 
 response_t WAVEGENERATOR_SetSine2(void) {
 
-    uint8_t resolution = UART1_Read();
-    uint16_t wave_length = UART1_ReadInt();
+    uint8_t resolution = UART2_Read();
+    uint16_t wave_length = UART2_ReadInt();
 
     TMR4_Initialize();
 
@@ -284,11 +284,11 @@ response_t WAVEGENERATOR_SetSine2(void) {
 
 response_t WAVEGENERATOR_SetSineDual(void) {
 
-    uint16_t wave_length_1 = UART1_ReadInt();
-    uint16_t wave_length_2 = UART1_ReadInt();
-    uint16_t table_offset = UART1_ReadInt();
-    uint16_t timer_offset = UART1_ReadInt();
-    uint8_t resolution = UART1_Read();
+    uint16_t wave_length_1 = UART2_ReadInt();
+    uint16_t wave_length_2 = UART2_ReadInt();
+    uint16_t table_offset = UART2_ReadInt();
+    uint16_t timer_offset = UART2_ReadInt();
+    uint8_t resolution = UART2_Read();
 
     uint16_t i;
 
@@ -397,9 +397,9 @@ response_t WAVEGENERATOR_SetSineDual(void) {
 
 response_t WAVEGENERATOR_SetSquare1(void) {
 
-    uint16_t wave_length = UART1_ReadInt();
-    uint16_t high_time = UART1_ReadInt();
-    uint8_t scale = UART1_Read();
+    uint16_t wave_length = UART2_ReadInt();
+    uint16_t high_time = UART2_ReadInt();
+    uint8_t scale = UART2_Read();
 
     OC1_Initialize();
     TMR1_Initialize();
@@ -427,9 +427,9 @@ response_t WAVEGENERATOR_SetSquare1(void) {
 
 response_t WAVEGENERATOR_SetSquare2(void) {
 
-    uint16_t wave_length = UART1_ReadInt();
-    uint16_t high_time = UART1_ReadInt();
-    uint8_t scale = UART1_Read();
+    uint16_t wave_length = UART2_ReadInt();
+    uint16_t high_time = UART2_ReadInt();
+    uint8_t scale = UART2_Read();
 
     OC2_Initialize();
     TMR2_Initialize();
@@ -457,15 +457,15 @@ response_t WAVEGENERATOR_SetSquare2(void) {
 
 response_t WAVEGENERATOR_SetSquareAll(void) {
 
-    uint16_t wave_length = UART1_ReadInt();
-    uint16_t high_time_1 = UART1_ReadInt();
-    uint16_t low_time_2 = UART1_ReadInt();
-    uint16_t high_time_2 = UART1_ReadInt();
-    uint16_t low_time_3 = UART1_ReadInt();
-    uint16_t high_time_3 = UART1_ReadInt();
-    uint16_t low_time_4 = UART1_ReadInt();
-    uint16_t high_time_4 = UART1_ReadInt();
-    uint8_t configuration = UART1_Read();
+    uint16_t wave_length = UART2_ReadInt();
+    uint16_t high_time_1 = UART2_ReadInt();
+    uint16_t low_time_2 = UART2_ReadInt();
+    uint16_t high_time_2 = UART2_ReadInt();
+    uint16_t low_time_3 = UART2_ReadInt();
+    uint16_t high_time_3 = UART2_ReadInt();
+    uint16_t low_time_4 = UART2_ReadInt();
+    uint16_t high_time_4 = UART2_ReadInt();
+    uint8_t configuration = UART2_Read();
 
     DMA_InterruptDisable(DMA_CHANNEL_2);
     DMA_FlagInterruptClear(DMA_CHANNEL_2);
@@ -547,8 +547,8 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
 
 response_t WAVEGENERATOR_MapReference(void) {
 
-    uint8_t port = UART1_Read();
-    uint8_t scale = UART1_Read();
+    uint8_t port = UART2_Read();
+    uint8_t scale = UART2_Read();
 
     // Reference Oscillator output is disabled
     REFOCONbits.ROON = 0;

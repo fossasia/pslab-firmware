@@ -51,8 +51,8 @@ void CTMU_InitializeCON2(void) {
 
 response_t CTMU_Start(void) {
     
-    uint8_t config = UART1_Read();
-    uint8_t current_trim = UART1_Read();
+    uint8_t config = UART2_Read();
+    uint8_t current_trim = UART2_Read();
     
     CTMU_Initialize();
     CTMUCON1bits.TGEN = (config >> 7) & 0x1;

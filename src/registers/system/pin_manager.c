@@ -133,7 +133,7 @@ void PIN_MANAGER_Initialize(void) {
 
 response_t PIN_MANAGER_SetWavePinState(void) {
 
-    uint8_t pin_state = UART1_Read();
+    uint8_t pin_state = UART2_Read();
 
     if (pin_state & 0b00010000) {
         RPOR5bits.RP54R = RPN_DEFAULT_PORT; // SQ1: C6
@@ -160,7 +160,7 @@ response_t PIN_MANAGER_GetLAPinState(void) {
 
     uint16_t la_pin_state = (PORTB >> 10) & 0xF;
 
-    UART1_WriteInt(la_pin_state);
+    UART2_WriteInt(la_pin_state);
 
     return SUCCESS;
 }

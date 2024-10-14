@@ -15,7 +15,7 @@
 
 static void get_filename(TCHAR* const fn_buf, UINT const size) {
     for (UINT i = 0; i < size; ++i) {
-        if (!(fn_buf[i] = UART1_Read())) {
+        if (!(fn_buf[i] = UART2_Read())) {
             // Received null-terminator.
             return;
         }
@@ -29,16 +29,16 @@ response_t SDCARD_write_file(void) {
     size_t const filename_size = SFN_MAX + SFN_SUFFIX_LEN + 1;
     TCHAR filename[filename_size];
     get_filename(filename, filename_size);
-    BYTE const mode = UART1_Read();
+    BYTE const mode = UART2_Read();
 
     FATFS drive;
     DEBUG_write_u8(f_mount(&drive, "0:", 1));
 
     FIL file;
     // Host must wait for f_open before sending data.
-    UART1_Write(f_open(&file, filename, FA_WRITE | mode));
+    UART2_Write(f_open(&file, filename, FA_WRITE | mode));
 
-    FSIZE_t data_size = UART1_read_u32();
+    FSIZE_t data_size = UART2_read_u32();
     FSIZE_t bytes_written = 0;
 
     for (
@@ -50,17 +50,17 @@ response_t SDCARD_write_file(void) {
         TCHAR buffer[block_size];
 
         for (UINT i = 0; i < block_size; ++i) {
-            buffer[i] = UART1_Read();
+            buffer[i] = UART2_Read();
         }
 
         WATCHDOG_TimerClear();
         UINT written = 0;
         // Host must wait for f_write before sending more data.
-        UART1_Write(f_write(&file, buffer, (UINT)block_size, &written));
+        UART2_Write(f_write(&file, buffer, (UINT)block_size, &written));
         bytes_written += written;
     }
 
-    UART1_write_u32(bytes_written);
+    UART2_write_u32(bytes_written);
     DEBUG_write_u8(f_close(&file));
     DEBUG_write_u8(f_mount(0, "0:", 0));
 
@@ -79,7 +79,7 @@ response_t SDCARD_read_file(void) {
 
     FILINFO info = {0, 0, 0, 0, {0}};
     DEBUG_write_u8(f_stat(filename, &info));
-    UART1_write_u32(info.fsize);
+    UART2_write_u32(info.fsize);
     FSIZE_t bytes_read = 0;
 
     for (
@@ -95,11 +95,11 @@ response_t SDCARD_read_file(void) {
         bytes_read += read;
 
         for (UINT i = 0; i < block_size; ++i) {
-            UART1_Write(buffer[i]);
+            UART2_Write(buffer[i]);
         }
     }
 
-    UART1_write_u32(bytes_read);
+    UART2_write_u32(bytes_read);
     DEBUG_write_u8(f_close(&file));
     DEBUG_write_u8(f_mount(0, "0:", 0));
 
@@ -116,10 +116,10 @@ response_t SDCARD_get_file_info(void) {
     FILINFO info = {0, 0, 0, 0, {0}};
     DEBUG_write_u8(f_stat(filename, &info));
 
-    UART1_write_u32(info.fsize);
-    UART1_WriteInt(info.fdate);
-    UART1_WriteInt(info.ftime);
-    UART1_Write(info.fattrib);
+    UART2_write_u32(info.fsize);
+    UART2_WriteInt(info.fdate);
+    UART2_WriteInt(info.ftime);
+    UART2_Write(info.fattrib);
 
     DEBUG_write_u8(f_mount(0, "0:", 0));
 

@@ -6,9 +6,9 @@
 // Enable debug messages over serial with -DENABLE_DEBUG CMake flag.
 
 #ifdef SERIAL_DEBUG
-    #define DEBUG_write_u8(byte) UART1_Write(byte)
-    #define DEBUG_write_u16(word) UART1_WriteInt(word)
-    #define DEBUG_write_u32(dword) UART1_write_u32(dword)
+    #define DEBUG_write_u8(byte) UART2_Write(byte)
+    #define DEBUG_write_u16(word) UART2_WriteInt(word)
+    #define DEBUG_write_u32(dword) UART2_write_u32(dword)
 #else
     #define DEBUG_write_u8(byte) ((void)byte)
     #define DEBUG_write_u16(word) ((void)word)

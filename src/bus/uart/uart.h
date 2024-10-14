@@ -44,6 +44,7 @@ uint8_t UART_Read(const EUxSelect select);
  * @brief Convenience function, equivalent to UART_Read(U1SELECT).
  */
 uint8_t UART1_Read(void);
+uint8_t UART2_Read(void);
 
 /**
  * @brief Read a word of data from UARTx.
@@ -69,6 +70,7 @@ uint16_t UART_ReadInt(const EUxSelect select);
  * @brief Convenience function, equivalent to UART_ReadInt(U1SELECT).
  */
 uint16_t UART1_ReadInt(void);
+uint16_t UART2_ReadInt(void);
 
 /**
  * @brief Read a uint32_t from UARTx.
@@ -89,6 +91,7 @@ uint32_t UART_read_u32(EUxSelect const select);
  * @brief Convenience function, equivalent to UART_read_u32(U1SELECT).
  */
 uint32_t UART1_read_u32(void);
+uint32_t UART2_read_u32(void);
 
 /**
  * @brief Writes a byte of data to the UARTx.
@@ -103,8 +106,8 @@ void UART_Write(const EUxSelect select, uint8_t txData);
 /**
  * @brief Convenience function, equivalent to UART_Write(U1SELECT, data).
  */
-uint16_t UART1_ReadInt(void);
 void UART1_Write(uint8_t txData);
+void UART2_Write(uint8_t txData);
 
 /**
  * @brief Writes a word of data to the UARTx.
@@ -123,6 +126,7 @@ void UART_WriteInt(const EUxSelect select, uint16_t txData);
  * @brief Convenience function, equivalent to UART_WriteInt(U1SELECT, data).
  */
 void UART1_WriteInt(uint16_t txData);
+void UART2_WriteInt(uint16_t txData);
 
 /**
  * @brief Writes a uint32_t to UARTx.
@@ -139,6 +143,7 @@ void UART_write_u32(EUxSelect const select, uint32_t const txdata);
  * @brief Convenience function, equivalent to UART_write_u32(U1SELECT, data).
  */
 void UART1_write_u32(uint32_t const txdata);
+void UART2_write_u32(uint32_t const txdata);
 
 /**
  * @brief Indicates whether there is data available to read.
@@ -153,57 +158,57 @@ bool UART_IsRxReady(const EUxSelect select);
  */
 void UART_ClearBuffer(const EUxSelect select);
 
-/**
- * @brief Read a byte from UART2 and write it to UART1.
- * @return DO_NOT_BOTHER
- */
-response_t UART2_Read(void);
+// /**
+//  * @brief Read a byte from UART2 and write it to UART1.
+//  * @return DO_NOT_BOTHER
+//  */
+// response_t UART2_Read(void);
 
-/**
- * @brief Read a word from UART2 and write it to UART1.
- * @return DO_NOT_BOTHER
- */
-response_t UART2_ReadWord(void);
+// /**
+//  * @brief Read a word from UART2 and write it to UART1.
+//  * @return DO_NOT_BOTHER
+//  */
+// response_t UART2_ReadWord(void);
 
-/**
- * @brief Read a byte from UART1 and write it to UART2.
- * @param TxData One byte of data to write to UART2.
- * @return DO_NOT_BOTHER
- */
-response_t UART2_Write(void);
+// /**
+//  * @brief Read a byte from UART1 and write it to UART2.
+//  * @param TxData One byte of data to write to UART2.
+//  * @return DO_NOT_BOTHER
+//  */
+// response_t UART2_Write(void);
 
-/**
- * @brief Read a word from UART1 and write it to UART2.
- * @param TxData Two bytes of data, lsb first, to write to UART2.
- * @return DO_NOT_BOTHER
- */
-response_t UART2_WriteWord(void);
+// /**
+//  * @brief Read a word from UART1 and write it to UART2.
+//  * @param TxData Two bytes of data, lsb first, to write to UART2.
+//  * @return DO_NOT_BOTHER
+//  */
+// response_t UART2_WriteWord(void);
 
-/**
- * @brief Check if data is available on UART2.
- *
- * Writes true (1) to UART1 if data is available, false (0) otherwise.
- *
- * @return DO_NOT_BOTHER
- */
-response_t UART2_RxReady(void);
+// /**
+//  * @brief Check if data is available on UART2.
+//  *
+//  * Writes true (1) to UART1 if data is available, false (0) otherwise.
+//  *
+//  * @return DO_NOT_BOTHER
+//  */
+// response_t UART2_RxReady(void);
 
-/**
- * @brief Set baudrate of UART2.
- * @param baud A BRGVAL, typically one of EBaudrate.
- * @return SUCCESS
- */
-response_t UART2_SetBaud(void);
+// /**
+//  * @brief Set baudrate of UART2.
+//  * @param baud A BRGVAL, typically one of EBaudrate.
+//  * @return SUCCESS
+//  */
+// response_t UART2_SetBaud(void);
 
-/**
- * @brief Set stop bits and parity of UART2.
- * @param mode
- *   One byte, where bit 0 is the stop bit configuration value, and bits two
- *   and three are the parity configuration value.
- *
- * @return SUCCESS
- */
-response_t UART2_SetMode(void);
+// /**
+//  * @brief Set stop bits and parity of UART2.
+//  * @param mode
+//  *   One byte, where bit 0 is the stop bit configuration value, and bits two
+//  *   and three are the parity configuration value.
+//  *
+//  * @return SUCCESS
+//  */
+// response_t UART2_SetMode(void);
 
 /**
  * @brief Send all traffic from UART1 to UART2 and vice versa.

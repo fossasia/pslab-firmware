@@ -151,13 +151,29 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 24                              25                              26                              27
         Undefined,                      Undefined,                      Undefined,                      Undefined,
     },
+   //  { // 5 UART2
+   //   // 0                     1 SEND_CHAR      2 SEND_INT       3 SEND_ADDRESS
+   //      Undefined,            UART2_Write,     UART2_WriteWord, Removed,
+   //   // 4 SET_BAUD            5 SET_MODE       6 READ_BYTE      7 READ_INT
+   //      UART2_SetBaud,        UART2_SetMode,   UART2_Read,      UART2_ReadWord,
+   //   // 8 READ_UART2_STATUS   9                10               11
+   //      UART2_RxReady,        Undefined,       Undefined,       Undefined,
+   //   // 12                    13               14               15
+   //      Undefined,            Undefined,       Undefined,       Undefined,
+   //   // 16                    17               18               19
+   //      Undefined,            Undefined,       Undefined,       Undefined,
+   //   // 20                    21               22               23
+   //      Undefined,            Undefined,       Undefined,       Undefined,
+   //   // 24                    25               26               27
+   //      Undefined,            Undefined,       Undefined,       Undefined,
+   //  },
     { // 5 UART2
      // 0                     1 SEND_CHAR      2 SEND_INT       3 SEND_ADDRESS
-        Undefined,            UART2_Write,     UART2_WriteWord, Removed,
+        Undefined,            Undefined,     Undefined, Removed,
      // 4 SET_BAUD            5 SET_MODE       6 READ_BYTE      7 READ_INT
-        UART2_SetBaud,        UART2_SetMode,   UART2_Read,      UART2_ReadWord,
+        Undefined,            Undefined,     Undefined,      Undefined,
      // 8 READ_UART2_STATUS   9                10               11
-        UART2_RxReady,        Undefined,       Undefined,       Undefined,
+        Undefined,        Undefined,       Undefined,       Undefined,
      // 12                    13               14               15
         Undefined,            Undefined,       Undefined,       Undefined,
      // 16                    17               18               19

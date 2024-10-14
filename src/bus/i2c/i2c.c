@@ -671,7 +671,7 @@ response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_
 
 response_t I2C_CommandStart(void) {
 
-    uint8_t address = UART1_Read();
+    uint8_t address = UART2_Read();
 
     I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     I2C_StartSignal();
@@ -694,7 +694,7 @@ response_t I2C_CommandWait(void) {
 
 response_t I2C_CommandSend(void) {
 
-    uint8_t data = UART1_Read();
+    uint8_t data = UART2_Read();
     I2C_Transmit(data);
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
         return FAILED | I2C2STATbits.ACKSTAT;
@@ -704,7 +704,7 @@ response_t I2C_CommandSend(void) {
 
 response_t I2C_CommandSendBurst(void) {
 
-    uint8_t data = UART1_Read();
+    uint8_t data = UART2_Read();
     I2C_Transmit(data);
 
     return DO_NOT_BOTHER;
@@ -712,7 +712,7 @@ response_t I2C_CommandSendBurst(void) {
 
 response_t I2C_CommandRestart(void) {
 
-    uint8_t address = UART1_Read();
+    uint8_t address = UART2_Read();
     I2C_RestartSignal();
     I2C_Transmit(address);
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
@@ -724,7 +724,7 @@ response_t I2C_CommandRestart(void) {
 response_t I2C_CommandReadMore(void) {
 
     uint8_t data = I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE);
-    UART1_Write(data);
+    UART2_Write(data);
 
     return SUCCESS;
 }
@@ -732,14 +732,14 @@ response_t I2C_CommandReadMore(void) {
 response_t I2C_CommandReadEnd(void) {
 
     uint8_t data = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
-    UART1_Write(data);
+    UART2_Write(data);
 
     return SUCCESS;
 }
 
 response_t I2C_CommandConfig(void) {
 
-    uint16_t baud_rate = UART1_ReadInt();
+    uint16_t baud_rate = UART2_ReadInt();
     I2C_InitializeIfNot(baud_rate, I2C_DISABLE_INTERRUPTS);
 
     return SUCCESS;
@@ -747,16 +747,16 @@ response_t I2C_CommandConfig(void) {
 
 response_t I2C_CommandStatus(void) {
 
-    UART1_WriteInt(I2C2STAT);
+    UART2_WriteInt(I2C2STAT);
 
     return SUCCESS;
 }
 
 response_t I2C_CommandReadBulk(void) {
 
-    uint8_t device = UART1_Read();
-    uint8_t address = UART1_Read();
-    uint8_t count = UART1_Read();
+    uint8_t device = UART2_Read();
+    uint8_t address = UART2_Read();
+    uint8_t count = UART2_Read();
 
     if (!count) {
         return SUCCESS;
@@ -769,9 +769,9 @@ response_t I2C_CommandReadBulk(void) {
     I2C_Transmit((device << 1) | 1);
 
     while (--count) {
-        UART1_Write(I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
+        UART2_Write(I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
     }
-    UART1_Write(I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE));
+    UART2_Write(I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE));
 
     I2C_StopSignal();
 
@@ -780,15 +780,15 @@ response_t I2C_CommandReadBulk(void) {
 
 response_t I2C_CommandWriteBulk(void) {
 
-    uint8_t device = UART1_Read();
-    uint8_t count = UART1_Read();
+    uint8_t device = UART2_Read();
+    uint8_t count = UART2_Read();
 
     I2C_StartSignal();
     I2C_Transmit(device << 1);
 
     uint8_t i;
     for (i = 0; i < count; i++) {
-        I2C_Transmit(UART1_Read());
+        I2C_Transmit(UART2_Read());
     }
 
     I2C_StopSignal();
@@ -826,7 +826,7 @@ response_t I2C_CommandInit(void) {
 
 response_t I2C_CommandPullDown(void) {
 
-    uint16_t delay = UART1_ReadInt();
+    uint16_t delay = UART2_ReadInt();
 
     I2C_SCL_SetDigitalOutput();
     I2C_SCL_SetLow();

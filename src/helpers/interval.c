@@ -186,13 +186,13 @@ void INTERVAL_CaptureFour(uint16_t count, uint16_t mode, uint8_t prescaler) {
 
 response_t INTERVAL_GetState(void) {
     
-    UART1_WriteInt(__builtin_dmaoffset(&BUFFER));
-    UART1_WriteInt(DMA0STAL);
-    UART1_WriteInt(DMA1STAL);
-    UART1_WriteInt(DMA2STAL);
-    UART1_WriteInt(DMA3STAL);
-    UART1_Write(DIGITAL_STATES);
-    UART1_Write(DIGITAL_STATES_ERROR);
+    UART2_WriteInt(__builtin_dmaoffset(&BUFFER));
+    UART2_WriteInt(DMA0STAL);
+    UART2_WriteInt(DMA1STAL);
+    UART2_WriteInt(DMA2STAL);
+    UART2_WriteInt(DMA3STAL);
+    UART2_Write(DIGITAL_STATES);
+    UART2_Write(DIGITAL_STATES_ERROR);
     
     return SUCCESS;
 }

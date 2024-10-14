@@ -358,6 +358,10 @@ uint8_t UART1_Read(void) {
     return UART_Read(U1SELECT);
 }
 
+uint8_t UART2_Read(void) {
+    return UART_Read(U2SELECT);
+}
+
 uint16_t UART_ReadInt(const EUxSelect select) {
     const uint8_t lsb = UART_Read(select);
     const uint16_t msb = UART_Read(select);
@@ -367,6 +371,10 @@ uint16_t UART_ReadInt(const EUxSelect select) {
 
 uint16_t UART1_ReadInt(void) {
     return UART_ReadInt(U1SELECT);
+}
+
+uint16_t UART2_ReadInt(void) {
+    return UART_ReadInt(U2SELECT);
 }
 
 uint32_t UART_read_u32(EUxSelect const select) {
@@ -380,6 +388,10 @@ uint32_t UART1_read_u32(void) {
     return UART_read_u32(U1SELECT);
 }
 
+uint32_t UART2_read_u32(void) {
+    return UART_read_u32(U2SELECT);
+}
+
 void UART_Write(const EUxSelect select, const uint8_t txData) {
     const sUartRegs regs = GetRegisters(select);
     while (regs.stabitsptr->UTXBF == 1) {;}
@@ -388,6 +400,10 @@ void UART_Write(const EUxSelect select, const uint8_t txData) {
 
 void UART1_Write(const uint8_t txData) {
     UART_Write(U1SELECT, txData);
+}
+
+void UART2_Write(const uint8_t txData) {
+    UART_Write(U2SELECT, txData);
 }
 
 void UART_WriteInt(const EUxSelect select, const uint16_t txData) {
@@ -399,6 +415,10 @@ void UART1_WriteInt(uint16_t txData) {
     UART_WriteInt(U1SELECT, txData);
 }
 
+void UART2_WriteInt(uint16_t txData) {
+    UART_WriteInt(U2SELECT, txData);
+}
+
 void UART_write_u32(EUxSelect const select, uint32_t const txdata) {
     UART_WriteInt(select, (uint16_t)(txdata & 0xFFFF));
     UART_WriteInt(select, (uint16_t)(txdata >> 16));
@@ -406,6 +426,10 @@ void UART_write_u32(EUxSelect const select, uint32_t const txdata) {
 
 void UART1_write_u32(uint32_t const txdata) {
     UART_write_u32(U1SELECT, txdata);
+}
+
+void UART2_write_u32(uint32_t const txdata) {
+    UART_write_u32(U2SELECT, txdata);
 }
 
 bool UART_IsRxReady(const EUxSelect select) {
@@ -421,45 +445,45 @@ void UART_ClearBuffer(const EUxSelect select) {
 /* Command functions */
 /*********************/
 
-response_t UART2_Read(void) {
-    UART_Write(U1SELECT, UART_Read(U2SELECT));
-    return DO_NOT_BOTHER;
-}
+// response_t UART2_Read(void) {
+//     UART_Write(U1SELECT, UART_Read(U2SELECT));
+//     return DO_NOT_BOTHER;
+// }
 
 
-response_t UART2_ReadWord(void) {
-    UART_WriteInt(U1SELECT, UART_ReadInt(U2SELECT));
-    return DO_NOT_BOTHER;
-}
+// response_t UART2_ReadWord(void) {
+//     UART_WriteInt(U1SELECT, UART_ReadInt(U2SELECT));
+//     return DO_NOT_BOTHER;
+// }
 
-response_t UART2_Write(void) {
-    UART_Write(U2SELECT, UART_Read(U1SELECT));
-    return DO_NOT_BOTHER;
-}
+// response_t UART2_Write(void) {
+//     UART_Write(U2SELECT, UART_Read(U1SELECT));
+//     return DO_NOT_BOTHER;
+// }
 
-response_t UART2_WriteWord(void) {
-    UART_WriteInt(U2SELECT, UART_ReadInt(U1SELECT));
-    return DO_NOT_BOTHER;
-}
+// response_t UART2_WriteWord(void) {
+//     UART_WriteInt(U2SELECT, UART_ReadInt(U1SELECT));
+//     return DO_NOT_BOTHER;
+// }
 
-response_t UART2_RxReady(void) {
-    UART_Write(U1SELECT, UART_IsRxReady(U2SELECT));
-    return DO_NOT_BOTHER;
-}
+// response_t UART2_RxReady(void) {
+//     UART_Write(U1SELECT, UART_IsRxReady(U2SELECT));
+//     return DO_NOT_BOTHER;
+// }
 
-response_t UART2_SetBaud(void) {
-    SetBaud(U2SELECT, UART_ReadInt(U1SELECT));
-    return SUCCESS;
-}
+// response_t UART2_SetBaud(void) {
+//     SetBaud(U2SELECT, UART_ReadInt(U1SELECT));
+//     return SUCCESS;
+// }
 
-response_t UART2_SetMode(void) {
-    const uint16_t mode = UART_Read(U1SELECT);
-    const EStopBits stop_bits = mode & 1;
-    const EParity parity_data_bits = (mode & 6) >> 1;
-    SetStop(U2SELECT, stop_bits);
-    SetParity(U2SELECT, parity_data_bits);
-    return SUCCESS;
-}
+// response_t UART2_SetMode(void) {
+//     const uint16_t mode = UART_Read(U1SELECT);
+//     const EStopBits stop_bits = mode & 1;
+//     const EParity parity_data_bits = (mode & 6) >> 1;
+//     SetStop(U2SELECT, stop_bits);
+//     SetParity(U2SELECT, parity_data_bits);
+//     return SUCCESS;
+// }
 
 response_t UART_Passthrough(void) {
     const uint16_t baud = UART1_ReadInt();

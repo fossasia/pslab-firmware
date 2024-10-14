@@ -24,9 +24,9 @@ uint8_t GetLA_TRIGGER_STATE(void) { return LA_TRIGGER_STATE; }
 
 response_t LOGICANALYZER_OneChannel(void) {
     
-    uint16_t points = UART1_ReadInt();
-    uint8_t trigger = UART1_Read();
-    uint8_t config = UART1_Read();
+    uint16_t points = UART2_ReadInt();
+    uint8_t trigger = UART2_Read();
+    uint8_t config = UART2_Read();
     
     if (trigger & 1) {
         INTCON2bits.INT2EP = trigger & 2 ? FALLING_EDGE : RISING_EDGE;
@@ -49,9 +49,9 @@ response_t LOGICANALYZER_OneChannel(void) {
 
 response_t LOGICANALYZER_OneChannelAlt(void) {
     
-    uint16_t points = UART1_ReadInt();
-    uint8_t config = UART1_Read();
-    uint8_t trigger = UART1_Read();
+    uint16_t points = UART2_ReadInt();
+    uint8_t config = UART2_Read();
+    uint8_t trigger = UART2_Read();
     
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
@@ -72,10 +72,10 @@ response_t LOGICANALYZER_OneChannelAlt(void) {
 
 response_t LOGICANALYZER_TwoChannel(void) {
     
-    uint16_t points = UART1_ReadInt();
-    uint8_t trigger = UART1_Read();
-    uint8_t config = UART1_Read();
-    uint8_t channel = UART1_Read();
+    uint16_t points = UART2_ReadInt();
+    uint8_t trigger = UART2_Read();
+    uint8_t config = UART2_Read();
+    uint8_t channel = UART2_Read();
 
     if (trigger & 1) {
         INTCON2bits.INT2EP = trigger & 2 ? FALLING_EDGE : RISING_EDGE;
@@ -102,9 +102,9 @@ response_t LOGICANALYZER_TwoChannel(void) {
 
 response_t LOGICANALYZER_ThreeChannel(void) {
     
-    uint16_t points = UART1_ReadInt();
-    uint8_t config = UART1_ReadInt();
-    uint8_t trigger = UART1_Read();
+    uint16_t points = UART2_ReadInt();
+    uint8_t config = UART2_ReadInt();
+    uint8_t trigger = UART2_Read();
     
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
@@ -131,10 +131,10 @@ response_t LOGICANALYZER_ThreeChannel(void) {
 
 response_t LOGICANALYZER_FourChannel(void) {
     
-    uint16_t points = UART1_ReadInt();
-    uint16_t mode = UART1_ReadInt();
-    uint8_t prescaler = UART1_Read();
-    uint8_t trigger = UART1_Read();
+    uint16_t points = UART2_ReadInt();
+    uint16_t mode = UART2_ReadInt();
+    uint8_t prescaler = UART2_Read();
+    uint8_t trigger = UART2_Read();
     
     SetDIGITAL_STATES(0);
     INTERVAL_CaptureFour(points, mode, prescaler);

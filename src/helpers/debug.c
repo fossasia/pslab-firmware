@@ -11,6 +11,6 @@ response_t DEBUG_is_enabled(void) {
         bool const IS_DEBUG_ENABLED = false;
     #endif // PSLAB_DEBUG
 
-    UART1_Write(IS_DEBUG_ENABLED);
+    UART2_Write(IS_DEBUG_ENABLED);
     return DO_NOT_BOTHER;
 }

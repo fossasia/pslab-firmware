@@ -29,17 +29,17 @@ static union {
 
 response_t DEVICE_GetVersion(void) {
     for (size_t i = 0; i < sizeof(VERSION_HW) - 1; ++i) {
-        UART1_Write(VERSION_HW[i]);
+        UART2_Write(VERSION_HW[i]);
     }
 
-    UART1_Write('\n');
+    UART2_Write('\n');
 
     return DO_NOT_BOTHER;
 }
 
 response_t DEVICE_get_fw_version(void) {
     for (size_t i = 0; i < SEMVERS; ++i) {
-        UART1_Write(VERSION_FW.version[i]);
+        UART2_Write(VERSION_FW.version[i]);
     }
 
     return DO_NOT_BOTHER;
@@ -52,15 +52,15 @@ response_t DEVICE_Reset(void) {
 }
 
 response_t DEVICE_ReadRegisterData(void) {
-    uint16_t *address = (uint16_t *) (UART1_ReadInt() & 0xFFFF);
-    UART1_WriteInt(*address);
+    uint16_t *address = (uint16_t *) (UART2_ReadInt() & 0xFFFF);
+    UART2_WriteInt(*address);
 
     return SUCCESS;
 }
 
 response_t DEVICE_WriteRegisterData(void) {
-    uint16_t *address = (uint16_t *) (UART1_ReadInt() & 0xFFFF);
-    uint16_t data = UART1_ReadInt();
+    uint16_t *address = (uint16_t *) (UART2_ReadInt() & 0xFFFF);
+    uint16_t data = UART2_ReadInt();
     *address = data;
 
     return SUCCESS;

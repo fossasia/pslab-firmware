@@ -142,8 +142,8 @@ static enum Channel v5_to_v6_channel(enum Channel const channel)
 
 response_t POWER_SOURCE_SetPower(void)
 {
-    enum Channel const channel = v5_to_v6_channel(UART1_Read() & 0x03);
-    uint16_t const output = UART1_ReadInt() & 0xFFF;
+    enum Channel const channel = v5_to_v6_channel(UART2_Read() & 0x03);
+    uint16_t const output = UART2_ReadInt() & 0xFFF;
     union MCP4822Command cmd = {{
         .DATA = output,
         .SHDN = OUTPUT_ON,
@@ -169,8 +169,8 @@ response_t POWER_SOURCE_SetPower(void) {
     enum Command {
         SINGLE_WRITE = 0b01011,
     };
-    uint8_t const channel = UART1_Read() & 0x03;
-    uint16_t const output = UART1_ReadInt() & 0xFFF;
+    uint8_t const channel = UART2_Read() & 0x03;
+    uint16_t const output = UART2_ReadInt() & 0xFFF;
     union MCP4728Command cmd = {{
         .CMD = SINGLE_WRITE,
         .DAC = channel,
