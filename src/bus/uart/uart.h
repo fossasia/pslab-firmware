@@ -10,8 +10,8 @@
  */
 typedef enum
 {
-  U1SELECT,
-  U2SELECT,
+    U1SELECT,
+    U2SELECT,
 } EUxSelect;
 
 /**
@@ -24,7 +24,12 @@ typedef enum
  */
 void UART_Initialize(const EUxSelect select);
 
-enum Status UART_read(EUxSelect select, uint8_t *buffer, uint16_t size);
+enum Status UART_read(
+    EUxSelect select,
+    uint8_t *buffer,
+    uint16_t buffer_size,
+    uint16_t *num_bytes_read
+);
 enum Status UART_write(EUxSelect select, uint8_t const *buffer, uint16_t size);
 enum Status UART_flush_rx(EUxSelect select);
 
