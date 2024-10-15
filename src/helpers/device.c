@@ -22,9 +22,9 @@ static union {
     };
     uint8_t const version[SEMVERS];
 } const VERSION_FW = {{
-    .major = 3,
+    .major = 4,
     .minor = 0,
-    .patch = 3
+    .patch = 0
 }};
 
 response_t DEVICE_GetVersion(void) {

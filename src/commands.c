@@ -41,28 +41,24 @@ unsigned char num_secondary_cmds[NUM_PRIMARY_CMDS + 1] = {
     NUM_SDCARD_CMDS,
 };
 
-/**
- * @brief Undefined command, does nothing.
- * @return DO_NOT_BOTHER
- */
-response_t Undefined(void) {
-    return DO_NOT_BOTHER;
-}
+#define Undefined NULL
+#define Unimplemented NULL
+#define Removed NULL
 
-/**
- * @brief Unimplemented command, does nothing.
- * @return DO_NOT_BOTHER
- */
-response_t Unimplemented(void) {
-    return DO_NOT_BOTHER;
-}
+enum Command {
+   CMD_OSCILLOSCOPE_CAPTURE,
+   CMD_OSCILLOSCOPE_FETCH_SAMPLES,
+   NUMEL_CMDS
+};
 
-/**
- * @brief Removed command (no longer supported), does nothing.
- * @return DO_NOT_BOTHER
- */
-response_t Removed(void) {
-    return DO_NOT_BOTHER;
+CmdFunc *const cmd_array[NUMEL_CMDS] = {
+   [CMD_OSCILLOSCOPE_CAPTURE] = OSCILLOSCOPE_capture,
+   [CMD_OSCILLOSCOPE_FETCH_SAMPLES] = OSCILLOSCOPE_fetch_samples,
+};
+
+CmdFunc *COMMAND_get_func(uint16_t code)
+{
+   return code > NUMEL_CMDS ? NULL : cmd_array[code];
 }
 
 /**
@@ -310,5 +306,5 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 24                              25                              26                              27
         Undefined,                      Undefined,                      Undefined,                      Undefined,
-    },    
+    },
 };
