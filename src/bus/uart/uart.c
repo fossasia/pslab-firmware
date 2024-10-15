@@ -331,16 +331,17 @@ void UART_Initialize(const EUxSelect select) {
 enum Status UART_read(
     EUxSelect const select,
     uint8_t *const buffer,
-    uint16_t const size
+    uint16_t const buffer_size,
+    uint16_t *const num_bytes_read
 ) {
     // If either buffer is NULL or size is zero, this is a NOP.
     if (!buffer) {return E_OK;}
-    if (!size) {return E_OK;}
+    if (!buffer_size) {return E_OK;}
 
     sUartRegs const regs = GetRegisters(select);
     uint16_t timeout = 0;
 
-    for (uint16_t i = 0; i < size; ++i) {
+    for (uint16_t i = 0; i < buffer_size; ++i) {
         if (regs.stabitsptr->FERR) {return E_UART_RX_FRAMING;}
         if (regs.stabitsptr->OERR) {return E_UART_RX_OVERRUN;}
         if (regs.stabitsptr->PERR) {return E_UART_RX_PARITY;}
@@ -351,6 +352,7 @@ enum Status UART_read(
 
         timeout = 0;
         buffer[i] = *regs.rxptr;
+        (*num_bytes_read)++;
     }
 
     return E_OK;

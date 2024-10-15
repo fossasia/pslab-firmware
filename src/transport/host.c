@@ -3,10 +3,11 @@
 
 enum Status HOST_read(
     uint8_t *const buffer,
-    uint16_t const size
+    uint16_t const size,
+    uint16_t *const num_bytes_read
 ) {
     enum Status status;
-    switch (status = UART_read(U1SELECT, buffer, size)) {
+    switch (status = UART_read(U1SELECT, buffer, size, num_bytes_read)) {
     case E_UART_RX_TIMEOUT:
     case E_UART_RX_PARITY:
     case E_UART_RX_FRAMING:

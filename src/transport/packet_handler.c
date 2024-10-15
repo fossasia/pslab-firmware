@@ -134,7 +134,11 @@ static enum Status receive(
 ) {
     Header header = {{0}};
     enum Status status = E_OK;
-    if ( (status = HOST_read(header.as_bytes, HEADER_SIZE)) ) {return status;}
+    uint16_t num_bytes_read = 0;
+
+    if ( (status = HOST_read(header.as_bytes, HEADER_SIZE, &num_bytes_read)) ) {
+        return status;
+    }
 
     // TODO: Use malloc when we switch to heap-based memory management.
     if (header.payload_size > PAYLOAD_BUFFER_SIZE) {
