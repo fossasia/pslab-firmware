@@ -52,7 +52,7 @@ state_t run_command(void)
 
 state_func_t* const state_table[NUM_STATES] = {
     Standby,
-    RunCommand,
+    run_command,
 };
 
 state_t STATES_RunState(state_t current_state) {
