@@ -80,7 +80,7 @@ PICkit3.
 Firmware can be flashed over USB if the device already has the
 [bootloader](https://github.com/fossasia/pslab-bootloader) installed.
 
-Flashing the firmware requires the pslab-python library. See
+Flashing the firmware requires mcbootblash which can be installed standalone or as a dependency of the pslab-python library. See [mcbootflash](https://github.com/bessman/mcbootflash) or 
 [pslab-python](https://github.com/fossasia/pslab-python) for installation
 instructions.
 
@@ -96,7 +96,7 @@ Follow these steps to flash new firmware:
 
    2. Release the 'BOOT' button
 
-3. Run `pslab flash --port <portname> firmware.hex`
+3. Run `mcbootflash --port <portname> -b 460800 firmware.hex`
 
 4. After flashing is complete, reset or power cycle the device
 
