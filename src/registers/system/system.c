@@ -101,5 +101,5 @@ void SYSTEM_Initialize(void) {
     DMA_Initialize();
 
     LIGHT_RGB(0, 20, 0);
-    UART_ClearBuffer(U1SELECT);
+    UART_ClearBuffer(U2SELECT);
 }

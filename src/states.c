@@ -9,7 +9,7 @@
  * @return STATE_STANDBY or STATE_RUNCOMMAND
  */
 state_t Standby(void) {
-    if (UART_IsRxReady(U1SELECT)) {
+    if (UART_IsRxReady(U2SELECT)) {
         return STATE_RUNCOMMAND;
     } else {
         WATCHDOG_TimerClear();
