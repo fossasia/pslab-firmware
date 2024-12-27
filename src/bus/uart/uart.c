@@ -2,11 +2,12 @@
 #include "uart.h"
 #include "../../helpers/delay.h"
 #include "../../commands.h"
+#include "../../registers/system/watchdog.h"
 
 /**********/
 /* Macros */
 /**********/
-#define UART_READ_TIMEOUT (FCY / 1000)  // 1 ms
+#define UART_READ_TIMEOUT (FCY / 10UL)  // 100 ms
 
 /**************/
 /* Interrupts */
@@ -329,8 +330,9 @@ void UART_Initialize(const EUxSelect select) {
 
 uint8_t UART_Read(const EUxSelect select) {
     // Wait for data to become available.
-    uint16_t timeout = 0;
+    uint32_t timeout = 0;
     while (timeout++ < UART_READ_TIMEOUT) {
+        WATCHDOG_TimerClear();
         if (UART_IsRxReady(select)) {
             break;
         }
