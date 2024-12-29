@@ -137,21 +137,21 @@ static uint16_t counter;
  */
 
 void I2C_Initialize(void) {
-    
+
     i2c_object.pTrHead = i2c_tr_queue;
     i2c_object.pTrTail = i2c_tr_queue;
     i2c_object.trStatus.s.empty = true;
     i2c_object.trStatus.s.full = false;
 
     i2c_object.i2cErrors = 0;
-    
+
     I2C_SCL_SetDigitalInput();
     I2C_SCL_SetAsOpenDrain();
     I2C_SCL_PullUp();
     I2C_SDA_SetDigitalInput();
     I2C_SDA_SetAsOpenDrain();
     I2C_SDA_PullUp();
-  
+
     I2C2BRG = I2C_BRG;
     I2C_InitializeCON();
     I2C_InitializeSTAT();
@@ -181,7 +181,7 @@ void I2C_InitializeCON(void) {
     I2C2CONbits.STREN = 0;
     // Sends ACK for acknowledgment
     I2C2CONbits.ACKDT = 0;
-    
+
     // Acknowledgment sequence is not in progress
     I2C2CONbits.ACKEN = 0;
     // Receive sequence is not in progress
@@ -341,7 +341,7 @@ void __attribute__((interrupt, no_auto_psv)) _MI2C2Interrupt(void) {
             break;
         case S_MASTER_SEND_ADDR:
             /* Start has been sent, send the address byte */
-            /* Note: 
+            /* Note:
                 On a 10-bit address resend (done only during a 10-bit
                 device read), the original i2c_address was modified in
                 S_MASTER_10BIT_RESTART state. So the check if this is
@@ -600,7 +600,7 @@ bool I2C_MasterQueueIsFull(void) {
 }
 
 response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
-    
+
     I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
 
     LED_SetLow();
@@ -621,11 +621,11 @@ response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
         else timeOut++;
     }
     LED_SetHigh();
-    
-    if (status == I2C_MESSAGE_FAIL || 
-            status == I2C_STUCK_START || 
-            status == I2C_MESSAGE_ADDRESS_NO_ACK || 
-            status == I2C_DATA_NO_ACK || 
+
+    if (status == I2C_MESSAGE_FAIL ||
+            status == I2C_STUCK_START ||
+            status == I2C_MESSAGE_ADDRESS_NO_ACK ||
+            status == I2C_DATA_NO_ACK ||
             status == I2C_LOST_STATE) {
         return FAILED;
     }
@@ -658,11 +658,11 @@ response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_
         else timeOut++;
     }
     LED_SetHigh();
-    
-    if (status == I2C_MESSAGE_FAIL || 
-            status == I2C_STUCK_START || 
-            status == I2C_MESSAGE_ADDRESS_NO_ACK || 
-            status == I2C_DATA_NO_ACK || 
+
+    if (status == I2C_MESSAGE_FAIL ||
+            status == I2C_STUCK_START ||
+            status == I2C_MESSAGE_ADDRESS_NO_ACK ||
+            status == I2C_DATA_NO_ACK ||
             status == I2C_LOST_STATE) {
         return FAILED;
     }
@@ -672,14 +672,14 @@ response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_
 response_t I2C_CommandStart(void) {
 
     uint8_t address = UART1_Read();
-    
+
     I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     I2C_StartSignal();
     I2C_Transmit(address);
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
-        return FAILED;
+        return FAILED | (I2C2STATbits.ACKSTAT << 4);
     }
-    return SUCCESS;
+    return SUCCESS | (I2C2STATbits.ACKSTAT << 4);
 }
 
 response_t I2C_CommandStop(void) {
@@ -697,9 +697,9 @@ response_t I2C_CommandSend(void) {
     uint8_t data = UART1_Read();
     I2C_Transmit(data);
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
-        return FAILED;
+        return FAILED | I2C2STATbits.ACKSTAT;
     }
-    return SUCCESS;
+    return SUCCESS | I2C2STATbits.ACKSTAT;
 }
 
 response_t I2C_CommandSendBurst(void) {
@@ -716,13 +716,13 @@ response_t I2C_CommandRestart(void) {
     I2C_RestartSignal();
     I2C_Transmit(address);
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
-        return FAILED;
+        return FAILED | (I2C2STATbits.ACKSTAT << 4);
     }
-    return SUCCESS;
+    return SUCCESS | (I2C2STATbits.ACKSTAT << 4);
 }
 
 response_t I2C_CommandReadMore(void) {
-    
+
     uint8_t data = I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE);
     UART1_Write(data);
 
@@ -730,7 +730,7 @@ response_t I2C_CommandReadMore(void) {
 }
 
 response_t I2C_CommandReadEnd(void) {
-    
+
     uint8_t data = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
     UART1_Write(data);
 
@@ -738,7 +738,7 @@ response_t I2C_CommandReadEnd(void) {
 }
 
 response_t I2C_CommandConfig(void) {
-    
+
     uint16_t baud_rate = UART1_ReadInt();
     I2C_InitializeIfNot(baud_rate, I2C_DISABLE_INTERRUPTS);
 
@@ -772,7 +772,7 @@ response_t I2C_CommandReadBulk(void) {
         UART1_Write(I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
     }
     UART1_Write(I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE));
-    
+
     I2C_StopSignal();
 
     return SUCCESS;
@@ -790,7 +790,7 @@ response_t I2C_CommandWriteBulk(void) {
     for (i = 0; i < count; i++) {
         I2C_Transmit(UART1_Read());
     }
-    
+
     I2C_StopSignal();
 
     return SUCCESS;
@@ -803,7 +803,7 @@ response_t I2C_CommandEnableSMBus(void) {
     I2C2CONbits.SMEN = 1;
     // Enables I2C2 module and configure SDA2 and SCL2 as serial port pins
     I2C2CONbits.I2CEN = 1;
-    
+
     return SUCCESS;
 }
 
@@ -814,7 +814,7 @@ response_t I2C_CommandDisableSMBus(void) {
     I2C2CONbits.SMEN = 0;
     // Enables I2C2 module and configure SDA2 and SCL2 as serial port pins
     I2C2CONbits.I2CEN = 1;
-    
+
     return SUCCESS;
 }
 
@@ -865,7 +865,7 @@ void I2C_AcknowledgeSignal(void) {
 
     I2C_ACKNOWLEDGE_DATA_BIT = 0;
     I2C_ACKNOWLEDGE_ENABLE_BIT = 1;
-    
+
     counter = 1000;
     while (I2C_ACKNOWLEDGE_ENABLE_BIT && counter--) DELAY_us(1);
 }
@@ -874,7 +874,7 @@ void I2C_NAcknowledgeSignal(void) {
 
     I2C_ACKNOWLEDGE_DATA_BIT = 1;
     I2C_ACKNOWLEDGE_ENABLE_BIT = 1;
-    
+
     counter = 1000;
     while (I2C_ACKNOWLEDGE_ENABLE_BIT && counter--) DELAY_us(1);
 }
@@ -903,8 +903,8 @@ uint8_t I2C_Receive(I2C_RESPONSE r) {
 
     uint8_t data = I2C_RECEIVE_REG;
 
-    r == I2C_RESPONSE_ACKNOWLEDGE 
-        ? I2C_AcknowledgeSignal() 
+    r == I2C_RESPONSE_ACKNOWLEDGE
+        ? I2C_AcknowledgeSignal()
         : I2C_NAcknowledgeSignal();
 
     return data;
