@@ -1,5 +1,11 @@
 # Changelog
 
+## [3.0.4] - 2025-01-05
+
+### Fixed 
+
+- Fix ACKSTAT missing from response in several I2C commands ([`6356eb2`](https://github.com/fossasia/pslab-firmware/commit/6356eb2656f856327c9090bcbd6e404db78ae2f0)) (Alexander Bessman)
+
 ## [3.0.3] - 2024-08-19
 
 ### Fixed
