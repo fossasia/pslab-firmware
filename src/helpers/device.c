@@ -24,7 +24,7 @@ static union {
 } const VERSION_FW = {{
     .major = 3,
     .minor = 0,
-    .patch = 3
+    .patch = 4
 }};
 
 response_t DEVICE_GetVersion(void) {
