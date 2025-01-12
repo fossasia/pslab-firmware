@@ -1,5 +1,5 @@
 target_sources(pslab-firmware.elf PRIVATE
-  logicanalyzer.c
+  logic_analyzer.c
   multimeter.c
   oscilloscope.c
   powersource.c
@@ -8,5 +8,4 @@ target_sources(pslab-firmware.elf PRIVATE
 )
 
 target_include_directories(pslab-firmware.elf
-  PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
+  INTERFACE ${CMAKE_CURRENT_SOURCE_DIR})

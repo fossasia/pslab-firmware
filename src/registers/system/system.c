@@ -57,6 +57,7 @@
 #include "../../sdcard/sd_spi.h"
 #include "../../sdcard/fatfs/ff.h"
 #include "../../helpers/light.h"
+#include "registers_ng/pins.h"
 
 void SYSTEM_Initialize(void) {
 
@@ -84,10 +85,7 @@ void SYSTEM_Initialize(void) {
     TMR4_Initialize();
     TMR5_Initialize();
 
-    IC1_Initialize();
-    IC2_Initialize();
-    IC3_Initialize();
-    IC4_Initialize();
+    PINS_initialize();
 
     I2C_Initialize();
 
