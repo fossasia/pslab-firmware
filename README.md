@@ -104,7 +104,7 @@ Follow these steps to flash new firmware:
 
    2. Release the 'BOOT' button
 
-3. Run mcbootflash --port <portname> -b 460800 firmware.hex`
+3. Run `mcbootflash --port <portname> -b 460800 firmware.hex`
 
 4. After flashing is complete, reset or power cycle the device
 
