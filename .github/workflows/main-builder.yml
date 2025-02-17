@@ -5,48 +5,76 @@ on:
         branches: [ main ]
     pull_request:
         branches: [ main ]
+    workflow_call:
 
 jobs:
     build:
-        runs-on: ubuntu-latest
-        steps:
-            - name: Download project files
-              uses: actions/checkout@v3
+      strategy:
+        matrix:
+          build_type: [v6, v5, v6_esp01]
+          include:
+            - build_type: v6
+              branch: main
+              cmake_flags: '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
+            - build_type: v5
+              branch: main
+              cmake_flags: '-DCMAKE_BUILD_TYPE=RelWithDebInfo -DLEGACY_HARDWARE=1'
+            - build_type: v6_esp01
+              branch: esp-01
+              cmake_flags: '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
 
-            - name: Cache XC-16 Compiler
-              id: cache-compiler
-              uses: actions/cache@v3
-              with:
-                path: ~/.cache/mplab-xc
-                key: xc16-v2.10-cache
+      runs-on: ubuntu-latest
+      steps:
+          - name: Download project files
+            uses: actions/checkout@v4
+            with:
+              path: main
 
-            - name: Download XC16 Compiler
-              if: steps.cache-compiler.outputs.cache-hit != 'true'
-              run: |
-                mkdir -p ~/.cache/mplab-xc
-                cd ~/.cache/mplab-xc
-                wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc16-v2.10-full-install-linux64-installer.run
-                chmod +x xc16-v2.10-full-install-linux64-installer.run
+          - name: Checkout ESP01 branch
+            uses: actions/checkout@v4
+            with:
+              ref: esp-01
+              path: esp-01
 
-            - name: Install XC16 Compiler
-              run: |
-                cd ~/.cache/mplab-xc
-                sudo ./xc16-v2.10-full-install-linux64-installer.run --mode unattended --netservername dontknow
+          - name: Cache XC-16 Compiler
+            id: cache-compiler
+            uses: actions/cache@v3
+            with:
+              path: ~/.cache/mplab-xc
+              key: xc16-v2.10-cache
 
-            - name: Set up cmake-microchip submodules
-              run: |
-                git submodule init
-                git submodule update
+          - name: Download XC16 Compiler
+            if: steps.cache-compiler.outputs.cache-hit != 'true'
+            run: |
+              mkdir -p ~/.cache/mplab-xc
+              cd ~/.cache/mplab-xc
+              wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc16-v2.10-full-install-linux64-installer.run
+              chmod +x xc16-v2.10-full-install-linux64-installer.run
 
-            - name: Build firmware
-              run: |
-                mkdir build
-                cd build
-                cmake ..
-                make
+          - name: Install XC16 Compiler
+            run: |
+              cd ~/.cache/mplab-xc
+              sudo ./xc16-v2.10-full-install-linux64-installer.run --mode unattended --netservername dontknow
 
-            - name: Publish build files
-              uses: actions/upload-artifact@v4
-              with:
-                name: production-file
-                path: build/*.hex
+          - name: Set up cmake-microchip submodules
+            run: |
+              cd main
+              git submodule init
+              git submodule update
+              cd ../esp-01
+              git submodule init
+              git submodule update
+
+          - name: Build firmware
+            run: |
+              cd ${{ matrix.branch }}
+              mkdir build_${{ matrix.build_type }}
+              cd build_${{ matrix.build_type }}
+              cmake .. ${{ matrix.cmake_flags}}
+              make
+
+          - name: Publish build files
+            uses: actions/upload-artifact@v4
+            with:
+              name: pslab-firmware_${{ matrix.build_type}}
+              path: ${{ matrix.branch }}/build_${{ matrix.build_type }}/pslab-firmware.hex
