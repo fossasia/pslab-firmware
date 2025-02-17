@@ -70,6 +70,12 @@ make
 This will create a build artifact in the `build` directory:
 `pslab-firmware.hex`.
 
+To build this project for the PSLab v5, add the `LEGACY_HARDWARE` environment variable to the `cmake` command:
+
+```bash
+cmake -DLEGACY_HARDWARE=true ..
+```
+
 ## Flashing
 
 The firmware can be flashed over USB or by using a programmer such as the
