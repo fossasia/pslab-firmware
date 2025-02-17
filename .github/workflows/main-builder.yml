@@ -11,15 +11,15 @@ jobs:
     build:
       strategy:
         matrix:
-          build_type: [v6, v5, v6_esp01]
+          target: [v6, v5, v6_esp01]
           include:
-            - build_type: v6
+            - target: v6
               branch: main
               cmake_flags: '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
-            - build_type: v5
+            - target: v5
               branch: main
               cmake_flags: '-DCMAKE_BUILD_TYPE=RelWithDebInfo -DLEGACY_HARDWARE=1'
-            - build_type: v6_esp01
+            - target: v6_esp01
               branch: esp-01
               cmake_flags: '-DCMAKE_BUILD_TYPE=RelWithDebInfo'
 
@@ -28,13 +28,8 @@ jobs:
           - name: Download project files
             uses: actions/checkout@v4
             with:
-              path: main
-
-          - name: Checkout ESP01 branch
-            uses: actions/checkout@v4
-            with:
-              ref: esp-01
-              path: esp-01
+              ref: ${{ matrix.branch }}
+              path: ${{ matrix.branch }}
 
           - name: Cache XC-16 Compiler
             id: cache-compiler
@@ -58,23 +53,20 @@ jobs:
 
           - name: Set up cmake-microchip submodules
             run: |
-              cd main
-              git submodule init
-              git submodule update
-              cd ../esp-01
+              cd ${{ matrix.branch }}
               git submodule init
               git submodule update
 
           - name: Build firmware
             run: |
               cd ${{ matrix.branch }}
-              mkdir build_${{ matrix.build_type }}
-              cd build_${{ matrix.build_type }}
+              mkdir build_${{ matrix.target }}
+              cd build_${{ matrix.target }}
               cmake .. ${{ matrix.cmake_flags}}
               make
 
           - name: Publish build files
             uses: actions/upload-artifact@v4
             with:
-              name: pslab-firmware_${{ matrix.build_type}}
-              path: ${{ matrix.branch }}/build_${{ matrix.build_type }}/pslab-firmware.hex
+              name: pslab-firmware_${{ matrix.target}}
+              path: ${{ matrix.branch }}/build_${{ matrix.target }}/pslab-firmware.hex
