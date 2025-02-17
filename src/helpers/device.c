@@ -23,8 +23,8 @@ static union {
     uint8_t const version[SEMVERS];
 } const VERSION_FW = {{
     .major = 3,
-    .minor = 0,
-    .patch = 4
+    .minor = 1,
+    .patch = 0
 }};
 
 response_t DEVICE_GetVersion(void) {
