@@ -243,7 +243,7 @@ static struct UartConf {
 /**
  * @brief Getter for register pointer collections.
 */
-static sUartRegs GetRegisters(const EUxSelect select) {
+static sUartRegs get_registers(const EUxSelect select) {
     return select ? UART2_REGS : UART1_REGS;
 }
 
@@ -261,8 +261,8 @@ static sUartRegs GetRegisters(const EUxSelect select) {
  * @param select Either U1SELECT or U2SELECT.
  * @param bits   One of NO_PARITY, ODD_PARITY, or EVEN_PARITY.
  */
-static void SetParity(const EUxSelect select, const EParity parity) {
-    GetRegisters(select).modebitsptr->PDSEL = parity;
+static void set_parity(const EUxSelect select, const EParity parity) {
+    get_registers(select).modebitsptr->PDSEL = parity;
 }
 
 /**
@@ -279,8 +279,8 @@ static void SetParity(const EUxSelect select, const EParity parity) {
  * @param select Either U1SELECT or U2SELECT.
  * @param bits   Either ONE_STOP_BIT or TWO_STOP_BITS.
  */
-static void SetStop(const EUxSelect select, const EStopBits stop) {
-    GetRegisters(select).modebitsptr->STSEL = stop;
+static void set_stop(const EUxSelect select, const EStopBits stop) {
+    get_registers(select).modebitsptr->STSEL = stop;
 }
 
 /**
@@ -288,16 +288,16 @@ static void SetStop(const EUxSelect select, const EStopBits stop) {
  * @param select Either U1SELECT or U2SELECT.
  * @param baud   A baudrate as defined in tBaudrate.
  */
-static void SetBaud(const EUxSelect select, const EBaudrate baud) {
-    *GetRegisters(select).brgptr = baud;
+static void set_baud(const EUxSelect select, const EBaudrate baud) {
+    *get_registers(select).brgptr = baud;
 }
 
 /**
  * @brief Set enable bit of UARTx.
  * @param select Either U1SELECT or U2SELECT.
  */
-static void EnableUx(const EUxSelect select) {
-    const sUartRegs regs = GetRegisters(select);
+static void enable_uartx(const EUxSelect select) {
+    const sUartRegs regs = get_registers(select);
     regs.modebitsptr->UARTEN = 1;
     regs.stabitsptr->UTXEN = 1;
 }
@@ -308,7 +308,7 @@ static void EnableUx(const EUxSelect select) {
  * The RX interrupts are used in passthrough mode. Interrupt flags are cleared
  * before enabling the interrupts.
  */
-static void EnableInterrupts(void)
+static void enable_interrupts(void)
 {
     IFS0bits.U1RXIF = 0; // Clear U1RX interrupt flag.
     IEC0bits.U1RXIE = 1; // Enable U1RX interrupt.
@@ -320,12 +320,12 @@ static void EnableInterrupts(void)
 /* Public functions */
 /********************/
 
-void UART_Initialize(const EUxSelect select) {
-    const sUartRegs regs = GetRegisters(select);
+void UART_initialize(const EUxSelect select) {
+    const sUartRegs regs = get_registers(select);
     *regs.modebitsptr = UART_DEFAULT_CONF.modebits;
     *regs.stabitsptr = UART_DEFAULT_CONF.stabits;
     *regs.brgptr = UART_DEFAULT_CONF.brgval;
-    EnableUx(select);
+    enable_uartx(select);
 }
 
 enum Status UART_read(
@@ -338,8 +338,8 @@ enum Status UART_read(
     if (!buffer) {return E_OK;}
     if (!buffer_size) {return E_OK;}
 
-    sUartRegs const regs = GetRegisters(select);
-    uint16_t timeout = 0;
+    sUartRegs const regs = get_registers(select);
+    uint32_t timeout = 0;
 
     for (uint16_t i = 0; i < buffer_size; ++i) {
         if (regs.stabitsptr->FERR) {return E_UART_RX_FRAMING;}
@@ -347,6 +347,7 @@ enum Status UART_read(
         if (regs.stabitsptr->PERR) {return E_UART_RX_PARITY;}
 
         while (!regs.stabitsptr->URXDA) {
+            WATCHDOG_TimerClear();
             if (timeout++ >= UART_READ_TIMEOUT) {return E_UART_RX_TIMEOUT;}
         }
 
@@ -367,7 +368,7 @@ enum Status UART_write(
     if (!buffer) {return E_OK;}
     if (!size) {return E_OK;}
 
-    sUartRegs const regs = GetRegisters(select);
+    sUartRegs const regs = get_registers(select);
 
     for (uint16_t i = 0; i < size; ++i) {
         while (regs.stabitsptr->UTXBF) {;}
@@ -379,152 +380,62 @@ enum Status UART_write(
 
 enum Status UART_flush_rx(EUxSelect const select)
 {
-    sUartRegs const regs = GetRegisters(select);
+    sUartRegs const regs = get_registers(select);
     while(regs.stabitsptr->URXDA || !regs.stabitsptr->RIDLE) {*regs.rxptr;}
     return E_OK;
-}
-
-uint8_t UART_Read(const EUxSelect select) {
-    sUartRegs const regs = GetRegisters(select);
-
-    // Wait for data to become available.
-    uint32_t timeout = 0;
-
-    while (timeout++ < UART_READ_TIMEOUT) {
-        WATCHDOG_TimerClear();
-        if (UART_IsRxReady(select)) {
-            break;
-        }
-    }
-
-    if (timeout >= UART_READ_TIMEOUT) {
-        // Timed out while waiting for data.
-        return 0;
-    }
-
-    if (regs.stabitsptr->FERR) {
-        // Try to recover from framing error.
-        UART_ClearBuffer(select);
-        return 0;
-    }
-
-    // Clear buffer overrun.
-    regs.stabitsptr->OERR = 0;
-
-    return *regs.rxptr;
-}
-
-uint8_t UART1_Read(void) {
-    return UART_Read(U1SELECT);
-}
-
-uint16_t UART_ReadInt(const EUxSelect select) {
-    const uint8_t lsb = UART_Read(select);
-    const uint16_t msb = UART_Read(select);
-    const uint16_t retval = (msb << 8) | lsb;
-    return retval;
-}
-
-uint16_t UART1_ReadInt(void) {
-    return UART_ReadInt(U1SELECT);
-}
-
-uint32_t UART_read_u32(EUxSelect const select) {
-    uint16_t const lsw = UART_ReadInt(select);
-    uint32_t const msw = UART_ReadInt(select);
-    uint32_t const retval = (msw << 16) | lsw;
-    return retval;
-}
-
-uint32_t UART1_read_u32(void) {
-    return UART_read_u32(U1SELECT);
-}
-
-void UART_Write(const EUxSelect select, const uint8_t txData) {
-    const sUartRegs regs = GetRegisters(select);
-    while (regs.stabitsptr->UTXBF == 1) {;}
-    *regs.txptr = txData;
-}
-
-void UART1_Write(const uint8_t txData) {
-    UART_Write(U1SELECT, txData);
-}
-
-void UART_WriteInt(const EUxSelect select, const uint16_t txData) {
-    UART_Write(select, txData & 0xFF);
-    UART_Write(select, (txData >> 8) & 0xFF);
-}
-
-void UART1_WriteInt(uint16_t txData) {
-    UART_WriteInt(U1SELECT, txData);
-}
-
-void UART_write_u32(EUxSelect const select, uint32_t const txdata) {
-    UART_WriteInt(select, (uint16_t)(txdata & 0xFFFF));
-    UART_WriteInt(select, (uint16_t)(txdata >> 16));
-}
-
-void UART1_write_u32(uint32_t const txdata) {
-    UART_write_u32(U1SELECT, txdata);
-}
-
-bool UART_IsRxReady(const EUxSelect select) {
-    return GetRegisters(select).stabitsptr->URXDA;
-}
-
-void UART_ClearBuffer(const EUxSelect select) {
-    const sUartRegs regs = GetRegisters(select);
-    while (regs.stabitsptr->URXDA) {*regs.rxptr;}
 }
 
 /*********************/
 /* Command functions */
 /*********************/
 
-response_t UART2_Read(void) {
-    UART_Write(U1SELECT, UART_Read(U2SELECT));
+response_t UART2_read_u8(void) {
+    UART_write(U1SELECT, (uint8_t const *const)&U2RXREG, sizeof(U2RXREG));
     return DO_NOT_BOTHER;
 }
 
 
-response_t UART2_ReadWord(void) {
-    UART_WriteInt(U1SELECT, UART_ReadInt(U2SELECT));
+response_t UART2_read_u16(void) {
+    UART_write(U1SELECT, (uint8_t const *const)&U2RXREG, sizeof(U2RXREG));
     return DO_NOT_BOTHER;
 }
 
-response_t UART2_Write(void) {
-    UART_Write(U2SELECT, UART_Read(U1SELECT));
+response_t UART2_write_u8(void) {
+    UART_write(U2SELECT, (uint8_t const *const)&U1RXREG, sizeof(U1RXREG));
     return DO_NOT_BOTHER;
 }
 
-response_t UART2_WriteWord(void) {
-    UART_WriteInt(U2SELECT, UART_ReadInt(U1SELECT));
+response_t UART2_write_u16(void) {
+    UART_write(U2SELECT, (uint8_t const *const)&U1RXREG, sizeof(U1RXREG));
     return DO_NOT_BOTHER;
 }
 
-response_t UART2_RxReady(void) {
-    UART_Write(U1SELECT, UART_IsRxReady(U2SELECT));
+response_t UART2_rx_ready(void) {
+    uint8_t const rx_ready = U2STAbits.URXDA;
+    UART_write(U1SELECT, &rx_ready, sizeof(rx_ready));
     return DO_NOT_BOTHER;
 }
 
-response_t UART2_SetBaud(void) {
-    SetBaud(U2SELECT, UART_ReadInt(U1SELECT));
+response_t UART2_set_baud(void) {
+    UART_read(U1SELECT, (uint8_t *const)&U2BRG, sizeof(U2BRG));
     return SUCCESS;
 }
 
-response_t UART2_SetMode(void) {
-    const uint16_t mode = UART_Read(U1SELECT);
-    const EStopBits stop_bits = mode & 1;
-    const EParity parity_data_bits = (mode & 6) >> 1;
-    SetStop(U2SELECT, stop_bits);
-    SetParity(U2SELECT, parity_data_bits);
+response_t UART2_set_mode(void) {
+    uint16_t mode = 0;
+    UART_read(U1SELECT, (uint8_t *const)&mode, sizeof(mode));
+    EStopBits const stop_bits = mode & 1;
+    EParity const parity_data_bits = (mode & 6) >> 1;
+    set_stop(U2SELECT, stop_bits);
+    set_parity(U2SELECT, parity_data_bits);
     return SUCCESS;
 }
 
 response_t UART_Passthrough(void) {
-    const uint16_t baud = UART1_ReadInt();
-    SetBaud(U1SELECT, baud);
-    SetBaud(U2SELECT, baud);
-    EnableInterrupts();
+    uint16_t baud = 0;
+    UART_read(U1SELECT, (uint8_t *const)&baud, sizeof(baud));
+    set_baud(U1SELECT, baud);
+    set_baud(U2SELECT, baud);
+    enable_interrupts();
     return DO_NOT_BOTHER;
 }
