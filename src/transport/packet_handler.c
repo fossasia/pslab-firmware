@@ -2,12 +2,15 @@
  *
  * Description of communication between PSLab and host:
  *
- * 1. The host sends a command to the PSLab, consisting of a command code, a
- *    payload size, and a payload containing command function input.
+ * 1. The host sends a command to the PSLab, consisting of a command code, an
+ *    input payload size, and an payload containing command function input.
  * 2. The PSLab runs the command function associated with the command code
  *    with the payload as input.
- * 3. The PSLab sends a response to the host, consisting of a status code, a
- *    payload size, and a payload containing command function output.
+ * 3. The command function parses the input payload and does its thing,
+ *    returning a status code, and optionally an output payload.
+ * 3. The PSLab sends a response to the host, consisting of the status code
+ *    from the command function, the command function output payload size, and
+ *    the command function output payload.
  *
  * In case of error on either end, both the PSLab and the host must try to
  * consume any bytes remaining on the bus, except in the event of an
@@ -95,12 +98,15 @@ enum Status PACKET_exchange(void)
         // Likely connection problem, cancel exchange.
         return status;
     case E_HOST_RX_OVERRUN:
-        // We didn't read incoming data fast enough. Read any remaining bytes
-        // and cancel.
+        // We didn't read incoming data fast enough. Consume any remaining
+        // input data and cancel.
         HOST_flush_rx();
         return status;
+    case E_BAD_SIZE:
+    case E_BAD_COMMAND:
     default:
         // Proceed with exchange but don't run command function.
+        HOST_flush_rx();
         break;
     }
 
