@@ -1,6 +1,14 @@
 #include "../commands.h"
 #include "../bus/uart/uart.h"
 
+// Primary control bus.
+#define HOST_UART0 U1SELECT
+#define HOST_UART1 U2SELECT
+
+#ifndef PSLAB_HOST
+#define PSLAB_HOST HOST_UART0
+#endif // PSLAB_HOST
+
 enum Status HOST_read(
     uint8_t *const buffer,
     uint16_t const size,
@@ -23,10 +31,10 @@ enum Status HOST_write(
     uint8_t const *const buffer,
     uint16_t const size
 ) {
-    return UART_write(U1SELECT, buffer, size);
+    return UART_write(PSLAB_HOST, buffer, size);
 }
 
 enum Status HOST_flush_rx(void)
 {
-    return UART_flush_rx(U1SELECT);
+    return UART_flush_rx(PSLAB_HOST);
 }
