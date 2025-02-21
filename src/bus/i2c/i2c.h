@@ -100,18 +100,18 @@ extern "C" {
       @Example
         <code>
             #define SLAVE_I2C_GENERIC_RETRY_MAX           100
-            #define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50   // define slave timeout 
- 
+            #define SLAVE_I2C_GENERIC_DEVICE_TIMEOUT      50   // define slave timeout
+
             // initialize the module
             I2C_Initialize();
 
             // write to an EEPROM Device
-        
+
             uint16_t        dataAddress;
-            uint8_t         sourceData[16] = {  0xA0, 0xA1, 0xA2, 0xA3, 
-                                                0xA4, 0xA5, 0xA6, 0xA7, 
-                                                0xA8, 0xA9, 0xAA, 0xAB, 
-                                                0xAC, 0xAD, 0xAE, 0xAF }; 
+            uint8_t         sourceData[16] = {  0xA0, 0xA1, 0xA2, 0xA3,
+                                                0xA4, 0xA5, 0xA6, 0xA7,
+                                                0xA8, 0xA9, 0xAA, 0xAB,
+                                                0xAC, 0xAD, 0xAE, 0xAF };
             uint8_t         *pData;
             uint16_t        nCount;
 
@@ -121,7 +121,7 @@ extern "C" {
 
             I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
 
-            dataAddress = 0x10;             // starting EEPROM address 
+            dataAddress = 0x10;             // starting EEPROM address
             pD = sourceData;                // initialize the source of the data
             nCount = 16;                    // number of bytes to write
 
@@ -140,7 +140,7 @@ extern "C" {
                 // retry sending the transaction
                 timeOut = 0;
                 slaveTimeOut = 0;
- 
+
                 while(status != I2C_MESSAGE_FAIL) {
                     // write one byte to EEPROM (3 is the number of bytes to write)
                     I2C_MasterWrite(writeBuffer,
@@ -158,8 +158,8 @@ extern "C" {
                             break;
                         else
                             slaveTimeOut++;
-                    } 
-                    if ((slaveTimeOut == SLAVE_I2C_GENERIC_DEVICE_TIMEOUT) || 
+                    }
+                    if ((slaveTimeOut == SLAVE_I2C_GENERIC_DEVICE_TIMEOUT) ||
                         (status == I2C_MESSAGE_COMPLETE))
                         break;
 
@@ -189,20 +189,20 @@ extern "C" {
     void I2C_InitializeSTAT(void);
 
     /**
-     *  @Summary 
+     *  @Summary
      *      Initialize I2C interface if it is not initialized before
-     * 
+     *
      *  @Description
      *      This method will help making I2C transactions execute faster by
      *      reinitializing registers only if the settings are new. The only
-     *      setting that can be changed is the baud rate and if it is the 
+     *      setting that can be changed is the baud rate and if it is the
      *      same for a different transactions, this will skip the initialization
      *      process to move right away to transaction.
-     * 
+     *
      *  @Param
      *      baud_rate - Speed at which the communication takes place. Could be
      *      I2C_BAUD_RATE_100KHZ or I2C_BAUD_RATE_400KHZ or I2C_BAUD_RATE_1MHZ
-     * 
+     *
      *  @Param
      *      interrupts - Boolean condition to whether enable or disable
      *      interrupts. Note that it is necessary to enable interrupts with
@@ -210,7 +210,7 @@ extern "C" {
      *      interrupts should be disabled for generic I2C access functions.
      *      Support for generic I2C functions will be depreciated in a future
      *      release.
-     * 
+     *
      *  @Returns
      *      None
      */
@@ -234,10 +234,10 @@ extern "C" {
 
         @Param
             length - The length of the data block to be sent
-    
+
         @Param
             *pdata - A pointer to the block of data to be sent
-    
+
         @Param
             *pstatus - A pointer to the status variable that the i2c driver
                 updates during the execution of the message.
@@ -247,8 +247,8 @@ extern "C" {
 
          @Example
             <code>
-                Refer to I2C_Initialize() and 
-                I2C_MasterRead() for an examples	
+                Refer to I2C_Initialize() and
+                I2C_MasterRead() for an examples
             </code>
      */
     void I2C_MasterWrite(
@@ -272,10 +272,10 @@ extern "C" {
 
         @Param
             address - The address of the i2c peripheral to be accessed
-    
+
         @Param
             length - The length of the data block to be sent
-    
+
         @Param
             *pdata - A pointer to the memory location where received data will
                      be stored
@@ -291,7 +291,7 @@ extern "C" {
             <code>
                 #define MCHP24AA512_RETRY_MAX       100  // define the retry count
                 #define MCHP24AA512_ADDRESS         0x50 // slave device address
-                #define MCHP24AA512_DEVICE_TIMEOUT  50   // define slave timeout 
+                #define MCHP24AA512_DEVICE_TIMEOUT  50   // define slave timeout
 
 
                 uint8_t MCHP24AA512_Read(
@@ -443,7 +443,7 @@ extern "C" {
         @Param
             *ptrb_list - A pointer to an array of transaction requests (TRB).
                 See I2C_TRANSACTION_REQUEST_BLOCK definition for details.
-    
+
         @Param
             *pflag - A pointer to a completion flag.
 
@@ -451,7 +451,7 @@ extern "C" {
             None
 
         @Example
-            <code>  
+            <code>
                 uint8_t EMULATED_EEPROM_Read(uint16_t slaveDeviceAddress,
                                              uint16_t dataAddress,
                                              uint8_t *pData,
@@ -517,7 +517,7 @@ extern "C" {
                             timeOut++;
                     }
                     return (1);
-                }   
+                }
             </code>
      */
     void I2C_MasterTRBInsert(
@@ -559,7 +559,7 @@ extern "C" {
 
         @Example
             <code>
-                Refer to I2C_MasterTRBInsert() for an example	
+                Refer to I2C_MasterTRBInsert() for an example
             </code>
      */
     void I2C_MasterReadTRBBuild(
@@ -602,7 +602,7 @@ extern "C" {
 
         @Example
             <code>
-                Refer to I2C_MasterTRBInsert() for an example	
+                Refer to I2C_MasterTRBInsert() for an example
             </code>
 
      */
@@ -637,12 +637,12 @@ extern "C" {
 
                 // check until queue is empty
                 while(I2C_MasterQueueIsEmpty() == false);
-            
+
                 // now send more data (assume readBuffer is initialized)
                 I2C_MasterRead(readBuffer,
                                3,
                                MCHP24AA512_ADDRESS,
-                               &status);   
+                               &status);
             </code>
      */
     bool I2C_MasterQueueIsEmpty(void);
@@ -670,27 +670,27 @@ extern "C" {
         @Example
             <code>
                 #define MCHP24AA512_ADDRESS    0x50 // slave device address
- 
+
                 // check until queue has space
                 while(I2C_MasterQueueIsFull() == true);
-            
+
                 // now send more data (assume readBuffer is initialized)
                 I2C_MasterRead(readBuffer,
                                3,
                                MCHP24AA512_ADDRESS,
-                               &status); 
+                               &status);
             </code>
      */
     bool I2C_MasterQueueIsFull(void);
-    
+
     /**
         @Summary
             This function writes and control data transfer from master(PSLab) to
             a slave device.
 
         @Description
-            Using primitive I2C functions, this method initiates a multiple write 
-            transaction and retry and wait until it is either failed or completed. 
+            Using primitive I2C functions, this method initiates a multiple write
+            transaction and retry and wait until it is either failed or completed.
             The return value will show if it's failed or not.
 
         @Preconditions
@@ -705,14 +705,14 @@ extern "C" {
         @Param
             address - The address of the i2c peripheral to be accessed
      */
-    response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address);
+    enum Status I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address);
 
     /**
         @Summary
             This function reads consecutive registers from a slave device
 
         @Description
-            Using primitive I2C functions, this method initiates a multiple read 
+            Using primitive I2C functions, this method initiates a multiple read
             transaction and retry and wait until it is either failed or completed.
             The return value will show if it's failed or not.
 
@@ -731,7 +731,7 @@ extern "C" {
         @Param
             length - The length of the data block to be received
      */
-    response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length);
+    enum Status I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length);
 
     /***************************************************************************
      * Commands for state machine
@@ -750,7 +750,12 @@ extern "C" {
         @Return
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
-    response_t I2C_CommandStart(void);
+    enum Status I2C_command_start(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -765,7 +770,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandStop(void);
+    enum Status I2C_command_stop(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -781,14 +791,19 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandWait(void);
+    enum Status I2C_command_wait(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
             This function sends out a byte over I2C bus
 
         @Description
-            This function takes one argument over serial to transmit the data 
+            This function takes one argument over serial to transmit the data
             over the I2C bus using raw I2C commands.
             1. (uint8) data
                Data byte the needs to be transferred to slave device
@@ -799,15 +814,20 @@ extern "C" {
         @Return
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
-    response_t I2C_CommandSend(void);
+    enum Status I2C_command_send(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
             This function sends out a byte over I2C bus without waiting for ACK
 
         @Description
-            This function takes one argument over serial to transmit the data 
-            over the I2C bus using raw I2C commands without waiting for an 
+            This function takes one argument over serial to transmit the data
+            over the I2C bus using raw I2C commands without waiting for an
             acknowledgement from the slave device.
             1. (uint8) data
                Data byte the needs to be transferred to slave device
@@ -818,7 +838,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandSendBurst(void);
+    enum Status I2C_command_send_burst(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -836,7 +861,12 @@ extern "C" {
         @Return
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
-    response_t I2C_CommandRestart(void);
+    enum Status I2C_command_restart(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -855,7 +885,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandReadMore(void);
+    enum Status I2C_command_read_more(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -873,7 +908,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandReadEnd(void);
+    enum Status I2C_command_read_end(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -891,7 +931,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandConfig(void);
+    enum Status I2C_command_config(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -907,14 +952,19 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandStatus(void);
+    enum Status I2C_command_status(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
             This function reads a continous byte stream from slave device
 
         @Description
-            This function takes three argument over serial to read the data 
+            This function takes three argument over serial to read the data
             over the I2C bus using raw I2C commands and the data is transmitted
             back to host over serial byte by byte.
             1. (uint8) device
@@ -930,14 +980,19 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandReadBulk(void);
+    enum Status I2C_command_read_bulk(
+        uint8_t *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
             This function writes a continous byte stream to slave device
 
         @Description
-            This function initially takes two argument over serial to write the 
+            This function initially takes two argument over serial to write the
             data over the I2C bus using raw I2C commands.
             1. (uint8) device
                Slave device address without tamperting the R/W bit (LSB)
@@ -952,14 +1007,19 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandWriteBulk(void);
+    enum Status I2C_command_write_bulk(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
             This function enables I2C SMBus
 
         @Description
-            This function takes no argument over serial. It will enable the 
+            This function takes no argument over serial. It will enable the
             system management bus subprotocol
 
         @Preconditions
@@ -968,14 +1028,19 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandEnableSMBus(void);
+    enum Status I2C_command_enable_smbus(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
             This function disables I2C SMBus
 
         @Description
-            This function takes no argument over serial. It will disable the 
+            This function takes no argument over serial. It will disable the
             system management bus subprotocol
 
         @Preconditions
@@ -984,7 +1049,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandDisableSMBus(void);
+    enum Status I2C_command_disable_smbus(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -1000,7 +1070,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandInit(void);
+    enum Status I2C_command_init(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
         @Summary
@@ -1019,7 +1094,12 @@ extern "C" {
         @Return
             SUCCESS
      */
-    response_t I2C_CommandPullDown(void);
+    enum Status I2C_command_pull_down(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /***************************************************************************
      * Support functions for state machine commands
@@ -1068,7 +1148,7 @@ extern "C" {
             This function sends out an acknowldegement signal
 
         @Description
-            This function uses timers to transmit an acknowledgement signal to 
+            This function uses timers to transmit an acknowledgement signal to
             slave device
 
         @Preconditions
@@ -1081,7 +1161,7 @@ extern "C" {
             This function sends out a negative acknowldegement signal
 
         @Description
-            This function uses timers to transmit a negative acknowledgement 
+            This function uses timers to transmit a negative acknowledgement
             signal to slave devices indicating it's a transaction complete from
             master device
 
@@ -1110,7 +1190,7 @@ extern "C" {
         @Description
             This function takes a byte as input argument and pass it onto I2C bus
             and wait until it is out
-        
+
         @Params
             data: uint8_t data byte
 
@@ -1142,19 +1222,19 @@ extern "C" {
     inline static void I2C_InterruptDisable(void) {
         IEC3bits.MI2C2IE = 0;
     }
-    
+
     inline static void I2C_InterruptEnable(void) {
         IEC3bits.MI2C2IE = 1;
     }
-    
+
     inline static void I2C_InterruptFlagClear(void) {
         IFS3bits.MI2C2IF = 0;
     }
-    
+
     inline static void I2C_InterruptFlagSet(void) {
         IFS3bits.MI2C2IF = 1;
     }
-    
+
     // Getter and setter for variables
     void I2C_SetBaudRate(I2C_BAUD_RATES V);
     I2C_BAUD_RATES I2C_GetBaudRate(void);
