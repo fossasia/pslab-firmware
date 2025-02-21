@@ -64,6 +64,35 @@ enum Status BUFFER_read_from_channel(
     uint16_t const end = start + counter;
     return read(start, end, rets, rets_size);
 }
+
+/**
+ * @brief Combine lower and upper parts of u32 after DMA capture.
+ * @details
+ *   DMA works with u16, so when capturing u32 values, the sample buffer is
+ *   split into channels * 2 sections, with one DMA targetting the lower
+ *   section and one targetting the upper section. After capture is complete,
+ *   the u32 values are therefore fragmented between these sections. This
+ *   function defragments them.
+ *
+ * @param channels
+ * @param samples
+ */
+void BUFFER_defragment_dma_u32(uint16_t const channels, uint16_t const samples)
+{
+    for (uint8_t c = 0; c < channels; ++c) {
+        uint8_t const num_channels = 4;
+        uint16_t const idx_l = 2 * c * (BUFFER_SIZE / num_channels);
+        uint16_t const idx_h = (2 * c + 1) * (BUFFER_SIZE / num_channels);
+        uint16_t tmp = BUFFER[idx_l];
+
+        for (uint16_t s = 0; s < samples; ++s) {
+            uint32_t const sample = (
+                (uint32_t)tmp +
+                ((uint32_t)BUFFER[idx_h + s] << 16)
+            );
+            tmp = BUFFER[idx_l + s + 1];
+            ((uint32_t *)BUFFER)[idx_l + s] = sample;
+        }
     }
 }
 
