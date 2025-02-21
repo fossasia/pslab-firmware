@@ -2,6 +2,7 @@
 #include "../../bus/uart/uart.h"
 #include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"
+#include "../../transport/packet_handler.h"
 
 /**
   I2C Driver Queue Status Type
@@ -599,7 +600,7 @@ bool I2C_MasterQueueIsFull(void) {
     return ((bool) i2c_object.trStatus.s.full);
 }
 
-response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
+enum Status I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
 
     I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
 
@@ -632,7 +633,7 @@ response_t I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
     return SUCCESS;
 }
 
-response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length) {
+enum Status I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length) {
 
     I2C_TRANSACTION_REQUEST_BLOCK readTRB[2];
     I2C_MESSAGE_STATUS status = I2C_MESSAGE_PENDING;
@@ -664,14 +665,22 @@ response_t I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_
             status == I2C_MESSAGE_ADDRESS_NO_ACK ||
             status == I2C_DATA_NO_ACK ||
             status == I2C_LOST_STATE) {
-        return FAILED;
+        return E_FAILED;
     }
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandStart(void) {
+enum Status I2C_command_start(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    if (args_size != 1) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint8_t address = UART1_Read();
+    uint8_t const address = *args;
 
     I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     I2C_StartSignal();
@@ -682,85 +691,155 @@ response_t I2C_CommandStart(void) {
     return SUCCESS | (I2C2STATbits.ACKSTAT << 4);
 }
 
-response_t I2C_CommandStop(void) {
+enum Status I2C_command_stop(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
     I2C_StopSignal();
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandWait(void) {
+enum Status I2C_command_wait(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
     I2C_WaitSignal();
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandSend(void) {
-
-    uint8_t data = UART1_Read();
-    I2C_Transmit(data);
-    if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
-        return FAILED | I2C2STATbits.ACKSTAT;
+enum Status I2C_command_send(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    if (args_size != 1) {
+        return E_BAD_ARGSIZE;
     }
-    return SUCCESS | I2C2STATbits.ACKSTAT;
+
+    uint8_t data = *args;
+    I2C_Transmit(data);
+    **rets = (uint8_t)I2C2STATbits.ACKSTAT;
+    *rets_size = 1;
+
+    if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
+        return E_FAILED;
+    }
+    return E_OK;
 }
 
-response_t I2C_CommandSendBurst(void) {
+enum Status I2C_command_send_burst(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    if (args_size != 1) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint8_t data = UART1_Read();
+    uint8_t const data = *args;
     I2C_Transmit(data);
 
-    return DO_NOT_BOTHER;
+    return E_OK;
 }
 
-response_t I2C_CommandRestart(void) {
+enum Status I2C_command_restart(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    if (args_size != 1) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint8_t address = UART1_Read();
+    uint8_t const address = *args;
     I2C_RestartSignal();
     I2C_Transmit(address);
+    **rets = (uint8_t)I2C2STATbits.ACKSTAT;
+    *rets_size = 1;
+
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
-        return FAILED | (I2C2STATbits.ACKSTAT << 4);
+        return E_FAILED;
     }
-    return SUCCESS | (I2C2STATbits.ACKSTAT << 4);
+
+    return E_OK;
 }
 
-response_t I2C_CommandReadMore(void) {
-
-    uint8_t data = I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE);
-    UART1_Write(data);
-
-    return SUCCESS;
+enum Status I2C_command_read_more(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    uint8_t const data = I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE);
+    **rets = data;
+    *rets_size = 1;
+    return E_OK;
 }
 
-response_t I2C_CommandReadEnd(void) {
-
-    uint8_t data = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
-    UART1_Write(data);
-
-    return SUCCESS;
+enum Status I2C_command_read_end(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    uint8_t const data = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
+    **rets = data;
+    *rets_size = 1;
+    return E_OK;
 }
 
-response_t I2C_CommandConfig(void) {
+enum Status I2C_command_config(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    if (args_size != 2) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint16_t baud_rate = UART1_ReadInt();
+    uint16_t const baud_rate = *(uint16_t const *const)args;
     I2C_InitializeIfNot(baud_rate, I2C_DISABLE_INTERRUPTS);
-
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandStatus(void) {
-
-    UART1_WriteInt(I2C2STAT);
-
-    return SUCCESS;
+enum Status I2C_command_status(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    *rets = (uint8_t *)&I2C2STAT;
+    *rets_size = 2;
+    return E_OK;
 }
 
-response_t I2C_CommandReadBulk(void) {
+enum Status I2C_command_read_bulk(
+    uint8_t *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    if (args_size != 3) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint8_t device = UART1_Read();
-    uint8_t address = UART1_Read();
-    uint8_t count = UART1_Read();
+    uint8_t const device = args[0];
+    uint8_t const address = args[1];
+    uint8_t count = args[2];
 
     if (!count) {
-        return SUCCESS;
+        return E_OK;
     }
+
+    // count is uint8_t and will always fit in payload buffer.
 
     I2C_StartSignal();
     I2C_Transmit(device << 1);
@@ -768,73 +847,106 @@ response_t I2C_CommandReadBulk(void) {
     I2C_RestartSignal();
     I2C_Transmit((device << 1) | 1);
 
+    *rets = args;  // Write output to payload buffer.
+    *rets_size = count;
+
     while (--count) {
-        UART1_Write(I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
+        **rets++ = (I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
     }
-    UART1_Write(I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE));
+    **rets = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
 
     I2C_StopSignal();
-
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandWriteBulk(void) {
+enum Status I2C_command_write_bulk(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    if (args_size < 2) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint8_t device = UART1_Read();
-    uint8_t count = UART1_Read();
+    uint8_t const device = args[0];
+    uint8_t const count = args[1];
+
+    if (args_size != 2U + count) {
+        return E_BAD_ARGSIZE;
+    }
+
+    uint8_t const *data = args + 2;
 
     I2C_StartSignal();
     I2C_Transmit(device << 1);
 
-    uint8_t i;
-    for (i = 0; i < count; i++) {
-        I2C_Transmit(UART1_Read());
+    for (uint8_t i = 0; i < count; i++) {
+        I2C_Transmit(*data++);
     }
 
     I2C_StopSignal();
-
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandEnableSMBus(void) {
+enum Status I2C_command_enable_smbus(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
 
     I2C_InitializeSTAT();
     // Enable SMBus input thresholds
     I2C2CONbits.SMEN = 1;
     // Enables I2C2 module and configure SDA2 and SCL2 as serial port pins
     I2C2CONbits.I2CEN = 1;
-
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandDisableSMBus(void) {
+enum Status I2C_command_disable_smbus(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
 
     I2C_InitializeSTAT();
     // Disable SMBus input thresholds
     I2C2CONbits.SMEN = 0;
     // Enables I2C2 module and configure SDA2 and SCL2 as serial port pins
     I2C2CONbits.I2CEN = 1;
-
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandInit(void) {
+enum Status I2C_command_init(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
 
     I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t I2C_CommandPullDown(void) {
+enum Status I2C_command_pull_down(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    if (args_size != 2) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint16_t delay = UART1_ReadInt();
-
+    uint16_t const delay = *(uint16_t const *const)args;
     I2C_SCL_SetDigitalOutput();
     I2C_SCL_SetLow();
     DELAY_us(delay);
     I2C_SCL_SetHigh();
     I2C_SCL_SetDigitalInput();
-
-    return SUCCESS;
+    return E_OK;
 }
 
 void I2C_StartSignal(void) {

@@ -22,8 +22,8 @@ static union {
     };
     uint8_t const version[SEMVERS];
 } const VERSION_FW = {{
-    .major = 3,
-    .minor = 1,
+    .major = 4,
+    .minor = 0,
     .patch = 0
 }};
 

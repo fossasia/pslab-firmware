@@ -3,7 +3,7 @@
 #include <xc.h>
 
 #include "../../commands.h"
-#include "../uart/uart.h"
+#include "../../transport/host.h"
 #include "spi.h"
 
 /*********/
@@ -110,57 +110,74 @@ static bool exchange_single(const tSPI_CS cs, void* const data)
 }
 
 /**
- * @brief Wrapper to make UART_Read() type-compatible with UART_ReadInt.
- * @details When reading or writing to serial, we want to use either
- *          UART_Read/Write() or UART_ReadInt/WriteInt() depending on the
+ * @brief Wrapper to make HOST_read_u8 type-compatible with HOST_read_u16.
+ * @details When reading or writing to host, we want to use either
+ *          HOST_read/write_u8 or HOST_read/write_u16 depending on the
  *          value of MODE16. A pair of function pointers are set to either
  *          pair, but they must be type compatible for this to work.
 */
-static uint16_t uart_read_wrapper(const EUxSelect usel)
+static enum Status host_read_wrapper(uint16_t *const u16)
 {
-    return (uint16_t)UART_Read(usel);
+    return HOST_read_u8((uint8_t *const)u16);
 }
 
 /**
- * @brief Wrapper to make UART_Write() type-compatible with UART_WriteInt.
+ * @brief Wrapper to make HOST_write_u8 type-compatible with HOST_write_u16.
  */
-static void uart_write_wrapper(const EUxSelect usel, const uint16_t data)
+static enum Status host_write_wrapper(uint16_t const u16)
 {
-    UART_Write(usel, (uint8_t)data);
+    return HOST_write_u8((uint8_t const)u16);
 }
 
 /**
- * @brief Read and/or write data from UART to SPI.
- * @param usel One of U1SELECT or U2SELECT.
+ * @brief Read and/or write data from HOST to SPI.
  * @param dir One of READ, WRITE, EXCHANGE.
  * @param count Number of bytes/words to read and/or write.
 */
-static void uart_exchange(
-    const EUxSelect usel,
+static enum Status host_exchange(
     const enum Direction dir,
     const uint16_t count
 ) {
-     uint16_t (*uart_read)(EUxSelect usel);
-     void (*uart_write)(EUxSelect usel, uint16_t data);
+     enum Status (*host_read)(uint16_t *const u16);
+     enum Status (*host_write)(uint16_t const u16);
+     enum Status status = E_OK;
 
-    if (SPI1CON1bits.MODE16 == BYTE) {
-        uart_read = uart_read_wrapper;
-        uart_write = uart_write_wrapper;
-    } else { // WORD
-        uart_read = UART_ReadInt;
-        uart_write = UART_WriteInt;
+    switch (SPI1CON1bits.MODE16) {
+    case BYTE:
+        host_read = host_read_wrapper;
+        host_write = host_write_wrapper;
+        break;
+    case WORD:
+        host_read = HOST_read_u16;
+        host_write = HOST_write_u16;
+        break;
+    default:
+        status = E_BAD_ARGUMENT;
+        break;
     }
 
     for (size_t i = 0; i < count; ++i) {
-        if (dir == READ) {
-            uart_write(usel, exchange(0));
-        }
-        else if (dir == WRITE) {
-            exchange(uart_read(usel));
-        } else { // EXCHANGE
-            uart_write(usel, exchange(uart_read(usel)));
+        uint16_t data = 0;
+
+        switch (dir) {
+        case READ:
+            status |= host_write(exchange(0));
+            break;
+        case WRITE:
+            status |= host_read(&data);
+            exchange(data);
+            break;
+        case EXCHANGE:
+            status |= host_read(&data);
+            status |= host_write(exchange(data));
+            break;
+        default:
+            status = E_BAD_ARGUMENT;
+            break;
         }
     }
+
+    return status;
 }
 
 /**
@@ -169,30 +186,38 @@ static void uart_exchange(
  *          select pin, followed by the number of bytes/words to trancieve.
  *          They also do some checks to make sure the bus is configured
  *          appropriately. Since these tasks are the same, they are handled in
- *          this function. It return a response_t which the calling function
+ *          this function. It returns a Status which the calling function
  *          can return in turn.
  * @return FAILED if MODE16 is not the same as width.
  *         FAILED if the bus is already open.
  *         SUCCESS otherwise.
 */
-static response_t command(const enum Direction dir, const enum Width width)
-{
-    tSPI_CS cs = UART1_Read();
-    uint16_t count = UART1_ReadInt();
+static enum Status command(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    enum Direction const dir,
+    enum Width const width
+) {
+    if (args_size != 3) {
+        return E_BAD_ARGSIZE;
+    }
+
+    tSPI_CS cs = args[0];
+    uint16_t count = *(uint16_t *)(args + 1);
 
     if (SPI1CON1bits.MODE16 != width)
     {
-        return FAILED;
+        return E_BAD_ARGUMENT;
     }
 
     if (!open(cs))
     {
-        return FAILED;
+        return E_FAILED;
     }
 
-    uart_exchange(U1SELECT, dir, count);
+    enum Status const status = host_exchange(dir, count);
     close();
-    return SUCCESS;
+    return status;
 }
 
 /********************/
@@ -310,49 +335,82 @@ bool SPI_exchange_int(const tSPI_CS cs, uint16_t* const data)
 /* Command functions */
 /*********************/
 
-response_t SPI_conf(void)
-{
-    union
-    {
+enum Status SPI_conf(
+    uint8_t const *args,
+    uint16_t args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union {
         SPI1CON1BITS con1bits;
         uint16_t con1;
     } conf;
-    conf.con1 = UART1_ReadInt();
+
+    if (args_size != sizeof(conf)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    conf.con1 = *(uint16_t *)args;
     bool conf_ok = SPI_configure(conf.con1bits);
 
     if (conf_ok)
     {
-        return SUCCESS;
+        return E_OK;
     }
-    return FAILED;
+
+    return E_FAILED;
 }
 
-response_t SPI_read_bytes(void)
-{
-    return command(READ, BYTE);
+enum Status SPI_read_bytes(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    return command(args, args_size, READ, BYTE);
 }
 
-response_t SPI_write_bytes(void)
-{
-    return command(WRITE, BYTE);
+enum Status SPI_write_bytes(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    return command(args, args_size, WRITE, BYTE);
 }
 
-response_t SPI_exchange_bytes(void)
-{
-    return command(EXCHANGE, BYTE);
+enum Status SPI_exchange_bytes(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    return command(args, args_size, EXCHANGE, BYTE);
 }
 
-response_t SPI_read_ints(void)
-{
-    return command(READ, WORD);
+enum Status SPI_read_ints(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    return command(args, args_size, READ, WORD);
 }
 
-response_t SPI_write_ints(void)
-{
-    return command(WRITE, WORD);
+enum Status SPI_write_ints(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    return command(args, args_size, WRITE, WORD);
 }
 
-response_t SPI_exchange_ints(void)
-{
-    return command(EXCHANGE, WORD);
+enum Status SPI_exchange_ints(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    return command(args, args_size, EXCHANGE, WORD);
 }

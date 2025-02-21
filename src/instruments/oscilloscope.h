@@ -1,6 +1,22 @@
 #ifndef OSCILLOSCOPE_H
 #define	OSCILLOSCOPE_H
 
+#include "../commands.h"
+
+enum Status OSCILLOSCOPE_capture(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
+
+enum Status OSCILLOSCOPE_fetch_samples(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
+
 /**
  * @brief Capture samples on a single channel.
  *

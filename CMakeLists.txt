@@ -12,8 +12,10 @@ target_include_directories(pslab-firmware.elf
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
 
 target_compile_options(pslab-firmware.elf PRIVATE
+  -std=c99
   -Wall
   -Wextra
+  -Wno-missing-field-initializers
   -mno-eds-warn)
 
 target_link_options(pslab-firmware.elf PRIVATE

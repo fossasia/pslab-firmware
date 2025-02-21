@@ -158,7 +158,12 @@ bool SPI_exchange_int(const tSPI_CS cs, uint16_t* const data);
  * @param conf uint16_t corresponding to SPI1CON1, see datasheet.
  * @return SUCCESS if bus is available, else FAILED.
  */
-response_t SPI_conf(void);
+enum Status SPI_conf(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Read bytes from the SPI bus.
@@ -170,7 +175,12 @@ response_t SPI_conf(void);
  *         FAILED if bus is already open.
  *         <count> bytes followed by SUCCESS otherwise.
  */
-response_t SPI_read_bytes(void);
+enum Status SPI_read_bytes(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Write bytes to the SPI bus.
@@ -183,7 +193,12 @@ response_t SPI_read_bytes(void);
  *         FAILED if bus is already open.
  *         SUCCESS otherwise.
  */
-response_t SPI_write_bytes(void);
+enum Status SPI_write_bytes(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Read and write bytes from the SPI bus.
@@ -196,7 +211,12 @@ response_t SPI_write_bytes(void);
  *         FAILED if bus is already open.
  *         <count> bytes followed by SUCCESS otherwise.
  */
-response_t SPI_exchange_bytes(void);
+enum Status SPI_exchange_bytes(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Read ints from the SPI bus.
@@ -208,7 +228,12 @@ response_t SPI_exchange_bytes(void);
  *         FAILED if bus is already open.
  *         <2*count> bytes followed by SUCCESS otherwise.
  */
-response_t SPI_read_ints(void);
+enum Status SPI_read_ints(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Write ints to the SPI bus.
@@ -221,7 +246,12 @@ response_t SPI_read_ints(void);
  *         FAILED if bus is already open.
  *         SUCCESS otherwise.
  */
-response_t SPI_write_ints(void);
+enum Status SPI_write_ints(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Read and write ints from the SPI bus.
@@ -234,6 +264,11 @@ response_t SPI_write_ints(void);
  *         FAILED if bus is already open.
  *         <2*count> bytes followed by SUCCESS otherwise.
  */
-response_t SPI_exchange_ints(void);
+enum Status SPI_exchange_ints(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 #endif // _SPI_H

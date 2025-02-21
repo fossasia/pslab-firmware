@@ -7,68 +7,145 @@
 // Space in memory to store data.
 uint16_t volatile __attribute__((section(".adc_buffer"), far)) BUFFER[BUFFER_SIZE];
 
-response_t BUFFER_Retrieve(void) {
-    
-    uint16_t volatile* idx = &BUFFER[UART1_ReadInt()];
-    uint16_t volatile* end = idx + UART1_ReadInt();
-
-    LED_SetLow();
-    while (idx != end) UART1_WriteInt(*(idx++));
-    LED_SetHigh();
-    
-    return SUCCESS;
-}
-
-response_t BUFFER_FetchInt(void) {
-    
-    uint16_t counter = UART1_ReadInt();
-    uint8_t channel = UART1_Read();
-    
-    LED_SetLow();
-    uint16_t i;
-    for (i = 0; i < counter; i++) {
-        UART1_WriteInt(BUFFER[i + channel * (BUFFER_SIZE / 4)]);
+static enum Status read(
+    uint16_t const start,
+    uint16_t const end,
+    uint8_t volatile **const out_samples,
+    uint16_t *const out_samples_size
+) {
+    if (start > end) {
+        return E_BAD_ARGUMENT;
     }
-    LED_SetHigh();
-    
-    return SUCCESS;
-}
 
-response_t BUFFER_FetchLong(void) {
-    
-    uint16_t counter = UART1_ReadInt();
-    uint8_t channel = UART1_Read();
-    
-    LED_SetLow();
-    uint16_t i;
-    for (i = 0; i < counter; i++) {
-        UART1_WriteInt(BUFFER[i + 2 * channel * (BUFFER_SIZE / 4)]);
-        UART1_WriteInt(BUFFER[i + (2 * channel + 1) * (BUFFER_SIZE / 4)]);
+    if (end > BUFFER_SIZE) {
+        return E_BAD_ARGUMENT;
     }
-    LED_SetHigh();
-    
-    return SUCCESS;
+
+    *out_samples = (uint8_t volatile *const)(&BUFFER + start);
+    *out_samples_size = end - start;
+    return E_OK;
 }
 
-response_t BUFFER_Fill(void) {
-    
-    uint16_t start = UART1_ReadInt();
-    uint16_t end = UART1_ReadInt();
-    
-    uint16_t i;
-    for (i = start; i < start + end; i++) {
-        BUFFER[i] = UART1_ReadInt();
+enum Status BUFFER_read(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t volatile **const rets,
+    uint16_t *const rets_size
+) {
+    uint16_t start = 0;
+    uint16_t end = 0;
+
+    if (args_size != (sizeof(start) + sizeof(end))) {
+        return E_BAD_ARGSIZE;
     }
-    
-    return SUCCESS;
+
+    start = ((uint16_t *)args)[0];
+    end = ((uint16_t *)args)[1];
+    return read(start, end, rets, rets_size);
 }
 
-response_t BUFFER_Clear(void) {
-    
-    uint16_t start = UART1_ReadInt();
-    uint16_t end = UART1_ReadInt();
-    
+enum Status BUFFER_read_from_channel(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t volatile **const rets,
+    uint16_t *const rets_size
+) {
+    uint16_t counter = 0;
+    uint8_t channel = 0;
+
+    if (args_size != (sizeof(counter) + sizeof(channel))) {
+        return E_BAD_ARGSIZE;
+    }
+
+    counter = ((uint16_t *)args)[0];
+    channel = args[2];
+    uint8_t const num_channels = 4;
+    uint16_t const start = channel * (BUFFER_SIZE / num_channels);
+    uint16_t const end = start + counter;
+    return read(start, end, rets, rets_size);
+}
+
+/**
+ * @brief Combine lower and upper parts of u32 after DMA capture.
+ * @details
+ *   DMA works with u16, so when capturing u32 values, the sample buffer is
+ *   split into channels * 2 sections, with one DMA targetting the lower
+ *   section and one targetting the upper section. After capture is complete,
+ *   the u32 values are therefore fragmented between these sections. This
+ *   function defragments them.
+ *
+ * @param channels
+ * @param samples
+ */
+void BUFFER_defragment_dma_u32(uint16_t const channels, uint16_t const samples)
+{
+    for (uint8_t c = 0; c < channels; ++c) {
+        uint8_t const num_channels = 4;
+        uint16_t const idx_l = 2 * c * (BUFFER_SIZE / num_channels);
+        uint16_t const idx_h = (2 * c + 1) * (BUFFER_SIZE / num_channels);
+        uint16_t tmp = BUFFER[idx_l];
+
+        for (uint16_t s = 0; s < samples; ++s) {
+            uint32_t const sample = (
+                (uint32_t)tmp +
+                ((uint32_t)BUFFER[idx_h + s] << 16)
+            );
+            tmp = BUFFER[idx_l + s + 1];
+            ((uint32_t *)BUFFER)[idx_l + s] = sample;
+        }
+    }
+}
+
+enum Status BUFFER_write(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t volatile **const rets,
+    uint16_t *const rets_size
+) {
+
+    uint16_t start = 0;
+    uint16_t count = 0;
+
+    if (args_size != (sizeof(start) + sizeof(count))) {
+        return E_BAD_ARGSIZE;
+    }
+
+    if (start + count > BUFFER_SIZE) {
+        return E_BAD_ARGUMENT;
+    }
+
+    start = ((uint16_t *)args)[0];
+    count = ((uint16_t *)args)[1];
+    *rets = (uint8_t volatile *const)(&BUFFER + start);
+    *rets_size = count;
+    return E_OK;
+}
+
+enum Status BUFFER_clear(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **const rets,
+    __attribute__ ((unused)) uint16_t *const rets_size
+) {
+
+    uint16_t start = 0;
+    uint16_t end = 0;
+
+    if (args_size != (sizeof(start) + sizeof(end))) {
+        return E_BAD_ARGSIZE;
+    }
+
+    start = ((uint16_t *)args)[0];
+    end = ((uint16_t *)args)[1];
+
+    if (start > end) {
+        return E_BAD_ARGUMENT;
+    }
+
+    if (end > BUFFER_SIZE) {
+        return E_BAD_ARGUMENT;
+    }
+
     memset((void *) &BUFFER[start], 0, (end - start) * sizeof(int));
-    
-    return SUCCESS;
+    return E_OK;
 }
