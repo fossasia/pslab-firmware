@@ -50,6 +50,8 @@ extern "C" {
         uint16_t *rets_size
     );
 
+    void BUFFER_defragment_dma_u32(uint16_t channels, uint16_t samples);
+
     /**
     * @brief Populate BUFFER array
     *
