@@ -8,7 +8,7 @@
 
 #define SEMVERS 3
 
-static uint8_t const VERSION_HW[] =
+static char const VERSION_HW[] =
 #ifndef V5_HW
     "PSLab V6";
 #else
@@ -27,41 +27,71 @@ static union {
     .patch = 0
 }};
 
-response_t DEVICE_GetVersion(void) {
-    for (size_t i = 0; i < sizeof(VERSION_HW) - 1; ++i) {
-        UART1_Write(VERSION_HW[i]);
-    }
-
-    UART1_Write('\n');
-
-    return DO_NOT_BOTHER;
+enum Status DEVICE_get_hw_version(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    *rets = (uint8_t *const)&VERSION_HW;
+    *rets_size = sizeof(VERSION_HW);
+    return E_OK;
 }
 
-response_t DEVICE_get_fw_version(void) {
-    for (size_t i = 0; i < SEMVERS; ++i) {
-        UART1_Write(VERSION_FW.version[i]);
-    }
-
-    return DO_NOT_BOTHER;
+enum Status DEVICE_get_fw_version(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    *rets = (uint8_t *const)&VERSION_FW.version;
+    *rets_size = sizeof(VERSION_FW);
+    return E_OK;
 }
 
-response_t DEVICE_Reset(void) {
+__attribute__((noreturn)) enum Status DEVICE_reset(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
     __asm__ volatile ("reset");
-
-    return DO_NOT_BOTHER;
+    __builtin_unreachable();
 }
 
-response_t DEVICE_ReadRegisterData(void) {
-    uint16_t *address = (uint16_t *) (UART1_ReadInt() & 0xFFFF);
-    UART1_WriteInt(*address);
+enum Status DEVICE_read_register(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    uint8_t volatile **rets,
+    uint16_t *rets_size
+) {
+    uint16_t volatile *address = NULL;
 
-    return SUCCESS;
+    if (args_size != sizeof(address)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    address = *(uint16_t volatile *const *const)args;
+   *rets = (uint8_t volatile  *const)address;
+   *rets_size = sizeof(*address);
+    return E_OK;
 }
 
-response_t DEVICE_WriteRegisterData(void) {
-    uint16_t *address = (uint16_t *) (UART1_ReadInt() & 0xFFFF);
-    uint16_t data = UART1_ReadInt();
+enum Status DEVICE_write_register(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    uint16_t volatile *address = NULL;
+    uint16_t data = 0;
+
+    if (args_size != (sizeof(address) + sizeof(data))) {
+        return E_BAD_ARGSIZE;
+    }
+
+    address = *(uint16_t volatile *const *const)args;
+    data = *(uint16_t const *const)(args + sizeof(address));
     *address = data;
-
-    return SUCCESS;
+    return E_OK;
 }

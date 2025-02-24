@@ -7,34 +7,59 @@ extern "C" {
 
     /**
      * @brief Get hardware version.
-     * @return DO_NOT_BOTHER
+     * @return Hardware version string
      */
-    response_t DEVICE_GetVersion(void);
-    
+    enum Status DEVICE_get_hw_version(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
+
     /**
      * @brief Get firmware version.
      * @return MAJOR (uint8_t), MINOR (uint8_t), PATCH (uint8_t)
      */
-    response_t DEVICE_get_fw_version(void);
+    enum Status DEVICE_get_fw_version(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
     /**
      * @brief Reset the device by moving program counter to 0x0000
-     * @return DO_NOT_BOTHER
+     * @return No return
      */
-    response_t DEVICE_Reset(void);
-    
+    enum Status DEVICE_reset(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
+
     /**
      * @brief Read content from Special Function Registers
-     * @return SUCCESS
+     * @return Register contents
      */
-    response_t DEVICE_ReadRegisterData(void);
-    
+    enum Status DEVICE_read_register(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t volatile **rets,
+        uint16_t *rets_size
+    );
+
     /**
-     * @brief Write content to Special Function Registers given the register 
+     * @brief Write content to Special Function Registers given the register
      * address and data as two integers
-     * @return SUCCESS
+     * @return
      */
-    response_t DEVICE_WriteRegisterData(void);
+    enum Status DEVICE_write_register(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
 #ifdef	__cplusplus
 }
