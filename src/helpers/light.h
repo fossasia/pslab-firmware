@@ -4,30 +4,30 @@
 #ifdef	__cplusplus
 extern "C" {
 #endif
-    
+
     /**
      * @brief Control the color of RGB LED
-     * 
+     *
      * @description
      * Lights up the RGB LED. This method takes around 61.5 us to finish.
-     * 
+     *
      * @param
      * red: red color level (0-255)
      * green: green color level (0-255)
      * blue: blue color level (0-255)
-     * 
+     *
      * @example
      * Light_RGB(255, 0, 0); will light up red color
      */
     void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue);
-    
+
     /**
      * @brief Controls the on-board RGB LED
-     * 
+     *
      * @description
      * This routine takes three types of arguments over serial.
      * 1. (uint8) count
-     *    Number of color levels. This has to be a multiple of 3 since each LED 
+     *    Number of color levels. This has to be a multiple of 3 since each LED
      *    has three colors to control.
      * 2. (uint8 [count]) color levels
      *    This a sequence of bytes with the amount determined by count variable.
@@ -39,13 +39,18 @@ extern "C" {
      *    2: SQ2,
      *    3: SQ3,
      *    4: SQ4
-     * 
+     *
      * It will not return anything over serial. An acknowledgment will be passed.
-     * 
+     *
      * @return none
      */
-    response_t LIGHT_RGBPin(void);
-    
+    enum Status LIGHT_rgb_pin(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
+
 #ifdef	__cplusplus
 }
 #endif

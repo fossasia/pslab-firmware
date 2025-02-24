@@ -61,18 +61,35 @@ void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue) {
     RGBCommon(red, green, blue, RGB_LED_Setter);
 }
 
-response_t LIGHT_RGBPin(void) {
-    uint8_t count = UART1_Read();
-    uint8_t colors[count];
-    
-    uint8_t i;
-    for (i = 0; i < count; i++) {
-        colors[i] = UART1_Read();
+enum Status LIGHT_rgb_pin(
+    uint8_t const *args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    uint8_t count = 0;
+
+    if (args_size < sizeof(count)) {
+        return E_BAD_ARGSIZE;
     }
-    PINSELECT pin = UART1_Read();
-    
+
+    count = *args++;
+    PINSELECT pin = ONBOARD;
+
+    if (args_size != sizeof(count) + count + sizeof(uint8_t)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    uint8_t colors[count];
+
+    uint8_t i = 0;
+    for (i = 0; i < count; ++i) {
+        colors[i] = args[i];
+    }
+    pin = args[i];
+
     INTERRUPT_GlobalDisable();
-    
+
     for (i = 0; i < count; i = i + 3) {
         switch (pin) {
         case ONBOARD:
@@ -94,8 +111,8 @@ response_t LIGHT_RGBPin(void) {
             break;
         }
     }
-    
+
     INTERRUPT_GlobalEnable();
-    
-    return SUCCESS;
+
+    return E_OK;
 }
