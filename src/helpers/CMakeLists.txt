@@ -1,6 +1,5 @@
 target_sources(pslab-firmware.elf PRIVATE
   buffer.c
-  debug.c
   delay.c
   device.c
   interval.c
@@ -10,4 +9,3 @@ target_sources(pslab-firmware.elf PRIVATE
 
 target_include_directories(pslab-firmware.elf
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-

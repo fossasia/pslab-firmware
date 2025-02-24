@@ -4,7 +4,6 @@
 #include "bus/uart/uart.h"
 #include "bus/spi/spi.h"
 #include "helpers/buffer.h"
-#include "helpers/debug.h"
 #include "helpers/device.h"
 #include "helpers/interval.h"
 #include "helpers/light.h"
@@ -247,7 +246,7 @@ command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1
      // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
         Undefined,                      MULTIMETER_GetCTMUVolts,        MULTIMETER_GetCapacitance,      Unimplemented,
      // 4 GET_INDUCTANCE                5 GET_VERSION                   6 GET_FW_VERSION                7 DEBUG_IS_ENABLED
-        Unimplemented,                  DEVICE_GetVersion,              DEVICE_get_fw_version,          DEBUG_is_enabled,
+        Unimplemented,                  DEVICE_GetVersion,              DEVICE_get_fw_version,          Removed,
      // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
         BUFFER_Retrieve,                Unimplemented,                  BUFFER_Clear,                   Removed,
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
