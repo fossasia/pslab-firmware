@@ -6,7 +6,6 @@
 #include "../commands.h"
 #include "fatfs/ff.h"
 #include "fatfs/ffconf.h"
-#include "../helpers/debug.h"
 #include "../registers/system/watchdog.h"
 
 #define SFN_MAX 8
@@ -32,7 +31,6 @@ response_t SDCARD_write_file(void) {
     BYTE const mode = UART1_Read();
 
     FATFS drive;
-    DEBUG_write_u8(f_mount(&drive, "0:", 1));
 
     FIL file;
     // Host must wait for f_open before sending data.
@@ -61,9 +59,6 @@ response_t SDCARD_write_file(void) {
     }
 
     UART1_write_u32(bytes_written);
-    DEBUG_write_u8(f_close(&file));
-    DEBUG_write_u8(f_mount(0, "0:", 0));
-
     return DO_NOT_BOTHER;
 }
 
@@ -72,13 +67,8 @@ response_t SDCARD_read_file(void) {
     get_filename(filename, sizeof filename);
 
     FATFS drive;
-    DEBUG_write_u8(f_mount(&drive, "0:", 1));
-
     FIL file;
-    DEBUG_write_u8(f_open(&file, filename, FA_READ));
-
     FILINFO info = {0, 0, 0, 0, {0}};
-    DEBUG_write_u8(f_stat(filename, &info));
     UART1_write_u32(info.fsize);
     FSIZE_t bytes_read = 0;
 
@@ -100,9 +90,6 @@ response_t SDCARD_read_file(void) {
     }
 
     UART1_write_u32(bytes_read);
-    DEBUG_write_u8(f_close(&file));
-    DEBUG_write_u8(f_mount(0, "0:", 0));
-
     return DO_NOT_BOTHER;
 }
 
@@ -111,17 +98,12 @@ response_t SDCARD_get_file_info(void) {
     get_filename(filename, sizeof filename);
 
     FATFS drive;
-    DEBUG_write_u8(f_mount(&drive, "0:", 1));
-
     FILINFO info = {0, 0, 0, 0, {0}};
-    DEBUG_write_u8(f_stat(filename, &info));
 
     UART1_write_u32(info.fsize);
     UART1_WriteInt(info.fdate);
     UART1_WriteInt(info.ftime);
     UART1_Write(info.fattrib);
-
-    DEBUG_write_u8(f_mount(0, "0:", 0));
 
     return SUCCESS;
 }
