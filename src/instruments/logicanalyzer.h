@@ -7,18 +7,18 @@
  * @brief Capture logic level changes on a single channel.
  *
  * @description
- * This routine will log timer values for the changes occurred in a pin defined 
- * by the configuration byte. 
- * 
- * If a trigger is enabled, this will use an external interrupt service routine 
+ * This routine will log timer values for the changes occurred in a pin defined
+ * by the configuration byte.
+ *
+ * If a trigger is enabled, this will use an external interrupt service routine
  * attached to a pin defined by the trigger byte. Once the logic level is observed
- * to be the same as in EDGE bit, IC1 and IC2 modules will start the combined 
+ * to be the same as in EDGE bit, IC1 and IC2 modules will start the combined
  * timer (32-bits) and pass them to BUFFER using first two DMA channels.
- * 
+ *
  * If no trigger is set, the timers will be started right away once the function
- * is called and logic level changes will logged referring to IC1 and IC2 capture 
+ * is called and logic level changes will logged referring to IC1 and IC2 capture
  * timers in BUFFER using the same DMA channels.
- * 
+ *
  * This command function takes three arguments over serial:
  * 1. (uint16) number of data points to capture
  * 2. (uint8) trigger conditions:
@@ -39,15 +39,20 @@
  *            |  DIGITAL PIN  |  TRANSITIONS  |
  *            CHANNEL: Digital pin from the same map as above `PIN` maps
  *            MODE: Logic transitions to capture. Refer `IC_PARAMS_CAPTURE_MODE`
- * 
+ *
  * The data captured from this method should be read using <TODO METHOD NAME>
- * 
+ *
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
-response_t LOGICANALYZER_OneChannel(void);
+enum Status LOGICANALYZER_one_channel(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture logic level changes in one channel
@@ -59,7 +64,7 @@ response_t LOGICANALYZER_OneChannel(void);
  * This will trigger an interrupt when a logic change defined by the trigger byte
  * is observed at the pin attached to IC4. At the same time, IC1 and IC2 start
  * their timers and log timer values to BUFFER using DMA0 and DMA1 channels
- * 
+ *
  * This command function takes three arguments over serial:
  * 1. (uint16) number of data points to capture
  * 2. (uint8) channel and mode configuration:
@@ -76,30 +81,35 @@ response_t LOGICANALYZER_OneChannel(void);
  *              4: COMP4,
  *              5: SPI_CS,
  *              6: FREQ
- * 
+ *
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
-response_t LOGICANALYZER_OneChannelAlt(void);
+enum Status LOGICANALYZER_one_channel_alt(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture logic level changes in two channels
  *
  * @description
- * This routine will log timer values on logic level changes in two different 
+ * This routine will log timer values on logic level changes in two different
  * pins defined by the channel byte.
- * 
+ *
  * If a trigger is enabled, this will use an external interrupt service routine
  * attached to a pin defined by trigger byte. Once the logic level is observed
- * to be the same as in EDGE bit, All IC modules will start the combined 
+ * to be the same as in EDGE bit, All IC modules will start the combined
  * timers (32-bits) and pass them to BUFFER using all four DMA channels.
- * 
- * If no trigger is enabled, the timers will be started right away once the 
- * function is called and logic level changes will logged referring to IC1 and 
+ *
+ * If no trigger is enabled, the timers will be started right away once the
+ * function is called and logic level changes will logged referring to IC1 and
  * IC3 combined capture timers in BUFFER using the same DMA channels.
- * 
+ *
  * This command function takes four arguments over serial:
  * 1. (uint16) number of data points to capture
  * 2. (uint8) trigger conditions:
@@ -119,13 +129,18 @@ response_t LOGICANALYZER_OneChannelAlt(void);
  * 4. (uint8) channel configurations:
  *            | 7 | 6 | 5 | 4 | 3 | 2 | 1 | 0 |
  *            | PIN 2 CHANNEL | PIN 1 CHANNEL |
- * 
+ *
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
-response_t LOGICANALYZER_TwoChannel(void);
+enum Status LOGICANALYZER_two_channel(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture logic level changes in three channels
@@ -133,18 +148,18 @@ response_t LOGICANALYZER_TwoChannel(void);
  * @description
  * This routine will log timer values on logic level changes in LA1, LA2 and LA3
  * pins. These pins are fixed for this mode of operation.
- * 
+ *
  * If a trigger is enabled, this will use IC4 module as a trigger source to start
  * IC1, 2 and 3 timers. Once the logic level change as defined in trigger byte is
  * observed at IC4, it will generate an interrupt that will turn on all IC1,2,3
  * timers which will capture logic level changes defined in configuration integer.
  * IC modules will have 16-bit timers and the value is logged to BUFFER using
  * three DMA channels.
- * 
- * If no trigger is enabled, the timers will be started right away once the 
- * function is called and logic level changes will logged referring to IC1, 2 
+ *
+ * If no trigger is enabled, the timers will be started right away once the
+ * function is called and logic level changes will logged referring to IC1, 2
  * and IC3 combined capture timers in BUFFER using the same DMA channels.
- * 
+ *
  * This command function takes three arguments over serial:
  * 1. (uint16) number of data points to capture
  * 2. (uint16) configurations:
@@ -161,32 +176,37 @@ response_t LOGICANALYZER_TwoChannel(void);
  *              4: COMP4,
  *              5: SPI_CS,
  *              6: FREQ
- * 
+ *
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
-response_t LOGICANALYZER_ThreeChannel(void);
+enum Status LOGICANALYZER_three_channel(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture logic level changes in four channels
  *
  * @description
- * This routine will log timer values on logic level changes in LA1, LA2, LA3 
+ * This routine will log timer values on logic level changes in LA1, LA2, LA3
  * and LA4 pins. These pins are fixed for this mode of operation.
- * 
+ *
  * If a trigger is enabled, this will use CN (Change Notifier) Interrupt Service
  * Routine to trigger the IC timers to log logic level changes. If any of the 4
  * pins observe a logic change as defined in trigger byte, the timers will get
  * started logging logic level changes in all 4 pins defined in the configuration
- * integer. IC modules will have 16-bit timers and the value is logged to BUFFER 
+ * integer. IC modules will have 16-bit timers and the value is logged to BUFFER
  * using all four DMA channels.
- * 
- * If no trigger is enabled, the timers will be started right away once the 
+ *
+ * If no trigger is enabled, the timers will be started right away once the
  * function is called and logic level changes will logged referring to IC1, IC2,
  * IC3 and IC4 capture timers in BUFFER using the same DMA channels.
- * 
+ *
  * This command function takes four arguments over serial:
  * 1. (uint16) number of data points to capture
  * 2. (uint16) mode configurations:
@@ -196,27 +216,37 @@ response_t LOGICANALYZER_ThreeChannel(void);
  * 4. (uint8) trigger settings:
  *            | 7 | 6 |  5  |  4  |  3  |  2  |  1   | 0  |
  *            | X | X | LA4 | LA3 | LA2 | LA1 | EDGE | EN |
- * 
+ *
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
-response_t LOGICANALYZER_FourChannel(void);
+enum Status LOGICANALYZER_four_channel(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Stop capture modules
  *
  * @description
- * This command function does not take any arguments over serial. It will stop 
+ * This command function does not take any arguments over serial. It will stop
  * all the input capture modules.
- * 
+ *
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
- * 
+ *
  * @return SUCCESS
  */
-response_t LOGICANALYZER_Stop(void);
+enum Status LOGICANALYZER_stop(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 // Getters and setters
 
