@@ -3,13 +3,6 @@
 
 #include "../commands.h"
 
-enum Status OSCILLOSCOPE_capture(
-    uint8_t const *args,
-    uint16_t args_size,
-    uint8_t **rets,
-    uint16_t *rets_size
-);
-
 enum Status OSCILLOSCOPE_fetch_samples(
     uint8_t const *args,
     uint16_t args_size,
@@ -44,12 +37,22 @@ enum Status OSCILLOSCOPE_fetch_samples(
  *
  * @return SUCCESS
  */
-response_t OSCILLOSCOPE_CaptureOne(void);
+enum Status OSCILLOSCOPE_capture_one(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture samples on two channels simultaneously.
  */
-response_t OSCILLOSCOPE_CaptureTwo(void);
+enum Status OSCILLOSCOPE_capture_two(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture samples on three channels simultaneously.
@@ -60,12 +63,22 @@ response_t OSCILLOSCOPE_CaptureTwo(void);
  * samples from the fourth. This function therefore has the same sample rate
  * as OSCILLOSCOPE_CaptureFour, but greater sample depth.
  */
-response_t OSCILLOSCOPE_CaptureThree(void);
+enum Status OSCILLOSCOPE_capture_three(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture samples on four channels simultaneously.
  */
-response_t OSCILLOSCOPE_CaptureFour(void);
+enum Status OSCILLOSCOPE_capture_four(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Capture samples on one channel as fast as possible.
@@ -94,7 +107,12 @@ response_t OSCILLOSCOPE_CaptureFour(void);
  * It returns nothing over serial.
  * It sends an acknowledge byte (SUCCESS).
  */
-response_t OSCILLOSCOPE_CaptureDMA(void);
+enum Status OSCILLOSCOPE_capture_dma(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief
@@ -109,7 +127,12 @@ response_t OSCILLOSCOPE_CaptureDMA(void);
  *
  * @return SUCCESS
  */
-response_t OSCILLOSCOPE_GetCaptureStatus(void);
+enum Status OSCILLOSCOPE_get_capture_status(
+    uint8_t *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief
@@ -137,7 +160,12 @@ response_t OSCILLOSCOPE_GetCaptureStatus(void);
  *
  * @return SUCCESS
  */
-response_t OSCILLOSCOPE_ConfigureTrigger(void);
+enum Status OSCILLOSCOPE_configure_trigger(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 /**
  * @brief Set gain on CH1 or CH2.
@@ -159,6 +187,11 @@ response_t OSCILLOSCOPE_ConfigureTrigger(void);
  *         FAILED if SPI transaction fails.
  *         SUCCESS otherwise.
  */
-response_t OSCILLOSCOPE_SetPGAGain(void);
+enum Status OSCILLOSCOPE_set_pga_gain(
+    uint8_t const *args,
+    uint16_t args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+);
 
 #endif	/* OSCILLOSCOPE_H */
