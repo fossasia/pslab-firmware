@@ -2,6 +2,8 @@
  * This file contains secondary measurements and configurations used by other
  * instruments
  ******************************************************************************/
+#include <string.h>
+#include <stdint.h>
 
 #include "../registers/comparators/cmp4.h"
 #include "../registers/comparators/cvr.h"
@@ -9,7 +11,6 @@
 #include "../registers/comparators/ic2.h"
 #include "../registers/comparators/ic3.h"
 #include "../registers/comparators/ic4.h"
-#include "../bus/uart/uart.h"
 #include "../registers/timers/tmr2.h"
 #include "../registers/system/pin_manager.h"
 
@@ -52,28 +53,57 @@ void SENSORS_ConfigureInterval(uint8_t pin1, uint8_t pin2,
     IC4_ManualTriggerSet();
 }
 
-response_t SENSORS_StartCounter(void) {
+enum Status SENSORS_start_counter(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t channel;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint8_t channel = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     TMR2_Initialize();
     // Select external source as clock source
     T2CONbits.TCS = 1;
 
-    if (channel == 4) {
+    if (input.channel == 4) {
         CVR_SetupComparator();
         CMP4_SetupComparator();
     }
 
-    // Map incoming pin to TMR2 
-    RPINR3bits.T2CKR = PIN_MANAGER_DIGITAL_PINS[channel];
+    // Map incoming pin to TMR2
+    RPINR3bits.T2CKR = PIN_MANAGER_DIGITAL_PINS[input.channel];
     TMR2_Start();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t SENSORS_GetCounter(void) {
+enum Status SENSORS_get_counter(
+    uint8_t *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Output {
+        struct {
+            uint16_t count;
+        };
+        uint8_t *buffer;
+    } output = {{0}};
     // Fetch timer 2 value and send it over
-    UART1_WriteInt(TMR2_Counter16BitGet());
-    return SUCCESS;
+    output.count = TMR2_Counter16BitGet();
+    *rets = args;
+    *rets_size = sizeof(output);
+    memcpy(*rets, output.buffer, *rets_size);
+    return E_OK;
 }
