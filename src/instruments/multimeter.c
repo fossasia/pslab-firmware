@@ -1,5 +1,7 @@
+#include <stdint.h>
+#include <string.h>
+
 #include "../commands.h"
-#include "../bus/uart/uart.h"
 #include "../helpers/delay.h"
 #include "../registers/converters/adc1.h"
 #include "../registers/converters/ctmu.h"
@@ -74,7 +76,7 @@ void GetCapacitance_ConfigADC_CTMU_TMR5() {
 }
 
 uint16_t GetVoltage_Summed(uint8_t channel) {
-    
+
     ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, channel, 0);
 
     ADC1_Enable();
@@ -93,13 +95,28 @@ uint16_t GetVoltage_Summed(uint8_t channel) {
             (ADC1BUF4) + (ADC1BUF5) + (ADC1BUF6) + (ADC1BUF7) +
             (ADC1BUF8) + (ADC1BUF9) + (ADC1BUFA) + (ADC1BUFB) +
             (ADC1BUFC) + (ADC1BUFD) + (ADC1BUFE) + (ADC1BUFF);
-    
+
     return voltage_sum;
 }
 
-response_t MULTIMETER_GetVoltage(void) {
+enum Status MULTIMETER_get_voltage(
+    uint8_t *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t channel;
+        };
+        uint8_t *buffer;
+    } input = {{0}};
 
-    uint8_t channel = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     ADC1_InterruptDisable();
     ADC1_InterruptFlagClear();
@@ -120,7 +137,7 @@ response_t MULTIMETER_GetVoltage(void) {
 
     ADC1_InitializeCON4();
 
-    AD1CHS0bits.CH0SA = channel & 0xF;
+    AD1CHS0bits.CH0SA = input.channel & 0xF;
     AD1CHS0bits.CH0NA = 0;
 
     AD1CSSH = 0x0000;
@@ -132,41 +149,103 @@ response_t MULTIMETER_GetVoltage(void) {
 
     while (!ADC1_IsConversionComplete());
 
-    UART1_WriteInt(ADC1_ConversionResultGet(channel_CTMU));
+    union Output {
+        struct {
+            uint16_t result;
+        };
+        uint8_t *buffer;
+    } output = {{0}};
 
-    return SUCCESS;
+    output.result = ADC1_ConversionResultGet(channel_CTMU);
+    *rets = args;
+    *rets_size = sizeof(output);
+    memcpy(*rets, output.buffer, *rets_size);
+
+    return E_OK;
 }
 
-response_t MULTIMETER_GetVoltageSummed(void) {
+enum Status MULTIMETER_get_voltage_summed(
+    uint8_t *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t channel;
+        };
+        uint8_t *buffer;
+    } input = {{0}};
 
-    uint8_t channel = UART1_Read();
-    
-    uint16_t voltage_sum = GetVoltage_Summed(channel);
-    UART1_WriteInt(voltage_sum);
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
 
-    return SUCCESS;
+    input.buffer = args;
+
+    union Output {
+        struct {
+            uint16_t result;
+        };
+        uint8_t *buffer;
+    } output = {{0}};
+
+    output.result = GetVoltage_Summed(input.channel);
+    *rets_size = sizeof(output);
+    *rets = args;
+    memcpy(*rets, output.buffer, *rets_size);
+
+    return E_OK;
 }
 
-response_t MULTIMETER_ChargeCapacitor(void) {
+enum Status MULTIMETER_charge_capacitor(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t charge;
+            uint16_t period;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint8_t charge = UART1_Read();
-    uint16_t period = UART1_ReadInt();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
 
-    ChargeCapacitor(charge, period);
-
-    return SUCCESS;
+    input.buffer = args;
+    ChargeCapacitor(input.charge, input.period);
+    return E_OK;
 }
 
-response_t MULTIMETER_GetCapRange(void) {
+enum Status MULTIMETER_get_cap_range(
+    uint8_t *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t charge_time;
+        };
+        uint8_t *buffer;
+    } input = {{0}};
 
-    uint16_t charge_time = UART1_ReadInt();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     ChargeCapacitor(CHARGE, 50000);
 
     ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, CH0_CHANNEL_CAP, 0);
 
     TMR5_Initialize();
-    TMR5_Period16BitSet(charge_time);
+    TMR5_Period16BitSet(input.charge_time);
     TMR5_SetPrescaler(TMR_PRESCALER_64);
     TMR5_Start();
 
@@ -180,25 +259,47 @@ response_t MULTIMETER_GetCapRange(void) {
     CAP_OUT_SetDigitalInput();
     CAP_OUT_SetLow();
 
-    uint16_t range = GetVoltage_Summed(CH0_CHANNEL_CAP);
-    UART1_WriteInt(range);
+    union Output {
+        struct {
+            uint16_t range;
+        };
+        uint8_t *buffer;
+    } output = {{0}};
 
-    return SUCCESS;
+    output.range = GetVoltage_Summed(CH0_CHANNEL_CAP);
+    *rets = args;
+    *rets_size = sizeof(output);
+    memcpy(*rets, output.buffer, *rets_size);
+
+    return E_OK;
 }
 
-response_t MULTIMETER_GetCapacitance(void) {
+enum Status MULTIMETER_get_capacitance(
+    uint8_t *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t current_range;
+            uint8_t trim;
+            uint16_t charge_time;
+        };
+        uint8_t *buffer;
+    } input = {{0}};
 
-    uint8_t current_range = UART1_Read();
-    uint8_t trim = UART1_Read();
-    uint16_t charge_time = UART1_ReadInt();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     LED_SetLow();
 
-    uint16_t reading = 0;
-
     ADC1_SetOperationMode(ADC1_CTMU_MODE, CH0_CHANNEL_CAP, 0);
     // Initiate CTMU and TMR5 registers to measure capacitance discharge rate
-    GetCapacitance_InitCTMU_TMR5(current_range, trim, charge_time);
+    GetCapacitance_InitCTMU_TMR5(input.current_range, input.trim, input.charge_time);
     // Fully discharge the measuring capacitor
     ChargeCapacitor(DISCHARGE, 50000);
     // Configure ADC, CTMU and TMR5 register bits to start measuring
@@ -211,44 +312,77 @@ response_t MULTIMETER_GetCapacitance(void) {
     ADC1_WaitForInterruptEvent();
     while (!ADC1_IsConversionComplete());
 
-    reading = (ADC1BUF0) & 0xFFF;
+    union Output {
+        struct {
+            uint16_t result;
+        };
+        uint8_t *buffer;
+    } output = {{0}};
+
+    output.result = (ADC1BUF0) & 0xFFF;
 
     // Reset modules
     CTMU_Initialize();
     ADC1_Disable();
 
-    UART1_WriteInt(reading);
+    *rets = args;
+    *rets_size = sizeof(output);
+    memcpy(*rets, output.buffer, *rets_size);
 
     LED_SetHigh();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t MULTIMETER_GetCTMUVolts(void) {
-    
-    uint8_t config = UART1_Read();
-    
+enum Status MULTIMETER_get_ctmu_volts(
+    uint8_t *const args,
+    uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t config;
+        };
+        uint8_t *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+
     CTMU_Initialize();
     // Edge delay generation
-    CTMUCON1bits.TGEN = (config >> 7) & 0x1;
+    CTMUCON1bits.TGEN = (input.config >> 7) & 0x1;
     // Current source output
-    CTMUICONbits.IRNG = (config >> 5) & 0x3;
-    
+    CTMUICONbits.IRNG = (input.config >> 5) & 0x3;
+
     // Internal temperature
-    if ((config & 0x1F) == 30) CTMU_EnableEdge2();
-    
+    if ((input.config & 0x1F) == 30) CTMU_EnableEdge2();
+
     CTMU_Enable();
     DELAY_us(1000);
     CTMU_DrainOutput();
     DELAY_us(1500);
     CTMU_FloatOutput();
     CTMU_EnableEdge1();
-    
-    uint16_t result = GetVoltage_Summed(config & 0x1F);
+
+    union Output {
+        struct {
+            uint16_t result;
+        };
+        uint8_t *buffer;
+    } output = {{0}};
+
+    output.result = GetVoltage_Summed(input.config & 0x1F);
 
     CTMU_DisableModule();
-    
-    UART1_WriteInt(result);
-    
-    return SUCCESS;
+
+    *rets = args;
+    *rets_size = sizeof(output);
+    memcpy(*rets, output.buffer, *rets_size);
+
+    return E_OK;
 }
