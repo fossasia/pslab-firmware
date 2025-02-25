@@ -108,7 +108,7 @@ union MCP4728Command {
 
 #ifndef V5_HW
 
-static bool initialize(void)
+static enum Status initialize(void)
 {
     const SPI_Config conf = {{{
         .PPRE = SPI_SCLK125000 >> 3,
@@ -140,28 +140,65 @@ static enum Channel v5_to_v6_channel(enum Channel const channel)
 /* Command functions */
 /************************/
 
-response_t POWER_SOURCE_SetPower(void)
-{
-    enum Channel const channel = v5_to_v6_channel(UART1_Read() & 0x03);
-    uint16_t const output = UART1_ReadInt() & 0xFFF;
+enum Status POWER_SOURCE_SetPower(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t channel;
+            uint16_t setpoint;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+    enum Channel const channel =  v5_to_v6_channel(input.channel & 0x03);
+    uint16_t const setpoint = input.setpoint & 0xFFF;
+
     union MCP4822Command cmd = {{
-        .DATA = output,
+        .DATA = setpoint,
         .SHDN = OUTPUT_ON,
         .GA = GAIN_X2,
         .AB = channel,
     }};
 
-    if(initialize()) {
-        return (
-            SPI_exchange_int(SPI_PS, &cmd.reg) ? SUCCESS : FAILED
-        );
-    }
-    return FAILED;
+    enum Status status = E_OK;
+
+    if((status = initialize())) {return status;}
+    return SPI_exchange_int(SPI_PS, &cmd.reg);
 }
 
 #else // V5_HW
 
-response_t POWER_SOURCE_SetPower(void) {
+enum Status POWER_SOURCE_SetPower(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t channel;
+            uint16_t setpoint;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+    enum Channel const channel =  input.channel & 0x03;
+    uint16_t const setpoint = input.setpoint & 0xFFF;
+
     enum VRef {
         VREF_EXTERNAL,
         VREF_INTERNAL,
@@ -169,16 +206,14 @@ response_t POWER_SOURCE_SetPower(void) {
     enum Command {
         SINGLE_WRITE = 0b01011,
     };
-    uint8_t const channel = UART1_Read() & 0x03;
-    uint16_t const output = UART1_ReadInt() & 0xFFF;
     union MCP4728Command cmd = {{
         .CMD = SINGLE_WRITE,
         .DAC = channel,
         .VREF = VREF_INTERNAL,
         .PDSEL = OUTPUT_ON,
         .GX = GAIN_X2,
-        .DATA_L = output & 0xFF,
-        .DATA_H = output >> 8
+        .DATA_L = setpoint & 0xFF,
+        .DATA_H = setpoint >> 8
     }};
     I2C_InitializeIfNot(I2C_BAUD_RATE_400KHZ, I2C_ENABLE_INTERRUPTS);
 
