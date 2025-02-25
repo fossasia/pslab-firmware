@@ -1,4 +1,3 @@
-#include "../../bus/uart/uart.h"
 #include "../../commands.h"
 #include "../../helpers/delay.h"
 #include "ctmu.h"
@@ -49,23 +48,43 @@ void CTMU_InitializeCON2(void) {
     CTMUCON2bits.EDG2STAT = 0;
 }
 
-response_t CTMU_Start(void) {
-    
-    uint8_t config = UART1_Read();
-    uint8_t current_trim = UART1_Read();
-    
+enum Status CTMU_start(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t config;
+            uint8_t current_trim;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+
     CTMU_Initialize();
-    CTMUCON1bits.TGEN = (config >> 7) & 0x1;
-    CTMUICONbits.ITRIM = current_trim;
-    CTMUICONbits.IRNG = config & 0x7F;
+    CTMUCON1bits.TGEN = (input.config >> 7) & 0x1;
+    CTMUICONbits.ITRIM = input.current_trim;
+    CTMUICONbits.IRNG = input.config & 0x7F;
     CTMU_Enable();
     DELAY_us(1000);
     CTMU_EnableEdge1();
-    
-    return SUCCESS;
+
+    return E_OK;
 }
-    
-response_t CTMU_Stop(void) {
+
+enum Status CTMU_stop(
+    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
     CTMU_DisableModule();
-    return SUCCESS;
+    return E_OK;
 }
