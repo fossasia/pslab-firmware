@@ -123,9 +123,9 @@ void SPI_chip_select(const tSPI_CS cs);
 /**
  * @brief Set SPI1CON1 register.
  * @param conf An SPI1CON1BITS instance, see datasheet for member descriptions.
- * @return true if bus is available, else false.
+ * @return E_OK if bus is available, else E_RESOURCE_BUSY.
  */
-bool SPI_configure(const SPI_Config conf);
+enum Status SPI_configure(const SPI_Config conf);
 
 /**
  * @brief Exchange a single byte.
@@ -134,11 +134,11 @@ bool SPI_configure(const SPI_Config conf);
  * @param cs One of tSPI_CS.
  * @param data Pointer to a uint8_t containing data to be written to the bus.
  *             Data read from the bus will be written through the same pointer.
- * @return false if SPI1CON1bits.MODE16 == 1.
- *         false if bus is already open.
- *         true otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK otherwise.
  */
-bool SPI_exchange_byte(const tSPI_CS cs, uint8_t* const data);
+enum Status SPI_exchange_byte(const tSPI_CS cs, uint8_t* const data);
 
 /**
  * @brief Exchange a single word.
@@ -147,16 +147,16 @@ bool SPI_exchange_byte(const tSPI_CS cs, uint8_t* const data);
  * @param cs One of tSPI_CS.
  * @param data Pointer to a uint16_t containing data to be written to the bus.
  *             Data read from the bus will be written through the same pointer.
- * @return false if SPI1CON1bits.MODE16 == 0.
- *         false if bus is already open.
- *         true otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK otherwise.
  */
-bool SPI_exchange_int(const tSPI_CS cs, uint16_t* const data);
+enum Status SPI_exchange_int(const tSPI_CS cs, uint16_t* const data);
 
 /**
  * @brief Set SPI1CON1 register.
  * @param conf uint16_t corresponding to SPI1CON1, see datasheet.
- * @return SUCCESS if bus is available, else FAILED.
+ * @return E_OK if bus is available, else E_RESOURCE_BUSY.
  */
 enum Status SPI_conf(
     uint8_t const *args,
@@ -171,9 +171,9 @@ enum Status SPI_conf(
  *      this function.
  * @param cs uint8_t corresponding to one of tSPI_CS.
  * @param count uint16_t, number of bytes to read.
- * @return FAILED if SPI1CON1bits.MODE16 == 1.
- *         FAILED if bus is already open.
- *         <count> bytes followed by SUCCESS otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_SUCCESS otherwise.
  */
 enum Status SPI_read_bytes(
     uint8_t const *args,
@@ -189,9 +189,9 @@ enum Status SPI_read_bytes(
  * @param cs uint8_t corresponding to one of tSPI_CS.
  * @param count uint16_t, number of bytes to write.
  * @param data <count> bytes of data.
- * @return FAILED if SPI1CON1bits.MODE16 == 1.
- *         FAILED if bus is already open.
- *         SUCCESS otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK otherwise.
  */
 enum Status SPI_write_bytes(
     uint8_t const *args,
@@ -207,9 +207,9 @@ enum Status SPI_write_bytes(
  * @param cs uint8_t corresponding to one of tSPI_CS.
  * @param count uint16_t, number of bytes to exchange.
  * @param data <count> bytes of data.
- * @return FAILED if SPI1CON1bits.MODE16 == 1.
- *         FAILED if bus is already open.
- *         <count> bytes followed by SUCCESS otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK bytes followed by SUCCESS otherwise.
  */
 enum Status SPI_exchange_bytes(
     uint8_t const *args,
@@ -224,9 +224,9 @@ enum Status SPI_exchange_bytes(
  *      this function.
  * @param cs uint8_t corresponding to one of tSPI_CS.
  * @param count uint16_t, number of ints to read.
- * @return FAILED if SPI1CON1bits.MODE16 == 0.
- *         FAILED if bus is already open.
- *         <2*count> bytes followed by SUCCESS otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK otherwise.
  */
 enum Status SPI_read_ints(
     uint8_t const *args,
@@ -242,9 +242,9 @@ enum Status SPI_read_ints(
  * @param cs uint8_t corresponding to one of tSPI_CS.
  * @param count uint16_t, number of ints to write.
  * @param data <2*count> bytes of data.
- * @return FAILED if SPI1CON1bits.MODE16 == 0.
- *         FAILED if bus is already open.
- *         SUCCESS otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK otherwise.
  */
 enum Status SPI_write_ints(
     uint8_t const *args,
@@ -260,9 +260,9 @@ enum Status SPI_write_ints(
  * @param cs uint8_t corresponding to one of tSPI_CS.
  * @param count uint16_t, number of ints to exchange.
  * @param data <2*count> bytes of data.
- * @return FAILED if SPI1CON1bits.MODE16 == 0.
- *         FAILED if bus is already open.
- *         <2*count> bytes followed by SUCCESS otherwise.
+ * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
+ *         E_RESOURCE_BUSY if bus is already open.
+ *         E_OK otherwise.
  */
 enum Status SPI_exchange_ints(
     uint8_t const *args,

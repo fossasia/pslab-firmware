@@ -47,15 +47,15 @@ enum Width
  * @return false if bus is already open.
  *         true otherwise.
  */
-static bool open(const tSPI_CS cs)
+static enum Status open(const tSPI_CS cs)
 {
     if (SPI1STATbits.SPIEN)
     {
-        return false;
+        return E_RESOURCE_BUSY;
     }
     SPI1STATbits.SPIEN = 1;
     SPI_chip_select(cs);
-    return true;
+    return E_OK;
 }
 
 /// @brief Deselect slaves and disable SPI bus.
@@ -89,12 +89,11 @@ static uint16_t exchange(const uint16_t data)
  * @return false if the bus is already open.
  *         true otherwise.
 */
-static bool exchange_single(const tSPI_CS cs, void* const data)
+static enum Status exchange_single(const tSPI_CS cs, void* const data)
 {
-    if (!open(cs))
-    {
-        return false;
-    }
+    enum Status status = E_OK;
+
+    if ((status = open(cs))) {return status;}
 
     if (SPI1CON1bits.MODE16 == BYTE)
     {
@@ -106,7 +105,7 @@ static bool exchange_single(const tSPI_CS cs, void* const data)
     }
 
     close();
-    return true;
+    return E_OK;
 }
 
 /**
@@ -210,12 +209,11 @@ static enum Status command(
         return E_BAD_ARGUMENT;
     }
 
-    if (!open(cs))
-    {
-        return E_FAILED;
-    }
+    enum Status status = E_OK;
 
-    enum Status const status = host_exchange(dir, count);
+    if ((status = open(cs))) {return status;}
+
+    status = host_exchange(dir, count);
     close();
     return status;
 }
@@ -301,32 +299,32 @@ void SPI_chip_select(const tSPI_CS cs)
     _LATC4  = pins.RC4;
 }
 
-bool SPI_configure(const SPI_Config conf)
+enum Status SPI_configure(const SPI_Config conf)
 {
     if (SPI1STATbits.SPIEN)
     {
-        return false;
+        return E_RESOURCE_BUSY;
     }
     SPI1CON1bits = conf;
     SPI1CON2 = 0;
     SPI1STAT = 0;
-    return true;
+    return E_OK;
 }
 
-bool SPI_exchange_byte(const tSPI_CS cs, uint8_t* const data)
+enum Status SPI_exchange_byte(const tSPI_CS cs, uint8_t* const data)
 {
     if (SPI1CON1bits.MODE16 == WORD)
     {
-        return false;
+        return E_BAD_ARGUMENT;
     }
     return exchange_single(cs, data);
 }
 
-bool SPI_exchange_int(const tSPI_CS cs, uint16_t* const data)
+enum Status SPI_exchange_int(const tSPI_CS cs, uint16_t* const data)
 {
     if (SPI1CON1bits.MODE16 == BYTE)
     {
-        return false;
+        return E_BAD_ARGUMENT;
     }
     return exchange_single(cs, data);
 }
@@ -351,14 +349,12 @@ enum Status SPI_conf(
     }
 
     conf.con1 = *(uint16_t *)args;
-    bool conf_ok = SPI_configure(conf.con1bits);
 
-    if (conf_ok)
-    {
-        return E_OK;
+    if (SPI_configure(conf.con1bits)) {
+        return E_RESOURCE_BUSY;
     }
 
-    return E_FAILED;
+    return E_OK;
 }
 
 enum Status SPI_read_bytes(
