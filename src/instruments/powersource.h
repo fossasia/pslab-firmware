@@ -33,7 +33,12 @@ extern "C" {
      *
      * @return SUCCESS, FAILED
      */
-    response_t POWER_SOURCE_SetPower(void);
+    enum Status POWER_SOURCE_SetPower(
+        uint8_t const *args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
 
 #ifdef	__cplusplus
 }
