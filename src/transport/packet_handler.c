@@ -151,23 +151,27 @@ static enum Status receive(
     // TODO: Use malloc when we switch to heap-based memory management.
 
     // Special casing for commands with large inputs.
-    uint16_t payload_buffer_size = 0;
+    enum {
+        CMD_BUFFER_SET = (11 << 8) | 27,
+        CMD_WAVEFORM_LOAD_WAVE1 = (7 << 8) | 15,
+        CMD_WAVEFORM_LOAD_WAVE2 = (7 << 8) | 19
+    };
     switch (header.command) {
     default:
         *payload = PAYLOAD_BUFFER;
         break;
     case CMD_BUFFER_SET:
-        *payload = BUFFER;
+        *payload = (uint8_t *)BUFFER;
         break;
     case CMD_WAVEFORM_LOAD_WAVE1:
-        *payload = WAVEGENERATOR_table_1;
+        *payload = (uint8_t *)WAVEGENERATOR_table_1;
         break;
     case CMD_WAVEFORM_LOAD_WAVE2:
-        *payload = WAVEGENERATOR_table_2;
+        *payload = (uint8_t *)WAVEGENERATOR_table_2;
         break;
     }
 
-    if (header.payload_size > sizeof(*payload)) {
+    if (header.payload_size > sizeof(payload)) {
         status = E_BAD_SIZE;
     } else if (header.payload_size > 0) {
         *payload_size = header.payload_size;
