@@ -48,6 +48,7 @@ extern "C" {
 enum Status {
     E_OK,
     E_FAILED,
+    E_RESOURCE_BUSY,
     E_HOST_READ,
     E_HOST_RX_OVERRUN,
     E_BAD_COMMAND,
