@@ -340,7 +340,12 @@ void PIN_MANAGER_Initialize(void);
     None.
 
  */
-response_t PIN_MANAGER_SetWavePinState(void);
+enum Status PIN_MANAGER_set_sq_pin_state(
+  uint8_t const *args,
+  uint16_t args_size,
+  uint8_t **rets,
+  uint16_t *rets_size
+);
 
 /**
   @Summary
@@ -360,7 +365,12 @@ response_t PIN_MANAGER_SetWavePinState(void);
     None.
 
  */
-response_t PIN_MANAGER_GetLAPinState(void);
+enum Status PIN_MANAGER_get_la_pin_state(
+  uint8_t *args,
+  uint16_t args_size,
+  uint8_t **rets,
+  uint16_t *rets_size
+);
 
 /**
   @Summary
