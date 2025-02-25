@@ -1,5 +1,4 @@
 #include <stdint.h>
-#include "../bus/uart/uart.h"
 #include "../helpers/interval.h"
 #include "../registers/comparators/ic1.h"
 #include "../registers/comparators/ic2.h"
@@ -22,20 +21,40 @@ static uint8_t LA_TRIGGER_STATE = 0;
 void SetLA_TRIGGER_STATE(uint8_t V) { LA_TRIGGER_STATE = V; }
 uint8_t GetLA_TRIGGER_STATE(void) { return LA_TRIGGER_STATE; }
 
-response_t LOGICANALYZER_OneChannel(void) {
-    
-    uint16_t points = UART1_ReadInt();
-    uint8_t trigger = UART1_Read();
-    uint8_t config = UART1_Read();
-    
-    if (trigger & 1) {
-        INTCON2bits.INT2EP = trigger & 2 ? FALLING_EDGE : RISING_EDGE;
-        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(trigger >> 4) & 0xF];
+enum Status LOGICANALYZER_one_channel(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t points;
+            uint8_t trigger;
+            uint8_t config;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
     }
-    
-    INTERVAL_CaptureOne(points, (config >> 4) & 0xF, config & 0xF, 0);
-    
-    if (trigger & 1) {
+
+    input.buffer = args;
+
+    if (input.trigger & 1) {
+        INTCON2bits.INT2EP = input.trigger & 2 ? FALLING_EDGE : RISING_EDGE;
+        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(input.trigger >> 4) & 0xF];
+    }
+
+    INTERVAL_CaptureOne(
+        input.points,
+        (input.config >> 4) & 0xF,
+        input.config & 0xF,
+        0
+    );
+
+    if (input.trigger & 1) {
         INTERRUPT_ClearExternalInterrupt2Flag();
         INTERRUPT_EnableExternalInterrupt2();
     } else {
@@ -44,47 +63,87 @@ response_t LOGICANALYZER_OneChannel(void) {
         IC2_ManualTriggerSet();
     }
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t LOGICANALYZER_OneChannelAlt(void) {
-    
-    uint16_t points = UART1_ReadInt();
-    uint8_t config = UART1_Read();
-    uint8_t trigger = UART1_Read();
-    
+enum Status LOGICANALYZER_one_channel_alt(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t points;
+            uint8_t config;
+            uint8_t trigger;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
     IC4_InterruptDisable();
-    
-    if (trigger & 7) {
-        INTERVAL_CaptureOne(points, (config >> 4) & 0xF, config & 0xF, trigger);
+
+    if (input.trigger & 7) {
+        INTERVAL_CaptureOne(
+            input.points,
+            (input.config >> 4) & 0xF,
+            input.config & 0xF,
+            input.trigger
+        );
         IC4_InterruptEnable();
     } else {
-        INTERVAL_CaptureOne(points, (config >> 4) & 0xF, config & 0xF, 0);
+        INTERVAL_CaptureOne(
+            input.points,
+            (input.config >> 4) & 0xF,
+            input.config & 0xF,
+            0
+        );
         SetDefaultDIGITAL_STATES();
         IC1_ManualTriggerSet();
         IC2_ManualTriggerSet();
     }
-    
-    return SUCCESS;
+
+    return E_OK;
 }
 
-response_t LOGICANALYZER_TwoChannel(void) {
-    
-    uint16_t points = UART1_ReadInt();
-    uint8_t trigger = UART1_Read();
-    uint8_t config = UART1_Read();
-    uint8_t channel = UART1_Read();
+enum Status LOGICANALYZER_two_channel(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t points;
+            uint8_t trigger;
+            uint8_t config;
+            uint8_t channel;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    if (trigger & 1) {
-        INTCON2bits.INT2EP = trigger & 2 ? FALLING_EDGE : RISING_EDGE;
-        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(trigger >> 4) & 0xF];
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
     }
-    
-    INTERVAL_CaptureTwo(points, config, channel);
-    
-    if (trigger & 1) {
+
+    input.buffer = args;
+
+    if (input.trigger & 1) {
+        INTCON2bits.INT2EP = input.trigger & 2 ? FALLING_EDGE : RISING_EDGE;
+        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(input.trigger >> 4) & 0xF];
+    }
+
+    INTERVAL_CaptureTwo(input.points, input.config, input.channel);
+
+    if (input.trigger & 1) {
         INTERRUPT_ClearExternalInterrupt2Flag();
         INTERRUPT_EnableExternalInterrupt2();
     } else {
@@ -93,28 +152,43 @@ response_t LOGICANALYZER_TwoChannel(void) {
         SetDefaultDIGITAL_STATES_ERROR();
     }
 
-    return SUCCESS;
-    
+    return E_OK;
+
     // TODO: Implement trigger actions for any of the two channels. Right now
     // only one channel can be set as trigger source. Using CN interrupts, this
     // can be extended to listen to multiple trigger sources.
 }
 
-response_t LOGICANALYZER_ThreeChannel(void) {
-    
-    uint16_t points = UART1_ReadInt();
-    uint8_t config = UART1_ReadInt();
-    uint8_t trigger = UART1_Read();
-    
+enum Status LOGICANALYZER_three_channel(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t points;
+            uint8_t config;
+            uint8_t trigger;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
     IC4_InterruptDisable();
-    
-    if (trigger & 7) {
-        INTERVAL_CaptureThree(points, config & 0x0FFF, trigger);
+
+    if (input.trigger & 7) {
+        INTERVAL_CaptureThree(input.points, input.config & 0x0FFF, input.trigger);
         IC4_InterruptEnable();
     } else {
-        INTERVAL_CaptureThree(points, config & 0x0FFF, 0);
+        INTERVAL_CaptureThree(input.points, input.config & 0x0FFF, 0);
         SetDefaultDIGITAL_STATES();
         IC1_ManualTriggerSet();
         IC2_ManualTriggerSet();
@@ -122,40 +196,55 @@ response_t LOGICANALYZER_ThreeChannel(void) {
         SetDefaultDIGITAL_STATES_ERROR();
     }
 
-    return SUCCESS;
-    
+    return E_OK;
+
     // TODO: Implement trigger actions for any of the three channels. Right now
     // only one channel can be set as trigger source. Using CN interrupts, this
     // can be extended to listen to multiple trigger sources.
 }
 
-response_t LOGICANALYZER_FourChannel(void) {
-    
-    uint16_t points = UART1_ReadInt();
-    uint16_t mode = UART1_ReadInt();
-    uint8_t prescaler = UART1_Read();
-    uint8_t trigger = UART1_Read();
-    
+enum Status LOGICANALYZER_four_channel(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t points;
+            uint16_t mode;
+            uint8_t prescaler;
+            uint8_t trigger;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+
     SetDIGITAL_STATES(0);
-    INTERVAL_CaptureFour(points, mode, prescaler);
-    
-    if (trigger & 1) {
-        LA_TRIGGER_STATE = trigger & 2 ? RISING_EDGE : FALLING_EDGE;
+    INTERVAL_CaptureFour(input.points, input.mode, input.prescaler);
+
+    if (input.trigger & 1) {
+        LA_TRIGGER_STATE = input.trigger & 2 ? RISING_EDGE : FALLING_EDGE;
         LA_TRIGGER_CHANNEL = 0;
-        
-        if ((trigger >> 2) & 1) {
+
+        if ((input.trigger >> 2) & 1) {
             INTERRUPT_LA1PinChange(true);
             LA_TRIGGER_CHANNEL |= 1;
         }
-        if ((trigger >> 3) & 1) {
+        if ((input.trigger >> 3) & 1) {
             INTERRUPT_LA2PinChange(true);
             LA_TRIGGER_CHANNEL |= 2;
         }
-        if ((trigger >> 4) & 1) {
+        if ((input.trigger >> 4) & 1) {
             INTERRUPT_LA3PinChange(true);
             LA_TRIGGER_CHANNEL |= 4;
         }
-        if ((trigger >> 5) & 1) {
+        if ((input.trigger >> 5) & 1) {
             INTERRUPT_LA4PinChange(true);
             LA_TRIGGER_CHANNEL |= 8;
         }
@@ -168,12 +257,15 @@ response_t LOGICANALYZER_FourChannel(void) {
         SetDefaultDIGITAL_STATES_ERROR();
     }
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t LOGICANALYZER_Stop(void) {
-    
+enum Status LOGICANALYZER_stop(
+    __attribute__ ((unused)) uint8_t const *args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
     IC_PARAMS_DisableAllModules();
-
-    return SUCCESS;
+    return E_OK;
 }
