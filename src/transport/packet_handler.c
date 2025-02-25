@@ -32,6 +32,8 @@
 #include <stdint.h>
 
 #include "../commands.h"
+#include "../helpers/buffer.h"
+#include "../instruments/wavegenerator.h"
 #include "host.h"
 
 #include "packet_handler.h"
@@ -147,10 +149,27 @@ static enum Status receive(
     }
 
     // TODO: Use malloc when we switch to heap-based memory management.
-    if (header.payload_size > PAYLOAD_BUFFER_SIZE) {
+
+    // Special casing for commands with large inputs.
+    uint16_t payload_buffer_size = 0;
+    switch (header.command) {
+    default:
+        *payload = PAYLOAD_BUFFER;
+        break;
+    case CMD_BUFFER_SET:
+        *payload = BUFFER;
+        break;
+    case CMD_WAVEFORM_LOAD_WAVE1:
+        *payload = WAVEGENERATOR_table_1;
+        break;
+    case CMD_WAVEFORM_LOAD_WAVE2:
+        *payload = WAVEGENERATOR_table_2;
+        break;
+    }
+
+    if (header.payload_size > sizeof(*payload)) {
         status = E_BAD_SIZE;
     } else if (header.payload_size > 0) {
-        *payload = (uint8_t *)&PAYLOAD_BUFFER;
         *payload_size = header.payload_size;
     }
 

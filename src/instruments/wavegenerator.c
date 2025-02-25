@@ -1,6 +1,7 @@
+#include <stdint.h>
 #include <xc.h>
+
 #include "../commands.h"
-#include "../bus/uart/uart.h"
 #include "../registers/timers/tmr1.h"
 #include "../registers/timers/tmr2.h"
 #include "../registers/timers/tmr3.h"
@@ -52,6 +53,7 @@ int __attribute__((section(".sine_table1"))) sine_table_1[] = {
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
+int *const WAVEGENERATOR_table_1 = sine_table_1;
 int __attribute__((section(".sine_table1_short"))) sine_table_1_short[] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
@@ -90,76 +92,101 @@ int __attribute__((section(".sine_table2"))) sine_table_2[] = {
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
+int *const WAVEGENERATOR_table_2 = sine_table_2;
 int __attribute__((section(".sine_table2_short"))) sine_table_2_short[] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
 
-response_t WAVEGENERATOR_LoadWaveForm1(void) {
+static void downsample(int const *const table_full, int *const table_short)
+{
+    int const step = 16;
+    int const norm = 64;
 
-    uint16_t i;
-
-    for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        sine_table_1[i] = UART1_ReadInt();
+    for (int i = 0; i < WAVE_TABLE_SHORT_LENGTH; ++i) {
+        table_short[i] = (
+            (table_full[i * step] * norm + WAVE_TABLE_FULL_LENGTH / 2 - 1)
+            / WAVE_TABLE_FULL_LENGTH
+        );
     }
-
-    for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        sine_table_1_short[i] = UART1_Read();
-    }
-
-    return SUCCESS;
 }
 
-response_t WAVEGENERATOR_ReadWaveForm1(void) {
-
-    uint16_t i;
-
-    for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        UART1_WriteInt(sine_table_1[i]);
+enum Status WAVEGENERATOR_load_wave_1(
+    __attribute__((unused)) uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    /* This command is special-cased in the packet handler to receive input
+     * directory to WAVEGENERATOR_table_1. By the time the program reaches
+     * this point, the table should already be fully populated. */
+    if (args_size != WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_1)) {
+        return E_BAD_ARGSIZE;
     }
 
-    for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        UART1_Write(sine_table_1_short[i]);
-    }
-
-    return SUCCESS;
+    downsample(WAVEGENERATOR_table_1, sine_table_1_short);
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_LoadWaveForm2(void) {
-
-    uint16_t i;
-
-    for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        sine_table_2[i] = UART1_ReadInt();
-    }
-
-    for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        sine_table_2_short[i] = UART1_Read();
-    }
-
-    return SUCCESS;
+enum Status WAVEGENERATOR_read_wave_1(
+    __attribute__((unused)) uint8_t const *const args,
+    __attribute__((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    *rets = (uint8_t *)WAVEGENERATOR_table_1;
+    *rets_size = WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_1);
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_ReadWaveForm2(void) {
-
-    uint16_t i;
-
-    for (i = 0; i < WAVE_TABLE_FULL_LENGTH; i++) {
-        UART1_WriteInt(sine_table_2[i]);
+enum Status WAVEGENERATOR_load_wave_2(
+    __attribute__((unused)) uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    /* This command is special-cased in the packet handler to receive input
+     * directory to WAVEGENERATOR_table_2. By the time the program reaches
+     * this point, the table should already be fully populated. */
+    if (args_size != WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_2)) {
+        return E_BAD_ARGSIZE;
     }
 
-    for (i = 0; i < WAVE_TABLE_SHORT_LENGTH; i++) {
-        UART1_Write(sine_table_2_short[i]);
-    }
-
-    return SUCCESS;
+    downsample(WAVEGENERATOR_table_2, sine_table_2_short);
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_SetSine1(void) {
+enum Status WAVEGENERATOR_read_wave_2(
+    __attribute__((unused)) uint8_t const *const args,
+    __attribute__((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    *rets = (uint8_t *)WAVEGENERATOR_table_2;
+    *rets_size = WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_2);
+    return E_OK;
+}
 
-    uint8_t resolution = UART1_Read();
-    uint16_t wave_length = UART1_ReadInt();
-    
+enum Status WAVEGENERATOR_set_sine_1(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t resolution;
+            uint16_t wavelength;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
+
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
+
     T2CONbits.T32 = 0;
     TMR3_Initialize();
 
@@ -168,7 +195,7 @@ response_t WAVEGENERATOR_SetSine1(void) {
     // DMA Reads from RAM address, writes to peripheral address
     DMA2CONbits.DIR = 1;
 
-    if (resolution & HIGH_RESOLUTION) {
+    if (input.resolution & HIGH_RESOLUTION) {
         OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
@@ -205,25 +232,40 @@ response_t WAVEGENERATOR_SetSine1(void) {
 
     DMA_ChannelEnable(DMA_CHANNEL_2);
 
-    TMR3_Period16BitSet(wave_length);
-    // 11 -- 1:256 
-    // 10 -- 1:64 
-    // 01 -- 1:8 
+    TMR3_Period16BitSet(input.wavelength);
+    // 11 -- 1:256
+    // 10 -- 1:64
+    // 01 -- 1:8
     // 00 -- 1:1
-    T3CONbits.TCKPS = (resolution >> 1) & 3;
+    T3CONbits.TCKPS = (input.resolution >> 1) & 3;
 
     // Link OC3 pin to SINE1 output
     RPOR6bits.RP57R = RPN_OC3_PORT;
 
     TMR3_Start();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_SetSine2(void) {
+enum Status WAVEGENERATOR_set_sine_2(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t resolution;
+            uint16_t wavelength;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint8_t resolution = UART1_Read();
-    uint16_t wave_length = UART1_ReadInt();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     TMR4_Initialize();
 
@@ -232,7 +274,7 @@ response_t WAVEGENERATOR_SetSine2(void) {
     // DMA Reads from RAM address, writes to peripheral address
     DMA3CONbits.DIR = 1;
 
-    if (resolution & HIGH_RESOLUTION) {
+    if (input.resolution & HIGH_RESOLUTION) {
         OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressASet(DMA_CHANNEL_3,
@@ -267,30 +309,43 @@ response_t WAVEGENERATOR_SetSine2(void) {
 
     DMA_ChannelEnable(DMA_CHANNEL_3);
 
-    TMR4_Period16BitSet(wave_length);
-    // 11 -- 1:256 
-    // 10 -- 1:64 
-    // 01 -- 1:8 
+    TMR4_Period16BitSet(input.wavelength);
+    // 11 -- 1:256
+    // 10 -- 1:64
+    // 01 -- 1:8
     // 00 -- 1:1
-    T4CONbits.TCKPS = (resolution >> 1) & 3;
+    T4CONbits.TCKPS = (input.resolution >> 1) & 3;
 
     // Link OC4 pin to SINE2 output
     RPOR6bits.RP56R = RPN_OC4_PORT;
 
     TMR4_Start();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_SetSineDual(void) {
+enum Status WAVEGENERATOR_set_sine_dual(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t wavelength_1;
+            uint16_t wavelength_2;
+            uint16_t table_offset;
+            uint16_t timer_offset;
+            uint8_t resolution;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint16_t wave_length_1 = UART1_ReadInt();
-    uint16_t wave_length_2 = UART1_ReadInt();
-    uint16_t table_offset = UART1_ReadInt();
-    uint16_t timer_offset = UART1_ReadInt();
-    uint8_t resolution = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
 
-    uint16_t i;
+    input.buffer = args;
 
     TMR3_Initialize();
     TMR4_Initialize();
@@ -304,7 +359,7 @@ response_t WAVEGENERATOR_SetSineDual(void) {
     // DMA Reads from RAM address, writes to peripheral address
     DMA3CONbits.DIR = 1;
 
-    if (resolution & HIGH_RESOLUTION) {
+    if (input.resolution & HIGH_RESOLUTION) {
         OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
@@ -320,7 +375,7 @@ response_t WAVEGENERATOR_SetSineDual(void) {
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
-    if ((resolution >> 1) & HIGH_RESOLUTION) {
+    if ((input.resolution >> 1) & HIGH_RESOLUTION) {
         OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_3,
@@ -370,21 +425,21 @@ response_t WAVEGENERATOR_SetSineDual(void) {
     DMA_ChannelEnable(DMA_CHANNEL_3);
 
     // Fast forward DMA Channel 3 to create phase offset
-    for (i = 0; i < table_offset; i++) {
+    for (unsigned i = 0; i < input.table_offset; ++i) {
         DMA3REQbits.FORCE = 1;
         while (DMA3REQbits.FORCE);
     }
 
-    TMR3_Period16BitSet(wave_length_1);
-    TMR4_Period16BitSet(wave_length_2);
-    
-    TMR3_Counter16BitSet(timer_offset);
-    // 11 -- 1:256 
-    // 10 -- 1:64 
-    // 01 -- 1:8 
+    TMR3_Period16BitSet(input.wavelength_1);
+    TMR4_Period16BitSet(input.wavelength_2);
+
+    TMR3_Counter16BitSet(input.timer_offset);
+    // 11 -- 1:256
+    // 10 -- 1:64
+    // 01 -- 1:8
     // 00 -- 1:1
-    T3CONbits.TCKPS = (resolution >> 2) & 3;
-    T4CONbits.TCKPS = (resolution >> 4) & 3;
+    T3CONbits.TCKPS = (input.resolution >> 2) & 3;
+    T4CONbits.TCKPS = (input.resolution >> 4) & 3;
 
     RPOR6bits.RP56R = RPN_OC4_PORT;
     RPOR6bits.RP57R = RPN_OC3_PORT;
@@ -392,14 +447,29 @@ response_t WAVEGENERATOR_SetSineDual(void) {
     TMR3_Start();
     TMR4_Start();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_SetSquare1(void) {
+enum Status WAVEGENERATOR_set_square_1(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t wavelength;
+            uint16_t high_time;
+            uint8_t scale;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint16_t wave_length = UART1_ReadInt();
-    uint16_t high_time = UART1_ReadInt();
-    uint8_t scale = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     OC1_Initialize();
     TMR1_Initialize();
@@ -412,28 +482,43 @@ response_t WAVEGENERATOR_SetSquare1(void) {
     OC1CON2bits.SYNCSEL = 0b01011;
 
     // Set pulse turn on time
-    OC1_PrimaryValueSet(high_time - 1);
+    OC1_PrimaryValueSet(input.high_time - 1);
     // Set pulse width
-    TMR1_Period16BitSet(wave_length - 1);
+    TMR1_Period16BitSet(input.wavelength - 1);
 
-    T1CONbits.TCKPS = scale & 0x3;
+    T1CONbits.TCKPS = input.scale & 0x3;
 
     RPOR5bits.RP54R = RPN_OC1_PORT;
 
     TMR1_Start();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_SetSquare2(void) {
+enum Status WAVEGENERATOR_set_square_2(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t wavelength;
+            uint16_t high_time;
+            uint8_t scale;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint16_t wave_length = UART1_ReadInt();
-    uint16_t high_time = UART1_ReadInt();
-    uint8_t scale = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     OC2_Initialize();
     TMR2_Initialize();
-    
+
     // Output Compare Clock Select is TMR 2
     OC2CON1bits.OCTSEL = 0b000;
     // Output set high when OC2TMR=0 and set low when OC2TMR=OC2R
@@ -442,30 +527,45 @@ response_t WAVEGENERATOR_SetSquare2(void) {
     OC2CON2bits.SYNCSEL = 0b01100;
 
     // Set pulse turn on time
-    OC2_PrimaryValueSet(high_time - 1);
+    OC2_PrimaryValueSet(input.high_time - 1);
     // Set pulse width
-    TMR2_Period16BitSet(wave_length - 1);
+    TMR2_Period16BitSet(input.wavelength - 1);
 
-    T2CONbits.TCKPS = scale & 0x3;
+    T2CONbits.TCKPS = input.scale & 0x3;
 
     RPOR5bits.RP55R = RPN_OC2_PORT;
 
     TMR2_Start();
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_SetSquareAll(void) {
+enum Status WAVEGENERATOR_set_square_all(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint16_t wavelength;
+            uint16_t high_time_1;
+            uint16_t low_time_2;
+            uint16_t high_time_2;
+            uint16_t low_time_3;
+            uint16_t high_time_3;
+            uint16_t low_time_4;
+            uint16_t high_time_4;
+            uint8_t configuration;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint16_t wave_length = UART1_ReadInt();
-    uint16_t high_time_1 = UART1_ReadInt();
-    uint16_t low_time_2 = UART1_ReadInt();
-    uint16_t high_time_2 = UART1_ReadInt();
-    uint16_t low_time_3 = UART1_ReadInt();
-    uint16_t high_time_3 = UART1_ReadInt();
-    uint16_t low_time_4 = UART1_ReadInt();
-    uint16_t high_time_4 = UART1_ReadInt();
-    uint8_t configuration = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     DMA_InterruptDisable(DMA_CHANNEL_2);
     DMA_FlagInterruptClear(DMA_CHANNEL_2);
@@ -475,22 +575,22 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
     DMA_ChannelDisable(DMA_CHANNEL_3);
 
     TMR1_Initialize();
-    T1CONbits.TCKPS = configuration & 0b11; // ...._..XX
+    T1CONbits.TCKPS = input.configuration & 0b11; // ...._..XX
 
     OC1_Initialize();
     OC1_PrimaryValueSet(0);
-    OC1_SecondaryValueSet(high_time_1);
+    OC1_SecondaryValueSet(input.high_time_1);
     OC2_Initialize();
-    OC2_PrimaryValueSet(low_time_2);
-    OC2_SecondaryValueSet(high_time_2);
+    OC2_PrimaryValueSet(input.low_time_2);
+    OC2_SecondaryValueSet(input.high_time_2);
     OC3_Initialize();
-    OC3_PrimaryValueSet(low_time_3);
-    OC3_SecondaryValueSet(high_time_3);
+    OC3_PrimaryValueSet(input.low_time_3);
+    OC3_SecondaryValueSet(input.high_time_3);
     OC4_Initialize();
-    OC4_PrimaryValueSet(low_time_4);
-    OC4_SecondaryValueSet(high_time_4);
+    OC4_PrimaryValueSet(input.low_time_4);
+    OC4_SecondaryValueSet(input.high_time_4);
 
-    if ((configuration >> 6) & 1) { // .X.._....
+    if ((input.configuration >> 6) & 1) { // .X.._....
         // EnableComparator();
         // CMP2 module synchronizes or triggers OCx
         OC1CON2bits.SYNCSEL = 0b11001;
@@ -510,7 +610,7 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
         OC4CON2bits.SYNCSEL = 0b01011;
     }
 
-    if ((configuration >> 5) & 1) { // ..X._....
+    if ((input.configuration >> 5) & 1) { // ..X._....
         // Output set high when OCxTMR = OCxR and set low when OCxTMR = OCxRS
         OC1CON1bits.OCM = 0b111;
         OC2CON1bits.OCM = 0b111;
@@ -523,9 +623,9 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
         OC3CON1bits.OCM = 0b100;
         OC4CON1bits.OCM = 0b100;
         // Invert OCx pin output
-        OC2CON2bits.OCINV = (configuration >> 2) & 1; // ...._.X..
-        OC3CON2bits.OCINV = (configuration >> 3) & 1; // ...._X...
-        OC4CON2bits.OCINV = (configuration >> 4) & 1; // ...X_....
+        OC2CON2bits.OCINV = (input.configuration >> 2) & 1; // ...._.X..
+        OC3CON2bits.OCINV = (input.configuration >> 3) & 1; // ...._X...
+        OC4CON2bits.OCINV = (input.configuration >> 4) & 1; // ...X_....
     }
 
     // T1CLK is the clock source of the Output Compare modules
@@ -534,7 +634,7 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
     OC3CON1bits.OCTSEL = 0b100;
     OC4CON1bits.OCTSEL = 0b100;
 
-    TMR1_Period16BitSet(wave_length);
+    TMR1_Period16BitSet(input.wavelength);
     TMR1_Start();
 
     RPOR5bits.RP54R = RPN_OC1_PORT;
@@ -542,13 +642,28 @@ response_t WAVEGENERATOR_SetSquareAll(void) {
     RPOR6bits.RP56R = RPN_OC3_PORT;
     RPOR6bits.RP57R = RPN_OC4_PORT;
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t WAVEGENERATOR_MapReference(void) {
+enum Status WAVEGENERATOR_map_reference(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__((unused)) uint8_t **rets,
+    __attribute__((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t port;
+            uint8_t scale;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint8_t port = UART1_Read();
-    uint8_t scale = UART1_Read();
+    if (args_size != sizeof(input)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input.buffer = args;
 
     // Reference Oscillator output is disabled
     REFOCONbits.ROON = 0;
@@ -557,24 +672,24 @@ response_t WAVEGENERATOR_MapReference(void) {
     // Reference Oscillator output is disabled in Sleep
     REFOCONbits.ROSSLP = 0;
     // Clock scaling as 2^scale (scale = 10 --> 1024 ticks for one toggle)
-    REFOCONbits.RODIV = scale;
+    REFOCONbits.RODIV = input.scale;
 
     // Configure output pin/s (multiple ports are supported)
-    if (port & 1) { // ...._...X
+    if (input.port & 1) { // ...._...X
         RPOR5bits.RP54R = RPN_REFCLKO_PORT; // SQR1
     }
-    if (port & 2) { // ...._..X.
+    if (input.port & 2) { // ...._..X.
         RPOR5bits.RP55R = RPN_REFCLKO_PORT; // SQR2
     }
-    if (port & 4) { // ...._.X..
+    if (input.port & 4) { // ...._.X..
         RPOR6bits.RP56R = RPN_REFCLKO_PORT; // SQR3
     }
-    if (port & 8) { // ...._X...
+    if (input.port & 8) { // ...._X...
         RPOR6bits.RP57R = RPN_REFCLKO_PORT; // SQR4
     }
-    
+
     // Turn on oscillator output
     REFOCONbits.ROON = 1;
 
-    return SUCCESS;
+    return E_OK;
 }
