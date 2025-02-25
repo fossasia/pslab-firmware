@@ -1,7 +1,9 @@
-#include <xc.h>
+#include <stdint.h>
 #include <stdio.h>
+#include <string.h>
+#include <xc.h>
+
 #include "pin_manager.h"
-#include "../../bus/uart/uart.h"
 
 uint8_t PIN_MANAGER_DIGITAL_PINS[] = {
     PIN_MANAGER_DIGITAL_PINS_LA1,
@@ -131,36 +133,59 @@ void PIN_MANAGER_Initialize(void) {
     LED_SetHigh();
 }
 
-response_t PIN_MANAGER_SetWavePinState(void) {
+enum Status PIN_MANAGER_set_sq_pin_state(
+    uint8_t const *const args,
+    uint16_t const args_size,
+    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint16_t *rets_size
+) {
+    union Input {
+        struct {
+            uint8_t sq_pin_state;
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    uint8_t pin_state = UART1_Read();
+    if (args_size != sizeof(input)) {return E_BAD_ARGSIZE;}
+    input.buffer = args;
 
-    if (pin_state & 0b00010000) {
+    if (input.sq_pin_state & 0b00010000) {
         RPOR5bits.RP54R = RPN_DEFAULT_PORT; // SQ1: C6
     }
-    if (pin_state & 0b00100000) {
+    if (input.sq_pin_state & 0b00100000) {
         RPOR5bits.RP55R = RPN_DEFAULT_PORT; // SQ2: C7
     }
-    if (pin_state & 0b01000000) {
+    if (input.sq_pin_state & 0b01000000) {
         RPOR6bits.RP56R = RPN_DEFAULT_PORT; // SQ3: C8
     }
-    if (pin_state & 0b10000000) {
+    if (input.sq_pin_state & 0b10000000) {
         RPOR6bits.RP57R = RPN_DEFAULT_PORT; // SQ4: C9
     }
 
     // Clear C6-C9 bits using MSBs [XXXX_....]
-    LATC &= ~((pin_state & 0x00F0) << 2);
+    LATC &= ~((input.sq_pin_state & 0x00F0) << 2);
     // Set C6-C9 bits using LSBs [...._XXXX]
-    LATC |= ((pin_state & 0x000F) << 6);
+    LATC |= ((input.sq_pin_state & 0x000F) << 6);
 
-    return SUCCESS;
+    return E_OK;
 }
 
-response_t PIN_MANAGER_GetLAPinState(void) {
+enum Status PIN_MANAGER_get_la_pin_state(
+    uint8_t *const args,
+    __attribute__ ((unused)) uint16_t const args_size,
+    uint8_t **rets,
+    uint16_t *rets_size
+) {
+    union Output {
+        struct {
+            uint16_t la_pin_state;
+        };
+        uint8_t const *buffer;
+    } output = {{0}};
 
-    uint16_t la_pin_state = (PORTB >> 10) & 0xF;
-
-    UART1_WriteInt(la_pin_state);
-
-    return SUCCESS;
+    output.la_pin_state = (PORTB >> 10) & 0xF;
+    *rets = args;
+    *rets_size = sizeof(output);
+    memcpy(*rets, output.buffer, *rets_size);
+    return E_OK;
 }
