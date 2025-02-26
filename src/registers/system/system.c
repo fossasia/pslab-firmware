@@ -68,8 +68,8 @@ void SYSTEM_Initialize(void) {
 
     INTERRUPT_Initialize();
 
-    UART_Initialize(U1SELECT);
-    UART_Initialize(U2SELECT);
+    UART_initialize(U1SELECT);
+    UART_initialize(U2SELECT);
 
     ADC1_Initialize();
 
@@ -101,5 +101,6 @@ void SYSTEM_Initialize(void) {
     DMA_Initialize();
 
     LIGHT_RGB(0, 20, 0);
-    UART_ClearBuffer(U1SELECT);
+    UART_flush_rx(U1SELECT);
+    UART_flush_rx(U2SELECT);
 }
