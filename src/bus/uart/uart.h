@@ -3,16 +3,58 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+
 #include "../../commands.h"
 
 /**
  * @brief Identifier for UART1 or UART2.
  */
-typedef enum
-{
+typedef enum {
     U1SELECT,
     U2SELECT,
 } EUxSelect;
+
+/**
+ * @brief Suitable values for UxBRG register.
+ * @details UxBRG = [FCY / (4 * BAUD)] - 1
+*/
+typedef enum {
+  BAUD1000000 = 15,
+  BAUD576000 = 27,
+  BAUD500000 = 31,
+  BAUD460800 = 34,
+  BAUD230400 = 68,
+  BAUD115200 = 138,
+  BAUD57600 = 277,
+  BAUD38400 = 416,
+  BAUD19200 = 832,
+  BAUD9600 = 1666,
+  BAUD4800 = 3332,
+  BAUD2400 = 6666,
+  BAUD1800 = 8888,
+  BAUD1200 = 13332,
+  BAUD600 = 26666,
+  BAUD300 = 53332,
+} EBaudrate;
+
+/**
+* @brief Possible values of UxMODE.STSEL field.
+*/
+typedef enum {
+  ONE_STOP_BIT,
+  TWO_STOP_BITS,
+} EStopBits;
+
+/**
+* @brief Possible values of UxMODE.PDSEL field.
+*/
+typedef enum {
+  NO_PARITY,
+  EVEN_PARITY,
+  ODD_PARITY,
+  // Unimplemented; Not supported by pyserial.
+  // NINE_BIT_DATA,
+} EParity;
 
 /**
  * @brief Initialization function that sets up the UARTx driver for use.
@@ -20,116 +62,98 @@ typedef enum
  * This function initializes the selected UART driver. This function must be
  * called before any other UART functions are called.
  *
- * @param select Either U1SELECT or U2SELECT.
+ * @param EUxSelect select
+ *
+ * @return enum Status status
  */
-void UART_initialize(EUxSelect const select);
+enum Status UART_initialize(EUxSelect select);
+
+/**
+ * @brief Set number of stop bits.
+ *
+ * A UART frame ends when the transmitter sets its Tx line high for at least
+ * one bit period after sending all data bits. This is called a stop bit.
+ * Optionally, more than one stop bit can be used, which may make transmission
+ * more resilient to e.g. small differences in clock rate between transmitter
+ * and reciever.
+ *
+ * The default is one stop bit.
+ *
+ * @param EUxSelect select
+ * @param EStopBits stop
+ *
+ * @return enum Status status
+ */
+enum Status UART_set_stop(EUxSelect select, EStopBits stop);
+
+/**
+ * @brief Set parity.
+ *
+ * If parity is enabled, one additional bit is sent after the data bits. This
+ * bit is used to detect if the data changed during transmission. If the
+ * parity mode is even, the total number of 1's in the UART frame (including
+ * the parity bit) must be even. If the parity mode is odd, the number of 1's
+ * in the UART frame (including the parity bit) must be odd.
+ *
+ * The default mode is no parity.
+ *
+ * @param EUxSelect select
+ * @param EParity parity.
+ */
+enum Status UART_set_parity(EUxSelect select, EParity parity);
+
+/**
+ * @brief Set baudrate.
+ *
+ * @param EUxSelect select
+ * @param EBaudrate baud
+ *
+ * @return enum Status status
+ */
+enum Status UART_set_baud(EUxSelect select, EBaudrate baud);
 
 /**
  * @brief Read bytes from UARTx bus into buffer.
  *
- * @param select U1SELECT or U2SELECT.
- * @param buffer Pointer to writable uint8_t array.
- * @param size Size of buffer.
- * @return enum Status
+ * @param EUxSelect select
+ * @param[out] uint8_t *buffer
+ * @param uint16_t buffer_size
+ * @param[out] uint16_t *num_bytes_read
+ *   May be NULL.
+ *
+ * @return enum Status status
  */
-enum Status UART_read(EUxSelect select, uint8_t *buffer, uint16_t size);
+enum Status UART_read(
+    EUxSelect select,
+    uint8_t *buffer,
+    uint16_t buffer_size,
+    uint16_t *num_bytes_read
+);
 
 /**
  * @brief Write bytes to UARTx from buffer.
  *
- * @param select U1SELECT or U2SELECT.
- * @param buffer Pointer to uint8_t array.
- * @param size Size of buffer.
- * @return enum Status
+ * @param EUxSelect select
+ * @param uint8_t const* buffer
+ * @param uint16_t size
+ * @param uint16_t *num_bytes_written
+ *
+ * @return enum Status status
  */
-enum Status UART_write(EUxSelect select, uint8_t const *buffer, uint16_t size);
+enum Status UART_write(
+  EUxSelect select,
+  uint8_t const *buffer,
+  uint16_t size,
+  uint16_t *num_bytes_written
+);
 
 /**
  * @brief Consume any incoming data until bus is idle.
  *
- * @param select U1SELECT or U2SELECT.
- * @return enum Status
+ * @param EUxSelect select
+ *
+ * @return enum Status status
  */
 enum Status UART_flush_rx(EUxSelect select);
-
-/**
- * @brief Read a one-byte integer value from UART2 and write it to UART1.
- *
- * @return NACK
- */
-response_t UART2_read_u8(void);
-
-/**
- * @brief Read a two-byte integer value from UART2 and write it to UART1.
- *
- * @return NACK
- */
-response_t UART2_read_u16(void);
-
-/**
- * @brief Read a one-byte integer value from UART1 and write it to UART2.
- *
- * @return NACK
- */
-response_t UART2_write_u8(void);
-
-/**
- * @brief Read a two-byte integer value from UART1 and write it to UART2.
- *
- * @return NACK
- */
-response_t UART2_write_u16(void);
-
-/**
- * @brief Query whether there is data available to read from UART2.
- *
- * @return rx_ready
- *   True if at least one more byte can be read from UART2.
- * @return NACK
- */
-response_t UART2_rx_ready(void);
-
-/**
- * @brief Set baudrate of UART2.
- *
- * @param brgval
- *   BRGVAL to set on UART2.
- *
- * @return SUCCESS
- */
-response_t UART2_set_baud(void);
-
-/**
- * @brief Set UART2 stop bit and parity.
- *
- * @param mode
- *   Bit 0 sets UART2 stop bit:
- *   0: One stop bit
- *   1: Two stop bits
- *   Bits 1-2 set UART2 parity:
- *   0: No parity
- *   1: Even parity
- *   2: Odd parity
- *
- * @return response_t
- */
-response_t UART2_set_mode(void);
-
-/**
- * @brief Send all traffic from UART1 to UART2 and vice versa.
- *
- * After running this function, the normal functionality of the PSLab becomes
- * unavailable. Since all data sent to UART1 is immediately passed to UART2,
- * it is no longer possible to run any commands. To resume normal operation,
- * the PSLab must be hard-reset.
- *
- * @param baud
- *   BRGVAL for both UART1 and UART2. Note that the host device controlling
- *   the PSLab must reconfigure its own UART interface to have the same
- *   baudrate.
- *
- * @return DO_NOT_BOTHER
- */
-response_t UART_Passthrough(void);
 
 #endif // _UART_H
