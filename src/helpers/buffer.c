@@ -116,7 +116,7 @@ enum Status BUFFER_write(
 
     start = ((uint16_t *)args)[0];
     count = ((uint16_t *)args)[1];
-    *rets = (uint8_t *const)(&BUFFER + start);
+    *rets = (uint8_t *const)(BUFFER + start);
     *rets_size = count;
     return E_OK;
 }
