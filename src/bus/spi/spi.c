@@ -192,7 +192,7 @@ static enum Status host_exchange(
  *         SUCCESS otherwise.
 */
 static enum Status command(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
     enum Direction const dir,
     enum Width const width
@@ -334,9 +334,9 @@ enum Status SPI_exchange_int(const tSPI_CS cs, uint16_t* const data)
 /*********************/
 
 enum Status SPI_conf(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union {
@@ -358,54 +358,54 @@ enum Status SPI_conf(
 }
 
 enum Status SPI_read_bytes(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return command(args, args_size, READ, BYTE);
 }
 
 enum Status SPI_write_bytes(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return command(args, args_size, WRITE, BYTE);
 }
 
 enum Status SPI_exchange_bytes(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return command(args, args_size, EXCHANGE, BYTE);
 }
 
 enum Status SPI_read_ints(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return command(args, args_size, READ, WORD);
 }
 
 enum Status SPI_write_ints(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return command(args, args_size, WRITE, WORD);
 }
 
 enum Status SPI_exchange_ints(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return command(args, args_size, EXCHANGE, WORD);

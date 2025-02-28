@@ -58,13 +58,13 @@ enum Status {
 /**
  * @brief Command functions provide the public-facing API available to hosts.
  *
- * @param[in] uint8_t *args
+ * @param[in] uint8_t args[]
  *      Byte-array containing function arguments. The function may parse its
  *      arguments from the array. The function may reuse this array to output
  *      up to `arg_size` bytes.
  * @param uint16_t args_size
  *      Number of bytes in `args`.
- * @param[out] uint8_t **rets
+ * @param[out] uint8_t *rets[]
  *      Pointer to an unallocated byte-array containing function return
  *      values. The function does not need to set this if has nothing to
  *      return. The function may set `*rets = args` if
@@ -75,19 +75,14 @@ enum Status {
  * @return enum Status
  *      Exit code.
  */
-typedef enum Status CmdFunc(
-    uint8_t *args,
+typedef enum Status (*CmdFunc)(
+    uint8_t args[*],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[*],
     uint16_t *rets_size
 );
 
-CmdFunc *COMMAND_get_func(uint16_t code);
-
-/**
- * @brief 2D array containing command functions.
- */
-extern CmdFunc *const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1];
+CmdFunc COMMAND_get_func(uint16_t cmd);
 
 #ifdef	__cplusplus
 }

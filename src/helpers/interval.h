@@ -88,9 +88,9 @@ extern "C" {
     void INTERVAL_CaptureFour(uint16_t count, uint16_t mode, uint8_t prescaler);
 
     enum Status INTERVAL_get_state(
-        uint8_t *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 

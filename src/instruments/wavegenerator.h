@@ -8,15 +8,15 @@ extern "C" {
     #define WAVE_TABLE_FULL_LENGTH          512
     #define WAVE_TABLE_SHORT_LENGTH         32
 
-    extern int __attribute__((section(".sine_table1"))) WAVEGENERATOR_table_1[WAVE_TABLE_FULL_LENGTH];
-    extern int __attribute__((section(".sine_table2"))) WAVEGENERATOR_table_2[WAVE_TABLE_FULL_LENGTH];
+    extern int sine_table1[WAVE_TABLE_FULL_LENGTH];
+    extern int sine_table2[WAVE_TABLE_FULL_LENGTH];
 
     /**
      * @brief Replace default wave table pattern 1 with a user defined sequence
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_load_wave_1(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -27,7 +27,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_read_wave_1(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -38,7 +38,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_load_wave_2(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -49,7 +49,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_read_wave_2(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -60,7 +60,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_set_sine_1(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -71,7 +71,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_set_sine_2(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -82,7 +82,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_set_sine_dual(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -93,7 +93,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_set_square_1(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -104,7 +104,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_set_square_2(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -115,7 +115,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_set_square_all(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -126,7 +126,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status WAVEGENERATOR_map_reference(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size

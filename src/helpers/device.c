@@ -28,9 +28,9 @@ static union {
 }};
 
 enum Status DEVICE_get_hw_version(
-    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 ) {
     *rets = (uint8_t *const)&VERSION_HW;
@@ -39,9 +39,9 @@ enum Status DEVICE_get_hw_version(
 }
 
 enum Status DEVICE_get_fw_version(
-    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 ) {
     *rets = (uint8_t *const)&VERSION_FW.version;
@@ -50,9 +50,9 @@ enum Status DEVICE_get_fw_version(
 }
 
 __attribute__((noreturn)) enum Status DEVICE_reset(
-    __attribute__ ((unused)) uint8_t const *const args,
+    __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     __asm__ volatile ("reset");
@@ -60,9 +60,9 @@ __attribute__((noreturn)) enum Status DEVICE_reset(
 }
 
 enum Status DEVICE_read_register(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    uint8_t volatile **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 ) {
     uint16_t volatile *address = NULL;
@@ -72,15 +72,15 @@ enum Status DEVICE_read_register(
     }
 
     address = *(uint16_t volatile *const *const)args;
-   *rets = (uint8_t volatile  *const)address;
+   *rets = (uint8_t *const)address;
    *rets_size = sizeof(*address);
     return E_OK;
 }
 
 enum Status DEVICE_write_register(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint16_t volatile *address = NULL;

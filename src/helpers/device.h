@@ -10,9 +10,9 @@ extern "C" {
      * @return Hardware version string
      */
     enum Status DEVICE_get_hw_version(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -21,9 +21,9 @@ extern "C" {
      * @return MAJOR (uint8_t), MINOR (uint8_t), PATCH (uint8_t)
      */
     enum Status DEVICE_get_fw_version(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -32,9 +32,9 @@ extern "C" {
      * @return No return
      */
     enum Status DEVICE_reset(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -43,9 +43,9 @@ extern "C" {
      * @return Register contents
      */
     enum Status DEVICE_read_register(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t volatile **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -55,9 +55,9 @@ extern "C" {
      * @return
      */
     enum Status DEVICE_write_register(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 

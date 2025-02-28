@@ -1,3 +1,6 @@
+#include <stdbool.h>
+#include <stddef.h>
+
 #include <xc.h>
 
 #include "uart.h"
@@ -294,5 +297,12 @@ enum Status UART_flush_rx(EUxSelect const select)
 {
     sUartRegs const regs = get_registers(select);
     while(regs.stabitsptr->URXDA || !regs.stabitsptr->RIDLE) {*regs.rxptr;}
+    return E_OK;
+}
+
+enum Status UART_rx_ready(EUxSelect const select, bool *const ready)
+{
+    sUartRegs const regs = get_registers(select);
+    *ready = regs.stabitsptr->URXDA;
     return E_OK;
 }

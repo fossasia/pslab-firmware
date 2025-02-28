@@ -751,9 +751,9 @@ extern "C" {
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
     enum Status I2C_command_start(
-        uint8_t *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -771,9 +771,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_stop(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -792,9 +792,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_wait(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -815,9 +815,9 @@ extern "C" {
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
     enum Status I2C_command_send(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -839,9 +839,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_send_burst(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -862,9 +862,9 @@ extern "C" {
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
     enum Status I2C_command_restart(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -886,9 +886,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_read_more(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -909,9 +909,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_read_end(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -932,9 +932,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_config(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -953,9 +953,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_status(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -981,9 +981,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_read_bulk(
-        uint8_t *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -1008,9 +1008,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_write_bulk(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -1029,9 +1029,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_enable_smbus(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -1050,9 +1050,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_disable_smbus(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -1071,9 +1071,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_init(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -1095,9 +1095,9 @@ extern "C" {
             SUCCESS
      */
     enum Status I2C_command_pull_down(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 

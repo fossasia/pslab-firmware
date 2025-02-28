@@ -134,9 +134,9 @@ void PIN_MANAGER_Initialize(void) {
 }
 
 enum Status PIN_MANAGER_set_sq_pin_state(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -173,7 +173,7 @@ enum Status PIN_MANAGER_set_sq_pin_state(
 enum Status PIN_MANAGER_get_la_pin_state(
     uint8_t *const args,
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 ) {
     union Output {

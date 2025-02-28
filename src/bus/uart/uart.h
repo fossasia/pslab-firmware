@@ -156,4 +156,13 @@ enum Status UART_write(
  */
 enum Status UART_flush_rx(EUxSelect select);
 
+/**
+ * @brief Check if incoming data is available.
+ *
+ * @param EUxSelect select
+ * @param[out] bool *ready
+ * @return enum Status status
+ */
+enum Status UART_rx_ready(EUxSelect select, bool *ready);
+
 #endif // _UART_H
