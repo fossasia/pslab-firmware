@@ -22,9 +22,9 @@ void SetLA_TRIGGER_STATE(uint8_t V) { LA_TRIGGER_STATE = V; }
 uint8_t GetLA_TRIGGER_STATE(void) { return LA_TRIGGER_STATE; }
 
 enum Status LOGICANALYZER_one_channel(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -67,9 +67,9 @@ enum Status LOGICANALYZER_one_channel(
 }
 
 enum Status LOGICANALYZER_one_channel_alt(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -115,9 +115,9 @@ enum Status LOGICANALYZER_one_channel_alt(
 }
 
 enum Status LOGICANALYZER_two_channel(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -160,9 +160,9 @@ enum Status LOGICANALYZER_two_channel(
 }
 
 enum Status LOGICANALYZER_three_channel(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -204,9 +204,9 @@ enum Status LOGICANALYZER_three_channel(
 }
 
 enum Status LOGICANALYZER_four_channel(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -261,9 +261,9 @@ enum Status LOGICANALYZER_four_channel(
 }
 
 enum Status LOGICANALYZER_stop(
-    __attribute__ ((unused)) uint8_t const *args,
+    __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     IC_PARAMS_DisableAllModules();

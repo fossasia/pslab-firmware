@@ -1,6 +1,8 @@
+#include <stdbool.h>
+
 #include "registers/system/system.h"
-#include "bus/uart/uart.h"
 #include "helpers/light.h"
+#include "transport/host.h"
 #include "registers/system/watchdog.h"
 #include "transport/packet_handler.h"
 #include "commands.h"
@@ -10,8 +12,11 @@
  * @brief Wait for incoming serial traffic.
  * @return STATE_STANDBY or STATE_RUNCOMMAND
  */
-state_t Standby(void) {
-    if (UART_IsRxReady(U1SELECT)) {
+EState standby(void) {
+    bool ready = false;
+    HOST_rx_ready(&ready);
+
+    if (ready) {
         return STATE_RUNCOMMAND;
     } else {
         WATCHDOG_TimerClear();
@@ -23,22 +28,7 @@ state_t Standby(void) {
  * @brief Receive commands bytes, run command, and send response.
  * @return STATE_STANDBY
  */
-state_t RunCommand(void) {
-    command_t primary_cmd = UART1_Read();
-    command_t secondary_cmd = UART1_Read();
-
-    // Sanitize input.
-    if (primary_cmd > NUM_PRIMARY_CMDS) return STATE_STANDBY;
-    if (secondary_cmd > num_secondary_cmds[primary_cmd]) return STATE_STANDBY;
-
-    response_t response = cmd_table[primary_cmd][secondary_cmd]();
-
-    if (response) UART1_Write(response);
-
-    return STATE_STANDBY;
-}
-
-state_t run_command(void)
+EState run_command(void)
 {
     enum Status status;
 
@@ -50,11 +40,11 @@ state_t run_command(void)
     return STATE_STANDBY;
 }
 
-state_func_t* const state_table[NUM_STATES] = {
-    Standby,
+StateFunc const state_table[NUM_STATES] = {
+    standby,
     run_command,
 };
 
-state_t STATES_RunState(state_t current_state) {
+EState STATES_run_state(EState current_state) {
     return state_table[current_state]();
 };

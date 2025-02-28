@@ -13,13 +13,13 @@ extern "C" {
     /**
      * @brief States.
      */
-    typedef enum {
+    typedef enum EState {
         STATE_STANDBY,
         STATE_RUNCOMMAND,
         NUM_STATES
-    } state_t;
+    } EState;
 
-    typedef state_t state_func_t(void); /**< Type for state functions. */
+    typedef EState (*StateFunc)(void); /**< Type for state functions. */
 
     /**
      *
@@ -27,7 +27,7 @@ extern "C" {
      * @param Current state
      * @return Next state
      */
-    state_t STATES_RunState(state_t current_state);
+    EState STATES_run_state(EState current_state);
 
 #ifdef	__cplusplus
 }

@@ -24,9 +24,9 @@ extern "C" {
     * @return SUCCESS
     */
     enum Status BUFFER_read(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t volatile **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -44,9 +44,9 @@ extern "C" {
     * @return SUCCESS
     */
     enum Status BUFFER_read_from_channel(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t volatile **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -66,9 +66,9 @@ extern "C" {
     * @return SUCCESS
     */
     enum Status BUFFER_write(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t volatile **rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 
@@ -87,9 +87,9 @@ extern "C" {
     * @return SUCCESS
     */
     enum Status BUFFER_clear(
-        uint8_t const *args,
+        uint8_t args[],
         uint16_t args_size,
-        uint8_t **const rets,
+        uint8_t *rets[],
         uint16_t *rets_size
     );
 

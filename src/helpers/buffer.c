@@ -10,7 +10,7 @@ uint16_t volatile __attribute__((section(".adc_buffer"), far)) BUFFER[BUFFER_SIZ
 static enum Status read(
     uint16_t const start,
     uint16_t const end,
-    uint8_t volatile **const out_samples,
+    uint8_t **const out_samples,
     uint16_t *const out_samples_size
 ) {
     if (start > end) {
@@ -21,15 +21,15 @@ static enum Status read(
         return E_BAD_ARGUMENT;
     }
 
-    *out_samples = (uint8_t volatile *const)(&BUFFER + start);
+    *out_samples = (uint8_t *const)(&BUFFER + start);
     *out_samples_size = end - start;
     return E_OK;
 }
 
 enum Status BUFFER_read(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    uint8_t volatile **const rets,
+    uint8_t *rets[],
     uint16_t *const rets_size
 ) {
     uint16_t start = 0;
@@ -45,9 +45,9 @@ enum Status BUFFER_read(
 }
 
 enum Status BUFFER_read_from_channel(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    uint8_t volatile **const rets,
+    uint8_t *rets[],
     uint16_t *const rets_size
 ) {
     uint16_t counter = 0;
@@ -97,9 +97,9 @@ void BUFFER_defragment_dma_u32(uint16_t const channels, uint16_t const samples)
 }
 
 enum Status BUFFER_write(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    uint8_t volatile **const rets,
+    uint8_t *rets[],
     uint16_t *const rets_size
 ) {
 
@@ -116,15 +116,15 @@ enum Status BUFFER_write(
 
     start = ((uint16_t *)args)[0];
     count = ((uint16_t *)args)[1];
-    *rets = (uint8_t volatile *const)(&BUFFER + start);
+    *rets = (uint8_t *const)(&BUFFER + start);
     *rets_size = count;
     return E_OK;
 }
 
 enum Status BUFFER_clear(
-    uint8_t const *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t **const rets,
+    __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *const rets_size
 ) {
 

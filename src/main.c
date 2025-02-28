@@ -2,13 +2,13 @@
 #include "states.h"
 
 int main(void) {
-    
+
     SYSTEM_Initialize();
 
-    state_t current_state = STATE_STANDBY;
+    EState current_state = STATE_STANDBY;
 
     while (1) {
-        current_state = STATES_RunState(current_state);
+        current_state = STATES_run_state(current_state);
     }
 
     return 1;

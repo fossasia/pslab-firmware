@@ -59,7 +59,7 @@ typedef union Header {
 } Header;
 
 static enum Status receive(
-    CmdFunc **cmdfunc,
+    CmdFunc *cmdfunc,
     uint8_t **payload,
     uint16_t *payload_size
 );
@@ -74,7 +74,7 @@ static enum Status send(Header header, uint8_t const *payload);
  */
 enum Status PACKET_exchange(void)
 {
-    CmdFunc *command = NULL;
+    CmdFunc command = NULL;
     uint8_t *payload_rx = NULL;
     uint16_t payload_rx_size = 0;
     uint16_t status = receive(
@@ -135,7 +135,7 @@ enum Status PACKET_exchange(void)
  *      Exit code.
  */
 static enum Status receive(
-    CmdFunc **const cmdfunc,
+    CmdFunc *const cmdfunc,
     uint8_t **const payload,
     uint16_t *const payload_size
 ) {
@@ -163,10 +163,10 @@ static enum Status receive(
         *payload = (uint8_t *)BUFFER;
         break;
     case CMD_WAVEFORM_LOAD_WAVE1:
-        *payload = (uint8_t *)WAVEGENERATOR_table_1;
+        *payload = (uint8_t *)sine_table1;
         break;
     case CMD_WAVEFORM_LOAD_WAVE2:
-        *payload = (uint8_t *)WAVEGENERATOR_table_2;
+        *payload = (uint8_t *)sine_table2;
         break;
     }
 

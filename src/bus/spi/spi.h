@@ -159,9 +159,9 @@ enum Status SPI_exchange_int(const tSPI_CS cs, uint16_t* const data);
  * @return E_OK if bus is available, else E_RESOURCE_BUSY.
  */
 enum Status SPI_conf(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
@@ -176,9 +176,9 @@ enum Status SPI_conf(
  *         E_SUCCESS otherwise.
  */
 enum Status SPI_read_bytes(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
@@ -194,9 +194,9 @@ enum Status SPI_read_bytes(
  *         E_OK otherwise.
  */
 enum Status SPI_write_bytes(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
@@ -212,9 +212,9 @@ enum Status SPI_write_bytes(
  *         E_OK bytes followed by SUCCESS otherwise.
  */
 enum Status SPI_exchange_bytes(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
@@ -229,9 +229,9 @@ enum Status SPI_exchange_bytes(
  *         E_OK otherwise.
  */
 enum Status SPI_read_ints(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
@@ -247,9 +247,9 @@ enum Status SPI_read_ints(
  *         E_OK otherwise.
  */
 enum Status SPI_write_ints(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
@@ -265,9 +265,9 @@ enum Status SPI_write_ints(
  *         E_OK otherwise.
  */
 enum Status SPI_exchange_ints(
-    uint8_t const *args,
+    uint8_t args[],
     uint16_t args_size,
-    uint8_t **rets,
+    uint8_t *rets[],
     uint16_t *rets_size
 );
 
