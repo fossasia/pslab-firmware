@@ -36,14 +36,6 @@ extern "C" {
 #define NUM_SDCARD_CMDS 3
 #define NUM_SECONDARY_CMDS_MAX NUM_COMMON_CMDS // Change if necessary.
 
-/**
- * @brief Acknowledge bytes.
- */
-#define DO_NOT_BOTHER 0 // No response sent.
-#define SUCCESS 1
-#define ARGUMENT_ERROR 2
-#define FAILED 3
-
 /** Function return codes. */
 enum Status {
     E_OK,
@@ -59,27 +51,32 @@ enum Status {
     E_UART_RX_OVERRUN,
     E_UART_RX_PARITY,
     E_UART_RX_TIMEOUT,
+    E_UART_TX_TIMEOUT,
     STATUS_NUMEL
 };
 
 /**
- * @brief Command functions are the main entry points for user actions.
+ * @brief Command functions provide the public-facing API available to hosts.
  *
- * @param[in] args
+ * @param[in] uint8_t *args
  *      Byte-array containing function arguments. The function may parse its
- *      arguments from the array.
- * @param args_size
+ *      arguments from the array. The function may reuse this array to output
+ *      up to `arg_size` bytes.
+ * @param uint16_t args_size
  *      Number of bytes in `args`.
- * @param[out] rets
+ * @param[out] uint8_t **rets
  *      Pointer to an unallocated byte-array containing function return
- *      values.
- * @param[out] rets_size
- *      Pointer to uint16_t holding the number of bytes in `rets`.
+ *      values. The function does not need to set this if has nothing to
+ *      return. The function may set `*rets = args` if
+ *      `*rets_size <= args_size`.
+ * @param[out] uint16_t *rets_size
+ *      Pointer to uint16_t holding the number of bytes in `*rets`. The
+ *      function does not need to set this if it has nothing to return.
  * @return enum Status
  *      Exit code.
  */
 typedef enum Status CmdFunc(
-    uint8_t const *args,
+    uint8_t *args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -87,20 +84,10 @@ typedef enum Status CmdFunc(
 
 CmdFunc *COMMAND_get_func(uint16_t code);
 
-typedef unsigned char command_t; /**< Type for command bytes. */
-typedef unsigned char response_t; /**< Type for acknowledge bytes. */
-
-/**
- * @brief Array containing the number of commands in each command group.
- */
-extern command_t num_secondary_cmds[NUM_PRIMARY_CMDS + 1];
-
-typedef response_t command_func_t(void); /**< Type for command functions. */
-
 /**
  * @brief 2D array containing command functions.
  */
-extern command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1];
+extern CmdFunc *const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1];
 
 #ifdef	__cplusplus
 }
