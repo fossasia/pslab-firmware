@@ -211,19 +211,16 @@ enum Status OSCILLOSCOPE_get_capture_status(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Output {
-        struct {
-            uint8_t done;
-            uint16_t progress;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
+    struct Output {
+        uint8_t done;
+        uint16_t progress;
+    } output = {0};
 
     output.done = GetCONVERSION_DONE();
     output.progress = GetSAMPLES_CAPTURED();
     *rets = args;
     *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    memcpy(*rets, &output, *rets_size);
 
     return E_OK;
 }

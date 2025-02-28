@@ -149,17 +149,10 @@ enum Status MULTIMETER_get_voltage(
 
     while (!ADC1_IsConversionComplete());
 
-    union Output {
-        struct {
-            uint16_t result;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-
-    output.result = ADC1_ConversionResultGet(channel_CTMU);
+    uint16_t result = ADC1_ConversionResultGet(channel_CTMU);
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    *rets_size = sizeof(result);
+    memcpy(*rets, &result, *rets_size);
 
     return E_OK;
 }
@@ -183,17 +176,10 @@ enum Status MULTIMETER_get_voltage_summed(
 
     input.buffer = args;
 
-    union Output {
-        struct {
-            uint16_t result;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-
-    output.result = GetVoltage_Summed(input.channel);
-    *rets_size = sizeof(output);
+    uint16_t result = GetVoltage_Summed(input.channel);
+    *rets_size = sizeof(result);
     *rets = args;
-    memcpy(*rets, output.buffer, *rets_size);
+    memcpy(*rets, &result, *rets_size);
 
     return E_OK;
 }
@@ -259,17 +245,10 @@ enum Status MULTIMETER_get_cap_range(
     CAP_OUT_SetDigitalInput();
     CAP_OUT_SetLow();
 
-    union Output {
-        struct {
-            uint16_t range;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-
-    output.range = GetVoltage_Summed(CH0_CHANNEL_CAP);
+    uint16_t range = GetVoltage_Summed(CH0_CHANNEL_CAP);
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    *rets_size = sizeof(range);
+    memcpy(*rets, &range, *rets_size);
 
     return E_OK;
 }
@@ -312,22 +291,15 @@ enum Status MULTIMETER_get_capacitance(
     ADC1_WaitForInterruptEvent();
     while (!ADC1_IsConversionComplete());
 
-    union Output {
-        struct {
-            uint16_t result;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-
-    output.result = (ADC1BUF0) & 0xFFF;
+    uint16_t result = (ADC1BUF0) & 0xFFF;
 
     // Reset modules
     CTMU_Initialize();
     ADC1_Disable();
 
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    *rets_size = sizeof(result);
+    memcpy(*rets, &result, *rets_size);
 
     LED_SetHigh();
 
@@ -340,27 +312,22 @@ enum Status MULTIMETER_get_ctmu_volts(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t config;
-        };
-        uint8_t *buffer;
-    } input = {{0}};
+    uint8_t config = 0;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(config)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
+    config = *args;
 
     CTMU_Initialize();
     // Edge delay generation
-    CTMUCON1bits.TGEN = (input.config >> 7) & 0x1;
+    CTMUCON1bits.TGEN = (config >> 7) & 0x1;
     // Current source output
-    CTMUICONbits.IRNG = (input.config >> 5) & 0x3;
+    CTMUICONbits.IRNG = (config >> 5) & 0x3;
 
     // Internal temperature
-    if ((input.config & 0x1F) == 30) CTMU_EnableEdge2();
+    if ((config & 0x1F) == 30) CTMU_EnableEdge2();
 
     CTMU_Enable();
     DELAY_us(1000);
@@ -369,20 +336,13 @@ enum Status MULTIMETER_get_ctmu_volts(
     CTMU_FloatOutput();
     CTMU_EnableEdge1();
 
-    union Output {
-        struct {
-            uint16_t result;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-
-    output.result = GetVoltage_Summed(input.config & 0x1F);
+    uint16_t result = GetVoltage_Summed(config & 0x1F);
 
     CTMU_DisableModule();
 
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    *rets_size = sizeof(result);
+    memcpy(*rets, &result, *rets_size);
 
     return E_OK;
 }
