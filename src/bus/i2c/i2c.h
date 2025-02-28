@@ -751,7 +751,7 @@ extern "C" {
             If no write collisions or ack from slave, SUCCESS. Otherwise FAILED
      */
     enum Status I2C_command_start(
-        uint8_t const *args,
+        uint8_t *args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
