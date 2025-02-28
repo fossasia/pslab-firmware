@@ -1,8 +1,8 @@
 #include "i2c.h"
-#include "../../bus/uart/uart.h"
 #include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"
 #include "../../transport/packet_handler.h"
+#include "../../transport/host.h"
 
 /**
   I2C Driver Queue Status Type
@@ -628,9 +628,9 @@ enum Status I2C_BulkWrite(uint8_t *pdata, uint8_t length, uint16_t address) {
             status == I2C_MESSAGE_ADDRESS_NO_ACK ||
             status == I2C_DATA_NO_ACK ||
             status == I2C_LOST_STATE) {
-        return FAILED;
+        return E_FAILED;
     }
-    return SUCCESS;
+    return E_OK;
 }
 
 enum Status I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8_t length) {
@@ -670,25 +670,103 @@ enum Status I2C_BulkRead(uint8_t *start, uint16_t address, uint8_t *pdata, uint8
     return E_OK;
 }
 
+void I2C_StartSignal(void) {
+
+    I2C_START_CONDITION_ENABLE_BIT = 1;
+
+    counter = 1000;
+    while (I2C_START_CONDITION_ENABLE_BIT && counter--) DELAY_us(1);
+}
+
+void I2C_StopSignal(void) {
+
+    I2C_STOP_CONDITION_ENABLE_BIT = 1;
+
+    counter = 1000;
+    while (I2C_STOP_CONDITION_ENABLE_BIT && counter--) DELAY_us(1);
+}
+
+void I2C_RestartSignal(void) {
+
+    I2C_REPEAT_START_CONDITION_ENABLE_BIT = 1;
+
+    counter = 1000;
+    while (I2C_REPEAT_START_CONDITION_ENABLE_BIT && counter--) DELAY_us(1);
+}
+
+void I2C_AcknowledgeSignal(void) {
+
+    I2C_ACKNOWLEDGE_DATA_BIT = 0;
+    I2C_ACKNOWLEDGE_ENABLE_BIT = 1;
+
+    counter = 1000;
+    while (I2C_ACKNOWLEDGE_ENABLE_BIT && counter--) DELAY_us(1);
+}
+
+void I2C_NAcknowledgeSignal(void) {
+
+    I2C_ACKNOWLEDGE_DATA_BIT = 1;
+    I2C_ACKNOWLEDGE_ENABLE_BIT = 1;
+
+    counter = 1000;
+    while (I2C_ACKNOWLEDGE_ENABLE_BIT && counter--) DELAY_us(1);
+}
+
+void I2C_WaitSignal() {
+
+    counter = 1000;
+    while (I2C_TRANSMIT_BUFFER_STATUS && counter--) DELAY_us(1);
+}
+
+void I2C_Transmit(uint8_t data) {
+
+    I2C_TRANSMIT_REG = data;
+    counter = 1000;
+    while (I2C_MASTER_TRANSMISSION_STATUS_BIT && counter--) DELAY_us(1);
+}
+
+uint8_t I2C_Receive(I2C_RESPONSE r) {
+
+    I2C_WaitSignal();
+    I2C_RECEIVE_ENABLE_BIT = 1;
+
+    counter = 1000;
+    while (I2C_RECEIVE_ENABLE_BIT && counter--) DELAY_us(1);
+    while (!I2C_RECEIVE_BUFFER_STATUS && counter--) DELAY_us(1);
+
+    uint8_t data = I2C_RECEIVE_REG;
+
+    r == I2C_RESPONSE_ACKNOWLEDGE
+        ? I2C_AcknowledgeSignal()
+        : I2C_NAcknowledgeSignal();
+
+    return data;
+}
+
+
 enum Status I2C_command_start(
-    uint8_t const *const args,
+    uint8_t *const args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    if (args_size != 1) {
+    uint8_t address = 0;
+
+    if (args_size != sizeof(address)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint8_t const address = *args;
+    address = *args;
 
     I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     I2C_StartSignal();
     I2C_Transmit(address);
-    if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
-        return FAILED | (I2C2STATbits.ACKSTAT << 4);
-    }
-    return SUCCESS | (I2C2STATbits.ACKSTAT << 4);
+
+    *rets = args;
+    (*rets)[0] = (uint8_t)I2C2STATbits.ACKSTAT;
+    *rets_size = 1;
+
+    return I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL ? E_FAILED : E_OK;
 }
 
 enum Status I2C_command_stop(
@@ -947,77 +1025,4 @@ enum Status I2C_command_pull_down(
     I2C_SCL_SetHigh();
     I2C_SCL_SetDigitalInput();
     return E_OK;
-}
-
-void I2C_StartSignal(void) {
-
-    I2C_START_CONDITION_ENABLE_BIT = 1;
-
-    counter = 1000;
-    while (I2C_START_CONDITION_ENABLE_BIT && counter--) DELAY_us(1);
-}
-
-void I2C_StopSignal(void) {
-
-    I2C_STOP_CONDITION_ENABLE_BIT = 1;
-
-    counter = 1000;
-    while (I2C_STOP_CONDITION_ENABLE_BIT && counter--) DELAY_us(1);
-}
-
-void I2C_RestartSignal(void) {
-
-    I2C_REPEAT_START_CONDITION_ENABLE_BIT = 1;
-
-    counter = 1000;
-    while (I2C_REPEAT_START_CONDITION_ENABLE_BIT && counter--) DELAY_us(1);
-}
-
-void I2C_AcknowledgeSignal(void) {
-
-    I2C_ACKNOWLEDGE_DATA_BIT = 0;
-    I2C_ACKNOWLEDGE_ENABLE_BIT = 1;
-
-    counter = 1000;
-    while (I2C_ACKNOWLEDGE_ENABLE_BIT && counter--) DELAY_us(1);
-}
-
-void I2C_NAcknowledgeSignal(void) {
-
-    I2C_ACKNOWLEDGE_DATA_BIT = 1;
-    I2C_ACKNOWLEDGE_ENABLE_BIT = 1;
-
-    counter = 1000;
-    while (I2C_ACKNOWLEDGE_ENABLE_BIT && counter--) DELAY_us(1);
-}
-
-void I2C_WaitSignal() {
-
-    counter = 1000;
-    while (I2C_TRANSMIT_BUFFER_STATUS && counter--) DELAY_us(1);
-}
-
-void I2C_Transmit(uint8_t data) {
-
-    I2C_TRANSMIT_REG = data;
-    counter = 1000;
-    while (I2C_MASTER_TRANSMISSION_STATUS_BIT && counter--) DELAY_us(1);
-}
-
-uint8_t I2C_Receive(I2C_RESPONSE r) {
-
-    I2C_WaitSignal();
-    I2C_RECEIVE_ENABLE_BIT = 1;
-
-    counter = 1000;
-    while (I2C_RECEIVE_ENABLE_BIT && counter--) DELAY_us(1);
-    while (!I2C_RECEIVE_BUFFER_STATUS && counter--) DELAY_us(1);
-
-    uint8_t data = I2C_RECEIVE_REG;
-
-    r == I2C_RESPONSE_ACKNOWLEDGE
-        ? I2C_AcknowledgeSignal()
-        : I2C_NAcknowledgeSignal();
-
-    return data;
 }
