@@ -1,7 +1,7 @@
 #include "registers/system/system.h"
 #include "states.h"
 
-__attribute__((noreturn)) int main(void) {
+int main(void) {
 
     SYSTEM_Initialize();
 
@@ -10,4 +10,6 @@ __attribute__((noreturn)) int main(void) {
     while (1) {
         current_state = STATES_run_state(current_state);
     }
+
+    __builtin_unreachable();
 }
