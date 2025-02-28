@@ -1,3 +1,5 @@
+#include <stddef.h>
+
 #include "../commands.h"
 #include "../bus/uart/uart.h"
 #include "host.h"
@@ -22,17 +24,17 @@ enum Status HOST_read(
 
 enum Status HOST_read_u8(uint8_t *const u8)
 {
-    return HOST_read(u8, sizeof(uint8_t));
+    return HOST_read(u8, sizeof(uint8_t), NULL);
 }
 
 enum Status HOST_read_u16(uint16_t *const u16)
 {
-    return HOST_read((uint8_t *const)u16, sizeof(uint16_t));
+    return HOST_read((uint8_t *const)u16, sizeof(uint16_t), NULL);
 }
 
 enum Status HOST_read_u32(uint32_t *const u32)
 {
-    return HOST_read((uint8_t *const)u32, sizeof(uint32_t));
+    return HOST_read((uint8_t *const)u32, sizeof(uint32_t), NULL);
 }
 
 enum Status HOST_write(
