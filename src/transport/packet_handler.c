@@ -38,8 +38,7 @@
 
 #include "packet_handler.h"
 
-#define PAYLOAD_BUFFER_SIZE 256
-static uint8_t PAYLOAD_BUFFER[PAYLOAD_BUFFER_SIZE] = {0};
+static uint8_t PAYLOAD_BUFFER[PACKET_SIZE_MAX] = {0};
 
 #define HEADER_SIZE 8
 /** Packet header. */
@@ -203,7 +202,7 @@ static enum Status receive(
  */
 static enum Status send(Header const header, uint8_t const *const payload)
 {
-    HOST_write(header.as_bytes, HEADER_SIZE);
-    HOST_write(payload, header.payload_size);
+    HOST_write(header.as_bytes, HEADER_SIZE, NULL);
+    HOST_write(payload, header.payload_size, NULL);
     return E_OK;
 }
