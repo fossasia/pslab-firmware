@@ -67,31 +67,32 @@ enum Status LIGHT_rgb_pin(
     __attribute__ ((unused)) uint8_t *rets[],
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    uint8_t count = 0;
+    union Input {
+        struct {
+            uint8_t pin;
+            uint8_t count;
+            uint8_t *colors[];
+        };
+        uint8_t const *buffer;
+    } input = {{0}};
 
-    if (args_size < sizeof(count)) {
-        return E_BAD_ARGSIZE;
-    }
+    if (args_size < sizeof(input)) { return E_BAD_ARGSIZE; }
 
-    count = *args++;
-    PINSELECT pin = ONBOARD;
+    input.buffer = args;
 
-    if (args_size != sizeof(count) + count + sizeof(uint8_t)) {
-        return E_BAD_ARGSIZE;
-    }
+    if (args_size != (sizeof(input) + input.count)) { return E_BAD_ARGSIZE; }
 
-    uint8_t colors[count];
+    uint8_t colors[input.count];
 
-    uint8_t i = 0;
-    for (i = 0; i < count; ++i) {
+
+    for (uint8_t i = 0; i < input.count; ++i) {
         colors[i] = args[i];
     }
-    pin = args[i];
 
     INTERRUPT_GlobalDisable();
 
-    for (i = 0; i < count; i = i + 3) {
-        switch (pin) {
+    for (uint8_t i = 0; i < input.count; i = i + 3) {
+        switch (input.pin) {
         case ONBOARD:
             RGBCommon(colors[i+1], colors[i], colors[i+2], RGB_LED_Setter);
             break;
