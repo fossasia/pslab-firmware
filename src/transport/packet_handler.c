@@ -181,9 +181,9 @@ static enum Status receive(
     }
 
     if (status) {
-        HOST_read(*payload, header.payload_size);
+        HOST_read(*payload, header.payload_size, NULL);
     } else {
-        status = HOST_read(*payload, header.payload_size);
+        status = HOST_read(*payload, header.payload_size, NULL);
     }
 
     return status;

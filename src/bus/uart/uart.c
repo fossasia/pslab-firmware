@@ -273,7 +273,7 @@ enum Status UART_write(
 ) {
     // If either buffer is NULL or size is zero, this is a NOP.
     if (!buffer) {return E_OK;}
-    if (!size) {return E_OK;}
+    if (!buffer_size) {return E_OK;}
 
     sUartRegs const regs = get_registers(select);
     uint32_t timeout = 0;
