@@ -13,13 +13,12 @@
 #include "../registers/comparators/oc4.h"
 #include "../registers/system/pin_manager.h"
 
-#define WAVE_TABLE_FULL_LENGTH          512
-#define WAVE_TABLE_SHORT_LENGTH         32
+#include "wavegenerator.h"
 
 #define HIGH_RESOLUTION                 1
 #define LOW_RESOLUTION                  0
 
-int __attribute__((section(".sine_table1"))) sine_table_1[] = {
+int __attribute__((section(".sine_table1"))) sine_table_1[WAVE_TABLE_FULL_LENGTH] = {
     256, 252, 249, 246, 243, 240, 237, 234, 230, 227, 224, 221, 218, 215, 212,
     209, 206, 203, 200, 196, 193, 190, 187, 184, 181, 178, 175, 172, 169, 166,
     164, 161, 158, 155, 152, 149, 146, 143, 141, 138, 135, 132, 130, 127, 124,
@@ -53,12 +52,11 @@ int __attribute__((section(".sine_table1"))) sine_table_1[] = {
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
-int *const WAVEGENERATOR_table_1 = sine_table_1;
-int __attribute__((section(".sine_table1_short"))) sine_table_1_short[] = {
+int __attribute__((section(".sine_table1_short"))) sine_table_1_short[WAVE_TABLE_SHORT_LENGTH] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
-int __attribute__((section(".sine_table2"))) sine_table_2[] = {
+int __attribute__((section(".sine_table2"))) sine_table_2[WAVE_TABLE_FULL_LENGTH] = {
     256, 252, 249, 246, 243, 240, 237, 234, 230, 227, 224, 221, 218, 215, 212,
     209, 206, 203, 200, 196, 193, 190, 187, 184, 181, 178, 175, 172, 169, 166,
     164, 161, 158, 155, 152, 149, 146, 143, 141, 138, 135, 132, 130, 127, 124,
@@ -92,8 +90,7 @@ int __attribute__((section(".sine_table2"))) sine_table_2[] = {
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
-int *const WAVEGENERATOR_table_2 = sine_table_2;
-int __attribute__((section(".sine_table2_short"))) sine_table_2_short[] = {
+int __attribute__((section(".sine_table2_short"))) sine_table_2_short[WAVE_TABLE_SHORT_LENGTH] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
