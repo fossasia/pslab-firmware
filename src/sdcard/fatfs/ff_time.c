@@ -40,7 +40,7 @@
         ...
         0b1011 = November
         0b1100 = December
-   
+
    bits[20-16] = DDDDD = Day (1-31), 0 is not allowed.
         0b00001 = 1st of the month
         0b00010 = 2nd
@@ -66,7 +66,7 @@
 DWORD get_fattime (void){
 
     uint32_t unix_timestamp = 0;
-    RTC_GetTime(&unix_timestamp);
+    RTC_get_time(&unix_timestamp);
     struct tm *tm_info;
 
     time_t timestamp = (time_t) (unix_timestamp);
