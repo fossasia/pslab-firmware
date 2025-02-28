@@ -21,15 +21,12 @@ enum Status SDCARD_mount(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Output {
-        FRESULT res;
-        uint8_t *buffer;
-    } output = {0};
-    output.res = f_mount(g_drive_p, "0:", 1);
+
+    FRESULT const res = f_mount(g_drive_p, "0:", 1);
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
-    return output.res ? E_FAILED : E_OK;
+    *rets_size = sizeof(res);
+    memcpy(*rets, &res, *rets_size);
+    return res ? E_FAILED : E_OK;
 }
 
 enum Status SDCARD_unmount(
@@ -38,16 +35,12 @@ enum Status SDCARD_unmount(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Output {
-        FRESULT res;
-        uint8_t *buffer;
-    } output = {0};
     g_drive_p = NULL;
-    output.res = f_mount(g_drive_p, "0:", 0);
+    FRESULT const res = f_mount(g_drive_p, "0:", 0);
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
-    return output.res ? E_FAILED : E_OK;
+    *rets_size = sizeof(res);
+    memcpy(*rets, &res, *rets_size);
+    return res ? E_FAILED : E_OK;
 }
 
 enum Status SDCARD_stat(
@@ -78,17 +71,14 @@ enum Status SDCARD_stat(
         return E_BAD_SIZE;
     }
 
-    union Output {
-        struct {
-            FILINFO info;
-            FRESULT res;
-        };
-        uint8_t *buffer;
+    struct Output {
+        FILINFO info;
+        FRESULT res;
     } output = {.info = {0}, .res = 0};
     output.res = f_stat(input.fn, &output.info);
     *rets = args;
     *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    memcpy(*rets, &output, *rets_size);
     return output.res ? E_FAILED : E_OK;
 }
 
@@ -121,17 +111,11 @@ enum Status SDCARD_open(
         return E_BAD_SIZE;
     }
 
-    union Output {
-        struct {
-            FRESULT res;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-    output.res = f_open(g_file_p, input.fn, input.mode);
+    FRESULT const res = f_open(g_file_p, input.fn, input.mode);
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
-    return output.res ? E_FAILED : E_OK;
+    *rets_size = sizeof(res);
+    memcpy(*rets, &res, *rets_size);
+    return res ? E_FAILED : E_OK;
 }
 
 enum Status SDCARD_close(
@@ -140,18 +124,12 @@ enum Status SDCARD_close(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Output {
-        struct {
-            FRESULT res;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
-    output.res = f_close(g_file_p);
+    FRESULT const res = f_close(g_file_p);
     g_file_p = NULL;
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
-    return output.res ? E_FAILED : E_OK;
+    *rets_size = sizeof(res);
+    memcpy(*rets, &res, *rets_size);
+    return res ? E_FAILED : E_OK;
 }
 
 enum Status SDCARD_write(
@@ -163,7 +141,7 @@ enum Status SDCARD_write(
     union Input {
         struct {
             uint16_t data_size;
-            uint8_t *data;
+            uint8_t *data[];
         };
         uint8_t const *buffer;
     } input = {{0}};
@@ -182,17 +160,14 @@ enum Status SDCARD_write(
         return E_BAD_SIZE;
     }
 
-    union Output {
-        struct {
-            FRESULT res;
-            uint16_t written;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
+    struct Output {
+        FRESULT res;
+        uint16_t written;
+    } output = {0};
     output.res = f_write(g_file_p, input.data, input.data_size, &output.written);
     *rets = args;
     *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    memcpy(*rets, &output, *rets_size);
     return output.res ? E_FAILED : E_OK;
 }
 
@@ -202,32 +177,31 @@ enum Status SDCARD_read(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t data_size;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    uint16_t data_size = 0;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(data_size)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
+    data_size = *(uint16_t*)args;
 
     union Output {
         struct {
             FRESULT res;
-            uint16_t read;
-            uint8_t *data;
+            uint16_t num_bytes_read;
+            uint8_t *data[];
         };
         uint8_t *buffer;
     } output = {{0}};
     *rets = args;
     output.buffer = *rets;
-    output.res = f_read(g_file_p, output.data, input.data_size, &output.read);
-    *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    output.res = f_read(
+        g_file_p,
+        output.data,
+        data_size,
+        &output.num_bytes_read
+    );
+    *rets_size = sizeof(output) + output.num_bytes_read;
+    memcpy(*rets, &output, *rets_size);
     return output.res ? E_FAILED : E_OK;
 }

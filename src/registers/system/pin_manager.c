@@ -176,16 +176,9 @@ enum Status PIN_MANAGER_get_la_pin_state(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Output {
-        struct {
-            uint16_t la_pin_state;
-        };
-        uint8_t const *buffer;
-    } output = {{0}};
-
-    output.la_pin_state = (PORTB >> 10) & 0xF;
+    uint8_t const la_pin_state = (PORTB >> 10) & 0xF;
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    *rets_size = sizeof(la_pin_state);
+    memcpy(*rets, &la_pin_state, *rets_size);
     return E_OK;
 }

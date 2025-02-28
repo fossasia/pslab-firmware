@@ -94,16 +94,10 @@ enum Status SENSORS_get_counter(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    union Output {
-        struct {
-            uint16_t count;
-        };
-        uint8_t *buffer;
-    } output = {{0}};
     // Fetch timer 2 value and send it over
-    output.count = TMR2_Counter16BitGet();
+    uint16_t const count = TMR2_Counter16BitGet();
     *rets = args;
-    *rets_size = sizeof(output);
-    memcpy(*rets, output.buffer, *rets_size);
+    *rets_size = sizeof(count);
+    memcpy(*rets, &count, *rets_size);
     return E_OK;
 }
