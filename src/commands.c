@@ -65,7 +65,7 @@ CmdFunc *COMMAND_get_func(uint16_t code)
  * communication protocol, i.e. the function corresponding to
  * COMMON (11) -> GET_VERSION (5) is located at cmd_table[11][5].
  */
-command_func_t* const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
+CmdFunc *const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
     { // 0 UNDEFINED
      // 0          1          2          3
         Undefined, Undefined, Undefined, Undefined,
