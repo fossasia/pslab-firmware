@@ -14,7 +14,7 @@ extern "C" {
      * @description
      * This routing will configure IC1,2 and DMA0,1 modules to listen to logic
      * level changes on a pin defined by the channel byte and log timer values
-     * in BUFFER 1st and 2nd quarters. If trigger is set by the trig byte, this
+     * in BUFFER_sample_buffer 1st and 2nd quarters. If trigger is set by the trig byte, this
      * will use IC4 module to listen to the trigger observation and time log will
      * then start.
      * It will combine both IC1 and IC2 modules to form a 32-bit timer which will
@@ -38,7 +38,7 @@ extern "C" {
      * @description
      * This routing will configure IC1,2,3,4 and DMA0,1,2,3 modules to listen to
      * logic level changes on pins defined by the channel byte and log timer
-     * values in BUFFER.
+     * values in BUFFER_sample_buffer.
      * It will combine both IC1, IC2 and IC3, IC4 modules to form a 32-bit timer
      * which will have support for more data points than `CaptureThree` and
      * `CaptureFour` routines.

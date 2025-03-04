@@ -40,8 +40,8 @@ enum Status OSCILLOSCOPE_fetch_samples(
 
     input.buffer = args;
 
-    *rets = (uint8_t *)&BUFFER;
-    *rets_size = input.samples * sizeof(*BUFFER);
+    *rets = (uint8_t *)&BUFFER_sample_buffer;
+    *rets_size = input.samples * sizeof(*BUFFER_sample_buffer);
 
     return E_OK;
 }
@@ -130,12 +130,12 @@ static enum Status capture(
     }
 
     for (int i = 0; i <= GetCHANNELS(); ++i) {
-        SetBUFFER_IDX(i, &BUFFER[i * GetSAMPLES_REQUESTED()]);
+        SetBUFFER_IDX(i, &BUFFER_sample_buffer[i * GetSAMPLES_REQUESTED()]);
     }
 
     SetCONVERSION_DONE(0);
     SetSAMPLES_CAPTURED(0);
-    SetBUFFER_IDX(0, &BUFFER[0]);
+    SetBUFFER_IDX(0, &BUFFER_sample_buffer[0]);
     SetTimeGap();
     ADC1_InterruptFlagClear();
     ADC1_InterruptEnable();
@@ -174,7 +174,7 @@ enum Status OSCILLOSCOPE_capture_dma(
     SetCHANNELS(0);  // Capture one channel.
     ADC1_SetOperationMode(mode, ch0sa, 0);
 
-    DMA_StartAddressASet(DMA_CHANNEL_0, (uint16_t) &BUFFER[0]);
+    DMA_StartAddressASet(DMA_CHANNEL_0, (uint16_t) &BUFFER_sample_buffer[0]);
     DMA_PeripheralAddressSet(DMA_CHANNEL_0, (uint16_t) &ADC1BUF0);
     DMA_TransferCountSet(DMA_CHANNEL_0, GetSAMPLES_REQUESTED() - 1);
     DMA_FlagInterruptClear(DMA_CHANNEL_0);

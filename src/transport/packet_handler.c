@@ -38,7 +38,7 @@
 
 #include "packet_handler.h"
 
-static uint8_t PAYLOAD_BUFFER[PACKET_SIZE_MAX] = {0};
+static uint8_t payload_buffer[PACKET_SIZE_MAX] = {0};
 
 #define HEADER_SIZE 8
 /** Packet header. */
@@ -124,8 +124,8 @@ enum Status PACKET_exchange(void)
  * @param[out] cmdfunc
  *      Pointer to pointer to function of type `CmdFunc`. Will be set to the
  *      address of the command function requested by the user, if it exists.
- *      If the user requested an invalid command function, this will not be
- *      set. Caller must initialize it to NULL or a default function.
+ *      If the user requested an invalid command function, this will be set to
+ *      NULL.
  * @param[out] payload
  *      Pointer to an unallocated byte-array containing input arguments to
  *      `cmdfunc`.
@@ -141,14 +141,14 @@ static enum Status receive(
 ) {
     Header header = {{0}};
     enum Status status = E_OK;
-    uint16_t num_bytes_read = 0;
 
-    if ( (status = HOST_read(header.as_bytes, HEADER_SIZE, &num_bytes_read)) ) {
+    if ( (status = HOST_read(header.as_bytes, HEADER_SIZE, NULL)) ) {
         return status;
     }
 
     // TODO: Use malloc when we switch to heap-based memory management.
 
+    uint16_t buffer_size = 0;
     // Special casing for commands with large inputs.
     enum {
         CMD_BUFFER_SET = (11 << 8) | 27,
@@ -157,20 +157,24 @@ static enum Status receive(
     };
     switch (header.command) {
     default:
-        *payload = PAYLOAD_BUFFER;
+        *payload = payload_buffer;
+        buffer_size = sizeof(payload_buffer);
         break;
     case CMD_BUFFER_SET:
-        *payload = (uint8_t *)BUFFER;
+        *payload = (uint8_t *)BUFFER_sample_buffer;
+        buffer_size = sizeof(BUFFER_sample_buffer);
         break;
     case CMD_WAVEFORM_LOAD_WAVE1:
-        *payload = (uint8_t *)sine_table1;
+        *payload = (uint8_t *)WAVEGENERATOR_table_1;
+        buffer_size = sizeof(WAVEGENERATOR_table_1);
         break;
     case CMD_WAVEFORM_LOAD_WAVE2:
-        *payload = (uint8_t *)sine_table2;
+        *payload = (uint8_t *)WAVEGENERATOR_table_2;
+        buffer_size = sizeof(WAVEGENERATOR_table_2);
         break;
     }
 
-    if (header.payload_size > sizeof(payload)) {
+    if (header.payload_size > buffer_size) {
         status = E_BAD_SIZE;
     } else if (header.payload_size > 0) {
         *payload_size = header.payload_size;

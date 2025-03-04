@@ -18,7 +18,7 @@
 #define HIGH_RESOLUTION                 1
 #define LOW_RESOLUTION                  0
 
-int __attribute__((section(".sine_table1"))) sine_table1[WAVE_TABLE_FULL_LENGTH] = {
+int __attribute__((section(".wave_table_1"))) WAVEGENERATOR_table_1[WAVE_TABLE_FULL_LENGTH] = {
     256, 252, 249, 246, 243, 240, 237, 234, 230, 227, 224, 221, 218, 215, 212,
     209, 206, 203, 200, 196, 193, 190, 187, 184, 181, 178, 175, 172, 169, 166,
     164, 161, 158, 155, 152, 149, 146, 143, 141, 138, 135, 132, 130, 127, 124,
@@ -52,11 +52,11 @@ int __attribute__((section(".sine_table1"))) sine_table1[WAVE_TABLE_FULL_LENGTH]
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
-int __attribute__((section(".sine_table1_short"))) sine_table1_short[WAVE_TABLE_SHORT_LENGTH] = {
+int __attribute__((section(".wave_table_1_short"))) table_1_short[WAVE_TABLE_SHORT_LENGTH] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
-int __attribute__((section(".sine_table2"))) sine_table2[WAVE_TABLE_FULL_LENGTH] = {
+int __attribute__((section(".wave_table_2"))) WAVEGENERATOR_table_2[WAVE_TABLE_FULL_LENGTH] = {
     256, 252, 249, 246, 243, 240, 237, 234, 230, 227, 224, 221, 218, 215, 212,
     209, 206, 203, 200, 196, 193, 190, 187, 184, 181, 178, 175, 172, 169, 166,
     164, 161, 158, 155, 152, 149, 146, 143, 141, 138, 135, 132, 130, 127, 124,
@@ -90,7 +90,7 @@ int __attribute__((section(".sine_table2"))) sine_table2[WAVE_TABLE_FULL_LENGTH]
     324, 321, 318, 315, 311, 308, 305, 302, 299, 296, 293, 290, 287, 284, 281,
     277, 274, 271, 268, 265, 262, 259
 };
-int __attribute__((section(".sine_table2_short"))) sine_table2_short[WAVE_TABLE_SHORT_LENGTH] = {
+int __attribute__((section(".wave_table_2_short"))) table_2_short[WAVE_TABLE_SHORT_LENGTH] = {
     32, 26, 20, 14, 9, 5, 2, 1, 0, 1, 2, 5, 9, 14, 20, 26, 32, 38, 44, 50, 55,
     59, 62, 63, 64, 63, 62, 59, 55, 50, 44, 38
 };
@@ -115,13 +115,13 @@ enum Status WAVEGENERATOR_load_wave_1(
     __attribute__((unused)) uint16_t *rets_size
 ) {
     /* This command is special-cased in the packet handler to receive input
-     * directory to sine_table1. By the time the program reaches
+     * directory to WAVEGENERATOR_table_1. By the time the program reaches
      * this point, the table should already be fully populated. */
-    if (args_size != WAVE_TABLE_FULL_LENGTH * sizeof(*sine_table1)) {
+    if (args_size != WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_1)) {
         return E_BAD_ARGSIZE;
     }
 
-    downsample(sine_table1, sine_table1_short);
+    downsample(WAVEGENERATOR_table_1, table_1_short);
     return E_OK;
 }
 
@@ -131,8 +131,8 @@ enum Status WAVEGENERATOR_read_wave_1(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    *rets = (uint8_t *)sine_table1;
-    *rets_size = WAVE_TABLE_FULL_LENGTH * sizeof(*sine_table1);
+    *rets = (uint8_t *)WAVEGENERATOR_table_1;
+    *rets_size = WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_1);
     return E_OK;
 }
 
@@ -143,13 +143,13 @@ enum Status WAVEGENERATOR_load_wave_2(
     __attribute__((unused)) uint16_t *rets_size
 ) {
     /* This command is special-cased in the packet handler to receive input
-     * directory to sine_table2. By the time the program reaches
+     * directory to WAVEGENERATOR_table_2. By the time the program reaches
      * this point, the table should already be fully populated. */
-    if (args_size != WAVE_TABLE_FULL_LENGTH * sizeof(*sine_table2)) {
+    if (args_size != WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_2)) {
         return E_BAD_ARGSIZE;
     }
 
-    downsample(sine_table2, sine_table2_short);
+    downsample(WAVEGENERATOR_table_2, table_2_short);
     return E_OK;
 }
 
@@ -159,8 +159,8 @@ enum Status WAVEGENERATOR_read_wave_2(
     uint8_t *rets[],
     uint16_t *rets_size
 ) {
-    *rets = (uint8_t *)sine_table2;
-    *rets_size = WAVE_TABLE_FULL_LENGTH * sizeof(*sine_table2);
+    *rets = (uint8_t *)WAVEGENERATOR_table_2;
+    *rets_size = WAVE_TABLE_FULL_LENGTH * sizeof(*WAVEGENERATOR_table_2);
     return E_OK;
 }
 
@@ -196,15 +196,15 @@ enum Status WAVEGENERATOR_set_sine_1(
         OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
-                __builtin_dmaoffset(&sine_table1),
-                __builtin_dmapage(&sine_table1));
+                __builtin_dmaoffset(&WAVEGENERATOR_table_1),
+                __builtin_dmapage(&WAVEGENERATOR_table_1));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
         OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
-                __builtin_dmaoffset(&sine_table1_short),
-                __builtin_dmapage(&sine_table1_short));
+                __builtin_dmaoffset(&table_1_short),
+                __builtin_dmapage(&table_1_short));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
@@ -275,13 +275,13 @@ enum Status WAVEGENERATOR_set_sine_2(
         OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressASet(DMA_CHANNEL_3,
-                __builtin_dmaoffset(&sine_table2));
+                __builtin_dmaoffset(&WAVEGENERATOR_table_2));
         DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC4_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
         OC4_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
         DMA_StartAddressASet(DMA_CHANNEL_3,
-                __builtin_dmaoffset(&sine_table2_short));
+                __builtin_dmaoffset(&table_2_short));
         DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
@@ -360,15 +360,15 @@ enum Status WAVEGENERATOR_set_sine_dual(
         OC3_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC3_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
-                __builtin_dmaoffset(&sine_table1),
-                __builtin_dmapage(&sine_table1));
+                __builtin_dmaoffset(&WAVEGENERATOR_table_1),
+                __builtin_dmapage(&WAVEGENERATOR_table_1));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC3_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
         OC3_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
         DMA_StartAddressAFullSet(DMA_CHANNEL_2,
-                __builtin_dmaoffset(&sine_table1_short),
-                __builtin_dmapage(&sine_table1_short));
+                __builtin_dmaoffset(&table_1_short),
+                __builtin_dmapage(&table_1_short));
         DMA_TransferCountSet(DMA_CHANNEL_2, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 
@@ -376,15 +376,15 @@ enum Status WAVEGENERATOR_set_sine_dual(
         OC4_PrimaryValueSet(WAVE_TABLE_FULL_LENGTH >> 1);
         OC4_SecondaryValueSet(WAVE_TABLE_FULL_LENGTH);
         DMA_StartAddressAFullSet(DMA_CHANNEL_3,
-                __builtin_dmaoffset(&sine_table2),
-                __builtin_dmapage(&sine_table2));
+                __builtin_dmaoffset(&WAVEGENERATOR_table_2),
+                __builtin_dmapage(&WAVEGENERATOR_table_2));
         DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_FULL_LENGTH - 1);
     } else {
         OC4_PrimaryValueSet(WAVE_TABLE_SHORT_LENGTH);
         OC4_SecondaryValueSet(WAVE_TABLE_SHORT_LENGTH << 1);
         DMA_StartAddressAFullSet(DMA_CHANNEL_3,
-                __builtin_dmaoffset(&sine_table2_short),
-                __builtin_dmapage(&sine_table2_short));
+                __builtin_dmaoffset(&table_2_short),
+                __builtin_dmapage(&table_2_short));
         DMA_TransferCountSet(DMA_CHANNEL_3, WAVE_TABLE_SHORT_LENGTH - 1);
     }
 

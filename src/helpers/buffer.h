@@ -9,7 +9,7 @@
 extern "C" {
 #endif
 
-    extern uint16_t volatile __attribute__((section(".adc_buffer"), far)) BUFFER[BUFFER_SIZE];
+    extern uint16_t volatile __attribute__((section(".adc_buffer"), far)) BUFFER_sample_buffer[BUFFER_SIZE];
 
     /**
     * @brief Send buffer contents.
@@ -53,7 +53,7 @@ extern "C" {
     void BUFFER_defragment_dma_u32(uint16_t channels, uint16_t samples);
 
     /**
-    * @brief Populate BUFFER array
+    * @brief Populate BUFFER_sample_buffer array
     *
     * @description
     * This command function takes two arguments over serial:
@@ -74,7 +74,7 @@ extern "C" {
 
 
     /**
-    * @brief Clear BUFFER array
+    * @brief Clear BUFFER_sample_buffer array
     *
     * @description
     * This command function takes two arguments over serial:
