@@ -50,8 +50,8 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1];
 
 CmdFunc COMMAND_get_func(uint16_t const cmd)
 {
-   uint8_t const primary = ((uint8_t *)cmd)[0];
-   uint8_t const secondary = ((uint8_t *)cmd)[1];
+   uint8_t const primary = cmd & 0xFF;
+   uint8_t const secondary = (cmd >> 8) & 0xFF;
 
    if (primary > NUM_PRIMARY_CMDS) {
       return NULL;
@@ -64,11 +64,6 @@ CmdFunc COMMAND_get_func(uint16_t const cmd)
    return cmd_table[primary][secondary];
 }
 
-CmdFunc cmd_array[1] = {OSCILLOSCOPE_capture_dma};
-// enum Status (*cmd_ptr_array[2])(uint8_t*, uint16_t, uint8_t**, uint16_t*) = {
-//    OSCILLOSCOPE_capture_dma,
-//    MULTIMETER_charge_capacitor
-// };
 
 /**
  * Jump table for command function selection. The index matches the
