@@ -119,7 +119,8 @@ enum Status UART_set_baud(EUxSelect select, EBaudrate baud);
  * @param[out] uint8_t *buffer
  * @param uint16_t buffer_size
  * @param[out] uint16_t *num_bytes_read
- *   May be NULL.
+ *   Caller may pass a null pointer if it is not interested in the number of
+ *   bytes read. If return status is zero, *num_bytes_read == size.
  *
  * @return enum Status status
  */
@@ -134,9 +135,11 @@ enum Status UART_read(
  * @brief Write bytes to UARTx from buffer.
  *
  * @param EUxSelect select
- * @param uint8_t const* buffer
+ * @param[in] uint8_t *buffer
  * @param uint16_t size
- * @param uint16_t *num_bytes_written
+ * @param[out] uint16_t *num_bytes_written
+ *   Caller may pass a null pointer if it is not interested in the number of
+ *   bytes written. If return status is zero, *num_bytes_written == size.
  *
  * @return enum Status status
  */
@@ -157,12 +160,12 @@ enum Status UART_write(
 enum Status UART_flush_rx(EUxSelect select);
 
 /**
- * @brief Check if incoming data is available.
+ * @brief Check if at least one byte of data can be read.
  *
  * @param EUxSelect select
- * @param[out] bool *ready
+ * @param[out] bool *is_data_available
  * @return enum Status status
  */
-enum Status UART_rx_ready(EUxSelect select, bool *ready);
+enum Status UART_rx_ready(EUxSelect select, bool *is_data_available);
 
 #endif // _UART_H
