@@ -300,9 +300,11 @@ enum Status UART_flush_rx(EUxSelect const select)
     return E_OK;
 }
 
-enum Status UART_rx_ready(EUxSelect const select, bool *const ready)
-{
+enum Status UART_rx_ready(
+    EUxSelect const select,
+    bool *const is_data_available
+) {
     sUartRegs const regs = get_registers(select);
-    *ready = regs.stabitsptr->URXDA;
+    *is_data_available = regs.stabitsptr->URXDA;
     return E_OK;
 }

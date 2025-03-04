@@ -65,7 +65,7 @@ enum Status HOST_flush_rx(void)
     return UART_flush_rx(UART_PRIMARY);
 }
 
-enum Status HOST_rx_ready(bool *ready)
+enum Status HOST_rx_ready(bool *const is_data_available)
 {
-    return UART_rx_ready(UART_PRIMARY, ready);
+    return UART_rx_ready(UART_PRIMARY, is_data_available);
 }
