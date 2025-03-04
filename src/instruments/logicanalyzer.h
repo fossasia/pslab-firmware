@@ -13,11 +13,11 @@
  * If a trigger is enabled, this will use an external interrupt service routine
  * attached to a pin defined by the trigger byte. Once the logic level is observed
  * to be the same as in EDGE bit, IC1 and IC2 modules will start the combined
- * timer (32-bits) and pass them to BUFFER using first two DMA channels.
+ * timer (32-bits) and pass them to BUFFER_sample_buffer using first two DMA channels.
  *
  * If no trigger is set, the timers will be started right away once the function
  * is called and logic level changes will logged referring to IC1 and IC2 capture
- * timers in BUFFER using the same DMA channels.
+ * timers in BUFFER_sample_buffer using the same DMA channels.
  *
  * This command function takes three arguments over serial:
  * 1. (uint16) number of data points to capture
@@ -63,7 +63,7 @@ enum Status LOGICANALYZER_one_channel(
  * pin defined by the trigger byte and an ISR will be activated for IC4 module.
  * This will trigger an interrupt when a logic change defined by the trigger byte
  * is observed at the pin attached to IC4. At the same time, IC1 and IC2 start
- * their timers and log timer values to BUFFER using DMA0 and DMA1 channels
+ * their timers and log timer values to BUFFER_sample_buffer using DMA0 and DMA1 channels
  *
  * This command function takes three arguments over serial:
  * 1. (uint16) number of data points to capture
@@ -104,11 +104,11 @@ enum Status LOGICANALYZER_one_channel_alt(
  * If a trigger is enabled, this will use an external interrupt service routine
  * attached to a pin defined by trigger byte. Once the logic level is observed
  * to be the same as in EDGE bit, All IC modules will start the combined
- * timers (32-bits) and pass them to BUFFER using all four DMA channels.
+ * timers (32-bits) and pass them to BUFFER_sample_buffer using all four DMA channels.
  *
  * If no trigger is enabled, the timers will be started right away once the
  * function is called and logic level changes will logged referring to IC1 and
- * IC3 combined capture timers in BUFFER using the same DMA channels.
+ * IC3 combined capture timers in BUFFER_sample_buffer using the same DMA channels.
  *
  * This command function takes four arguments over serial:
  * 1. (uint16) number of data points to capture
@@ -153,12 +153,12 @@ enum Status LOGICANALYZER_two_channel(
  * IC1, 2 and 3 timers. Once the logic level change as defined in trigger byte is
  * observed at IC4, it will generate an interrupt that will turn on all IC1,2,3
  * timers which will capture logic level changes defined in configuration integer.
- * IC modules will have 16-bit timers and the value is logged to BUFFER using
+ * IC modules will have 16-bit timers and the value is logged to BUFFER_sample_buffer using
  * three DMA channels.
  *
  * If no trigger is enabled, the timers will be started right away once the
  * function is called and logic level changes will logged referring to IC1, 2
- * and IC3 combined capture timers in BUFFER using the same DMA channels.
+ * and IC3 combined capture timers in BUFFER_sample_buffer using the same DMA channels.
  *
  * This command function takes three arguments over serial:
  * 1. (uint16) number of data points to capture
@@ -200,12 +200,12 @@ enum Status LOGICANALYZER_three_channel(
  * Routine to trigger the IC timers to log logic level changes. If any of the 4
  * pins observe a logic change as defined in trigger byte, the timers will get
  * started logging logic level changes in all 4 pins defined in the configuration
- * integer. IC modules will have 16-bit timers and the value is logged to BUFFER
+ * integer. IC modules will have 16-bit timers and the value is logged to BUFFER_sample_buffer
  * using all four DMA channels.
  *
  * If no trigger is enabled, the timers will be started right away once the
  * function is called and logic level changes will logged referring to IC1, IC2,
- * IC3 and IC4 capture timers in BUFFER using the same DMA channels.
+ * IC3 and IC4 capture timers in BUFFER_sample_buffer using the same DMA channels.
  *
  * This command function takes four arguments over serial:
  * 1. (uint16) number of data points to capture

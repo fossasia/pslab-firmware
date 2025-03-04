@@ -28,8 +28,8 @@ void INTERVAL_CaptureOne(uint16_t count, uint8_t channel, uint8_t mode, uint8_t 
     DMA_ChannelDisable(DMA_CHANNEL_0);
     DMA_ChannelDisable(DMA_CHANNEL_1);
 
-    DMA_PrepareChannel0(count, BUFFER, DMA_PERIPHERAL_IRQ_IC1);
-    DMA_PrepareChannel1(count, BUFFER + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC1);
+    DMA_PrepareChannel0(count, BUFFER_sample_buffer, DMA_PERIPHERAL_IRQ_IC1);
+    DMA_PrepareChannel1(count, BUFFER_sample_buffer + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC1);
     DMA_InterruptEnable(DMA_CHANNEL_0);
 
     IC1_Initialize();
@@ -75,10 +75,10 @@ void INTERVAL_CaptureTwo(uint16_t count, uint8_t mode, uint8_t channel) {
 
     DMA_DisableAllChannels();
 
-    DMA_PrepareChannel0(count, BUFFER, DMA_PERIPHERAL_IRQ_IC1);
-    DMA_PrepareChannel2(count, BUFFER + BUFFER_SIZE / 2, DMA_PERIPHERAL_IRQ_IC3);
-    DMA_PrepareChannel1(count, BUFFER + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC1);
-    DMA_PrepareChannel3(count, BUFFER + 3 * BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC3);
+    DMA_PrepareChannel0(count, BUFFER_sample_buffer, DMA_PERIPHERAL_IRQ_IC1);
+    DMA_PrepareChannel2(count, BUFFER_sample_buffer + BUFFER_SIZE / 2, DMA_PERIPHERAL_IRQ_IC3);
+    DMA_PrepareChannel1(count, BUFFER_sample_buffer + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC1);
+    DMA_PrepareChannel3(count, BUFFER_sample_buffer + 3 * BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC3);
 
     DMA_InterruptEnable(DMA_CHANNEL_0);
 
@@ -107,9 +107,9 @@ void INTERVAL_CaptureThree(uint16_t count, uint16_t mode, uint8_t trig) {
     DMA_ChannelDisable(DMA_CHANNEL_1);
     DMA_ChannelDisable(DMA_CHANNEL_2);
 
-    DMA_PrepareChannel0(count, BUFFER, DMA_PERIPHERAL_IRQ_IC1);
-    DMA_PrepareChannel1(count, BUFFER + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC2);
-    DMA_PrepareChannel2(count, BUFFER + BUFFER_SIZE / 2, DMA_PERIPHERAL_IRQ_IC3);
+    DMA_PrepareChannel0(count, BUFFER_sample_buffer, DMA_PERIPHERAL_IRQ_IC1);
+    DMA_PrepareChannel1(count, BUFFER_sample_buffer + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC2);
+    DMA_PrepareChannel2(count, BUFFER_sample_buffer + BUFFER_SIZE / 2, DMA_PERIPHERAL_IRQ_IC3);
 
     DMA_InterruptEnable(DMA_CHANNEL_0);
 
@@ -152,10 +152,10 @@ void INTERVAL_CaptureFour(uint16_t count, uint16_t mode, uint8_t prescaler) {
 
     DMA_DisableAllChannels();
 
-    DMA_PrepareChannel0(count, BUFFER, DMA_PERIPHERAL_IRQ_IC1);
-    DMA_PrepareChannel1(count, BUFFER + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC2);
-    DMA_PrepareChannel2(count, BUFFER + BUFFER_SIZE / 2, DMA_PERIPHERAL_IRQ_IC3);
-    DMA_PrepareChannel3(count, BUFFER + 3 * BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC4);
+    DMA_PrepareChannel0(count, BUFFER_sample_buffer, DMA_PERIPHERAL_IRQ_IC1);
+    DMA_PrepareChannel1(count, BUFFER_sample_buffer + BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC2);
+    DMA_PrepareChannel2(count, BUFFER_sample_buffer + BUFFER_SIZE / 2, DMA_PERIPHERAL_IRQ_IC3);
+    DMA_PrepareChannel3(count, BUFFER_sample_buffer + 3 * BUFFER_SIZE / 4, DMA_PERIPHERAL_IRQ_IC4);
 
     DMA_InterruptEnable(DMA_CHANNEL_0);
 
@@ -190,7 +190,7 @@ enum Status INTERVAL_get_state(
     uint16_t *rets_size
 ) {
     uint16_t *out = (uint16_t *)args;
-    *out++ = (uint16_t)&BUFFER;
+    *out++ = (uint16_t)&BUFFER_sample_buffer;
     *rets_size += sizeof(DMA0STAL);
     *out++ = DMA0STAL;
     *rets_size += sizeof(DMA0STAL);

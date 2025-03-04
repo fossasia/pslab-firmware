@@ -8,8 +8,8 @@ extern "C" {
     #define WAVE_TABLE_FULL_LENGTH          512
     #define WAVE_TABLE_SHORT_LENGTH         32
 
-    extern int sine_table1[WAVE_TABLE_FULL_LENGTH];
-    extern int sine_table2[WAVE_TABLE_FULL_LENGTH];
+    extern int WAVEGENERATOR_table_1[WAVE_TABLE_FULL_LENGTH];
+    extern int WAVEGENERATOR_table_2[WAVE_TABLE_FULL_LENGTH];
 
     /**
      * @brief Replace default wave table pattern 1 with a user defined sequence
