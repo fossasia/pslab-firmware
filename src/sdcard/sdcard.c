@@ -18,7 +18,7 @@ FIL *g_file_p = NULL;
 enum Status SDCARD_mount(
     uint8_t *const args,
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
 
@@ -32,7 +32,7 @@ enum Status SDCARD_mount(
 enum Status SDCARD_unmount(
     uint8_t *const args,
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     g_drive_p = NULL;
@@ -46,7 +46,7 @@ enum Status SDCARD_unmount(
 enum Status SDCARD_stat(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -85,7 +85,7 @@ enum Status SDCARD_stat(
 enum Status SDCARD_open(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -121,7 +121,7 @@ enum Status SDCARD_open(
 enum Status SDCARD_close(
     uint8_t *const args,
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     FRESULT const res = f_close(g_file_p);
@@ -135,7 +135,7 @@ enum Status SDCARD_close(
 enum Status SDCARD_write(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -174,7 +174,7 @@ enum Status SDCARD_write(
 enum Status SDCARD_read(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint16_t data_size = 0;

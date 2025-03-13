@@ -29,7 +29,7 @@ static enum Status read(
 enum Status BUFFER_read(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
     uint16_t start = 0;
@@ -47,7 +47,7 @@ enum Status BUFFER_read(
 enum Status BUFFER_read_from_channel(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
     uint16_t counter = 0;
@@ -99,7 +99,7 @@ void BUFFER_defragment_dma_u32(uint16_t const channels, uint16_t const samples)
 enum Status BUFFER_write(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
 
@@ -124,7 +124,7 @@ enum Status BUFFER_write(
 enum Status BUFFER_clear(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *const rets_size
 ) {
 

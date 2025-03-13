@@ -745,9 +745,9 @@ uint8_t I2C_Receive(I2C_RESPONSE r) {
 
 
 enum Status I2C_command_start(
-    uint8_t *const args,
+    uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint8_t address = 0;
@@ -772,7 +772,7 @@ enum Status I2C_command_start(
 enum Status I2C_command_stop(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     I2C_StopSignal();
@@ -782,7 +782,7 @@ enum Status I2C_command_stop(
 enum Status I2C_command_wait(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     I2C_WaitSignal();
@@ -792,7 +792,7 @@ enum Status I2C_command_wait(
 enum Status I2C_command_send(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     if (args_size != 1) {
@@ -813,7 +813,7 @@ enum Status I2C_command_send(
 enum Status I2C_command_send_burst(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     if (args_size != 1) {
@@ -829,7 +829,7 @@ enum Status I2C_command_send_burst(
 enum Status I2C_command_restart(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     if (args_size != 1) {
@@ -852,7 +852,7 @@ enum Status I2C_command_restart(
 enum Status I2C_command_read_more(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint8_t const data = I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE);
@@ -864,7 +864,7 @@ enum Status I2C_command_read_more(
 enum Status I2C_command_read_end(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint8_t const data = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
@@ -876,7 +876,7 @@ enum Status I2C_command_read_end(
 enum Status I2C_command_config(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     if (args_size != 2) {
@@ -891,7 +891,7 @@ enum Status I2C_command_config(
 enum Status I2C_command_status(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     *rets = (uint8_t *)&I2C2STAT;
@@ -902,7 +902,7 @@ enum Status I2C_command_status(
 enum Status I2C_command_read_bulk(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     if (args_size != 3) {
@@ -940,7 +940,7 @@ enum Status I2C_command_read_bulk(
 enum Status I2C_command_write_bulk(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     if (args_size < 2) {
@@ -970,7 +970,7 @@ enum Status I2C_command_write_bulk(
 enum Status I2C_command_enable_smbus(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
 
@@ -985,7 +985,7 @@ enum Status I2C_command_enable_smbus(
 enum Status I2C_command_disable_smbus(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
 
@@ -1000,7 +1000,7 @@ enum Status I2C_command_disable_smbus(
 enum Status I2C_command_init(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
 
@@ -1011,7 +1011,7 @@ enum Status I2C_command_init(
 enum Status I2C_command_pull_down(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     if (args_size != 2) {

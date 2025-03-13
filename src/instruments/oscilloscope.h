@@ -6,7 +6,7 @@
 enum Status OSCILLOSCOPE_fetch_samples(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -40,7 +40,7 @@ enum Status OSCILLOSCOPE_fetch_samples(
 enum Status OSCILLOSCOPE_capture_one(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -50,7 +50,7 @@ enum Status OSCILLOSCOPE_capture_one(
 enum Status OSCILLOSCOPE_capture_two(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -66,7 +66,7 @@ enum Status OSCILLOSCOPE_capture_two(
 enum Status OSCILLOSCOPE_capture_three(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -76,7 +76,7 @@ enum Status OSCILLOSCOPE_capture_three(
 enum Status OSCILLOSCOPE_capture_four(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -110,7 +110,7 @@ enum Status OSCILLOSCOPE_capture_four(
 enum Status OSCILLOSCOPE_capture_dma(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -130,7 +130,7 @@ enum Status OSCILLOSCOPE_capture_dma(
 enum Status OSCILLOSCOPE_get_capture_status(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -163,7 +163,7 @@ enum Status OSCILLOSCOPE_get_capture_status(
 enum Status OSCILLOSCOPE_configure_trigger(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 
@@ -190,7 +190,7 @@ enum Status OSCILLOSCOPE_configure_trigger(
 enum Status OSCILLOSCOPE_set_pga_gain(
     uint8_t args[],
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 

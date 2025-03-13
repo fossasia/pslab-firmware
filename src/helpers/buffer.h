@@ -26,7 +26,7 @@ extern "C" {
     enum Status BUFFER_read(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -46,7 +46,7 @@ extern "C" {
     enum Status BUFFER_read_from_channel(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -68,7 +68,7 @@ extern "C" {
     enum Status BUFFER_write(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -89,7 +89,7 @@ extern "C" {
     enum Status BUFFER_clear(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 

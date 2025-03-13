@@ -102,7 +102,7 @@ uint16_t GetVoltage_Summed(uint8_t channel) {
 enum Status MULTIMETER_get_voltage(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -160,7 +160,7 @@ enum Status MULTIMETER_get_voltage(
 enum Status MULTIMETER_get_voltage_summed(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -187,7 +187,7 @@ enum Status MULTIMETER_get_voltage_summed(
 enum Status MULTIMETER_charge_capacitor(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -210,7 +210,7 @@ enum Status MULTIMETER_charge_capacitor(
 enum Status MULTIMETER_get_cap_range(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -256,7 +256,7 @@ enum Status MULTIMETER_get_cap_range(
 enum Status MULTIMETER_get_capacitance(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {
@@ -309,7 +309,7 @@ enum Status MULTIMETER_get_capacitance(
 enum Status MULTIMETER_get_ctmu_volts(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint8_t config = 0;
