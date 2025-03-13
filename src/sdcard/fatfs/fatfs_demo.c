@@ -7,7 +7,7 @@ static FIL file;
 void FatFsDemo_Tasks(void) {
     UINT actualLength;
     char data[] = "Hello World!";
-    if (SD_SPI_IsMediaPresent() == false) {
+    if (SD_SPI_is_media_present() == false) {
         return;
     }
 

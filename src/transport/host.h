@@ -13,9 +13,10 @@
 #endif // UART_PRIMARY
 
 /**
- * @brief Read bytes from primary UART.
+ * @brief Read bytes from host bus.
  *
  * @param[out] uint8_t *buffer
+ *   buffer may be NULL iff size == 0.
  * @param uint16_t size
  * @param[out] uint16_t *num_bytes_read
  *   Caller may pass a null pointer if it is not interested in the number of
@@ -33,9 +34,10 @@ enum Status HOST_read_u16(uint16_t *u16);
 enum Status HOST_read_u32(uint32_t *u32);
 
 /**
- * @brief Write bytes to primary UART.
+ * @brief Write bytes to host bus.
  *
  * @param[in] uint8_t *buffer
+ *   buffer may be NULL iff size == 0.
  * @param uint16_t size
  * @param[out] uint16_t *num_bytes_written
  *   Caller may pass a null pointer if it is not interested in the number of
@@ -53,14 +55,14 @@ enum Status HOST_write_u16(uint16_t u16);
 enum Status HOST_write_u32(uint32_t u32);
 
 /**
- * @brief Discard any data present in primary UART RX buffer.
+ * @brief Discard any incoming data from host.
  *
  * @return enum Status status
  */
 enum Status HOST_flush_rx(void);
 
 /**
- * @brief Check if at least one byte of data can be read from primary UART.
+ * @brief Check if at least one byte of data can be read from host.
  *
  * @param[out] bool *is_data_available
  *

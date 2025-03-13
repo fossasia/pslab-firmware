@@ -36,6 +36,9 @@
 #include "../instruments/wavegenerator.h"
 #include "host.h"
 
+#include "../helpers/light.h"
+#include "../registers/system/pin_manager.h"
+
 #include "packet_handler.h"
 
 static uint8_t payload_buffer[PACKET_SIZE_MAX] = {0};
@@ -50,7 +53,7 @@ typedef union Header {
             /** Command function index. */
             uint16_t command;
             /** Exit code from command function. */
-            uint16_t result;
+            uint16_t status;
         };
         /** Number of bytes in payload. */
         uint16_t payload_size;
@@ -86,36 +89,20 @@ enum Status PACKET_exchange(void)
     uint8_t *payload_tx = NULL;
     uint16_t payload_tx_size = 0;
 
-    switch (status) {
-    case E_OK:
+    if (status == E_OK) {
         status = command(
             payload_rx,
             payload_rx_size,
             &payload_tx,
             &payload_tx_size
         );
-        break;
-    case E_HOST_READ:
-        // Likely connection problem, cancel exchange.
-        return status;
-    case E_HOST_RX_OVERRUN:
-        // We didn't read incoming data fast enough. Consume any remaining
-        // input data and cancel.
-        HOST_flush_rx();
-        return status;
-    case E_BAD_SIZE:
-    case E_BAD_COMMAND:
-    default:
-        // Proceed with exchange but don't run command function.
-        HOST_flush_rx();
-        break;
     }
 
     Header header = {{0}};
-    header.result = status;
+    header.status = status;
     header.payload_size = payload_tx_size;
-    status = send(header, payload_tx);
-    return status;
+    enum Status send_status = send(header, payload_tx);
+    return status ? status : send_status;
 }
 
 /**
@@ -143,6 +130,7 @@ static enum Status receive(
     enum Status status = E_OK;
 
     if ( (status = HOST_read(header.as_bytes, HEADER_SIZE, NULL)) ) {
+        // Failed to read command header. No point in trying to continue.
         return status;
     }
 
@@ -176,6 +164,7 @@ static enum Status receive(
 
     if (header.payload_size > buffer_size) {
         status = E_BAD_SIZE;
+        header.payload_size = 0;
     } else if (header.payload_size > 0) {
         *payload_size = header.payload_size;
     }
@@ -185,7 +174,8 @@ static enum Status receive(
     }
 
     if (status) {
-        HOST_read(*payload, header.payload_size, NULL);
+        // Consume any remaining data.
+        HOST_flush_rx();
     } else {
         status = HOST_read(*payload, header.payload_size, NULL);
     }
@@ -206,7 +196,13 @@ static enum Status receive(
  */
 static enum Status send(Header const header, uint8_t const *const payload)
 {
-    HOST_write(header.as_bytes, HEADER_SIZE, NULL);
-    HOST_write(payload, header.payload_size, NULL);
+    enum Status status = HOST_write(header.as_bytes, HEADER_SIZE, NULL);
+
+    if (status) {
+        HOST_write(payload, header.payload_size, NULL);
+    } else {
+        status = HOST_write(payload, header.payload_size, NULL);
+    }
+
     return E_OK;
 }

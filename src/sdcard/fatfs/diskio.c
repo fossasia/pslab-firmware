@@ -7,11 +7,13 @@
 /* storage control modules to the FatFs module with a defined API.       */
 /*-----------------------------------------------------------------------*/
 
-#include "diskio.h"		/* FatFs lower layer API */
+#include "../../commands.h"
 #include "../sd_spi.h"
 
+#include "diskio.h"		/* FatFs lower layer API */
+
 /* Definitions of physical drive number for each drive */
-enum DRIVER_LIST {
+enum Drive {
     DRVA = 0,
 };
 
@@ -28,13 +30,13 @@ DSTATUS disk_status(
     switch (pdrv) {
 
         case DRVA:
-            if (SD_SPI_IsMediaPresent() == false) {
+            if (SD_SPI_is_media_present() == false) {
                 stat = STA_NODISK;
-            } else if (SD_SPI_IsMediaInitialized() == true) {
+            } else if (SD_SPI_is_media_initialized() == true) {
                 stat &= ~STA_NOINIT;
             }
 
-            if (SD_SPI_IsWriteProtected() == true) {
+            if (SD_SPI_is_write_protected() == true) {
                 stat |= STA_PROTECT;
             }
 
@@ -56,10 +58,10 @@ DSTATUS disk_initialize(
 
     switch (pdrv) {
         case DRVA:
-            if (SD_SPI_MediaInitialize() == true) {
-                stat = RES_OK;
-            } else {
+            if (SD_SPI_media_initialize()) {
                 stat = RES_ERROR;
+            } else {
+                stat = RES_OK;
             }
             break;
         default:
@@ -80,17 +82,13 @@ DRESULT disk_read(
         ) {
     DRESULT res = RES_PARERR;
 
-    switch (pdrv) {
-        case DRVA:
-            if (SD_SPI_SectorRead(sector, buff, count) == true) {
-                res = RES_OK;
-            } else {
-                res = RES_ERROR;
-            }
-            break;
-
+    if (pdrv == DRVA) {
+        switch (SD_SPI_sector_read(sector, buff, count)) {
+        case E_OK:
+            return RES_OK;
         default:
-            break;
+            return RES_ERROR;
+        }
     }
 
     return res;
@@ -109,7 +107,7 @@ DRESULT disk_write(
 
     switch (pdrv) {
         case DRVA:
-            if (SD_SPI_SectorWrite(sector, buff, count) == true) {
+            if (SD_SPI_sector_write(sector, buff, count) == true) {
                 res = RES_OK;
             } else {
                 res = RES_ERROR;
