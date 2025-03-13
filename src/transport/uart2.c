@@ -31,18 +31,8 @@ enum Status UART2_read(
     }
 
     *rets = args;
-    enum Status status = E_OK;
 
-    switch (status = UART_read(UART_SECONDARY, *rets, size, rets_size)) {
-    case E_UART_RX_TIMEOUT:
-    case E_UART_RX_PARITY:
-    case E_UART_RX_FRAMING:
-        return E_HOST_READ;
-    case E_UART_RX_OVERRUN:
-        return E_HOST_RX_OVERRUN;
-    default:
-        return status;
-    }
+    return UART_read(UART_SECONDARY, *rets, size, rets_size);
 }
 
 enum Status UART2_write(

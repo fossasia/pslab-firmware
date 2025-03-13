@@ -9,17 +9,7 @@ enum Status HOST_read(
     uint16_t const size,
     uint16_t *const num_bytes_read
 ) {
-    enum Status status;
-    switch (status = UART_read(UART_PRIMARY, buffer, size, num_bytes_read)) {
-    case E_UART_RX_TIMEOUT:
-    case E_UART_RX_PARITY:
-    case E_UART_RX_FRAMING:
-        return E_HOST_READ;
-    case E_UART_RX_OVERRUN:
-        return E_HOST_RX_OVERRUN;
-    default:
-        return status;
-    }
+    return UART_read(UART_PRIMARY, buffer, size, num_bytes_read);
 }
 
 enum Status HOST_read_u8(uint8_t *const u8)

@@ -110,19 +110,11 @@ union MCP4728Command {
 
 static enum Status initialize(void)
 {
-    const SPI_Config conf = {{{
-        .PPRE = SPI_SCLK125000 >> 3,
-        .SPRE = SPI_SCLK125000 & 7,
-        .MSTEN = 1,
-        .CKP = SPI_IDLE_LOW,
-        .SSEN = 0,
-        .CKE = SPI_SHIFT_TRAILING,
-        .SMP = 1,
-        .MODE16 = 1,
-        .DISSDO = 0,
-        .DISSCK = 0
-    }}};
-    return SPI_configure(conf);
+    enum Status status = E_OK;
+    if ( (status = SPI_set_clock(SPI_SCLK_125000)) ) { return status; }
+    if ( (status = SPI_set_mode(SPI_CPOL_LOW, SPI_CKE_TRAILING)) ) { return status; }
+    if ( (status = SPI_set_word_size(SPI_WORD_SIZE_16)) ) { return status; }
+    return status;
 }
 
 /**
@@ -159,7 +151,7 @@ enum Status POWER_SOURCE_SetPower(
     }
 
     input.buffer = args;
-    enum Channel const channel =  v5_to_v6_channel(input.channel & 0x03);
+    enum Channel const channel = v5_to_v6_channel(input.channel & 0x03);
     uint16_t const setpoint = input.setpoint & 0xFFF;
 
     union MCP4822Command cmd = {{
@@ -171,8 +163,18 @@ enum Status POWER_SOURCE_SetPower(
 
     enum Status status = E_OK;
 
-    if((status = initialize())) {return status;}
-    return SPI_exchange_int(SPI_PS, &cmd.reg);
+    if ( (status = initialize()) ) { return status; }
+    if ( (status = SPI_open(SPI_CS_PS)) ) { return status; }
+
+    status = SPI_exchange((uint8_t *)&cmd.reg, NULL, sizeof(cmd.reg));
+
+    if (status) {
+        SPI_close();
+    } else {
+        status = SPI_close();
+    }
+
+    return status;
 }
 
 #else // V5_HW

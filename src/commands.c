@@ -61,9 +61,14 @@ CmdFunc COMMAND_get_func(uint16_t const cmd)
       return NULL;
    }
 
-   return cmd_table[primary][secondary];
-}
+   if (primary == 5) {
+      LED_SetLow();
+   }
 
+   CmdFunc cmdfunc = cmd_table[primary][secondary];
+
+   return cmdfunc;
+}
 
 /**
  * Jump table for command function selection. The index matches the
@@ -123,13 +128,13 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 0                               1 START_SPI                     2 SEND_SPI8                     3 SEND_SPI16
         Undefined,                      Removed,                        Removed,                        Removed,
      // 4 STOP_SPI                      5 SET_SPI_PARAMETERS            6 SEND_SPI8_BURST               7 SEND_SPI16_BURST
-        Removed,                        SPI_conf,                       SPI_exchange_bytes,             SPI_exchange_ints,
+        Removed,                        Removed,                        Removed,                        Removed,
      // 8 WRITE_SPI8_BURST              9 WRITE_SPI16_BURST             10 READ_SPI8_BURST              11 READ_SPI16_BURST
-        SPI_write_bytes,                SPI_write_ints,                 SPI_read_bytes,                 SPI_read_ints,
+        Removed,                        Removed,                        Removed,                        Removed,
      // 12                              13                              14                              15
-        Undefined,                      Undefined,                      Undefined,                      Undefined,
+        SPI_cmd_open,                   SPI_cmd_close,                  SPI_cmd_set_mode,               SPI_cmd_set_clock,
      // 16                              17                              18                              19
-        Undefined,                      Undefined,                      Undefined,                      Undefined,
+        SPI_cmd_set_word_size,          SPI_cmd_read,                   SPI_cmd_write,                  SPI_cmd_exchange,
      // 20                              21                              22                              23
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 24                              25                              26                              27

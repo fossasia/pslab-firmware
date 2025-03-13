@@ -8,45 +8,48 @@
 #include "../../commands.h"
 
 /// @brief SPI chip select multiplexer.
-typedef enum
+enum SPI_CS
 {
-    SPI_CH1      = 0b0000, ///< CH1 PGA
-    SPI_CH2      = 0b0001, ///< CH2 PGA
-    SPI_PS       = 0b0010, ///< Power source
-    SPI_HD       = 0b0100, ///< Header pin
-    SPI_SD       = 0b0101, ///< SD-card
-    SPI_DESELECT = 0b1111, ///< Deassert all
+    SPI_CS_CH1      = 0b0000, ///< CH1 PGA
+    SPI_CS_CH2      = 0b0001, ///< CH2 PGA
+    SPI_CS_PS       = 0b0010, ///< Power source
+    SPI_CS_HD       = 0b0100, ///< Header pin
+    SPI_CS_SD       = 0b0101, ///< SD-card
+    SPI_CS_NONE     = 0b1111, ///< Deassert all
     #ifdef V5_HW
     // Backwards compatibility
-    _V5_CH1      = 0b1110,
-    _V5_CH2      = 0b1101,
-    _V5_HD       = 0b0111,
-    _V5_SD       = 0b1011,
+    _SPI_CS_V5_CH1  = 0b1110,
+    _SPI_CS_V5_CH2  = 0b1101,
+    _SPI_CS_V5_HD   = 0b0111,
+    _SPI_CS_V5_SD   = 0b1011,
     #endif // V5_HW
-} tSPI_CS;
+};
 
 /**
  * @brief Clock polarity.
  * @details Clock polarity determines whether the SCLK line is high
- *          (SPI_IDLE_HIGH) or low (SPI_IDLE_LOW) at the start and end of data
- *          transmission.
+ *          (SPI_CPOL_HIGH) or low (SPI_CPOL_LOW) at the start and end
+ *          of data transmission.
 */
-typedef enum
+enum SPI_CPOL
 {
-    SPI_IDLE_LOW,
-    SPI_IDLE_HIGH,
-} tSPIClockPolarity;
+    SPI_CPOL_LOW,
+    SPI_CPOL_HIGH,
+};
 
 
 /**
  * @brief Clock edge.
  * @details Clock edge determines whether bits are shifted out of SPI1BUF to
  *          the SDO line when SCLK transissions from idle to active
- *          (SPI_SHIFT_LEADING) or active to idle (SPI_SHIFT_TRAILING). Note
+ *          (SPI_CKE_LEADING) or active to idle (SPI_CKE_TRAILING). Note
  *          that "leading" and "trailing" in this context is not the same as
  *          "rising" and "falling"; depending on clock polarity, a leading
- *          edge can be either rising (SPI_IDLE_LOW) or falling
- *          (SPI_IDLE_HIGH), and vice versa for the trailing edge.
+ *          edge can be either rising (SPI_CPOL_LOW) or falling
+ *          (SPI_CPOL_HIGH), and vice versa for the trailing edge.
+ *
+ *          Another common name for this feature is clock phase, CPHA. CKE is
+ *          the inversion of CPHA, i.e. CKE=0 == CPHA=1, CKE=1 == CPHA=0.
  *
  *          The combination of clock polarity and clock edge is commonly
  *          referred to as "SPI mode". There are four possible combinations,
@@ -54,217 +57,113 @@ typedef enum
  *
  *          SPI mode | Clock polarity | Clock edge
  *          ----------------------------------------------
- *                 0 | SPI_IDLE_LOW   | SPI_SHIFT_TRAILING
- *                 1 | SPI_IDLE_LOW   | SPI_SHIFT_LEADING
- *                 2 | SPI_IDLE_HIGH  | SPI_SHIFT_TRAILING
- *                 3 | SPI_IDLE_HIGH  | SPI_SHIFT_LEADING
+ *                 0 | SPI_CPOL_LOW   | SPI_CKE_TRAILING
+ *                 1 | SPI_CPOL_LOW   | SPI_CKE_LEADING
+ *                 2 | SPI_CPOL_HIGH  | SPI_CKE_TRAILING
+ *                 3 | SPI_CPOL_HIGH  | SPI_CKE_LEADING
 */
-typedef enum
+enum SPI_CKE
 {
-    SPI_SHIFT_LEADING,
-    SPI_SHIFT_TRAILING,
-} tSPIClockEdge;
+    SPI_CKE_LEADING,
+    SPI_CKE_TRAILING,
+};
 
 /// @brief Prescalers for valid SPI clockrates.
-typedef enum
+enum SPI_SCLK
 {
     // Prescalers:    PPRE<<3 + SPRE
-    // SPI_SCLK64000000 = 0b11000 + 0b111, // 1 * 1 = 1
-    // SPI_SCLK32000000 = 0b11000 + 0b110, // 1 * 2 = 2
-    // SPI_SCLK21333333 = 0b11000 + 0b101, // 1 * 3 = 3
-    // SPI_SCLK16000000 = 0b11000 + 0b100, // 1 * 4 = 4
+    // SPI_SCLK_64000000 = 0b11000 + 0b111, // 1 * 1 = 1
+    // SPI_SCLK_32000000 = 0b11000 + 0b110, // 1 * 2 = 2
+    // SPI_SCLK_21333333 = 0b11000 + 0b101, // 1 * 3 = 3
+    // SPI_SCLK_16000000 = 0b11000 + 0b100, // 1 * 4 = 4
     // Maximum clock rate is 15 MHz.
-    SPI_SCLK12800000 = 0b11000 + 0b011, // 1 * 5 = 5
-    SPI_SCLK10666666 = 0b11000 + 0b010, // 1 * 6 = 6
-    SPI_SCLK9142857 = 0b11000 + 0b001, // 1 * 7 = 7
-    SPI_SCLK8000000 = 0b11000 + 0b000, // 1 * 8 = 8
-    // SPI_SCLK1600000 = 0b10000 + 0b111, // 4 * 1 = 4
-    // SPI_SCLK8000000 = 0b10000 + 0b110, // 4 * 2 = 8
-    SPI_SCLK5333333 = 0b10000 + 0b101, // 4 * 3 = 12
-    SPI_SCLK4000000 = 0b10000 + 0b100, // 4 * 4 = 16
-    SPI_SCLK3200000 = 0b10000 + 0b011, // 4 * 5 = 20
-    SPI_SCLK2666667 = 0b10000 + 0b010, // 4 * 6 = 24
-    SPI_SCLK2285714 = 0b10000 + 0b001, // 4 * 7 = 28
-    SPI_SCLK2000000 = 0b10000 + 0b000, // 4 * 8 = 32
-    // SPI_SCLK4000000 = 0b01000 + 0b111, // 16 * 1 = 16
-    // SPI_SCLK2000000 = 0b01000 + 0b110, // 16 * 2 = 32
-    SPI_SCLK1333333 = 0b01000 + 0b101, // 16 * 3 = 48
-    SPI_SCLK1000000 = 0b01000 + 0b100, // 16 * 4 = 64
-    SPI_SCLK800000 = 0b01000 + 0b011, // 16 * 5 = 80
-    SPI_SCLK666667 = 0b01000 + 0b010, // 16 * 6 = 96
-    SPI_SCLK571429 = 0b01000 + 0b001, // 16 * 7 = 112
-    SPI_SCLK500000 = 0b01000 + 0b000, // 16 * 8 = 128
-    // SPI_SCLK1000000 = 0b00000 + 0b111, // 64 * 1 = 64
-    // SPI_SCLK500000 = 0b00000 + 0b110, // 64 * 2 = 128
-    SPI_SCLK333333 = 0b00000 + 0b101, // 64 * 3 = 192
-    SPI_SCLK250000 = 0b00000 + 0b100, // 64 * 4 = 256
-    SPI_SCLK200000 = 0b00000 + 0b011, // 64 * 5 = 320
-    SPI_SCLK166667 = 0b00000 + 0b010, // 64 * 6 = 384
-    SPI_SCLK142857 = 0b00000 + 0b001, // 64 * 7 = 448
-    SPI_SCLK125000 = 0b00000 + 0b000, // 64 * 8 = 512
-} tSPIClockrate;
+    SPI_SCLK_12800000 = 0b11000 + 0b011, // 1 * 5 = 5
+    SPI_SCLK_10666666 = 0b11000 + 0b010, // 1 * 6 = 6
+    SPI_SCLK_9142857 = 0b11000 + 0b001, // 1 * 7 = 7
+    SPI_SCLK_8000000 = 0b11000 + 0b000, // 1 * 8 = 8
+    // SPI_SCLK_1600000 = 0b10000 + 0b111, // 4 * 1 = 4
+    // SPI_SCLK_8000000 = 0b10000 + 0b110, // 4 * 2 = 8
+    SPI_SCLK_5333333 = 0b10000 + 0b101, // 4 * 3 = 12
+    SPI_SCLK_4000000 = 0b10000 + 0b100, // 4 * 4 = 16
+    SPI_SCLK_3200000 = 0b10000 + 0b011, // 4 * 5 = 20
+    SPI_SCLK_2666667 = 0b10000 + 0b010, // 4 * 6 = 24
+    SPI_SCLK_2285714 = 0b10000 + 0b001, // 4 * 7 = 28
+    SPI_SCLK_2000000 = 0b10000 + 0b000, // 4 * 8 = 32
+    // SPI_SCLK_4000000 = 0b01000 + 0b111, // 16 * 1 = 16
+    // SPI_SCLK_2000000 = 0b01000 + 0b110, // 16 * 2 = 32
+    SPI_SCLK_1333333 = 0b01000 + 0b101, // 16 * 3 = 48
+    SPI_SCLK_1000000 = 0b01000 + 0b100, // 16 * 4 = 64
+    SPI_SCLK_800000 = 0b01000 + 0b011, // 16 * 5 = 80
+    SPI_SCLK_666667 = 0b01000 + 0b010, // 16 * 6 = 96
+    SPI_SCLK_571429 = 0b01000 + 0b001, // 16 * 7 = 112
+    SPI_SCLK_500000 = 0b01000 + 0b000, // 16 * 8 = 128
+    // SPI_SCLK_1000000 = 0b00000 + 0b111, // 64 * 1 = 64
+    // SPI_SCLK_500000 = 0b00000 + 0b110, // 64 * 2 = 128
+    SPI_SCLK_333333 = 0b00000 + 0b101, // 64 * 3 = 192
+    SPI_SCLK_250000 = 0b00000 + 0b100, // 64 * 4 = 256
+    SPI_SCLK_200000 = 0b00000 + 0b011, // 64 * 5 = 320
+    SPI_SCLK_166667 = 0b00000 + 0b010, // 64 * 6 = 384
+    SPI_SCLK_142857 = 0b00000 + 0b001, // 64 * 7 = 448
+    SPI_SCLK_125000 = 0b00000 + 0b000, // 64 * 8 = 512
+};
 
-typedef SPI1CON1BITS SPI_Config;
+/// @brief Number of bits exchanged at a time.
+enum SPI_WordSize
+{
+    SPI_WORD_SIZE_8,
+    SPI_WORD_SIZE_16,
+};
 
-/**
- * @brief Select or deselect SPI chip select pins.
- * @note This function should not be called in most cases. All
- *       read/write/exchange functions which are part of this API handle chip
- *       selection internally. This function is made available to enable
- *       alternative SPI implementations to use the chip select multiplexer.
- * @param cs One of tSPI_CS.
-*/
-#ifdef V5_HW
-void SPI_chip_select(tSPI_CS cs);
-#else
-void SPI_chip_select(const tSPI_CS cs);
-#endif // V5_HW
+enum Status SPI_open(enum SPI_CS cs);
+enum Status SPI_close(void);
+enum Status SPI_set_mode(enum SPI_CPOL cpol, enum SPI_CKE cke);
+enum Status SPI_set_clock(enum SPI_SCLK sclk);
+enum Status SPI_set_word_size(enum SPI_WordSize wsize);
+enum Status SPI_exchange(uint8_t indata[], uint8_t outdata[], uint16_t size);
 
-/**
- * @brief Set SPI1CON1 register.
- * @param conf An SPI1CON1BITS instance, see datasheet for member descriptions.
- * @return E_OK if bus is available, else E_RESOURCE_BUSY.
- */
-enum Status SPI_configure(const SPI_Config conf);
-
-/**
- * @brief Exchange a single byte.
- * @pre An appropriate configuration must be set with SPI_configure before
- *      using this function.
- * @param cs One of tSPI_CS.
- * @param data Pointer to a uint8_t containing data to be written to the bus.
- *             Data read from the bus will be written through the same pointer.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK otherwise.
- */
-enum Status SPI_exchange_byte(const tSPI_CS cs, uint8_t* const data);
-
-/**
- * @brief Exchange a single word.
- * @pre An appropriate configuration must be set with SPI_configure before
- *      using this function.
- * @param cs One of tSPI_CS.
- * @param data Pointer to a uint16_t containing data to be written to the bus.
- *             Data read from the bus will be written through the same pointer.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK otherwise.
- */
-enum Status SPI_exchange_int(const tSPI_CS cs, uint16_t* const data);
-
-/**
- * @brief Set SPI1CON1 register.
- * @param conf uint16_t corresponding to SPI1CON1, see datasheet.
- * @return E_OK if bus is available, else E_RESOURCE_BUSY.
- */
-enum Status SPI_conf(
+enum Status SPI_cmd_open(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],
     uint16_t *rets_size
 );
-
-/**
- * @brief Read bytes from the SPI bus.
- * @pre An appropriate configuration must be set with SPI_conf before using
- *      this function.
- * @param cs uint8_t corresponding to one of tSPI_CS.
- * @param count uint16_t, number of bytes to read.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_SUCCESS otherwise.
- */
-enum Status SPI_read_bytes(
+enum Status SPI_cmd_close(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],
     uint16_t *rets_size
 );
-
-/**
- * @brief Write bytes to the SPI bus.
- * @pre An appropriate configuration must be set with SPI_conf before using
- *      this function.
- * @param cs uint8_t corresponding to one of tSPI_CS.
- * @param count uint16_t, number of bytes to write.
- * @param data <count> bytes of data.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK otherwise.
- */
-enum Status SPI_write_bytes(
+enum Status SPI_cmd_set_mode(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],
     uint16_t *rets_size
 );
-
-/**
- * @brief Read and write bytes from the SPI bus.
- * @pre An appropriate configuration must be set with SPI_conf before using
- *      this function.
- * @param cs uint8_t corresponding to one of tSPI_CS.
- * @param count uint16_t, number of bytes to exchange.
- * @param data <count> bytes of data.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 1.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK bytes followed by SUCCESS otherwise.
- */
-enum Status SPI_exchange_bytes(
+enum Status SPI_cmd_set_clock(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],
     uint16_t *rets_size
 );
-
-/**
- * @brief Read ints from the SPI bus.
- * @pre An appropriate configuration must be set with SPI_conf before using
- *      this function.
- * @param cs uint8_t corresponding to one of tSPI_CS.
- * @param count uint16_t, number of ints to read.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK otherwise.
- */
-enum Status SPI_read_ints(
+enum Status SPI_cmd_set_word_size(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],
     uint16_t *rets_size
 );
-
-/**
- * @brief Write ints to the SPI bus.
- * @pre An appropriate configuration must be set with SPI_conf before using
- *      this function.
- * @param cs uint8_t corresponding to one of tSPI_CS.
- * @param count uint16_t, number of ints to write.
- * @param data <2*count> bytes of data.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK otherwise.
- */
-enum Status SPI_write_ints(
+enum Status SPI_cmd_read(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],
     uint16_t *rets_size
 );
-
-/**
- * @brief Read and write ints from the SPI bus.
- * @pre An appropriate configuration must be set with SPI_conf before using
- *      this function.
- * @param cs uint8_t corresponding to one of tSPI_CS.
- * @param count uint16_t, number of ints to exchange.
- * @param data <2*count> bytes of data.
- * @return E_BAD_ARGUMENT if SPI1CON1bits.MODE16 == 0.
- *         E_RESOURCE_BUSY if bus is already open.
- *         E_OK otherwise.
- */
-enum Status SPI_exchange_ints(
+enum Status SPI_cmd_write(
+    uint8_t args[],
+    uint16_t args_size,
+    uint8_t *rets[],
+    uint16_t *rets_size
+);
+enum Status SPI_cmd_exchange(
     uint8_t args[],
     uint16_t args_size,
     uint8_t *rets[],

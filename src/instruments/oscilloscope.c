@@ -285,49 +285,36 @@ enum Status OSCILLOSCOPE_set_pga_gain(
         uint8_t const *buffer;
     } input = {{0}};
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
-    }
+    if (args_size != sizeof(input)) { return E_BAD_ARGSIZE; }
 
     input.buffer = args;
-    tSPI_CS channel;
+    enum SPI_CS channel;
 
     switch (input.pin) {
     case 1:
-        channel = SPI_CH1;
+        channel = SPI_CS_CH1;
         break;
     case 2:
-        channel = SPI_CH2;
+        channel = SPI_CS_CH2;
         break;
     default:
         return E_BAD_ARGUMENT;
+        break;
     }
 
-
-    if (input.gain >= GAIN_INVALID) {
-        return E_BAD_ARGUMENT;
-    }
+    if (input.gain >= GAIN_INVALID) { return E_BAD_ARGUMENT; }
 
     uint16_t const write_register = 0x4000;
     uint16_t cmd = write_register | input.gain;
 
-    SPI_Config const pga_config = {{{
-        .PPRE = SPI_SCLK125000 >> 3,
-        .SPRE = SPI_SCLK125000 & 7,
-        .MSTEN = 1,
-        .CKP = SPI_IDLE_LOW,
-        .SSEN = 0,
-        .CKE = SPI_SHIFT_TRAILING,
-        .SMP = 1,
-        .MODE16 = 1,
-        .DISSDO = 0,
-        .DISSCK = 0
-    }}};
-
     enum Status status = E_OK;
 
-    if ((status = SPI_configure(pga_config))) {return status;}
+    if ((status = SPI_set_mode(SPI_CPOL_LOW, SPI_CKE_TRAILING))) {
+        return status;
+    }
+    if ((status = SPI_set_clock(SPI_SCLK_125000))) { return status; }
+    if ((status = SPI_set_word_size(SPI_WORD_SIZE_16))) { return status; }
 
     LED_SetHigh();
-    return SPI_exchange_int(channel, &cmd);
+    return SPI_exchange((uint8_t *)&cmd, NULL, sizeof(cmd));
 }
