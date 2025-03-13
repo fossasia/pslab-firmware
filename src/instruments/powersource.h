@@ -36,7 +36,7 @@ extern "C" {
     enum Status POWER_SOURCE_SetPower(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 

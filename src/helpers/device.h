@@ -12,7 +12,7 @@ extern "C" {
     enum Status DEVICE_get_hw_version(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -23,7 +23,7 @@ extern "C" {
     enum Status DEVICE_get_fw_version(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -34,7 +34,7 @@ extern "C" {
     enum Status DEVICE_reset(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -45,7 +45,7 @@ extern "C" {
     enum Status DEVICE_read_register(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 
@@ -57,7 +57,7 @@ extern "C" {
     enum Status DEVICE_write_register(
         uint8_t args[],
         uint16_t args_size,
-        uint8_t *rets[],
+        uint8_t **rets,
         uint16_t *rets_size
     );
 

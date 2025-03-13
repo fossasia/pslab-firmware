@@ -74,7 +74,7 @@ enum Status RTC_set_time(time_t const *const unix_timestamp) {
 enum Status RTC_cmd_set_time(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     time_t unix_timestamp = 0;
@@ -118,7 +118,7 @@ enum Status RTC_get_time(time_t *const unix_timestamp) {
 enum Status RTC_cmd_get_time(
     uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     time_t unix_timestamp = 0;

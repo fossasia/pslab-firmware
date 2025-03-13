@@ -64,7 +64,7 @@ void LIGHT_RGB(uint8_t red, uint8_t green, uint8_t blue) {
 enum Status LIGHT_rgb_pin(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {

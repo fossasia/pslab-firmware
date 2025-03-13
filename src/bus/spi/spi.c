@@ -285,7 +285,7 @@ enum Status SPI_exchange(
 enum Status SPI_cmd_open(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint8_t cs = SPI_CS_NONE;
@@ -297,7 +297,7 @@ enum Status SPI_cmd_open(
 enum Status SPI_cmd_close(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     return SPI_close();
@@ -306,7 +306,7 @@ enum Status SPI_cmd_close(
 enum Status SPI_cmd_set_mode(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -325,7 +325,7 @@ enum Status SPI_cmd_set_mode(
 enum Status SPI_cmd_set_clock(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint16_t sclk = SPI_SCLK_125000;
@@ -337,7 +337,7 @@ enum Status SPI_cmd_set_clock(
 enum Status SPI_cmd_set_word_size(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint8_t wsize = SPI_WORD_SIZE_8;
@@ -349,7 +349,7 @@ enum Status SPI_cmd_set_word_size(
 enum Status SPI_cmd_read(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint16_t size = 0;
@@ -363,7 +363,7 @@ enum Status SPI_cmd_read(
 enum Status SPI_cmd_write(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -381,7 +381,7 @@ enum Status SPI_cmd_write(
 enum Status SPI_cmd_exchange(
     uint8_t args[],
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     union Input {

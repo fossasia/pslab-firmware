@@ -135,7 +135,7 @@ static enum Channel v5_to_v6_channel(enum Channel const channel)
 enum Status POWER_SOURCE_SetPower(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -182,7 +182,7 @@ enum Status POWER_SOURCE_SetPower(
 enum Status POWER_SOURCE_SetPower(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {

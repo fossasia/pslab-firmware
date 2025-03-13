@@ -186,7 +186,7 @@ void INTERVAL_CaptureFour(uint16_t count, uint16_t mode, uint8_t prescaler) {
 enum Status INTERVAL_get_state(
     uint8_t *const args,
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint16_t *out = (uint16_t *)args;

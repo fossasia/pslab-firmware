@@ -10,7 +10,7 @@
 enum Status UART2_read(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
     union Input {
@@ -38,7 +38,7 @@ enum Status UART2_read(
 enum Status UART2_write(
     uint8_t *const args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
     if (args_size > PACKET_SIZE_MAX) {
@@ -61,7 +61,7 @@ enum Status UART2_write(
 enum Status UART2_set_mode(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *const rets_size
 ) {
 
@@ -83,7 +83,7 @@ enum Status UART2_set_mode(
 enum Status UART2_set_baud(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *const rets_size
 ) {
     uint16_t baud = BAUD1000000;
@@ -95,7 +95,7 @@ enum Status UART2_set_baud(
 enum Status UART2_flush_rx(
     __attribute__((unused)) uint8_t args[],
     __attribute__((unused)) uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *const rets_size
 ) {
     return UART_flush_rx(UART_SECONDARY);
@@ -104,7 +104,7 @@ enum Status UART2_flush_rx(
 enum Status UART2_rx_ready(
     uint8_t *const args,
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
     bool ready = false;

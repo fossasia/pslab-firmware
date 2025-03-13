@@ -111,7 +111,7 @@ static void downsample(int const *const table_full, int *const table_short)
 enum Status WAVEGENERATOR_load_wave_1(
     __attribute__((unused)) uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     /* This command is special-cased in the packet handler to receive input
@@ -128,7 +128,7 @@ enum Status WAVEGENERATOR_load_wave_1(
 enum Status WAVEGENERATOR_read_wave_1(
     __attribute__((unused)) uint8_t args[],
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     *rets = (uint8_t *)WAVEGENERATOR_table_1;
@@ -139,7 +139,7 @@ enum Status WAVEGENERATOR_read_wave_1(
 enum Status WAVEGENERATOR_load_wave_2(
     __attribute__((unused)) uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     /* This command is special-cased in the packet handler to receive input
@@ -156,7 +156,7 @@ enum Status WAVEGENERATOR_load_wave_2(
 enum Status WAVEGENERATOR_read_wave_2(
     __attribute__((unused)) uint8_t args[],
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     *rets = (uint8_t *)WAVEGENERATOR_table_2;
@@ -167,7 +167,7 @@ enum Status WAVEGENERATOR_read_wave_2(
 enum Status WAVEGENERATOR_set_sine_1(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -247,7 +247,7 @@ enum Status WAVEGENERATOR_set_sine_1(
 enum Status WAVEGENERATOR_set_sine_2(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -324,7 +324,7 @@ enum Status WAVEGENERATOR_set_sine_2(
 enum Status WAVEGENERATOR_set_sine_dual(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -450,7 +450,7 @@ enum Status WAVEGENERATOR_set_sine_dual(
 enum Status WAVEGENERATOR_set_square_1(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -495,7 +495,7 @@ enum Status WAVEGENERATOR_set_square_1(
 enum Status WAVEGENERATOR_set_square_2(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -540,7 +540,7 @@ enum Status WAVEGENERATOR_set_square_2(
 enum Status WAVEGENERATOR_set_square_all(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -645,7 +645,7 @@ enum Status WAVEGENERATOR_set_square_all(
 enum Status WAVEGENERATOR_map_reference(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     union Input {

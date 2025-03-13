@@ -56,7 +56,7 @@ void SENSORS_ConfigureInterval(uint8_t pin1, uint8_t pin2,
 enum Status SENSORS_start_counter(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -91,7 +91,7 @@ enum Status SENSORS_start_counter(
 enum Status SENSORS_get_counter(
     uint8_t *const args,
     __attribute__ ((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     // Fetch timer 2 value and send it over

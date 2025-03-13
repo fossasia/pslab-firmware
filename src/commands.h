@@ -69,7 +69,7 @@ enum Status {
  *      up to `arg_size` bytes.
  * @param uint16_t args_size
  *      Number of bytes in `args`.
- * @param[out] uint8_t *rets[]
+ * @param[out] uint8_t **rets
  *      Pointer to an unallocated byte-array containing function return
  *      values. The function does not need to set this if has nothing to
  *      return. The function may set `*rets = args` if
@@ -83,7 +83,7 @@ enum Status {
 typedef enum Status (*CmdFunc)(
     uint8_t args[*],
     uint16_t args_size,
-    uint8_t *rets[*],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 

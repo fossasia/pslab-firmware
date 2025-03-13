@@ -51,7 +51,7 @@ void CTMU_InitializeCON2(void) {
 enum Status CTMU_start(
     uint8_t args[],
     uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     union Input {
@@ -82,7 +82,7 @@ enum Status CTMU_start(
 enum Status CTMU_stop(
     __attribute__ ((unused)) uint8_t args[],
     __attribute__ ((unused)) uint16_t const args_size,
-    __attribute__ ((unused)) uint8_t *rets[],
+    __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     CTMU_DisableModule();
