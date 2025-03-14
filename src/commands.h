@@ -42,6 +42,7 @@ enum Status {
     E_OK,
     // General error.
     E_FAILED,
+    E_NOT_IMPLEMENTED,
     // Errors related to resource acquisition.
     E_RESOURCE_NOT_INITIALIZED,
     E_RESOURCE_BUSY,
