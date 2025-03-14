@@ -105,18 +105,14 @@ enum Status MULTIMETER_get_voltage(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t channel;
-        };
-        uint8_t *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t channel;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
-
-    input.buffer = args;
 
     ADC1_InterruptDisable();
     ADC1_InterruptFlagClear();
@@ -137,7 +133,7 @@ enum Status MULTIMETER_get_voltage(
 
     ADC1_InitializeCON4();
 
-    AD1CHS0bits.CH0SA = input.channel & 0xF;
+    AD1CHS0bits.CH0SA = input->channel & 0xF;
     AD1CHS0bits.CH0NA = 0;
 
     AD1CSSH = 0x0000;
@@ -163,20 +159,18 @@ enum Status MULTIMETER_get_voltage_summed(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t channel;
-        };
-        uint8_t *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t channel;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
 
-    uint16_t result = GetVoltage_Summed(input.channel);
+
+    uint16_t result = GetVoltage_Summed(input->channel);
     *rets_size = sizeof(result);
     *rets = args;
     memcpy(*rets, &result, *rets_size);
@@ -190,20 +184,15 @@ enum Status MULTIMETER_charge_capacitor(
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t charge;
-            uint16_t period;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t charge;
+        uint16_t period;
+        uint8_t _pad[1];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
-    }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
 
-    input.buffer = args;
-    ChargeCapacitor(input.charge, input.period);
+    ChargeCapacitor(input->charge, input->period);
     return E_OK;
 }
 
@@ -213,25 +202,19 @@ enum Status MULTIMETER_get_cap_range(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t charge_time;
-        };
-        uint8_t *buffer;
-    } input = {{0}};
+    struct Input {
+        uint16_t charge_time;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
-    }
-
-    input.buffer = args;
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {return E_BAD_ARGSIZE;}
 
     ChargeCapacitor(CHARGE, 50000);
 
     ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, CH0_CHANNEL_CAP, 0);
 
     TMR5_Initialize();
-    TMR5_Period16BitSet(input.charge_time);
+    TMR5_Period16BitSet(input->charge_time);
     TMR5_SetPrescaler(TMR_PRESCALER_64);
     TMR5_Start();
 
@@ -259,26 +242,20 @@ enum Status MULTIMETER_get_capacitance(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t current_range;
-            uint8_t trim;
-            uint16_t charge_time;
-        };
-        uint8_t *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t current_range;
+        uint8_t trim;
+        uint16_t charge_time;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
-    }
-
-    input.buffer = args;
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
 
     LED_SetLow();
 
     ADC1_SetOperationMode(ADC1_CTMU_MODE, CH0_CHANNEL_CAP, 0);
     // Initiate CTMU and TMR5 registers to measure capacitance discharge rate
-    GetCapacitance_InitCTMU_TMR5(input.current_range, input.trim, input.charge_time);
+    GetCapacitance_InitCTMU_TMR5(input->current_range, input->trim, input->charge_time);
     // Fully discharge the measuring capacitor
     ChargeCapacitor(DISCHARGE, 50000);
     // Configure ADC, CTMU and TMR5 register bits to start measuring

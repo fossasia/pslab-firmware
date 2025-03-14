@@ -138,21 +138,20 @@ enum Status POWER_SOURCE_SetPower(
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t channel;
-            uint16_t setpoint;
-        };
+    struct Input {
+        uint8_t channel;
+        uint16_t setpoint;
+        uint8_t _pad[1];
         uint8_t const *buffer;
-    } input = {{0}};
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
-    enum Channel const channel = v5_to_v6_channel(input.channel & 0x03);
-    uint16_t const setpoint = input.setpoint & 0xFFF;
+
+    enum Channel const channel = v5_to_v6_channel(input->channel & 0x03);
+    uint16_t const setpoint = input->setpoint & 0xFFF;
 
     union MCP4822Command cmd = {{
         .DATA = setpoint,
@@ -185,21 +184,19 @@ enum Status POWER_SOURCE_SetPower(
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t channel;
-            uint16_t setpoint;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t channel;
+        uint16_t setpoint;
+        uint8_t _pad[1];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
-    enum Channel const channel =  input.channel & 0x03;
-    uint16_t const setpoint = input.setpoint & 0xFFF;
+
+    enum Channel const channel =  input->channel & 0x03;
+    uint16_t const setpoint = input->setpoint & 0xFFF;
 
     enum VRef {
         VREF_EXTERNAL,

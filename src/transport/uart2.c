@@ -13,18 +13,16 @@ enum Status UART2_read(
     uint8_t **rets,
     uint16_t *const rets_size
 ) {
-    union Input {
+    struct Input {
         uint16_t size;
-        uint8_t const *buffer;
-    } input = {0};
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
     // args will be reused for output, so need to copy to new var.
-    uint16_t const size = input.size;
+    uint16_t const size = input->size;
 
     if (size > PACKET_SIZE_MAX) {
         return E_BAD_SIZE;

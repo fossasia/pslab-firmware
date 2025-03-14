@@ -309,17 +309,17 @@ enum Status SPI_cmd_set_mode(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t cpol;
-            uint8_t cke;
-        };
-        uint8_t *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t cpol;
+        uint8_t cke;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;;
 
-    if (args_size != sizeof(input)) { return E_BAD_ARGSIZE; }
-    input.buffer = args;
-    return SPI_set_mode(input.cpol, input.cke);
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    return SPI_set_mode(input->cpol, input->cke);
 }
 
 enum Status SPI_cmd_set_clock(
@@ -366,16 +366,12 @@ enum Status SPI_cmd_write(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t size;
-            uint8_t data[];
-        };
-        uint8_t *buffer;
-    } input = {{0}};
-    if (args_size < sizeof(input)) { return E_BAD_ARGSIZE; }
-    input.buffer = args;
-    return SPI_exchange(input.data, NULL, input.size);
+    struct Input {
+        uint16_t size;
+        uint8_t data[];
+    } *input = (struct Input *)args;
+    if (args_size < sizeof(struct Input)) { return E_BAD_ARGSIZE; }
+    return SPI_exchange(input->data, NULL, input->size);
 }
 
 enum Status SPI_cmd_exchange(
@@ -384,16 +380,12 @@ enum Status SPI_cmd_exchange(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t size;
-            uint8_t data[];
-        };
-        uint8_t *buffer;
-    } input = {{0}};
-    if (args_size < sizeof(input)) { return E_BAD_ARGSIZE; }
-    input.buffer = args;
+    struct Input {
+        uint16_t size;
+        uint8_t data[];
+    } *input = (struct Input *)args;
+    if (args_size < sizeof(struct Input)) { return E_BAD_ARGSIZE; }
     *rets = args;
-    *rets_size = input.size;
-    return SPI_exchange(input.data, *rets, input.size);
+    *rets_size = input->size;
+    return SPI_exchange(input->data, *rets, input->size);
 }

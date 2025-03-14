@@ -54,24 +54,22 @@ enum Status CTMU_start(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t config;
-            uint8_t current_trim;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t config;
+        uint8_t current_trim;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
+
 
     CTMU_Initialize();
-    CTMUCON1bits.TGEN = (input.config >> 7) & 0x1;
-    CTMUICONbits.ITRIM = input.current_trim;
-    CTMUICONbits.IRNG = input.config & 0x7F;
+    CTMUCON1bits.TGEN = (input->config >> 7) & 0x1;
+    CTMUICONbits.ITRIM = input->current_trim;
+    CTMUICONbits.IRNG = input->config & 0x7F;
     CTMU_Enable();
     DELAY_us(1000);
     CTMU_EnableEdge1();
