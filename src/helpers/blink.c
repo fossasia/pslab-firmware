@@ -26,29 +26,12 @@ union Color g_color = {{0}};
 
 void __attribute__((interrupt, no_auto_psv)) _T1Interrupt(void)
 {
-    // This interrupt runs once per millisecond.
+    // This interrupt runs once per millisecond one 'enable_timer' has been called.
 
     // Clear interrupt flag to prevent interrupt reentry until next tickover.
     IFS0bits.T1IF = 0;
 
-    // LED states flips twice per period, once to on state, once to off state.
-    if (g_tick++ < g_period / 2) {
-        // It's not yet time to flip the LED state.
-        return;
-    }
-
-    // Time to flip the LED state. Reset tick counter.
-    g_tick = 0;
-
-    // Flip LED state.
-    if (g_is_led_on) {
-        // Turn off LED.
-        LIGHT_RGB(0, 0, 0);
-    } else {
-        // Turn on LED.
-        LIGHT_RGB(g_color.red, g_color.green, g_color.blue);
-    }
-    g_is_led_on = !g_is_led_on;
+    // Continue implementation.
 }
 
 static void enable_timer(void)
@@ -100,10 +83,10 @@ enum Status BLINK_start(
     }
 
     input = (struct Input *)args;
-    memcpy(g_color.buffer, input->color.buffer, sizeof(g_color));
-    g_period = input->period;
-    enable_timer();
-    return E_OK;
+
+    // Continue implementation.
+
+    return E_NOT_IMPLEMENTED;
 }
 
 enum Status BLINK_stop(
@@ -112,6 +95,5 @@ enum Status BLINK_stop(
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
-    disable_timer();
-    return E_OK;
+    return E_NOT_IMPLEMENTED;
 }
