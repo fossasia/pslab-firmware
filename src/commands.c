@@ -3,6 +3,7 @@
 #include "bus/i2c/i2c.h"
 #include "bus/uart/uart.h"
 #include "bus/spi/spi.h"
+#include "helpers/blink.h"
 #include "helpers/buffer.h"
 #include "helpers/device.h"
 #include "helpers/interval.h"
@@ -289,8 +290,8 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
         Undefined,                      RTC_cmd_set_time,               Removed,                        RTC_cmd_get_time,
      // 4 RTC_GETDIGIT                  5 HCSR04                        6 AM2302                        7 BMP180
         Removed,                        Unimplemented,                  Unimplemented,                  Unimplemented,
-     // 8 TSL2591                       9 TCD1304                       10                              11
-        Unimplemented,                  Unimplemented,                  Undefined,                      Undefined,
+     // 8 TSL2591                       9 TCD1304                       10 BLINK_RGB                    11 BLINK_STOP
+        Unimplemented,                  Unimplemented,                  BLINK_start,                    BLINK_stop,
      // 12                              13                              14                              15
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 16                              17                              18                              19

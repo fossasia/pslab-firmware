@@ -32,7 +32,7 @@ extern "C" {
 #define NUM_TIMING_CMDS 17
 #define NUM_COMMON_CMDS 27
 #define NUM_PASSTHRU_CMDS 1
-#define NUM_SENSOR_CMDS 9
+#define NUM_SENSOR_CMDS 11
 #define NUM_SDCARD_CMDS 3
 #define NUM_SECONDARY_CMDS_MAX NUM_COMMON_CMDS // Change if necessary.
 
@@ -46,7 +46,7 @@ enum Status {
     // Errors related to resource acquisition.
     E_RESOURCE_NOT_INITIALIZED,
     E_RESOURCE_BUSY,
-    // Errors related to user input.
+    // Errors related to user input->
     E_BAD_COMMAND,
     E_BAD_SIZE,
     E_BAD_ARGSIZE,
