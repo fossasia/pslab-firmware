@@ -139,33 +139,31 @@ enum Status PIN_MANAGER_set_sq_pin_state(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t sq_pin_state;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t sq_pin_state;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;;
 
-    if (args_size != sizeof(input)) {return E_BAD_ARGSIZE;}
-    input.buffer = args;
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {return E_BAD_ARGSIZE;}
 
-    if (input.sq_pin_state & 0b00010000) {
+
+    if (input->sq_pin_state & 0b00010000) {
         RPOR5bits.RP54R = RPN_DEFAULT_PORT; // SQ1: C6
     }
-    if (input.sq_pin_state & 0b00100000) {
+    if (input->sq_pin_state & 0b00100000) {
         RPOR5bits.RP55R = RPN_DEFAULT_PORT; // SQ2: C7
     }
-    if (input.sq_pin_state & 0b01000000) {
+    if (input->sq_pin_state & 0b01000000) {
         RPOR6bits.RP56R = RPN_DEFAULT_PORT; // SQ3: C8
     }
-    if (input.sq_pin_state & 0b10000000) {
+    if (input->sq_pin_state & 0b10000000) {
         RPOR6bits.RP57R = RPN_DEFAULT_PORT; // SQ4: C9
     }
 
     // Clear C6-C9 bits using MSBs [XXXX_....]
-    LATC &= ~((input.sq_pin_state & 0x00F0) << 2);
+    LATC &= ~((input->sq_pin_state & 0x00F0) << 2);
     // Set C6-C9 bits using LSBs [...._XXXX]
-    LATC |= ((input.sq_pin_state & 0x000F) << 6);
+    LATC |= ((input->sq_pin_state & 0x000F) << 6);
 
     return E_OK;
 }

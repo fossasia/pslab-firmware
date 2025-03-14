@@ -49,25 +49,20 @@ enum Status SDCARD_stat(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t fn_size;
-            char *fn;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t fn_size;
+        char fn[];
+    } *input = (struct Input *)args;
 
-    if (args_size < sizeof(input.fn_size)) {
+    if (args_size < sizeof(input->fn_size)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
-
-    if (input.fn_size < SFN_MIN) {
+    if (input->fn_size < SFN_MIN) {
         return E_BAD_SIZE;
     }
 
-    if (input.fn_size > SFN_MAX) {
+    if (input->fn_size > SFN_MAX) {
         return E_BAD_SIZE;
     }
 
@@ -75,7 +70,7 @@ enum Status SDCARD_stat(
         FILINFO info;
         FRESULT res;
     } output = {.info = {0}, .res = 0};
-    output.res = f_stat(input.fn, &output.info);
+    output.res = f_stat(input->fn, &output.info);
     *rets = args;
     *rets_size = sizeof(output);
     memcpy(*rets, &output, *rets_size);
@@ -88,30 +83,25 @@ enum Status SDCARD_open(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t fn_size;
-            uint8_t mode;
-            char *fn;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t fn_size;
+        uint8_t mode;
+        char fn[];
+    } *input = (struct Input *)args;
 
-    if (args_size < sizeof(input.fn_size)) {
+    if (args_size < sizeof(input->fn_size)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
-
-    if (input.fn_size < SFN_MIN) {
+    if (input->fn_size < SFN_MIN) {
         return E_BAD_SIZE;
     }
 
-    if (input.fn_size > SFN_MAX) {
+    if (input->fn_size > SFN_MAX) {
         return E_BAD_SIZE;
     }
 
-    FRESULT const res = f_open(g_file_p, input.fn, input.mode);
+    FRESULT const res = f_open(g_file_p, input->fn, input->mode);
     *rets = args;
     *rets_size = sizeof(res);
     memcpy(*rets, &res, *rets_size);
@@ -138,25 +128,20 @@ enum Status SDCARD_write(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    union Input {
-        struct {
+    struct Input {
             uint16_t data_size;
-            uint8_t *data[];
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+            uint8_t data[];
+    } *input = (struct Input *)args;;
 
-    if (args_size < sizeof(input.data_size)) {
+    if (args_size < sizeof(input->data_size)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
-
-    if (args_size != (sizeof(input.data_size) + input.data_size)) {
+    if (args_size != (sizeof(input->data_size) + input->data_size)) {
         return E_BAD_ARGSIZE;
     }
 
-    if (input.data_size > BUF_MAX) {
+    if (input->data_size > BUF_MAX) {
         return E_BAD_SIZE;
     }
 
@@ -164,7 +149,7 @@ enum Status SDCARD_write(
         FRESULT res;
         uint16_t written;
     } output = {0};
-    output.res = f_write(g_file_p, input.data, input.data_size, &output.written);
+    output.res = f_write(g_file_p, input->data, input->data_size, &output.written);
     *rets = args;
     *rets_size = sizeof(output);
     memcpy(*rets, &output, *rets_size);

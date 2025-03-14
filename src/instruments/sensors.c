@@ -59,30 +59,26 @@ enum Status SENSORS_start_counter(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint8_t channel;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint8_t channel;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
-
-    input.buffer = args;
 
     TMR2_Initialize();
     // Select external source as clock source
     T2CONbits.TCS = 1;
 
-    if (input.channel == 4) {
+    if (input->channel == 4) {
         CVR_SetupComparator();
         CMP4_SetupComparator();
     }
 
     // Map incoming pin to TMR2
-    RPINR3bits.T2CKR = PIN_MANAGER_DIGITAL_PINS[input.channel];
+    RPINR3bits.T2CKR = PIN_MANAGER_DIGITAL_PINS[input->channel];
     TMR2_Start();
 
     return E_OK;

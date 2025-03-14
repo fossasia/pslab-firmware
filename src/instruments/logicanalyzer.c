@@ -1,4 +1,6 @@
+#include <stddef.h>
 #include <stdint.h>
+
 #include "../helpers/interval.h"
 #include "../registers/comparators/ic1.h"
 #include "../registers/comparators/ic2.h"
@@ -27,34 +29,30 @@ enum Status LOGICANALYZER_one_channel(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t points;
-            uint8_t trigger;
-            uint8_t config;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint16_t points;
+        uint8_t trigger;
+        uint8_t config;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-    input.buffer = args;
-
-    if (input.trigger & 1) {
-        INTCON2bits.INT2EP = input.trigger & 2 ? FALLING_EDGE : RISING_EDGE;
-        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(input.trigger >> 4) & 0xF];
+    if (input->trigger & 1) {
+        INTCON2bits.INT2EP = input->trigger & 2 ? FALLING_EDGE : RISING_EDGE;
+        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(input->trigger >> 4) & 0xF];
     }
 
     INTERVAL_CaptureOne(
-        input.points,
-        (input.config >> 4) & 0xF,
-        input.config & 0xF,
+        input->points,
+        (input->config >> 4) & 0xF,
+        input->config & 0xF,
         0
     );
 
-    if (input.trigger & 1) {
+    if (input->trigger & 1) {
         INTERRUPT_ClearExternalInterrupt2Flag();
         INTERRUPT_EnableExternalInterrupt2();
     } else {
@@ -72,38 +70,34 @@ enum Status LOGICANALYZER_one_channel_alt(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t points;
-            uint8_t config;
-            uint8_t trigger;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint16_t points;
+        uint8_t config;
+        uint8_t trigger;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
-
-    input.buffer = args;
 
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
     IC4_InterruptDisable();
 
-    if (input.trigger & 7) {
+    if (input->trigger & 7) {
         INTERVAL_CaptureOne(
-            input.points,
-            (input.config >> 4) & 0xF,
-            input.config & 0xF,
-            input.trigger
+            input->points,
+            (input->config >> 4) & 0xF,
+            input->config & 0xF,
+            input->trigger
         );
         IC4_InterruptEnable();
     } else {
         INTERVAL_CaptureOne(
-            input.points,
-            (input.config >> 4) & 0xF,
-            input.config & 0xF,
+            input->points,
+            (input->config >> 4) & 0xF,
+            input->config & 0xF,
             0
         );
         SetDefaultDIGITAL_STATES();
@@ -120,30 +114,24 @@ enum Status LOGICANALYZER_two_channel(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t points;
-            uint8_t trigger;
-            uint8_t config;
-            uint8_t channel;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint16_t points;
+        uint8_t trigger;
+        uint8_t config;
+        uint8_t channel;
+        uint8_t _pad[1];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+
+    if (input->trigger & 1) {
+        INTCON2bits.INT2EP = input->trigger & 2 ? FALLING_EDGE : RISING_EDGE;
+        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(input->trigger >> 4) & 0xF];
     }
 
-    input.buffer = args;
+    INTERVAL_CaptureTwo(input->points, input->config, input->channel);
 
-    if (input.trigger & 1) {
-        INTCON2bits.INT2EP = input.trigger & 2 ? FALLING_EDGE : RISING_EDGE;
-        RPINR1bits.INT2R = PIN_MANAGER_DIGITAL_PINS[(input.trigger >> 4) & 0xF];
-    }
-
-    INTERVAL_CaptureTwo(input.points, input.config, input.channel);
-
-    if (input.trigger & 1) {
+    if (input->trigger & 1) {
         INTERRUPT_ClearExternalInterrupt2Flag();
         INTERRUPT_EnableExternalInterrupt2();
     } else {
@@ -165,30 +153,24 @@ enum Status LOGICANALYZER_three_channel(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t points;
-            uint8_t config;
-            uint8_t trigger;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint16_t points;
+        uint8_t config;
+        uint8_t trigger;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
-    }
-
-    input.buffer = args;
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
 
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
     IC4_InterruptDisable();
 
-    if (input.trigger & 7) {
-        INTERVAL_CaptureThree(input.points, input.config & 0x0FFF, input.trigger);
+    if (input->trigger & 7) {
+        INTERVAL_CaptureThree(input->points, input->config & 0x0FFF, input->trigger);
         IC4_InterruptEnable();
     } else {
-        INTERVAL_CaptureThree(input.points, input.config & 0x0FFF, 0);
+        INTERVAL_CaptureThree(input->points, input->config & 0x0FFF, 0);
         SetDefaultDIGITAL_STATES();
         IC1_ManualTriggerSet();
         IC2_ManualTriggerSet();
@@ -209,42 +191,36 @@ enum Status LOGICANALYZER_four_channel(
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    union Input {
-        struct {
-            uint16_t points;
-            uint16_t mode;
-            uint8_t prescaler;
-            uint8_t trigger;
-        };
-        uint8_t const *buffer;
-    } input = {{0}};
+    struct Input {
+        uint16_t points;
+        uint16_t mode;
+        uint8_t prescaler;
+        uint8_t trigger;
+        uint8_t _pad[0];
+    } *input = (struct Input *)args;
 
-    if (args_size != sizeof(input)) {
-        return E_BAD_ARGSIZE;
-    }
-
-    input.buffer = args;
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
 
     SetDIGITAL_STATES(0);
-    INTERVAL_CaptureFour(input.points, input.mode, input.prescaler);
+    INTERVAL_CaptureFour(input->points, input->mode, input->prescaler);
 
-    if (input.trigger & 1) {
-        LA_TRIGGER_STATE = input.trigger & 2 ? RISING_EDGE : FALLING_EDGE;
+    if (input->trigger & 1) {
+        LA_TRIGGER_STATE = input->trigger & 2 ? RISING_EDGE : FALLING_EDGE;
         LA_TRIGGER_CHANNEL = 0;
 
-        if ((input.trigger >> 2) & 1) {
+        if ((input->trigger >> 2) & 1) {
             INTERRUPT_LA1PinChange(true);
             LA_TRIGGER_CHANNEL |= 1;
         }
-        if ((input.trigger >> 3) & 1) {
+        if ((input->trigger >> 3) & 1) {
             INTERRUPT_LA2PinChange(true);
             LA_TRIGGER_CHANNEL |= 2;
         }
-        if ((input.trigger >> 4) & 1) {
+        if ((input->trigger >> 4) & 1) {
             INTERRUPT_LA3PinChange(true);
             LA_TRIGGER_CHANNEL |= 4;
         }
-        if ((input.trigger >> 5) & 1) {
+        if ((input->trigger >> 5) & 1) {
             INTERRUPT_LA4PinChange(true);
             LA_TRIGGER_CHANNEL |= 8;
         }
