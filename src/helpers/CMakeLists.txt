@@ -1,4 +1,5 @@
 target_sources(pslab-firmware.elf PRIVATE
+  blink.c
   buffer.c
   delay.c
   device.c
