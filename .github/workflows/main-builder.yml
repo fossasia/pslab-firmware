@@ -31,7 +31,7 @@ jobs:
               ref: ${{ matrix.branch }}
               path: ${{ matrix.branch }}
 
-          - name: Cache XC-16 Compiler
+          - name: Cache Compilers
             id: cache-compiler
             uses: actions/cache@v3
             with:
@@ -64,9 +64,41 @@ jobs:
               cd build_${{ matrix.target }}
               cmake .. ${{ matrix.cmake_flags}}
               make
+          
+          - name: Build bootloader
+            run: |
+              git clone https://github.com/fossasia/pslab-bootloader.git pslab-bootloader
+              cd pslab-bootloader
+              git submodule init
+              git submodule update
+              mkdir build
+              cd build
+              cmake ..
+              make
 
+          - name: Download XC8 Compiler
+            if: steps.cache-compiler.outputs.cache-hit != 'true'
+            run: |
+              mkdir -p ~/.cache/mplab-xc
+              cd ~/.cache/mplab-xc
+              wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc8-v3.00-full-install-linux-x64-installer.run
+              chmod +x xc8-v3.00-full-install-linux-x64-installer.run
+
+          - name: Install XC8 Compiler
+            run: |
+              cd ~/.cache/mplab-xc
+              sudo ./xc8-v3.00-full-install-linux-x64-installer.run --mode unattended --netservername dontknow
+              echo "/opt/microchip/xc8/v3.00/pic/bin" >> $GITHUB_PATH
+
+          - name: Combining hex files
+            run: |
+              mv ${{ matrix.branch }}/build_${{ matrix.target }}/pslab-firmware.hex pslab-bootloader/build/pslab-firmware.hex
+              cd pslab-bootloader
+              chmod +x combine_hex.sh
+              ./combine_hex.sh  
+          
           - name: Publish build files
             uses: actions/upload-artifact@v4
             with:
               name: pslab-firmware_${{ matrix.target}}
-              path: ${{ matrix.branch }}/build_${{ matrix.target }}/pslab-firmware.hex
+              path: pslab-bootloader/build/combined.hex
