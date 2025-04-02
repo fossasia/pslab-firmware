@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -258,7 +257,7 @@ enum Status INTERVAL_fetch_buffer(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    assert(g_buffer || g_n_buffer_items == 0);
+    if (!g_buffer) { return E_RESOURCE_NOT_INITIALIZED; }
     *rets = (uint8_t *)g_buffer;
     *rets_size = g_n_buffer_items;
     g_n_buffer_items = 0;

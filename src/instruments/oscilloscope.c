@@ -1,4 +1,3 @@
-#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -38,8 +37,6 @@ enum Status OSCILLOSCOPE_fetch_samples(
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
-
-    assert(g_buffer || g_n_samples == 0);
 
     *rets = (uint8_t *)&g_buffer;
     *rets_size = g_n_samples * sizeof(*g_buffer);

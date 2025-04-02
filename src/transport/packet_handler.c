@@ -140,16 +140,15 @@ static enum Status receive(
         goto cleanup;
     }
 
+    *payload_size = header.payload_size;
     // malloc(0) is implementation defined. Explicitly make a null pointer
     // instead.
-    *payload = header.payload_size ? malloc(header.payload_size) : NULL;
+    *payload = header.payload_size ? malloc(*payload_size) : NULL;
 
-    if (header.payload_size && !*payload) {
+    if (*payload_size && !*payload) {
         status = E_MEMORY_INSUFFICIENT;
         goto cleanup;
     }
-
-    *payload_size = header.payload_size;
 
     if ( !(*cmdfunc = COMMAND_get_func(header.command)) ) {
         status = E_BAD_COMMAND;
