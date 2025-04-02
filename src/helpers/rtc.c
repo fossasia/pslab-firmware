@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <time.h>
 
 #include "../bus/i2c/i2c.h"
@@ -72,7 +73,7 @@ enum Status RTC_set_time(time_t const *const unix_timestamp) {
 }
 
 enum Status RTC_cmd_set_time(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -83,7 +84,7 @@ enum Status RTC_cmd_set_time(
         return E_BAD_ARGSIZE;
     }
 
-    unix_timestamp = *(time_t *)args;
+    unix_timestamp = **(time_t **)args;
     enum Status res = RTC_set_time(&unix_timestamp);
     return res;
 }
@@ -116,15 +117,18 @@ enum Status RTC_get_time(time_t *const unix_timestamp) {
 }
 
 enum Status RTC_cmd_get_time(
-    uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
     time_t unix_timestamp = 0;
+    *rets = malloc(sizeof(unix_timestamp));
+
+    if (!*rets) { return E_MEMORY_INSUFFICIENT; }
+
     enum Status status = RTC_get_time(&unix_timestamp);
-    *(time_t *)args = unix_timestamp;
-    *rets = args;
+    **rets = unix_timestamp;
     *rets_size = sizeof(unix_timestamp);
     return status;
 }

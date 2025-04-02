@@ -43,7 +43,7 @@
      * @return SUCCESS
      */
     enum Status SENSORS_start_counter(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -60,7 +60,7 @@
      * @return SUCCESS
      */
     enum Status SENSORS_get_counter(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size

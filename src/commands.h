@@ -46,6 +46,8 @@ enum Status {
     // Errors related to resource acquisition.
     E_RESOURCE_NOT_INITIALIZED,
     E_RESOURCE_BUSY,
+    // Errors related to memory.
+    E_MEMORY_INSUFFICIENT,
     // Errors related to user input.
     E_BAD_COMMAND,
     E_BAD_SIZE,
@@ -62,27 +64,39 @@ enum Status {
 };
 
 /**
- * @brief Command functions provide the public-facing API available to hosts.
+ * @brief Command functions provide the remote API available to connected hosts.
  *
- * @param[in] uint8_t args[]
- *      Byte-array containing function arguments. The function may parse its
- *      arguments from the array. The function may reuse this array to output
- *      up to `arg_size` bytes.
- * @param uint16_t args_size
- *      Number of bytes in `args`.
- * @param[out] uint8_t **rets
- *      Pointer to an unallocated byte-array containing function return
- *      values. The function does not need to set this if has nothing to
- *      return. The function may set `*rets = args` if
- *      `*rets_size <= args_size`.
- * @param[out] uint16_t *rets_size
- *      Pointer to uint16_t holding the number of bytes in `*rets`. The
- *      function does not need to set this if it has nothing to return.
+ * Command functions typically wrap a corresponding function from the C API.
+ *
+ * @param[in] args
+ *   Pointer to a byte-array containing the function arguments.
+ *   - The array's size is provided by @c args_size.
+ *   - On call, *args is guaranteed to point to valid, malloc'd memory if
+ *     @c args_size is non-zero.
+ *   - On call, *args is guaranteed to be a null pointer if @c args_size is
+ *     zero.
+ *   - On return, the caller will call free on *args.
+ *   - The function may claim ownership of the input data by setting
+ *     *args = NULL, thereby preventing the caller from deallocating it.
+ *
+ * @param[in] args_size
+ *   Number of bytes in @c args.
+ *
+ * @param[out] rets
+ *   Pointer to a byte-array that will hold the function's return values.
+ *   - On call, *rets is guaranteed to be a null pointer.
+ *   - On return, ownership of output data passes to caller.
+ *
+ * @param[out] rets_size
+ *   Pointer to a uint16_t that will be set to the number of bytes in the
+ *   @c rets array.
+ *   - On call, the pointed to value is guaranteed to be zero.
+ *
  * @return enum Status
- *      Exit code.
+ *   Exit code indicating the success or failure of the function.
  */
 typedef enum Status (*CmdFunc)(
-    uint8_t args[*],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size

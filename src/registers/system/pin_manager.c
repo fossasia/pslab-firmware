@@ -1,5 +1,6 @@
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 #include <xc.h>
 
@@ -134,7 +135,7 @@ void PIN_MANAGER_Initialize(void) {
 }
 
 enum Status PIN_MANAGER_set_sq_pin_state(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -142,10 +143,12 @@ enum Status PIN_MANAGER_set_sq_pin_state(
     struct Input {
         uint8_t sq_pin_state;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {return E_BAD_ARGSIZE;}
-
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+    input = *(struct Input **)args;
 
     if (input->sq_pin_state & 0b00010000) {
         RPOR5bits.RP54R = RPN_DEFAULT_PORT; // SQ1: C6
@@ -169,14 +172,15 @@ enum Status PIN_MANAGER_set_sq_pin_state(
 }
 
 enum Status PIN_MANAGER_get_la_pin_state(
-    uint8_t *const args,
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    uint8_t const la_pin_state = (PORTB >> 10) & 0xF;
-    *rets = args;
+    uint8_t la_pin_state = (PORTB >> 10) & 0xF;
+    *rets = malloc(sizeof(la_pin_state));
+    if (!*rets) { return E_MEMORY_INSUFFICIENT; }
+    **rets = la_pin_state;
     *rets_size = sizeof(la_pin_state);
-    memcpy(*rets, &la_pin_state, *rets_size);
     return E_OK;
 }

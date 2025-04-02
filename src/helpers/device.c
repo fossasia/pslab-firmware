@@ -28,7 +28,7 @@ static union {
 }};
 
 enum Status DEVICE_get_hw_version(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -39,7 +39,7 @@ enum Status DEVICE_get_hw_version(
 }
 
 enum Status DEVICE_get_fw_version(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -50,7 +50,7 @@ enum Status DEVICE_get_fw_version(
 }
 
 __attribute__((noreturn)) enum Status DEVICE_reset(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -60,7 +60,7 @@ __attribute__((noreturn)) enum Status DEVICE_reset(
 }
 
 enum Status DEVICE_read_register(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -71,27 +71,29 @@ enum Status DEVICE_read_register(
         return E_BAD_ARGSIZE;
     }
 
-    address = *(uint16_t volatile *const *const)args;
-   *rets = (uint8_t *const)address;
+    address = *(uint16_t volatile **)args;
+   *rets = (uint8_t *)address;
    *rets_size = sizeof(*address);
     return E_OK;
 }
 
 enum Status DEVICE_write_register(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    uint16_t volatile *address = NULL;
-    uint16_t data = 0;
+    struct Input {
+        uint16_t volatile *address;
+        uint16_t data;
+        uint8_t _pad[0];
+    } *input = NULL;
 
-    if (args_size != (sizeof(address) + sizeof(data))) {
+    if (args_size != (sizeof(struct Input) + sizeof(input->_pad))) {
         return E_BAD_ARGSIZE;
     }
 
-    address = *(uint16_t volatile *const *const)args;
-    data = *(uint16_t const *const)(args + sizeof(address));
-    *address = data;
+    input = *(struct Input **)args;
+    *input->address = input->data;
     return E_OK;
 }

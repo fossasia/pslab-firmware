@@ -239,9 +239,9 @@ enum Status UART_read(
     uint16_t const buffer_size,
     uint16_t *const num_bytes_read
 ) {
-    // If either buffer is NULL or size is zero, this is a NOP.
-    if (!buffer) {return E_OK;}
-    if (!buffer_size) {return E_OK;}
+    // If size is zero, this is a NOP.
+    if (!buffer_size) { return E_OK; }
+    if (!buffer) { return E_FAILED; }
 
     sUartRegs const regs = get_registers(select);
     uint32_t timeout = 0;

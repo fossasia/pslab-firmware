@@ -24,7 +24,7 @@ void SetLA_TRIGGER_STATE(uint8_t V) { LA_TRIGGER_STATE = V; }
 uint8_t GetLA_TRIGGER_STATE(void) { return LA_TRIGGER_STATE; }
 
 enum Status LOGICANALYZER_one_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -34,11 +34,13 @@ enum Status LOGICANALYZER_one_channel(
         uint8_t trigger;
         uint8_t config;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
+
+    input = *(struct Input **)args;
 
     if (input->trigger & 1) {
         INTCON2bits.INT2EP = input->trigger & 2 ? FALLING_EDGE : RISING_EDGE;
@@ -65,7 +67,7 @@ enum Status LOGICANALYZER_one_channel(
 }
 
 enum Status LOGICANALYZER_one_channel_alt(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -75,11 +77,13 @@ enum Status LOGICANALYZER_one_channel_alt(
         uint8_t config;
         uint8_t trigger;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
+
+    input = *(struct Input **)args;
 
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
@@ -109,7 +113,7 @@ enum Status LOGICANALYZER_one_channel_alt(
 }
 
 enum Status LOGICANALYZER_two_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -120,9 +124,13 @@ enum Status LOGICANALYZER_two_channel(
         uint8_t config;
         uint8_t channel;
         uint8_t _pad[1];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input = *(struct Input **)args;
 
     if (input->trigger & 1) {
         INTCON2bits.INT2EP = input->trigger & 2 ? FALLING_EDGE : RISING_EDGE;
@@ -148,7 +156,7 @@ enum Status LOGICANALYZER_two_channel(
 }
 
 enum Status LOGICANALYZER_three_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -158,9 +166,13 @@ enum Status LOGICANALYZER_three_channel(
         uint8_t config;
         uint8_t trigger;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input = *(struct Input **)args;
 
     IC4_InterruptHighPriority();
     IC4_InterruptFlagClear();
@@ -186,7 +198,7 @@ enum Status LOGICANALYZER_three_channel(
 }
 
 enum Status LOGICANALYZER_four_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -197,9 +209,13 @@ enum Status LOGICANALYZER_four_channel(
         uint8_t prescaler;
         uint8_t trigger;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input = *(struct Input **)args;
 
     SetDIGITAL_STATES(0);
     INTERVAL_CaptureFour(input->points, input->mode, input->prescaler);
@@ -237,7 +253,7 @@ enum Status LOGICANALYZER_four_channel(
 }
 
 enum Status LOGICANALYZER_stop(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size

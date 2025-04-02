@@ -1,3 +1,4 @@
+#include <assert.h>
 #include <stdbool.h>
 #include <stdint.h>
 #include <string.h>
@@ -8,42 +9,50 @@
 #include "../registers/system/pin_manager.h"
 #include "../registers/timers/tmr5.h"
 #include "../bus/spi/spi.h"
-#include "../helpers/buffer.h"
 #include "../commands.h"
+
+// Sample buffer.
+static uint16_t volatile *g_buffer = NULL;
+static uint16_t g_n_samples = 0;
 
 /* Static function prototypes */
 static enum Status capture(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 );
 static void ResetTrigger(void);
 static void SetTimeGap(void);
 
 enum Status OSCILLOSCOPE_fetch_samples(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *const rets_size
 ) {
     struct Input {
-        uint16_t samples;
         uint8_t _pad[0];
     } *input = (struct Input *)args;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
 
-    *rets = (uint8_t *)&BUFFER_sample_buffer;
-    *rets_size = input->samples * sizeof(*BUFFER_sample_buffer);
+    assert(g_buffer || g_n_samples == 0);
+
+    *rets = (uint8_t *)&g_buffer;
+    *rets_size = g_n_samples * sizeof(*g_buffer);
+    // Transport layer frees buffer after transmission is complete.
+    g_n_samples = 0;
 
     return E_OK;
 }
 
 enum Status OSCILLOSCOPE_capture_one(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     SetCHANNELS(0); // Capture one channel.
@@ -51,9 +60,9 @@ enum Status OSCILLOSCOPE_capture_one(
 }
 
 enum Status OSCILLOSCOPE_capture_two(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     SetCHANNELS(1); // Capture two channels.
@@ -61,9 +70,9 @@ enum Status OSCILLOSCOPE_capture_two(
 }
 
 enum Status OSCILLOSCOPE_capture_three(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     SetCHANNELS(2); // Capture four channels, but ignore the fourth.
@@ -71,9 +80,9 @@ enum Status OSCILLOSCOPE_capture_three(
 }
 
 enum Status OSCILLOSCOPE_capture_four(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     SetCHANNELS(3);  // Capture four channels.
@@ -81,9 +90,9 @@ enum Status OSCILLOSCOPE_capture_four(
 }
 
 static enum Status capture(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     struct Input {
@@ -91,9 +100,22 @@ static enum Status capture(
         uint16_t samples;
         uint16_t delay;
         uint8_t _pad[1];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input = *(struct Input **)args;
+
+    if (!input->samples) { return E_OK; }
+    if (g_buffer) { return E_RESOURCE_BUSY; }
+
+    if ( !(g_buffer = malloc((input->samples) * sizeof(*g_buffer))) ) {
+        return E_MEMORY_INSUFFICIENT;
+    }
+
+    g_n_samples = input->samples;
 
     SetSAMPLES_REQUESTED(input->samples);
     SetDELAY(input->delay); // Wait DELAY / 8 us between samples.
@@ -118,12 +140,11 @@ static enum Status capture(
     }
 
     for (int i = 0; i <= GetCHANNELS(); ++i) {
-        SetBUFFER_IDX(i, &BUFFER_sample_buffer[i * GetSAMPLES_REQUESTED()]);
+        SetBUFFER_IDX(i, &g_buffer[i * input->samples]);
     }
 
     SetCONVERSION_DONE(0);
     SetSAMPLES_CAPTURED(0);
-    SetBUFFER_IDX(0, &BUFFER_sample_buffer[0]);
     SetTimeGap();
     ADC1_InterruptFlagClear();
     ADC1_InterruptEnable();
@@ -133,9 +154,9 @@ static enum Status capture(
 }
 
 enum Status OSCILLOSCOPE_capture_dma(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     struct Input {
@@ -143,9 +164,20 @@ enum Status OSCILLOSCOPE_capture_dma(
         uint16_t samples;
         uint16_t delay;
         uint8_t _pad[1];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
+
+    input = *(struct Input **)args;
+
+    if (!input->samples) { return E_OK; }
+    if (g_buffer) { return E_RESOURCE_BUSY; }
+
+    if ( !(g_buffer = malloc((input->samples) * sizeof(*g_buffer))) ) {
+        return E_MEMORY_INSUFFICIENT;
+    }
 
     SetSAMPLES_REQUESTED(input->samples);
     SetDELAY(input->delay);  // Wait DELAY / 8 us between samples.
@@ -156,7 +188,7 @@ enum Status OSCILLOSCOPE_capture_dma(
     SetCHANNELS(0);  // Capture one channel.
     ADC1_SetOperationMode(mode, ch0sa, 0);
 
-    DMA_StartAddressASet(DMA_CHANNEL_0, (uint16_t) &BUFFER_sample_buffer[0]);
+    DMA_StartAddressASet(DMA_CHANNEL_0, (uint16_t) g_buffer);
     DMA_PeripheralAddressSet(DMA_CHANNEL_0, (uint16_t) &ADC1BUF0);
     DMA_TransferCountSet(DMA_CHANNEL_0, GetSAMPLES_REQUESTED() - 1);
     DMA_FlagInterruptClear(DMA_CHANNEL_0);
@@ -188,9 +220,9 @@ static void SetTimeGap(void) {
 }
 
 enum Status OSCILLOSCOPE_get_capture_status(
-    uint8_t args[],
+    __attribute__((unused)) uint8_t **args,
     __attribute__((unused)) uint16_t const args_size,
-    uint8_t *rets[],
+    uint8_t **rets,
     uint16_t *rets_size
 ) {
     struct Output {
@@ -198,30 +230,34 @@ enum Status OSCILLOSCOPE_get_capture_status(
         uint16_t progress;
         uint8_t _pad[1];
     } output = {0};
+    *rets_size = sizeof(output) - sizeof(output._pad);
 
     output.done = GetCONVERSION_DONE();
     output.progress = GetSAMPLES_CAPTURED();
-    *rets = args;
-    *rets_size = sizeof(output) - sizeof(output._pad);
+
+    if ( !(*rets = malloc(*rets_size)) ) { return E_MEMORY_INSUFFICIENT; }
     memcpy(*rets, &output, *rets_size);
 
     return E_OK;
 }
 
 enum Status OSCILLOSCOPE_configure_trigger(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     struct Input {
         uint8_t config;
         uint16_t level;
         uint8_t _pad[1];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
 
+    input = *(struct Input **)args;
     uint8_t channelbits = input->config & 0x0F;
 
     for (int i = 0; i < MAX_CHANNELS; i++) {
@@ -250,20 +286,22 @@ enum Gain {
 };
 
 enum Status OSCILLOSCOPE_set_pga_gain(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
-    __attribute__((unused)) uint8_t *rets[],
+    __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
 ) {
     struct Input {
         uint8_t pin;
         uint8_t gain;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
 
-
+    input = *(struct Input **)args;
     enum SPI_CS channel;
 
     switch (input->pin) {

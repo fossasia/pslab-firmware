@@ -1,5 +1,4 @@
 target_sources(pslab-firmware.elf PRIVATE
-  buffer.c
   delay.c
   device.c
   interval.c

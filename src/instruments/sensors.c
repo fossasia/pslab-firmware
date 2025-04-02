@@ -54,7 +54,7 @@ void SENSORS_ConfigureInterval(uint8_t pin1, uint8_t pin2,
 }
 
 enum Status SENSORS_start_counter(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -62,12 +62,13 @@ enum Status SENSORS_start_counter(
     struct Input {
         uint8_t channel;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
+    input = *(struct Input **)args;
     TMR2_Initialize();
     // Select external source as clock source
     T2CONbits.TCS = 1;
@@ -85,15 +86,14 @@ enum Status SENSORS_start_counter(
 }
 
 enum Status SENSORS_get_counter(
-    uint8_t *const args,
+    __attribute__ ((unused)) uint8_t *const args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    // Fetch timer 2 value and send it over
     uint16_t const count = TMR2_Counter16BitGet();
-    *rets = args;
+    if ( !(*rets = malloc(sizeof(count))) )  { return E_MEMORY_INSUFFICIENT; }
+    **rets = count;
     *rets_size = sizeof(count);
-    memcpy(*rets, &count, *rets_size);
     return E_OK;
 }

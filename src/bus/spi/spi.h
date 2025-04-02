@@ -122,49 +122,49 @@ enum Status SPI_set_word_size(enum SPI_WordSize wsize);
 enum Status SPI_exchange(uint8_t indata[], uint8_t outdata[], uint16_t size);
 
 enum Status SPI_cmd_open(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_close(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_set_mode(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_set_clock(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_set_word_size(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_read(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_write(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
 );
 enum Status SPI_cmd_exchange(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size

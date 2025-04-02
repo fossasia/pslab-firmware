@@ -10,7 +10,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status MULTIMETER_get_voltage(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -21,7 +21,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status MULTIMETER_get_voltage_summed(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -32,7 +32,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status MULTIMETER_charge_capacitor(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -53,7 +53,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status MULTIMETER_get_cap_range(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -64,7 +64,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status MULTIMETER_get_capacitance(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -93,7 +93,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status MULTIMETER_get_ctmu_volts(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size

@@ -133,7 +133,7 @@ static enum Channel v5_to_v6_channel(enum Channel const channel)
 /************************/
 
 enum Status POWER_SOURCE_SetPower(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
@@ -143,13 +143,13 @@ enum Status POWER_SOURCE_SetPower(
         uint16_t setpoint;
         uint8_t _pad[1];
         uint8_t const *buffer;
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-
+    input = *(struct Input **)args;
     enum Channel const channel = v5_to_v6_channel(input->channel & 0x03);
     uint16_t const setpoint = input->setpoint & 0xFFF;
 
@@ -179,7 +179,7 @@ enum Status POWER_SOURCE_SetPower(
 #else // V5_HW
 
 enum Status POWER_SOURCE_SetPower(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
@@ -188,13 +188,13 @@ enum Status POWER_SOURCE_SetPower(
         uint8_t channel;
         uint16_t setpoint;
         uint8_t _pad[1];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-
+    input = *(struct Input **)args;
     enum Channel const channel =  input->channel & 0x03;
     uint16_t const setpoint = input->setpoint & 0xFFF;
 

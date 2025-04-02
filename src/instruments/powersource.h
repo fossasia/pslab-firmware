@@ -34,7 +34,7 @@ extern "C" {
      * @return SUCCESS, FAILED
      */
     enum Status POWER_SOURCE_SetPower(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size

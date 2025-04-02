@@ -81,7 +81,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status CTMU_start(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size
@@ -100,7 +100,7 @@ extern "C" {
      * @return SUCCESS
      */
     enum Status CTMU_stop(
-        uint8_t args[],
+        uint8_t **args,
         uint16_t args_size,
         uint8_t **rets,
         uint16_t *rets_size

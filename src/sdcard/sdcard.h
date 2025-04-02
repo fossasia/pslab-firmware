@@ -12,7 +12,7 @@
   * @return enum Status status
   */
 enum Status SDCARD_mount(
-   uint8_t args[],
+   uint8_t **args,
    uint16_t args_size,
    uint8_t **rets,
    uint16_t *rets_size
@@ -25,7 +25,7 @@ enum Status SDCARD_mount(
   * @return enum Status status
  */
 enum Status SDCARD_unmount(
-   uint8_t args[],
+   uint8_t **args,
    uint16_t args_size,
    uint8_t **rets,
    uint16_t *rets_size
@@ -44,7 +44,7 @@ enum Status SDCARD_unmount(
  * @return enum Status status
  */
 enum Status SDCARD_stat(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -70,7 +70,7 @@ enum Status SDCARD_stat(
  * @return enum Status status
  */
 enum Status SDCARD_open(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -83,7 +83,7 @@ enum Status SDCARD_open(
  * @return enum Status status
  */
 enum Status SDCARD_close(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -104,7 +104,7 @@ enum Status SDCARD_close(
  * @return enum Status status
  */
 enum Status SDCARD_write(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -125,7 +125,7 @@ enum Status SDCARD_write(
  * @return enum Status status
  */
 enum Status SDCARD_read(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size

@@ -745,7 +745,7 @@ uint8_t I2C_Receive(I2C_RESPONSE r) {
 
 
 enum Status I2C_command_start(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -756,13 +756,13 @@ enum Status I2C_command_start(
         return E_BAD_ARGSIZE;
     }
 
-    address = *args;
+    address = **args;
 
     I2C_InitializeIfNot(I2C_GetBaudRate(), I2C_DISABLE_INTERRUPTS);
     I2C_StartSignal();
     I2C_Transmit(address);
 
-    *rets = args;
+    *rets = *args;
     (*rets)[0] = (uint8_t)I2C2STATbits.ACKSTAT;
     *rets_size = 1;
 
@@ -770,7 +770,7 @@ enum Status I2C_command_start(
 }
 
 enum Status I2C_command_stop(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -780,7 +780,7 @@ enum Status I2C_command_stop(
 }
 
 enum Status I2C_command_wait(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -790,18 +790,21 @@ enum Status I2C_command_wait(
 }
 
 enum Status I2C_command_send(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    if (args_size != 1) {
+    uint8_t data = 0;
+
+    if (args_size != sizeof(data)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint8_t data = *args;
+    data = **args;
     I2C_Transmit(data);
-    **rets = (uint8_t)I2C2STATbits.ACKSTAT;
+    *rets = *args;
+    (*rets)[0] = (uint8_t)I2C2STATbits.ACKSTAT;
     *rets_size = 1;
 
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
@@ -811,35 +814,40 @@ enum Status I2C_command_send(
 }
 
 enum Status I2C_command_send_burst(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    if (args_size != 1) {
+    uint8_t data = 0;
+
+    if (args_size != sizeof(data)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint8_t const data = *args;
+    data = **args;
     I2C_Transmit(data);
 
     return E_OK;
 }
 
 enum Status I2C_command_restart(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    if (args_size != 1) {
+    uint8_t address = 0;
+
+    if (args_size != sizeof(address)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint8_t const address = *args;
+    address = **args;
     I2C_RestartSignal();
     I2C_Transmit(address);
-    **rets = (uint8_t)I2C2STATbits.ACKSTAT;
+    *rets = *args;
+    (*rets)[0] = (uint8_t)I2C2STATbits.ACKSTAT;
     *rets_size = 1;
 
     if (I2C_ACKNOWLEDGE_STATUS_BIT && I2C2STATbits.BCL) {
@@ -850,7 +858,7 @@ enum Status I2C_command_restart(
 }
 
 enum Status I2C_command_read_more(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -862,7 +870,7 @@ enum Status I2C_command_read_more(
 }
 
 enum Status I2C_command_read_end(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -874,22 +882,24 @@ enum Status I2C_command_read_end(
 }
 
 enum Status I2C_command_config(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    if (args_size != 2) {
+    uint16_t baudrate = BAUD1000000;
+
+    if (args_size != sizeof(baudrate)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint16_t const baud_rate = *(uint16_t const *const)args;
-    I2C_InitializeIfNot(baud_rate, I2C_DISABLE_INTERRUPTS);
+    baudrate = **(uint16_t **)args;
+    I2C_InitializeIfNot(baudrate, I2C_DISABLE_INTERRUPTS);
     return E_OK;
 }
 
 enum Status I2C_command_status(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -900,35 +910,38 @@ enum Status I2C_command_status(
 }
 
 enum Status I2C_command_read_bulk(
-    uint8_t *const args,
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    if (args_size != 3) {
+    struct Input {
+        uint8_t device;
+        uint8_t address;
+        uint8_t count;
+        uint8_t _pad[0];
+    } *input = NULL;
+
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint8_t const device = args[0];
-    uint8_t const address = args[1];
-    uint8_t count = args[2];
+    input = (struct Input *)args;
 
-    if (!count) {
-        return E_OK;
-    }
+    if (!input->count) { return E_OK; }
 
     // count is uint8_t and will always fit in payload buffer.
 
     I2C_StartSignal();
-    I2C_Transmit(device << 1);
-    I2C_Transmit(address);
+    I2C_Transmit(input->device << 1);
+    I2C_Transmit(input->address);
     I2C_RestartSignal();
-    I2C_Transmit((device << 1) | 1);
+    I2C_Transmit((input->device << 1) | 1);
 
-    *rets = args;  // Write output to payload buffer.
-    *rets_size = count;
+    *rets = *args;  // Write output to payload buffer.
+    *rets_size = input->count;
 
-    while (--count) {
+    while (--input->count) {
         **rets++ = (I2C_Receive(I2C_RESPONSE_ACKNOWLEDGE));
     }
     **rets = I2C_Receive(I2C_RESPONSE_NEGATIVE_ACKNOWLEDGE);
@@ -938,29 +951,32 @@ enum Status I2C_command_read_bulk(
 }
 
 enum Status I2C_command_write_bulk(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    if (args_size < 2) {
+    struct Input {
+        uint8_t device;
+        uint8_t count;
+        uint8_t data[];
+    } *input = NULL;
+
+    if (args_size < sizeof(struct Input)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint8_t const device = args[0];
-    uint8_t const count = args[1];
+    input = (struct Input *)args;
 
-    if (args_size != 2U + count) {
+    if (args_size != sizeof(struct Input) + input->count) {
         return E_BAD_ARGSIZE;
     }
-
-    uint8_t const *data = args + 2;
 
     I2C_StartSignal();
-    I2C_Transmit(device << 1);
+    I2C_Transmit(input->device << 1);
 
-    for (uint8_t i = 0; i < count; i++) {
-        I2C_Transmit(*data++);
+    for (uint8_t i = 0; i < input->count; i++) {
+        I2C_Transmit(input->data[i]);
     }
 
     I2C_StopSignal();
@@ -968,7 +984,7 @@ enum Status I2C_command_write_bulk(
 }
 
 enum Status I2C_command_enable_smbus(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -983,7 +999,7 @@ enum Status I2C_command_enable_smbus(
 }
 
 enum Status I2C_command_disable_smbus(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -998,7 +1014,7 @@ enum Status I2C_command_disable_smbus(
 }
 
 enum Status I2C_command_init(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -1009,16 +1025,18 @@ enum Status I2C_command_init(
 }
 
 enum Status I2C_command_pull_down(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
-    if (args_size != 2) {
+    uint16_t delay = 0;
+
+    if (args_size != sizeof(delay)) {
         return E_BAD_ARGSIZE;
     }
 
-    uint16_t const delay = *(uint16_t const *const)args;
+    delay = **(uint16_t **)args;
     I2C_SCL_SetDigitalOutput();
     I2C_SCL_SetLow();
     DELAY_us(delay);

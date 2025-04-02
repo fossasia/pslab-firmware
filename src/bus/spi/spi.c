@@ -235,7 +235,7 @@ static enum Status _exchange16(
  * @pre The bus must be enabled with open() before calling this function.
  *
  * Data is exchanged in full duplex, i.e. for every byte written to bus, a
- * byte is also read back. Data is exchanged eiter 8 or 16 bits at a time,
+ * byte is also read back. Data is exchanged either 8 or 16 bits at a time,
  * depending on the value of SPI1CON1bits.MODE16.
  *
  * The parameters `indata` and `outdata` may point to the same memory area.
@@ -283,19 +283,19 @@ enum Status SPI_exchange(
 /*********************/
 
 enum Status SPI_cmd_open(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint8_t cs = SPI_CS_NONE;
     if (args_size != sizeof(cs)) { return E_BAD_ARGSIZE; }
-    cs = *args;
+    cs = **args;
     return SPI_open(cs);
 }
 
 enum Status SPI_cmd_close(
-    __attribute__ ((unused)) uint8_t args[],
+    __attribute__ ((unused)) uint8_t **args,
     __attribute__ ((unused)) uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -304,7 +304,7 @@ enum Status SPI_cmd_close(
 }
 
 enum Status SPI_cmd_set_mode(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -313,55 +313,59 @@ enum Status SPI_cmd_set_mode(
         uint8_t cpol;
         uint8_t cke;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
+    input = (struct Input *)args;
+
     return SPI_set_mode(input->cpol, input->cke);
 }
 
 enum Status SPI_cmd_set_clock(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint16_t sclk = SPI_SCLK_125000;
     if (args_size != sizeof(sclk)) { return E_BAD_ARGSIZE; }
-    sclk = *args;
+    sclk = **args;
     return SPI_set_clock(sclk);
 }
 
 enum Status SPI_cmd_set_word_size(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
 ) {
     uint8_t wsize = SPI_WORD_SIZE_8;
     if (args_size != sizeof(wsize)) { return E_BAD_ARGSIZE; }
-    wsize = *args;
+    wsize = **args;
     return SPI_set_word_size(wsize);
 }
 
 enum Status SPI_cmd_read(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint16_t size = 0;
     if (args_size != sizeof(size)) { return E_BAD_ARGSIZE; }
-    size = *(uint16_t *)args;
-    *rets = args;
+    size = **(uint16_t **)args;
+    if (!size) { return E_OK; }
+    *rets = malloc(size);
+    if (!*rets) { return E_MEMORY_INSUFFICIENT; }
     *rets_size = size;
     return SPI_exchange(NULL, *rets, size);
 }
 
 enum Status SPI_cmd_write(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__ ((unused)) uint8_t **rets,
     __attribute__ ((unused)) uint16_t *rets_size
@@ -375,7 +379,7 @@ enum Status SPI_cmd_write(
 }
 
 enum Status SPI_cmd_exchange(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -385,7 +389,7 @@ enum Status SPI_cmd_exchange(
         uint8_t data[];
     } *input = (struct Input *)args;
     if (args_size < sizeof(struct Input)) { return E_BAD_ARGSIZE; }
-    *rets = args;
+    *rets = *args;
     *rets_size = input->size;
     return SPI_exchange(input->data, *rets, input->size);
 }

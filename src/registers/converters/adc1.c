@@ -67,12 +67,12 @@ void SetBUFFER_IDX(uint8_t idx, volatile uint16_t *V) {
 
 /**
  * @brief Handle trigger and data collection from ADC.
- * 
+ *
  * @description
  * This interrupt handler is called every time the ADC finishes a conversion, if
  * the ADC interrupt is enabled. It checks if the trigger condition is
  * fulfilled, and if so copies ADC values into the buffer.
- * 
+ *
  * @warning
  * If this compilation unit is built with -O0 the ADC1_Interrupt
  * functions won't be inlined. This causes call overhead which
@@ -86,7 +86,7 @@ void __attribute__((interrupt, no_auto_psv)) _AD1Interrupt(void) {
         // triggered, but no need to process further. Hence abort and return.
         return;
     }
-    
+
     LED_Toggle();
 
     if (TRIGGERED) {
@@ -125,13 +125,13 @@ void ADC1_Initialize(void) {
     ADC1_InitializeCON2();
     ADC1_InitializeCON3();
     ADC1_InitializeCON4();
-    // CH0SA AN0; CH0SB AN0; CH0NB AVSS; CH0NA AVSS; 
+    // CH0SA AN0; CH0SB AN0; CH0NB AVSS; CH0NA AVSS;
     AD1CHS0 = 0x00;
-    // CSS26 disabled; CSS25 disabled; CSS24 disabled; CSS31 disabled; CSS30 disabled; 
+    // CSS26 disabled; CSS25 disabled; CSS24 disabled; CSS31 disabled; CSS30 disabled;
     AD1CSSH = 0x00;
-    // CSS2 disabled; CSS1 disabled; CSS0 disabled; CSS8 disabled; CSS7 disabled; CSS6 disabled; CSS5 disabled; CSS4 disabled; CSS3 disabled; 
+    // CSS2 disabled; CSS1 disabled; CSS0 disabled; CSS8 disabled; CSS7 disabled; CSS6 disabled; CSS5 disabled; CSS4 disabled; CSS3 disabled;
     AD1CSSL = 0x00;
-    // CH123SA CH1=OA2/AN0,CH2=AN1,CH3=AN2; CH123SB CH1=OA2/AN0,CH2=AN1,CH3=AN2; CH123NA CH1=VREF-,CH2=VREF-,CH3=VREF-; CH123NB CH1=VREF-,CH2=VREF-,CH3=VREF-; 
+    // CH123SA CH1=OA2/AN0,CH2=AN1,CH3=AN2; CH123SB CH1=OA2/AN0,CH2=AN1,CH3=AN2; CH123NA CH1=VREF-,CH2=VREF-,CH3=VREF-; CH123NB CH1=VREF-,CH2=VREF-,CH3=VREF-;
     AD1CHS123 = 0x00;
 
     ADC1_InterruptDisable();
@@ -143,7 +143,7 @@ void ADC1_InitializeCON1(void) {
     AD1CON1bits.ADON = 0;
     // Continues mode operation in idle mode
     AD1CON1bits.ADSIDL = 0;
-    // DMA buffers are written in Scatter/Gather mode; 
+    // DMA buffers are written in Scatter/Gather mode;
     // the module provides a Scatter/Gather address to the DMA channel, based
     // on the index of the analog input and the size of the DMA buffer.
     AD1CON1bits.ADDMABM = 0;
@@ -199,9 +199,9 @@ void ADC1_InitializeCON4(void) {
 }
 
 void ADC1_SetOperationMode(
-        ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123) { 
+        ADC1_PSLAB_MODES mode, uint8_t channel_0, uint8_t channel_123) {
     if (
-            channel_0 == CH0_CHANNEL_RES || 
+            channel_0 == CH0_CHANNEL_RES ||
             channel_0 == CH0_CHANNEL_CAP) {
         CM4CONbits.CON = 0;
         PMD3bits.CMPMD = 1;

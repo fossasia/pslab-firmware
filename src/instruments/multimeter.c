@@ -1,4 +1,5 @@
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #include "../commands.h"
@@ -100,7 +101,7 @@ uint16_t GetVoltage_Summed(uint8_t channel) {
 }
 
 enum Status MULTIMETER_get_voltage(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -108,11 +109,15 @@ enum Status MULTIMETER_get_voltage(
     struct Input {
         uint8_t channel;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
+
+    input = *(struct Input **)args;
+    uint16_t *result = malloc(sizeof(uint16_t));
+    if (!result) { return E_MEMORY_INSUFFICIENT; }
 
     ADC1_InterruptDisable();
     ADC1_InterruptFlagClear();
@@ -145,16 +150,15 @@ enum Status MULTIMETER_get_voltage(
 
     while (!ADC1_IsConversionComplete());
 
-    uint16_t result = ADC1_ConversionResultGet(channel_CTMU);
-    *rets = args;
-    *rets_size = sizeof(result);
-    memcpy(*rets, &result, *rets_size);
+    *result = ADC1_ConversionResultGet(channel_CTMU);
+    *rets = (uint8_t *)result;
+    *rets_size = sizeof(*result);
 
     return E_OK;
 }
 
 enum Status MULTIMETER_get_voltage_summed(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -162,24 +166,24 @@ enum Status MULTIMETER_get_voltage_summed(
     struct Input {
         uint8_t channel;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
     if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
         return E_BAD_ARGSIZE;
     }
 
-
-
-    uint16_t result = GetVoltage_Summed(input->channel);
-    *rets_size = sizeof(result);
-    *rets = args;
-    memcpy(*rets, &result, *rets_size);
+    input = *(struct Input **)args;
+    uint16_t *result = NULL;
+    if ( !(result = malloc(sizeof(uint16_t))) ) { return E_MEMORY_INSUFFICIENT; }
+    *result = GetVoltage_Summed(input->channel);
+    *rets = (uint8_t *)result;
+    *rets_size = sizeof(*result);
 
     return E_OK;
 }
 
 enum Status MULTIMETER_charge_capacitor(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     __attribute__((unused)) uint8_t **rets,
     __attribute__((unused)) uint16_t *rets_size
@@ -188,16 +192,19 @@ enum Status MULTIMETER_charge_capacitor(
         uint8_t charge;
         uint16_t period;
         uint8_t _pad[1];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
+        return E_BAD_ARGSIZE;
+    }
 
+    input = *(struct Input **)args;
     ChargeCapacitor(input->charge, input->period);
     return E_OK;
 }
 
 enum Status MULTIMETER_get_cap_range(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -205,12 +212,17 @@ enum Status MULTIMETER_get_cap_range(
     struct Input {
         uint16_t charge_time;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {return E_BAD_ARGSIZE;}
+    uint16_t const expected_size = sizeof(struct Input) - sizeof(input->_pad);
+    if (args_size != expected_size) { return E_BAD_ARGSIZE; }
+    input = *(struct Input **)args;
+    uint16_t *result = malloc(sizeof(*result));
+    if ( !result ) { return E_MEMORY_INSUFFICIENT; }
+    *rets = (uint8_t *)result;
+    *rets_size = sizeof(*result);
 
     ChargeCapacitor(CHARGE, 50000);
-
     ADC1_SetOperationMode(ADC1_12BIT_AVERAGING_MODE, CH0_CHANNEL_CAP, 0);
 
     TMR5_Initialize();
@@ -228,16 +240,13 @@ enum Status MULTIMETER_get_cap_range(
     CAP_OUT_SetDigitalInput();
     CAP_OUT_SetLow();
 
-    uint16_t range = GetVoltage_Summed(CH0_CHANNEL_CAP);
-    *rets = args;
-    *rets_size = sizeof(range);
-    memcpy(*rets, &range, *rets_size);
+    *result = GetVoltage_Summed(CH0_CHANNEL_CAP);
 
     return E_OK;
 }
 
 enum Status MULTIMETER_get_capacitance(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -247,12 +256,17 @@ enum Status MULTIMETER_get_capacitance(
         uint8_t trim;
         uint16_t charge_time;
         uint8_t _pad[0];
-    } *input = (struct Input *)args;
+    } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) { return E_BAD_ARGSIZE; }
+    uint16_t const expected_size = sizeof(struct Input) - sizeof(input->_pad);
+    if (args_size != expected_size) { return E_BAD_ARGSIZE; }
+    input = *(struct Input **)args;
+    uint16_t *result = malloc(sizeof(*result));
+    if( !result ) { return E_MEMORY_INSUFFICIENT; }
+    *rets = (uint8_t *)result;
+    *rets_size = sizeof(*result);
 
     LED_SetLow();
-
     ADC1_SetOperationMode(ADC1_CTMU_MODE, CH0_CHANNEL_CAP, 0);
     // Initiate CTMU and TMR5 registers to measure capacitance discharge rate
     GetCapacitance_InitCTMU_TMR5(input->current_range, input->trim, input->charge_time);
@@ -267,35 +281,34 @@ enum Status MULTIMETER_get_capacitance(
 
     ADC1_WaitForInterruptEvent();
     while (!ADC1_IsConversionComplete());
-
-    uint16_t result = (ADC1BUF0) & 0xFFF;
+    *result = (ADC1BUF0) & 0xFFF;
 
     // Reset modules
     CTMU_Initialize();
     ADC1_Disable();
-
-    *rets = args;
-    *rets_size = sizeof(result);
-    memcpy(*rets, &result, *rets_size);
-
     LED_SetHigh();
 
     return E_OK;
 }
 
 enum Status MULTIMETER_get_ctmu_volts(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t const args_size,
     uint8_t **rets,
     uint16_t *rets_size
 ) {
     uint8_t config = 0;
+    if (args_size != sizeof(config)) { return E_BAD_ARGSIZE; }
+    config = **args;
 
-    if (args_size != sizeof(config)) {
-        return E_BAD_ARGSIZE;
+    uint16_t result = 0;
+    *rets = realloc(*args, sizeof(result));
+
+    if (*rets) {
+        *args = NULL;
+    } else {
+        return E_MEMORY_INSUFFICIENT;
     }
-
-    config = *args;
 
     CTMU_Initialize();
     // Edge delay generation
@@ -313,13 +326,11 @@ enum Status MULTIMETER_get_ctmu_volts(
     CTMU_FloatOutput();
     CTMU_EnableEdge1();
 
-    uint16_t result = GetVoltage_Summed(config & 0x1F);
+    result = GetVoltage_Summed(config & 0x1F);
+    **rets = result;
+    *rets_size = sizeof(result);
 
     CTMU_DisableModule();
-
-    *rets = args;
-    *rets_size = sizeof(result);
-    memcpy(*rets, &result, *rets_size);
 
     return E_OK;
 }

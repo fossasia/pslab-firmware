@@ -19,7 +19,7 @@ target_compile_options(pslab-firmware.elf PRIVATE
   -mno-eds-warn)
 
 target_link_options(pslab-firmware.elf PRIVATE
-  "LINKER:-Map=pslab-firmware.map,--report-mem")
+  "LINKER:-Map=pslab-firmware.map,--report-mem,--heap=0x6000")
 
 if (LEGACY_HARDWARE)
   message("Building for PSLab v5")

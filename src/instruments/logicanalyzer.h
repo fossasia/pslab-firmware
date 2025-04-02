@@ -48,7 +48,7 @@
  * @return SUCCESS
  */
 enum Status LOGICANALYZER_one_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -88,7 +88,7 @@ enum Status LOGICANALYZER_one_channel(
  * @return SUCCESS
  */
 enum Status LOGICANALYZER_one_channel_alt(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -136,7 +136,7 @@ enum Status LOGICANALYZER_one_channel_alt(
  * @return SUCCESS
  */
 enum Status LOGICANALYZER_two_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -183,7 +183,7 @@ enum Status LOGICANALYZER_two_channel(
  * @return SUCCESS
  */
 enum Status LOGICANALYZER_three_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -223,7 +223,7 @@ enum Status LOGICANALYZER_three_channel(
  * @return SUCCESS
  */
 enum Status LOGICANALYZER_four_channel(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size
@@ -242,7 +242,7 @@ enum Status LOGICANALYZER_four_channel(
  * @return SUCCESS
  */
 enum Status LOGICANALYZER_stop(
-    uint8_t args[],
+    uint8_t **args,
     uint16_t args_size,
     uint8_t **rets,
     uint16_t *rets_size

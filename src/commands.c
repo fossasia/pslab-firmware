@@ -3,7 +3,6 @@
 #include "bus/i2c/i2c.h"
 #include "bus/uart/uart.h"
 #include "bus/spi/spi.h"
-#include "helpers/buffer.h"
 #include "helpers/device.h"
 #include "helpers/interval.h"
 #include "helpers/light.h"
@@ -242,7 +241,7 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 4 START_ONE_CHAN_LA             5 START_TWO_CHAN_LA             6 START_FOUR_CHAN_LA            7 FETCH_DMA_DATA
         LOGICANALYZER_one_channel,      LOGICANALYZER_two_channel,      LOGICANALYZER_four_channel,     Removed,
      // 8 FETCH_INT_DMA_DATA            9 FETCH_LONG_DMA_DATA           10 COMPARATOR_TO_LA             11 GET_INITIAL_STATES
-        BUFFER_read_from_channel,       Removed,                        Unimplemented,                  INTERVAL_get_state,
+        Removed,                        Removed,                        Unimplemented,                  INTERVAL_get_state,
      // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
         Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_one_channel_alt,
      // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
@@ -258,7 +257,7 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 4 GET_INDUCTANCE                5 GET_VERSION                   6 GET_FW_VERSION                7 DEBUG_IS_ENABLED
         Unimplemented,                  DEVICE_get_hw_version,          DEVICE_get_fw_version,          Removed,
      // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
-        BUFFER_read,                    Unimplemented,                  BUFFER_clear,                   Removed,
+        Removed,                        Unimplemented,                  Removed,                        Removed,
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
         Removed,                        Removed,                        DEVICE_read_register,           DEVICE_write_register,
      // 16 GET_CAP_RANGE                17 SET_RGB2                     18 READ_LOG                     19 RESTORE_STANDALONE
@@ -266,7 +265,7 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 20 GET_ALTERNATE_HIGH_FREQUENCY 21 SET_RGB_COMMON               22 SET_RGB3                     23 START_CTMU
         Unimplemented,                  LIGHT_rgb_pin,                  Removed,                        CTMU_start,
      // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
-        CTMU_stop,                      SENSORS_start_counter,          SENSORS_get_counter,             BUFFER_write,
+        CTMU_stop,                      SENSORS_start_counter,          SENSORS_get_counter,            Removed,
     },
     { // 12 PASSTHROUGH
      // 0          1                 2          3

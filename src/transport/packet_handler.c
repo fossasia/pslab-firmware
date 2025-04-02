@@ -3,7 +3,7 @@
  * Description of communication between PSLab and host:
  *
  * 1. The host sends a command to the PSLab, consisting of a command code, an
- *    input payload size, and an payload containing command function input.
+ *    input payload size, and a payload containing command function input.
  * 2. The PSLab runs the command function associated with the command code
  *    with the payload as input.
  * 3. The command function parses the input payload and does its thing,
@@ -14,8 +14,9 @@
  *
  * In case of error on either end, both the PSLab and the host must try to
  * consume any bytes remaining on the bus, except in the event of an
- * irrecoverable error in which case the exchange must be cancelled. The
- * following errors are considered irrecoverable:
+ * irrecoverable error in which case the exchange must be cancelled.
+ *
+ * The following errors are considered irrecoverable:
  *
  * 1. Read timeout, aka. fewer bytes available to read than expected. One
  *    party sent fewer bytes than the other expected. This is a protocol
@@ -28,11 +29,12 @@
  * 3. Data overrun, aka. one party wrote bytes faster than the other could
  *    read them. This is either a firmware or driver bug.
  */
+
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "../commands.h"
-#include "../helpers/buffer.h"
 #include "../instruments/wavegenerator.h"
 #include "host.h"
 
@@ -40,8 +42,6 @@
 #include "../registers/system/pin_manager.h"
 
 #include "packet_handler.h"
-
-static uint8_t payload_buffer[PACKET_SIZE_MAX] = {0};
 
 #define HEADER_SIZE 8
 /** Packet header. */
@@ -78,6 +78,7 @@ static enum Status send(Header header, uint8_t const *payload);
 enum Status PACKET_exchange(void)
 {
     CmdFunc command = NULL;
+    // receive allocates RX payload.
     uint8_t *payload_rx = NULL;
     uint16_t payload_rx_size = 0;
     uint16_t status = receive(
@@ -86,22 +87,28 @@ enum Status PACKET_exchange(void)
         &payload_rx_size
     );
 
+    // Command function allocates TX payload.
     uint8_t *payload_tx = NULL;
     uint16_t payload_tx_size = 0;
 
     if (status == E_OK) {
         status = command(
-            payload_rx,
+            &payload_rx,
             payload_rx_size,
             &payload_tx,
             &payload_tx_size
         );
     }
+    free(payload_rx);
+    payload_rx = NULL;
 
     Header header = {{0}};
     header.status = status;
     header.payload_size = payload_tx_size;
     enum Status send_status = send(header, payload_tx);
+    free(payload_tx);
+    payload_tx = NULL;
+
     return status ? status : send_status;
 }
 
@@ -114,8 +121,8 @@ enum Status PACKET_exchange(void)
  *      If the user requested an invalid command function, this will be set to
  *      NULL.
  * @param[out] payload
- *      Pointer to an unallocated byte-array containing input arguments to
- *      `cmdfunc`.
+ *      Pointer to a byte-array containing input arguments to `cmdfunc`. If
+ *      @c payload_size is zero, this is NULL.
  * @param[out] payload_size
  *      Pointer to a uint16_t holding the number of bytes in `payload`.
  * @return enum Status
@@ -130,56 +137,31 @@ static enum Status receive(
     enum Status status = E_OK;
 
     if ( (status = HOST_read(header.as_bytes, HEADER_SIZE, NULL)) ) {
-        // Failed to read command header. No point in trying to continue.
-        return status;
+        goto cleanup;
     }
 
-    // TODO: Use malloc when we switch to heap-based memory management.
+    // malloc(0) is implementation defined. Explicitly make a null pointer
+    // instead.
+    *payload = header.payload_size ? malloc(header.payload_size) : NULL;
 
-    uint16_t buffer_size = 0;
-    // Special casing for commands with large inputs.
-    enum {
-        CMD_BUFFER_SET = (11 << 8) | 27,
-        CMD_WAVEFORM_LOAD_WAVE1 = (7 << 8) | 15,
-        CMD_WAVEFORM_LOAD_WAVE2 = (7 << 8) | 19
-    };
-    switch (header.command) {
-    default:
-        *payload = payload_buffer;
-        buffer_size = sizeof(payload_buffer);
-        break;
-    case CMD_BUFFER_SET:
-        *payload = (uint8_t *)BUFFER_sample_buffer;
-        buffer_size = sizeof(BUFFER_sample_buffer);
-        break;
-    case CMD_WAVEFORM_LOAD_WAVE1:
-        *payload = (uint8_t *)WAVEGENERATOR_table_1;
-        buffer_size = sizeof(WAVEGENERATOR_table_1);
-        break;
-    case CMD_WAVEFORM_LOAD_WAVE2:
-        *payload = (uint8_t *)WAVEGENERATOR_table_2;
-        buffer_size = sizeof(WAVEGENERATOR_table_2);
-        break;
+    if (header.payload_size && !*payload) {
+        status = E_MEMORY_INSUFFICIENT;
+        goto cleanup;
     }
 
-    if (header.payload_size > buffer_size) {
-        status = E_BAD_SIZE;
-        header.payload_size = 0;
-    } else if (header.payload_size > 0) {
-        *payload_size = header.payload_size;
-    }
+    *payload_size = header.payload_size;
 
-    if (!(*cmdfunc = COMMAND_get_func(header.command))) {
+    if ( !(*cmdfunc = COMMAND_get_func(header.command)) ) {
         status = E_BAD_COMMAND;
+        goto cleanup;
     }
 
-    if (status) {
-        // Consume any remaining data.
-        HOST_flush_rx();
-    } else {
-        status = HOST_read(*payload, header.payload_size, NULL);
-    }
+    status = HOST_read(*payload, header.payload_size, NULL);
+    return status;
 
+    cleanup:
+    // Consume any remaining bytes.
+    HOST_flush_rx();
     return status;
 }
 
@@ -196,13 +178,14 @@ static enum Status receive(
  */
 static enum Status send(Header const header, uint8_t const *const payload)
 {
-    enum Status status = HOST_write(header.as_bytes, HEADER_SIZE, NULL);
+    enum Status status = E_OK;
 
-    if (status) {
-        HOST_write(payload, header.payload_size, NULL);
-    } else {
-        status = HOST_write(payload, header.payload_size, NULL);
+    if ( (status = HOST_write(header.as_bytes, HEADER_SIZE, NULL)) ) {
+        goto cleanup;
     }
 
-    return E_OK;
+    status = HOST_write(payload, header.payload_size, NULL);
+
+    cleanup:
+    return status;
 }
