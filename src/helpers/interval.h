@@ -12,14 +12,10 @@ extern "C" {
      * @brief Setup input capture on one channel
      *
      * @description
-     * This routing will configure IC1,2 and DMA0,1 modules to listen to logic
-     * level changes on a pin defined by the channel byte and log timer values
-     * in BUFFER_sample_buffer 1st and 2nd quarters. If trigger is set by the trig byte, this
-     * will use IC4 module to listen to the trigger observation and time log will
-     * then start.
-     * It will combine both IC1 and IC2 modules to form a 32-bit timer which will
-     * have support for more data points than `CaptureThree` and `CaptureFour`
-     * routines.
+     * This routing will configure IC1 and DMA0 modules to listen to logic
+     * level changes on a pin defined by the channel byte and log timer values.
+     * If trigger is set by the trig byte, this will use IC4 module to listen
+     * to the trigger observation and time log will then start.
      *
      * @param count : number of data points to capture
      * @param channel : the pin that needs to be monitored
@@ -36,12 +32,8 @@ extern "C" {
      * @brief Setup input capture on two channels
      *
      * @description
-     * This routing will configure IC1,2,3,4 and DMA0,1,2,3 modules to listen to
-     * logic level changes on pins defined by the channel byte and log timer
-     * values in BUFFER_sample_buffer.
-     * It will combine both IC1, IC2 and IC3, IC4 modules to form a 32-bit timer
-     * which will have support for more data points than `CaptureThree` and
-     * `CaptureFour` routines.
+     * This routing will configure IC1,2 and DMA0,1 modules to listen to logic
+     * level changes on pins defined by the channel byte and log timer values.
      *
      * @param count : number of data points to capture
      * @param mode : logic level variation. Refer to `IC_PARAMS_CAPTURE_MODE`
