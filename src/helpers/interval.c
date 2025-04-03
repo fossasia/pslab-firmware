@@ -260,7 +260,8 @@ enum Status INTERVAL_fetch_buffer(
     if (!g_buffer) { return E_RESOURCE_NOT_INITIALIZED; }
     *rets = (uint8_t *)g_buffer;
     *rets_size = g_n_buffer_items;
-    g_n_buffer_items = 0;
     // Transport layer frees buffer.
+    g_buffer = NULL;
+    g_n_buffer_items = 0;
     return E_OK;
 }

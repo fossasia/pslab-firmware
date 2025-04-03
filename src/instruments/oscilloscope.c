@@ -38,9 +38,12 @@ enum Status OSCILLOSCOPE_fetch_samples(
         return E_BAD_ARGSIZE;
     }
 
-    *rets = (uint8_t *)&g_buffer;
+    // It's fine to call this even if g_buffer is NULL, i.e. before doing a
+    // capture. It just won't return anything.
+    *rets = (uint8_t *)g_buffer;
     *rets_size = g_n_samples * sizeof(*g_buffer);
-    // Transport layer frees buffer after transmission is complete.
+    // Transport layer frees g_buffer after transmission is complete.
+    g_buffer = NULL;
     g_n_samples = 0;
 
     return E_OK;
@@ -93,22 +96,21 @@ static enum Status capture(
     __attribute__((unused)) uint16_t *rets_size
 ) {
     struct Input {
-        uint8_t config;
         uint16_t samples;
         uint16_t delay;
+        uint8_t config;
         uint8_t _pad[1];
     } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
-        return E_BAD_ARGSIZE;
-    }
-
+    uint16_t const expected_size = sizeof(struct Input) - sizeof(input->_pad);
+    if (args_size != expected_size) { return E_BAD_ARGSIZE; }
     input = *(struct Input **)args;
 
     if (!input->samples) { return E_OK; }
     if (g_buffer) { return E_RESOURCE_BUSY; }
 
-    if ( !(g_buffer = malloc((input->samples) * sizeof(*g_buffer))) ) {
+    // calloc to make sure we don't send garbage if capture is aborted early.
+    if ( !(g_buffer = calloc(input->samples, sizeof(*g_buffer))) ) {
         return E_MEMORY_INSUFFICIENT;
     }
 
@@ -157,25 +159,24 @@ enum Status OSCILLOSCOPE_capture_dma(
     __attribute__((unused)) uint16_t *rets_size
 ) {
     struct Input {
-        uint8_t config;
         uint16_t samples;
         uint16_t delay;
+        uint8_t config;
         uint8_t _pad[1];
     } *input = NULL;
 
-    if (args_size != sizeof(struct Input) - sizeof(input->_pad)) {
-        return E_BAD_ARGSIZE;
-    }
-
+    uint16_t expected_size = sizeof(struct Input) - sizeof(input->_pad);
+    if (args_size != expected_size) { return E_BAD_ARGSIZE; }
     input = *(struct Input **)args;
 
     if (!input->samples) { return E_OK; }
     if (g_buffer) { return E_RESOURCE_BUSY; }
 
-    if ( !(g_buffer = malloc((input->samples) * sizeof(*g_buffer))) ) {
+    if ( !(g_buffer = calloc(input->samples, sizeof(*g_buffer))) ) {
         return E_MEMORY_INSUFFICIENT;
     }
 
+    g_n_samples = input->samples;
     SetSAMPLES_REQUESTED(input->samples);
     SetDELAY(input->delay);  // Wait DELAY / 8 us between samples.
 
