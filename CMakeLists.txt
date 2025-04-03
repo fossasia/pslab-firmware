@@ -22,10 +22,18 @@ target_link_options(pslab-firmware.elf PRIVATE
   "LINKER:-Map=pslab-firmware.map,--report-mem,--heap=0x6000")
 
 if (LEGACY_HARDWARE)
-  message("Building for PSLab v5")
+  message("Target: PSLab v5")
   add_compile_definitions(V5_HW)
 else()
-  message("Building for PSLab v6")
+  message("Target: PSLab v6")
 endif(LEGACY_HARDWARE)
+
+if (ESP01)
+  message("Command bus: UART2")
+  add_compile_definitions(UART_PRIMARY=U2SELECT)
+else()
+  message("Command bus: UART1")
+  add_compile_definitions(UART_PRIMARY=U1SELECT)
+endif(ESP01)
 
 bin2hex(pslab-firmware.elf)
