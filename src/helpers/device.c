@@ -1,5 +1,7 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <stdlib.h>
+#include <string.h>
 
 #include "../bus/uart/uart.h"
 #include "../commands.h"
@@ -33,7 +35,11 @@ enum Status DEVICE_get_hw_version(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    *rets = (uint8_t *const)&VERSION_HW;
+    // Caller will free *rets so we can't just hand over &VERSION_HW.
+    if ( !(*rets = malloc(sizeof(VERSION_HW))) ) {
+        return E_MEMORY_INSUFFICIENT;
+    }
+    memcpy(*rets, VERSION_HW, sizeof(VERSION_HW));
     *rets_size = sizeof(VERSION_HW);
     return E_OK;
 }
@@ -44,7 +50,11 @@ enum Status DEVICE_get_fw_version(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    *rets = (uint8_t *const)&VERSION_FW.version;
+    // Caller will free *rets so we can't just hand over &VERSION_FW.
+    if ( !(*rets = malloc(sizeof(VERSION_FW))) ) {
+        return E_MEMORY_INSUFFICIENT;
+    }
+    memcpy(*rets, VERSION_FW.version, sizeof(VERSION_FW));
     *rets_size = sizeof(VERSION_FW);
     return E_OK;
 }
