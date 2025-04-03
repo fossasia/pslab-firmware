@@ -19,6 +19,8 @@ target_compile_options(pslab-firmware.elf PRIVATE
   -mno-eds-warn)
 
 target_link_options(pslab-firmware.elf PRIVATE
+  # Head size 0x6000 is conservative. It could be increased after a
+  # proper profiling of stack usage.
   "LINKER:-Map=pslab-firmware.map,--report-mem,--heap=0x6000")
 
 if (LEGACY_HARDWARE)
