@@ -107,9 +107,6 @@ enum Status WAVEGENERATOR_load_wave_2(
     g_wave_2_short = malloc(WAVE_TABLE_SHORT_LENGTH * sizeof(*g_wave_2_short));
     if ( !g_wave_2_short ) { return E_MEMORY_INSUFFICIENT; }
 
-    g_wave_2_long = *(uint16_t **)args;
-    *args = NULL;
-
     downsample(g_wave_2_long, g_wave_2_short);
     return E_OK;
 }
