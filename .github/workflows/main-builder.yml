@@ -65,16 +65,13 @@ jobs:
               cmake .. ${{ matrix.cmake_flags}}
               make
           
-          - name: Build bootloader
+          - name: Fetch bootloader
             run: |
               git clone https://github.com/fossasia/pslab-bootloader.git pslab-bootloader
               cd pslab-bootloader
-              git submodule init
-              git submodule update
               mkdir build
               cd build
-              cmake ..
-              make
+              wget https://github.com/fossasia/pslab-bootloader/releases/latest/download/pslab-bootloader.hex
 
           - name: Download XC8 Compiler
             if: steps.cache-compiler.outputs.cache-hit != 'true'
@@ -90,7 +87,7 @@ jobs:
               sudo ./xc8-v3.00-full-install-linux-x64-installer.run --mode unattended --netservername dontknow
               echo "/opt/microchip/xc8/v3.00/pic/bin" >> $GITHUB_PATH
 
-          - name: Combining hex files
+          - name: Combine hex files
             run: |
               mv ${{ matrix.branch }}/build_${{ matrix.target }}/pslab-firmware.hex pslab-bootloader/build/pslab-firmware.hex
               cd pslab-bootloader
