@@ -86,6 +86,13 @@ extern "C" {
         uint16_t *rets_size
     );
 
+    enum Status INTERVAL_fetch_buffer(
+        uint8_t **args,
+        uint16_t args_size,
+        uint8_t **rets,
+        uint16_t *rets_size
+    );
+
     // Getters and setters
 
     void SetDIGITAL_STATES(uint8_t);

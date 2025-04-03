@@ -110,8 +110,8 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
     { // 2 ADC
      // 0                          1 CAPTURE_ONE                   2 CAPTURE_TWO                    3 CAPTURE_DMASPEED
         Undefined,                 OSCILLOSCOPE_capture_one,       OSCILLOSCOPE_capture_two,        OSCILLOSCOPE_capture_dma,
-     // 4 CAPTURE_FOUR             5 CONFIGURE_TRIGGER             6 GET_CAPTURE_STATUS             7 GET_CAPTURE_CHANNEL
-        OSCILLOSCOPE_capture_four, OSCILLOSCOPE_configure_trigger, OSCILLOSCOPE_get_capture_status, Unimplemented,
+     // 4 CAPTURE_FOUR             5 CONFIGURE_TRIGGER             6 GET_CAPTURE_STATUS             7 FETCH_SAMPLES
+        OSCILLOSCOPE_capture_four, OSCILLOSCOPE_configure_trigger, OSCILLOSCOPE_get_capture_status, OSCILLOSCOPE_fetch_samples,
      // 8 SET_PGA_GAIN             9 GET_VOLTAGE                   10 GET_VOLTAGE_SUMMED            11 START_ADC_STREAMING
         OSCILLOSCOPE_set_pga_gain, MULTIMETER_get_voltage,         MULTIMETER_get_voltage_summed,   Removed,
      // 12 SELECT_PGA_CHANNEL      13 CAPTURE_12BIT                14 CAPTURE_MULTIPLE              15 SET_HI_CAPTURE
@@ -244,8 +244,8 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
         Removed,                        Removed,                        Unimplemented,                  INTERVAL_get_state,
      // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
         Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_one_channel_alt,
-     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
-        LOGICANALYZER_three_channel,    LOGICANALYZER_stop,             Undefined,                      Undefined,
+     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18 INTERVAL_FETCH_BUFFER        19
+        LOGICANALYZER_three_channel,    LOGICANALYZER_stop,             INTERVAL_fetch_buffer,          Undefined,
      // 20                              21                              22                              23
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 24                              25                              26                              27
