@@ -25,7 +25,7 @@ jobs:
           - name: Download project files
             uses: actions/checkout@v4
 
-          - name: Cache XC-16 Compiler
+          - name: Cache Compilers
             id: cache-compiler
             uses: actions/cache@v3
             with:
@@ -57,8 +57,46 @@ jobs:
               cmake .. ${{ matrix.cmake_flags}}
               make
 
+          - name: Fetch bootloader
+            run: |
+              git clone https://github.com/fossasia/pslab-bootloader.git pslab-bootloader
+              cd pslab-bootloader
+              mkdir build
+              cd build
+              wget https://github.com/fossasia/pslab-bootloader/releases/latest/download/pslab-bootloader.hex
+
+          - name: Download XC8 Compiler
+            if: steps.cache-compiler.outputs.cache-hit != 'true'
+            run: |
+              mkdir -p ~/.cache/mplab-xc
+              cd ~/.cache/mplab-xc
+              wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc8-v3.00-full-install-linux-x64-installer.run
+              chmod +x xc8-v3.00-full-install-linux-x64-installer.run
+
+          - name: Fetch bootloader
+            run: |
+              wget https://github.com/fossasia/pslab-bootloader/releases/latest/download/pslab-bootloader.hex
+
+          - name: Download XC8 Compiler
+            if: steps.cache-compiler.outputs.cache-hit != 'true'
+            run: |
+              mkdir -p ~/.cache/mplab-xc
+              cd ~/.cache/mplab-xc
+              wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc8-v3.00-full-install-linux-x64-installer.run
+              chmod +x xc8-v3.00-full-install-linux-x64-installer.run
+
+          - name: Install XC8 Compiler
+            run: |
+              cd ~/.cache/mplab-xc
+              sudo ./xc8-v3.00-full-install-linux-x64-installer.run --mode unattended --netservername dontknow
+              echo "/opt/microchip/xc8/v3.00/pic/bin" >> $GITHUB_PATH
+
+          - name: Combine hex files
+            run: |
+              hexmate r0-2FFF,pslab-bootloader.hex r3000-54FFF,build_${{ matrix.target }}/pslab-firmware.hex r55000-FFFFFFFF,pslab-bootloader.hex -build_${{ matrix.target }}/combined.hex
+
           - name: Publish build files
             uses: actions/upload-artifact@v4
             with:
               name: pslab-firmware_${{ matrix.target}}
-              path: build_${{ matrix.target }}/pslab-firmware.hex
+              path: build_${{ matrix.target }}/combined.hex
