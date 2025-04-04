@@ -63,6 +63,7 @@
 
 #include <stdbool.h>
 #include <stdint.h>
+#include <stdlib.h>
 
 #include "../bus/uart/uart.h"
 #include "commands.h"
@@ -371,7 +372,7 @@ enum Status LA_cmd_fetch(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    return LA_fetch(rets, rets_size);
+    return LA_fetch((uint16_t **)rets, rets_size);
 }
 
 enum Status LA_cmd_stop(

@@ -5,11 +5,6 @@ target_sources(pslab-firmware.elf PRIVATE
   cmp3.c
   cmp4.c
   cvr.c
-  ic_params.c
-  ic1.c
-  ic2.c
-  ic3.c
-  ic4.c
   oc1.c
   oc2.c
   oc3.c
@@ -18,4 +13,3 @@ target_sources(pslab-firmware.elf PRIVATE
 
 target_include_directories(pslab-firmware.elf
   PRIVATE ${CMAKE_CURRENT_SOURCE_DIR})
-
