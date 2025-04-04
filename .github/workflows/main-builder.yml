@@ -30,7 +30,7 @@ jobs:
             uses: actions/cache@v3
             with:
               path: ~/.cache/mplab-xc
-              key: xc16-v2.10-cache
+              key: xc16-v2.10-x8-v3.00-cache
 
           - name: Download XC16 Compiler
             if: steps.cache-compiler.outputs.cache-hit != 'true'
@@ -56,22 +56,6 @@ jobs:
               cd build_${{ matrix.target }}
               cmake .. ${{ matrix.cmake_flags}}
               make
-
-          - name: Fetch bootloader
-            run: |
-              git clone https://github.com/fossasia/pslab-bootloader.git pslab-bootloader
-              cd pslab-bootloader
-              mkdir build
-              cd build
-              wget https://github.com/fossasia/pslab-bootloader/releases/latest/download/pslab-bootloader.hex
-
-          - name: Download XC8 Compiler
-            if: steps.cache-compiler.outputs.cache-hit != 'true'
-            run: |
-              mkdir -p ~/.cache/mplab-xc
-              cd ~/.cache/mplab-xc
-              wget https://ww1.microchip.com/downloads/aemDocuments/documents/DEV/ProductDocuments/SoftwareTools/xc8-v3.00-full-install-linux-x64-installer.run
-              chmod +x xc8-v3.00-full-install-linux-x64-installer.run
 
           - name: Fetch bootloader
             run: |
