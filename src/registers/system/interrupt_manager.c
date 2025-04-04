@@ -1,23 +1,10 @@
 #include <xc.h>
 #include <stdbool.h>
 
-#include "../timers/tmr2.h"
-#include "../../helpers/interval.h"
-#include "../comparators/ic_params.h"
 #include "interrupt_manager.h"
 
 #define DISABLE     false
 #define ENABLE      true
-
-void __attribute__((__interrupt__, no_auto_psv)) _INT2Interrupt(void) {
-
-    SetDefaultDIGITAL_STATES();
-    IC_PARAMS_ManualTriggerAll();
-    SetDefaultDIGITAL_STATES_ERROR();
-
-    INTERRUPT_ClearExternalInterrupt2Flag();
-    INTERRUPT_DisableExternalInterrupt2();
-}
 
 void INTERRUPT_Initialize(void) {
     //    ADI: ADC1 Convert Done

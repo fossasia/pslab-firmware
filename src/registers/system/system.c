@@ -31,8 +31,6 @@
 #include "clock.h"
 #include "system.h"
 #include "system_types.h"
-#include "../memory/dma.h"
-#include "../converters/adc1.h"
 #include "../../bus/i2c/i2c.h"
 #include "../../bus/uart/uart.h"
 #include "../timers/tmr1.h"
@@ -45,10 +43,6 @@
 #include "../comparators/cmp2.h"
 #include "../comparators/cmp3.h"
 #include "../comparators/cmp4.h"
-#include "../comparators/ic1.h"
-#include "../comparators/ic2.h"
-#include "../comparators/ic3.h"
-#include "../comparators/ic4.h"
 #include "../comparators/oc1.h"
 #include "../comparators/oc2.h"
 #include "../comparators/oc3.h"
@@ -72,8 +66,6 @@ void SYSTEM_Initialize(void) {
     UART_initialize(U1SELECT);
     UART_initialize(U2SELECT);
 
-    ADC1_Initialize();
-
     CMP1_Initialize();
     CMP2_Initialize();
     CMP3_Initialize();
@@ -95,8 +87,6 @@ void SYSTEM_Initialize(void) {
     OC2_Initialize();
     OC3_Initialize();
     OC4_Initialize();
-
-    DMA_Initialize();
 
     LIGHT_RGB(0, 20, 0);
     UART_flush_rx(U1SELECT);
