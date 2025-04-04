@@ -24,8 +24,8 @@ static uint8_t DIGITAL_STATES_ERROR = 0;
 void SetDefaultDIGITAL_STATES_ERROR(void) { DIGITAL_STATES_ERROR = ((PORTB >> 10) & 0xF) | (_C4OUT << 4); }
 uint8_t GetDIGITAL_STATES_ERROR(void) { return DIGITAL_STATES_ERROR; }
 
-static uint16_t *g_buffer = NULL;
-static uint16_t g_n_buffer_items = 0;
+static uint16_t *g_buffer;
+static uint16_t g_n_buffer_items;
 
 enum Status INTERVAL_CaptureOne(uint16_t count, uint8_t channel, uint8_t mode, uint8_t trig) {
     if (!count) { return E_OK; }
@@ -257,7 +257,6 @@ enum Status INTERVAL_fetch_buffer(
     uint8_t **rets,
     uint16_t *rets_size
 ) {
-    if (!g_buffer) { return E_RESOURCE_NOT_INITIALIZED; }
     *rets = (uint8_t *)g_buffer;
     *rets_size = g_n_buffer_items;
     // Transport layer frees buffer.

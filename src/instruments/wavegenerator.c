@@ -21,18 +21,18 @@
 #define HIGH_RESOLUTION                 1
 #define LOW_RESOLUTION                  0
 
-static uint16_t *g_wave_1_long = NULL;
-static uint16_t *g_wave_2_long = NULL;
+static uint16_t *g_wave_1_long;
+static uint16_t *g_wave_2_long;
 
-static uint16_t *g_wave_1_short = NULL;
-static uint16_t *g_wave_2_short = NULL;
+static uint16_t *g_wave_1_short;
+static uint16_t *g_wave_2_short;
 
 static void downsample(
     uint16_t const *const table_full,
     uint16_t *const table_short
 ) {
-    int const step = 16;
-    int const norm = 64;
+    uint16_t const step = 16;
+    uint16_t const norm = 64;
 
     for (int i = 0; i < WAVE_TABLE_SHORT_LENGTH; ++i) {
         table_short[i] = (
@@ -86,7 +86,9 @@ enum Status WAVEGENERATOR_stop_wave_1(
     DMA_ChannelDisable(DMA_CHANNEL_2);
     TMR3_Stop();
     free(g_wave_1_long);
+    g_wave_1_long = NULL;
     free(g_wave_1_short);
+    g_wave_1_short = NULL;
     return E_OK;
 }
 
@@ -134,7 +136,9 @@ enum Status WAVEGENERATOR_stop_wave_2(
     DMA_ChannelDisable(DMA_CHANNEL_3);
     TMR4_Stop();
     free(g_wave_2_long);
+    g_wave_2_long = NULL;
     free(g_wave_2_short);
+    g_wave_2_short = NULL;
     return E_OK;
 }
 

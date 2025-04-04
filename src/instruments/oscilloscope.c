@@ -11,8 +11,8 @@
 #include "../commands.h"
 
 // Sample buffer.
-static uint16_t volatile *g_buffer = NULL;
-static uint16_t g_n_samples = 0;
+static uint16_t volatile *g_buffer;
+static uint16_t g_n_samples;
 
 /* Static function prototypes */
 static enum Status capture(
