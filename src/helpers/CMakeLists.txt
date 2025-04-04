@@ -1,7 +1,6 @@
 target_sources(pslab-firmware.elf PRIVATE
   delay.c
   device.c
-  interval.c
   light.c
   rtc.c
 )

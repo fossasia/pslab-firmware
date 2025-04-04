@@ -355,6 +355,8 @@ enum Status LA_cmd_capture(
 
     uint16_t const expected_size = sizeof(struct Input) - sizeof(input->_pad);
     if (args_size != expected_size) { return E_BAD_ARGSIZE; }
+    input = *(struct Input **)args;
+
     return LA_capture(
         input->n_channels,
         input->events,
