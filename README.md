@@ -165,6 +165,19 @@ following these steps.
    If you did it right the SYSTEM LED will start blinking, indicating that the
    PSLab is in bootloader mode.
 
+## Dev Container Usage
+Opening this repository in VSCode, GitHub Codespaces or any other supported editor/IDE would allow the repository to be opened in a [dev container](https://containers.dev/).
+The Dev Container contains all the neccesary dependencies to build, run and test all the components of the project.
+### Developing from within the Container
+Ensure that you have the [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension activated.
+Follow these steps to develop the project from within the Dev Container:
+1. VSCode automatically detects the presence of a Dev Container in a project and gives an option to open it inside the container.
+   Click on _Reopen in Container_.
+2. Alternatively, click on `F1` and select `Dev Containers: Reopen in Container`.
+3. The Dev Container will be built, started, and the project will be opened within it.
+
+You can then work on the project as usual within the development container. Any changes you make will be automatically reflected in the local file system.
+
 ## Repository structure
 
 ```shell
