@@ -4,7 +4,6 @@
 #include "bus/uart/uart.h"
 #include "bus/spi/spi.h"
 #include "helpers/device.h"
-#include "helpers/interval.h"
 #include "helpers/light.h"
 #include "helpers/rtc.h"
 #include "instruments/logic_analyzer.h"
