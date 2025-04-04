@@ -77,7 +77,7 @@ jobs:
 
           - name: Combine hex files
             run: |
-              hexmate r0-2FFF,pslab-bootloader.hex r3000-54FFF,build_${{ matrix.target }}/pslab-firmware.hex r55000-FFFFFFFF,pslab-bootloader.hex -build_${{ matrix.target }}/combined.hex
+              hexmate r0-2FFF,pslab-bootloader.hex r3000-54FFF,build_${{ matrix.target }}/pslab-firmware.hex r55000-FFFFFFFF,pslab-bootloader.hex -Obuild_${{ matrix.target }}/combined.hex
 
           - name: Publish build files
             uses: actions/upload-artifact@v4
