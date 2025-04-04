@@ -4,17 +4,11 @@
 #include "bus/uart/uart.h"
 #include "bus/spi/spi.h"
 #include "helpers/device.h"
-#include "helpers/interval.h"
 #include "helpers/light.h"
 #include "helpers/rtc.h"
-#include "instruments/logicanalyzer.h"
-#include "instruments/multimeter.h"
-#include "instruments/oscilloscope.h"
+#include "instruments/logic_analyzer.h"
 #include "instruments/powersource.h"
-#include "instruments/sensors.h"
-#include "instruments/wavegenerator.h"
 #include "registers/system/pin_manager.h"
-#include "instruments/sensors.h"
 #include "registers/converters/ctmu.h"
 #include "transport/uart2.h"
 
@@ -109,17 +103,17 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
     },
     { // 2 ADC
      // 0                          1 CAPTURE_ONE                   2 CAPTURE_TWO                    3 CAPTURE_DMASPEED
-        Undefined,                 OSCILLOSCOPE_capture_one,       OSCILLOSCOPE_capture_two,        OSCILLOSCOPE_capture_dma,
+        Undefined,                 Removed,                        Removed,                         Removed,
      // 4 CAPTURE_FOUR             5 CONFIGURE_TRIGGER             6 GET_CAPTURE_STATUS             7 FETCH_SAMPLES
-        OSCILLOSCOPE_capture_four, OSCILLOSCOPE_configure_trigger, OSCILLOSCOPE_get_capture_status, OSCILLOSCOPE_fetch_samples,
+        Removed,                   Removed,                        Removed,                         Removed,
      // 8 SET_PGA_GAIN             9 GET_VOLTAGE                   10 GET_VOLTAGE_SUMMED            11 START_ADC_STREAMING
-        OSCILLOSCOPE_set_pga_gain, MULTIMETER_get_voltage,         MULTIMETER_get_voltage_summed,   Removed,
+        Removed,                   Removed,                        Removed,                         Removed,
      // 12 SELECT_PGA_CHANNEL      13 CAPTURE_12BIT                14 CAPTURE_MULTIPLE              15 SET_HI_CAPTURE
         Unimplemented,             Unimplemented,                  Removed,                         Removed,
      // 16 SET_LO_CAPTURE          17 SET_HI_CAPTURE12             18 SET_LO_CAPTURE12              19 CAPTURE_DMASPEED12
         Removed,                   Removed,                        Removed,                         Removed,
      // 20 MULTIPOINT_CAPACITANCE  21 SET_CAP                      22 PULSE_TRAIN                   23 CAPTURE_THREE
-        Removed,                   MULTIMETER_charge_capacitor,    Removed,                         OSCILLOSCOPE_capture_three,
+        Removed,                   Removed,                        Removed,                         Removed,
      // 24                         25                              26                               27
         Undefined,                 Undefined,                      Undefined,                       Undefined,
     },
@@ -189,15 +183,15 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
     },
     { // 7 WAVEGEN
      // 0                            1 SET_WG                     2                             3 SET_SQR1
-        Undefined,                   Unimplemented,               Undefined,                    WAVEGENERATOR_set_square_1,
+        Undefined,                   Unimplemented,               Undefined,                    Removed,
      // 4 SET_SQR2                   5 SET_SQRS                   6                             7 SQR4
-        WAVEGENERATOR_set_square_2,  Removed,                     Undefined,                    WAVEGENERATOR_set_square_all,
+        Removed,                     Removed,                     Undefined,                    Removed,
      // 8 MAP_REFERENCE              9 SET_WG_PHASE               10 SET_WAVEFORM_TYPE          11 SELECT_FREQ_REGISTER
-        WAVEGENERATOR_map_reference, WAVEGENERATOR_set_sine_dual, Unimplemented,                Unimplemented,
+        Removed,                     Removed,                     Unimplemented,                Unimplemented,
      // 12 DELAY_GENERATOR           13 SET_SINE1                 14 SET_SINE2                  15 LOAD_WAVEFORM1
-        Unimplemented,               WAVEGENERATOR_set_sine_1,    WAVEGENERATOR_set_sine_2,     WAVEGENERATOR_load_wave_1,
+        Unimplemented,               Removed,                     Removed,                      Removed,
      // 16 LOAD_WAVEFORM2            17 SQR1_PATTERN              18 READ_WAVEFORM1             19 READ_WAVEFORM2
-        WAVEGENERATOR_load_wave_2,   Removed,                     WAVEGENERATOR_read_wave_1,    WAVEGENERATOR_read_wave_2,
+        Removed,                     Removed,                     Removed,                      Removed,
      // 20                           21                           22                            23
         Undefined,                   Undefined,                   Undefined,                    Undefined,
      // 24                           25                           26                            27
@@ -239,13 +233,13 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 0                               1 GET_TIMING                    2                               3
         Undefined,                      Unimplemented,                  Undefined,                      Undefined,
      // 4 START_ONE_CHAN_LA             5 START_TWO_CHAN_LA             6 START_FOUR_CHAN_LA            7 FETCH_DMA_DATA
-        LOGICANALYZER_one_channel,      LOGICANALYZER_two_channel,      LOGICANALYZER_four_channel,     Removed,
+        LA_cmd_capture,                 Removed,                        Removed,                        LA_cmd_fetch,
      // 8 FETCH_INT_DMA_DATA            9 FETCH_LONG_DMA_DATA           10 COMPARATOR_TO_LA             11 GET_INITIAL_STATES
-        Removed,                        Removed,                        Unimplemented,                  INTERVAL_get_state,
+        Removed,                        Removed,                        Unimplemented,                  LA_cmd_get_initial_states,
      // 12 TIMING_MEASUREMENTS          13 INTERVAL_MEASUREMENTS        14 CONFIGURE_COMPARATOR         15 START_ALTERNATE_ONE_CHAN_LA
-        Unimplemented,                  Unimplemented,                  Removed,                        LOGICANALYZER_one_channel_alt,
-     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18 INTERVAL_FETCH_BUFFER        19
-        LOGICANALYZER_three_channel,    LOGICANALYZER_stop,             INTERVAL_fetch_buffer,          Undefined,
+        Unimplemented,                  Unimplemented,                  Removed,                        Removed,
+     // 16 START_THREE_CHAN_LA          17 STOP_LA                      18                              19
+        Removed,                        LA_cmd_stop,                    Undefined,                      Undefined,
      // 20                              21                              22                              23
         Undefined,                      Undefined,                      Undefined,                      Undefined,
      // 24                              25                              26                              27
@@ -253,7 +247,7 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
     },
     { // 11 COMMON
      // 0                               1 GET_CTMU_VOLTAGE              2 GET_CAPACITANCE               3 GET_FREQUENCY
-        Undefined,                      MULTIMETER_get_ctmu_volts,      MULTIMETER_get_capacitance,     Unimplemented,
+        Undefined,                      Removed,      Removed,     Unimplemented,
      // 4 GET_INDUCTANCE                5 GET_VERSION                   6 GET_FW_VERSION                7 DEBUG_IS_ENABLED
         Unimplemented,                  DEVICE_get_hw_version,          DEVICE_get_fw_version,          Removed,
      // 8 RETRIEVE_BUFFER               9 GET_HIGH_FREQUENCY            10 CLEAR_BUFFER                 11 SET_RGB1
@@ -261,11 +255,11 @@ CmdFunc const cmd_table[NUM_PRIMARY_CMDS + 1][NUM_SECONDARY_CMDS_MAX + 1] = {
      // 12 READ_PROGRAM_ADDRESS         13 WRITE_PROGRAM_ADDRESS        14 READ_DATA_ADDRESS            15 WRITE_DATA_ADDRESS
         Removed,                        Removed,                        DEVICE_read_register,           DEVICE_write_register,
      // 16 GET_CAP_RANGE                17 SET_RGB2                     18 READ_LOG                     19 RESTORE_STANDALONE
-        MULTIMETER_get_cap_range,       Removed,                        Removed,                        DEVICE_reset,
+        Removed,                        Removed,                        Removed,                        DEVICE_reset,
      // 20 GET_ALTERNATE_HIGH_FREQUENCY 21 SET_RGB_COMMON               22 SET_RGB3                     23 START_CTMU
         Unimplemented,                  LIGHT_rgb_pin,                  Removed,                        CTMU_start,
      // 24 STOP_CTMU                    25 START_COUNTING               26 FETCH_COUNT                  27 FILL_BUFFER
-        CTMU_stop,                      SENSORS_start_counter,          SENSORS_get_counter,            Removed,
+        CTMU_stop,                      Removed,                        Removed,                        Removed,
     },
     { // 12 PASSTHROUGH
      // 0          1                 2          3

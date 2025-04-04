@@ -35,7 +35,6 @@
 #include <stdlib.h>
 
 #include "../commands.h"
-#include "../instruments/wavegenerator.h"
 #include "host.h"
 
 #include "../helpers/light.h"
