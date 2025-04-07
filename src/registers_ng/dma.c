@@ -24,7 +24,7 @@
 /**
  * @brief Struct for accessing individual bits of the DMAxCON register
  */
-struct DMAxCONBits {
+struct DMACONBits {
     uint16_t MODE :2;
     uint16_t :2;
     uint16_t AMODE :2;
@@ -39,22 +39,35 @@ struct DMAxCONBits {
 /**
  * @brief Struct for accessing individual bits of the DMAxREQ register
  */
-struct DMAxREQBits {
+struct DMAREQBits {
     uint16_t IRQSEL :8;
     uint16_t :7;
     uint16_t FORCE :1;
 };
 
 /**
+ * @brief Bit-mask for interrupt enable and clear flags in IECx and IFSx.
+ */
+enum InterruptMask {
+    DMA0_INTERRUPT_MASK = 1 << 4,
+    DMA1_INTERRUPT_MASK = 1 << 14,
+    DMA2_INTERRUPT_MASK = 1 << 8,
+    DMA3_INTERRUPT_MASK = 1 << 4,
+};
+
+/**
  * @brief Aggregate of DMA register pointers
  */
-struct DMAxRegisters {
-    struct DMAxCONBits volatile *const p_conbits;
-    struct DMAxREQBits volatile *const p_reqbits;
+struct DMARegisters {
+    struct DMACONBits volatile *const p_conbits;
+    struct DMAREQBits volatile *const p_reqbits;
     uint16_t volatile *const p_stal;
     uint16_t volatile *const p_stah;
     uint16_t volatile *const p_pad;
     uint16_t volatile *const p_cnt;
+    uint16_t volatile *const p_iec;
+    uint16_t volatile *const p_ifs;
+    enum InterruptMask const interrupt_mask;
 };
 
 /**
@@ -88,31 +101,9 @@ enum PeripheralIRQ {
     DMA_PERIPHERAL_IRQ_ADC1 = 0x0D
 };
 
-typedef void (*InterruptControl)(void);
-
-struct DMA0DMA1InterruptControlRegister {
-    uint16_t :4;
-    uint16_t DMA0 :1;
-    uint16_t :9;
-    uint16_t DMA1 :1;
-};
-struct DMA2InterruptControlRegister {
-    uint16_t :8;
-    uint16_t DMA2 :1;
-};
-struct DMA3InterruptControlRegister {
-    uint16_t :4;
-    uint16_t DMA3 :1;
-};
-
 /*********************/
 /* Static prototypes */
 /*********************/
-
-/**
- * @brief Get DMA register pointer aggregate
- */
-static struct DMAxRegisters get_registers(Channel channel);
 
 /**
  * @brief Enable interrupt on a DMA channel
@@ -168,15 +159,15 @@ static void default_callback(Channel channel);
 /* Externs */
 /***********/
 
-extern struct DMAxCONBits volatile DMA0CONbits;
-extern struct DMAxCONBits volatile DMA1CONbits;
-extern struct DMAxCONBits volatile DMA2CONbits;
-extern struct DMAxCONBits volatile DMA3CONbits;
+extern struct DMACONBits volatile DMA0CONbits;
+extern struct DMACONBits volatile DMA1CONbits;
+extern struct DMACONBits volatile DMA2CONbits;
+extern struct DMACONBits volatile DMA3CONbits;
 
-extern struct DMAxREQBits volatile DMA0REQbits;
-extern struct DMAxREQBits volatile DMA1REQbits;
-extern struct DMAxREQBits volatile DMA2REQbits;
-extern struct DMAxREQBits volatile DMA3REQbits;
+extern struct DMAREQBits volatile DMA0REQbits;
+extern struct DMAREQBits volatile DMA1REQbits;
+extern struct DMAREQBits volatile DMA2REQbits;
+extern struct DMAREQBits volatile DMA3REQbits;
 
 extern uint16_t volatile DMA0STAL;
 extern uint16_t volatile DMA1STAL;
@@ -198,49 +189,63 @@ extern uint16_t volatile DMA1CNT;
 extern uint16_t volatile DMA2CNT;
 extern uint16_t volatile DMA3CNT;
 
-extern struct DMA0DMA1InterruptControlRegister volatile IEC0;
-extern struct DMA2InterruptControlRegister volatile IEC1;
-extern struct DMA3InterruptControlRegister volatile IEC2;
+extern uint16_t volatile IEC0;
+extern uint16_t volatile IEC1;
+extern uint16_t volatile IEC2;
 
-extern struct DMA0DMA1InterruptControlRegister volatile IFS0;
-extern struct DMA2InterruptControlRegister volatile IFS1;
-extern struct DMA3InterruptControlRegister volatile IFS2;
+extern uint16_t volatile IFS0;
+extern uint16_t volatile IFS1;
+extern uint16_t volatile IFS2;
 
 /*************/
 /* Constants */
 /*************/
 
-static struct DMAxRegisters const g_DMA0_REGS = {
-    .p_conbits = &DMA0CONbits,
-    .p_reqbits = &DMA0REQbits,
-    .p_stal = &DMA0STAL,
-    .p_stah = &DMA0STAH,
-    .p_pad = &DMA0PAD,
-    .p_cnt = &DMA0CNT,
-};
-static struct DMAxRegisters const g_DMA1_REGS = {
-    .p_conbits = &DMA1CONbits,
-    .p_reqbits = &DMA1REQbits,
-    .p_stal = &DMA1STAL,
-    .p_stah = &DMA1STAH,
-    .p_pad = &DMA1PAD,
-    .p_cnt = &DMA1CNT,
-};
-static struct DMAxRegisters const g_DMA2_REGS = {
-    .p_conbits = &DMA2CONbits,
-    .p_reqbits = &DMA2REQbits,
-    .p_stal = &DMA2STAL,
-    .p_stah = &DMA2STAH,
-    .p_pad = &DMA2PAD,
-    .p_cnt = &DMA2CNT,
-};
-static struct DMAxRegisters const g_DMA3_REGS = {
-    .p_conbits = &DMA3CONbits,
-    .p_reqbits = &DMA3REQbits,
-    .p_stal = &DMA3STAL,
-    .p_stah = &DMA3STAH,
-    .p_pad = &DMA3PAD,
-    .p_cnt = &DMA3CNT,
+static struct DMARegisters const g_DMA_REGS[CHANNEL_NUMEL] = {
+    [CHANNEL_1] = {
+        .p_conbits = &DMA0CONbits,
+        .p_reqbits = &DMA0REQbits,
+        .p_stal = &DMA0STAL,
+        .p_stah = &DMA0STAH,
+        .p_pad = &DMA0PAD,
+        .p_cnt = &DMA0CNT,
+        .p_iec = &IEC0,
+        .p_ifs = &IFS0,
+        .interrupt_mask = DMA0_INTERRUPT_MASK,
+    },
+    [CHANNEL_2] = {
+        .p_conbits = &DMA1CONbits,
+        .p_reqbits = &DMA1REQbits,
+        .p_stal = &DMA1STAL,
+        .p_stah = &DMA1STAH,
+        .p_pad = &DMA1PAD,
+        .p_cnt = &DMA1CNT,
+        .p_iec = &IEC0,
+        .p_ifs = &IFS0,
+        .interrupt_mask = DMA1_INTERRUPT_MASK,
+    },
+    [CHANNEL_3] = {
+        .p_conbits = &DMA2CONbits,
+        .p_reqbits = &DMA2REQbits,
+        .p_stal = &DMA2STAL,
+        .p_stah = &DMA2STAH,
+        .p_pad = &DMA2PAD,
+        .p_cnt = &DMA2CNT,
+        .p_iec = &IEC1,
+        .p_ifs = &IFS1,
+        .interrupt_mask = DMA2_INTERRUPT_MASK,
+    },
+    [CHANNEL_4] = {
+        .p_conbits = &DMA3CONbits,
+        .p_reqbits = &DMA3REQbits,
+        .p_stal = &DMA3STAL,
+        .p_stah = &DMA3STAH,
+        .p_pad = &DMA3PAD,
+        .p_cnt = &DMA3CNT,
+        .p_iec = &IEC2,
+        .p_ifs = &IFS2,
+        .interrupt_mask = DMA3_INTERRUPT_MASK,
+    }
 };
 
 /***********/
@@ -300,63 +305,22 @@ void __attribute__((__interrupt__, no_auto_psv)) _DMA3Interrupt(void)
 /* Static functions */
 /********************/
 
-static struct DMAxRegisters get_registers(Channel const channel)
+static inline void interrupt_enable(Channel const channel)
 {
-    struct DMAxRegisters const regs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = g_DMA0_REGS,
-        [CHANNEL_2] = g_DMA1_REGS,
-        [CHANNEL_3] = g_DMA2_REGS,
-        [CHANNEL_4] = g_DMA3_REGS,
-    };
-    return regs[channel];
+    struct DMARegisters const *const reg = &g_DMA_REGS[channel];
+    *reg->p_iec |= reg->interrupt_mask;
 }
 
-static void dma0_interrupt_enable(void) { IEC0.DMA0 = 1; }
-static void dma1_interrupt_enable(void) { IEC0.DMA1 = 1; }
-static void dma2_interrupt_enable(void) { IEC1.DMA2 = 1; }
-static void dma3_interrupt_enable(void) { IEC2.DMA3 = 1; }
-
-static void dma0_interrupt_disable(void) { IEC0.DMA0 = 0; }
-static void dma1_interrupt_disable(void) { IEC0.DMA1 = 0; }
-static void dma2_interrupt_disable(void) { IEC1.DMA2 = 0; }
-static void dma3_interrupt_disable(void) { IEC2.DMA3 = 0; }
-
-static void dma0_interrupt_clear(void) { IFS0.DMA0 = 0; }
-static void dma1_interrupt_clear(void) { IFS0.DMA0 = 0; }
-static void dma2_interrupt_clear(void) { IFS1.DMA2 = 0; }
-static void dma3_interrupt_clear(void) { IFS2.DMA3 = 0; }
-
-static void interrupt_enable(Channel const channel)
+static inline void interrupt_disable(Channel const channel)
 {
-    static InterruptControl const interrupt_enable_funcs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = dma0_interrupt_enable,
-        [CHANNEL_2] = dma1_interrupt_enable,
-        [CHANNEL_3] = dma2_interrupt_enable,
-        [CHANNEL_4] = dma3_interrupt_enable,
-    };
-    interrupt_enable_funcs[channel]();
+    struct DMARegisters const *const reg = &g_DMA_REGS[channel];
+    *reg->p_iec &= ~(reg->interrupt_mask);
 }
 
-static void interrupt_disable(Channel const channel)
+static inline void interrupt_clear(Channel const channel)
 {
-    static InterruptControl const interrupt_disable_funcs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = dma0_interrupt_disable,
-        [CHANNEL_2] = dma1_interrupt_disable,
-        [CHANNEL_3] = dma2_interrupt_disable,
-        [CHANNEL_4] = dma3_interrupt_disable,
-    };
-    interrupt_disable_funcs[channel]();
-}
-
-static void interrupt_clear(Channel const channel)
-{
-    static InterruptControl const interrupt_clear_funcs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = dma0_interrupt_clear,
-        [CHANNEL_2] = dma1_interrupt_clear,
-        [CHANNEL_3] = dma2_interrupt_clear,
-        [CHANNEL_4] = dma3_interrupt_clear,
-    };
-    interrupt_clear_funcs[channel]();
+    struct DMARegisters const *const reg = &g_DMA_REGS[channel];
+    *reg->p_ifs &= ~(reg->interrupt_mask);
 }
 
 static uint16_t volatile *get_pad(Channel const channel, DMA_Source const source)
@@ -429,8 +393,8 @@ void DMA_reset(Channel const channel)
     };
 
     static struct DMAConf {
-        struct DMAxCONBits const conbits;
-        struct DMAxREQBits const reqbits;
+        struct DMACONBits const conbits;
+        struct DMAREQBits const reqbits;
         uint16_t const stal;
         uint16_t const stah;
         uint16_t const pad;
@@ -456,12 +420,12 @@ void DMA_reset(Channel const channel)
         .cnt = 0,
     }; // clang-format on
 
-    struct DMAxRegisters regs = get_registers(channel);
-    *regs.p_conbits = default_conf.conbits;
-    *regs.p_reqbits = default_conf.reqbits;
-    *regs.p_stal = default_conf.stal;
-    *regs.p_pad = default_conf.pad;
-    *regs.p_cnt = default_conf.cnt;
+    struct DMARegisters const *const regs = &g_DMA_REGS[channel];
+    *regs->p_conbits = default_conf.conbits;
+    *regs->p_reqbits = default_conf.reqbits;
+    *regs->p_stal = default_conf.stal;
+    *regs->p_pad = default_conf.pad;
+    *regs->p_cnt = default_conf.cnt;
     interrupt_disable(channel);
     interrupt_clear(channel);
     g_callbacks[channel] = default_callback;
@@ -474,17 +438,17 @@ void DMA_setup(
     DMA_Source const source
 )
 {
-    struct DMAxRegisters const regs = get_registers(channel);
-    *regs.p_pad = (uint16_t)get_pad(channel, source);
-    regs.p_reqbits->IRQSEL = (uint16_t)get_irq(channel, source);
-    *regs.p_cnt = count - 1; // DMAxCNT == 0 results in one transfer.
-    *regs.p_stal = address;
-    *regs.p_stah = 0;
+    struct DMARegisters const *const regs = &g_DMA_REGS[channel];
+    *regs->p_pad = (uint16_t)get_pad(channel, source);
+    regs->p_reqbits->IRQSEL = (uint16_t)get_irq(channel, source);
+    *regs->p_cnt = count - 1; // DMAxCNT == 0 results in one transfer.
+    *regs->p_stal = address;
+    *regs->p_stah = 0;
 }
 
 void DMA_start(Channel const channel)
 {
-    get_registers(channel).p_conbits->CHEN = 1;
+    g_DMA_REGS[channel].p_conbits->CHEN = 1;
 }
 
 void DMA_interrupt_enable(

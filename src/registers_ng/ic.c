@@ -27,7 +27,7 @@
 /**
  * @brief Accessor for individual bits of the ICxCON1 register
  */
-struct ICxCON1Bits {
+struct ICCON1Bits {
     uint16_t ICM :3;
     uint16_t ICBNE :1;
     uint16_t ICOV :1; // Read-only
@@ -40,7 +40,7 @@ struct ICxCON1Bits {
 /**
  * @brief Accessor for individual bits of the ICxCON2 register
  */
-struct ICxCON2Bits {
+struct ICCON2Bits {
     uint16_t SYNCSEL :5;
     uint16_t :1;
     uint16_t TRIGSTAT :1;
@@ -49,11 +49,24 @@ struct ICxCON2Bits {
 };
 
 /**
+ * @brief Bit-mask for interrupt enable and clear flags in IECx and IFSx.
+ */
+enum InterruptMask {
+    IC1_INTERRUPT_MASK = 1 << 1,
+    IC2_INTERRUPT_MASK = 1 << 5,
+    IC3_INTERRUPT_MASK = 1 << 5,
+    IC4_INTERRUPT_MASK = 1 << 6,
+};
+
+/**
  * @brief Aggregate of pointers to IC channel registers
  */
-struct ICxRegisters {
-    struct ICxCON1Bits volatile *const con1bits_p;
-    struct ICxCON2Bits volatile *const con2bits_p;
+struct ICRegisters {
+    struct ICCON1Bits volatile *const p_con1bits;
+    struct ICCON2Bits volatile *const p_con2bits;
+    uint16_t volatile *const p_iec;
+    uint16_t volatile *const p_ifs;
+    enum InterruptMask const interrupt_mask;
 };
 
 /**
@@ -69,21 +82,6 @@ enum ICM {
 enum SyncSel {
     SYNCSEL_NONE = 0b00000,
     SYNCSEL_TMR1 = 0b01011,
-};
-
-typedef void (*InterruptControl)(void);
-
-struct IC1IC2InterruptControlRegister {
-    uint16_t :1;
-    uint16_t IC1 :1;
-    uint16_t :3;
-    uint16_t IC2 :1;
-};
-
-struct IC3IC4InterruptControlRegister {
-    uint16_t :5;
-    uint16_t IC3 :1;
-    uint16_t IC4 :1;
 };
 
 /*********************/
@@ -115,11 +113,6 @@ static enum SyncSel ictsel2syncsel(IC_Timer timer);
  */
 static void default_callback(Channel channel);
 
-/**
- * @brief Get register pointer aggregate for IC channel
- */
-static struct ICxRegisters get_registers(Channel channel);
-
 static void interrupt_enable(Channel channel);
 static void interrupt_disable(Channel channel);
 static void interrupt_clear(Channel channel);
@@ -128,56 +121,55 @@ static void interrupt_clear(Channel channel);
 /* Externs */
 /***********/
 
-extern struct ICxCON1Bits volatile IC1CON1bits;
-extern struct ICxCON1Bits volatile IC2CON1bits;
-extern struct ICxCON1Bits volatile IC3CON1bits;
-extern struct ICxCON1Bits volatile IC4CON1bits;
+extern struct ICCON1Bits volatile IC1CON1bits;
+extern struct ICCON1Bits volatile IC2CON1bits;
+extern struct ICCON1Bits volatile IC3CON1bits;
+extern struct ICCON1Bits volatile IC4CON1bits;
 
-extern struct ICxCON2Bits volatile IC1CON2bits;
-extern struct ICxCON2Bits volatile IC2CON2bits;
-extern struct ICxCON2Bits volatile IC3CON2bits;
-extern struct ICxCON2Bits volatile IC4CON2bits;
+extern struct ICCON2Bits volatile IC1CON2bits;
+extern struct ICCON2Bits volatile IC2CON2bits;
+extern struct ICCON2Bits volatile IC3CON2bits;
+extern struct ICCON2Bits volatile IC4CON2bits;
 
-extern struct IC1IC2InterruptControlRegister volatile IEC0;
-extern struct IC3IC4InterruptControlRegister volatile IEC2;
+extern uint16_t volatile IEC0;
+extern uint16_t volatile IEC2;
 
-extern struct IC1IC2InterruptControlRegister volatile IFS0;
-extern struct IC3IC4InterruptControlRegister volatile IFS2;
+extern uint16_t volatile IFS0;
+extern uint16_t volatile IFS2;
 
 /*************/
 /* Constants */
 /*************/
 
-/**
- * @brief Aggregate of IC1 register pointers
- */
-static struct ICxRegisters const g_IC1_REGS = {
-    .con1bits_p = &IC1CON1bits,
-    .con2bits_p = &IC1CON2bits,
-};
-
-/**
- * @brief Aggregate of IC2 register pointers
- */
-static struct ICxRegisters const g_IC2_REGS = {
-    .con1bits_p = &IC2CON1bits,
-    .con2bits_p = &IC2CON2bits,
-};
-
-/**
- * @brief Aggregate of IC3 register pointers
- */
-static struct ICxRegisters const g_IC3_REGS = {
-    .con1bits_p = &IC3CON1bits,
-    .con2bits_p = &IC3CON2bits,
-};
-
-/**
- * @brief Aggregate of IC4 register pointers
- */
-static struct ICxRegisters const g_IC4_REGS = {
-    .con1bits_p = &IC4CON1bits,
-    .con2bits_p = &IC4CON2bits,
+static struct ICRegisters const g_IC_REGS[CHANNEL_NUMEL] = {
+    [CHANNEL_1] = {
+        .p_con1bits = &IC1CON1bits,
+        .p_con2bits = &IC1CON2bits,
+        .p_iec = &IEC0,
+        .p_ifs = &IFS0,
+        .interrupt_mask = IC1_INTERRUPT_MASK,
+    },
+    [CHANNEL_2] = {
+        .p_con1bits = &IC2CON1bits,
+        .p_con2bits = &IC2CON2bits,
+        .p_iec = &IEC0,
+        .p_ifs = &IFS0,
+        .interrupt_mask = IC2_INTERRUPT_MASK,
+    },
+    [CHANNEL_3] = {
+        .p_con1bits = &IC3CON1bits,
+        .p_con2bits = &IC3CON2bits,
+        .p_iec = &IEC2,
+        .p_ifs = &IFS2,
+        .interrupt_mask = IC3_INTERRUPT_MASK,
+    },
+    [CHANNEL_4] = {
+        .p_con1bits = &IC4CON1bits,
+        .p_con2bits = &IC4CON2bits,
+        .p_iec = &IEC2,
+        .p_ifs = &IFS2,
+        .interrupt_mask = IC4_INTERRUPT_MASK,
+    },
 };
 
 /***********/
@@ -244,63 +236,22 @@ static void default_callback(Channel const channel)
     interrupt_clear(channel);
 }
 
-static struct ICxRegisters get_registers(Channel const channel)
+static inline void interrupt_enable(Channel const channel)
 {
-    struct ICxRegisters const regs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = g_IC1_REGS,
-        [CHANNEL_2] = g_IC2_REGS,
-        [CHANNEL_3] = g_IC3_REGS,
-        [CHANNEL_4] = g_IC4_REGS,
-    };
-    return regs[channel];
+    struct ICRegisters const *const regs = &g_IC_REGS[channel];
+    *regs->p_iec |= regs->interrupt_mask;
 }
 
-static void ic1_interrupt_enable(void) { IEC0.IC1 = 1; }
-static void ic2_interrupt_enable(void) { IEC0.IC2 = 1; }
-static void ic3_interrupt_enable(void) { IEC2.IC3 = 1; }
-static void ic4_interrupt_enable(void) { IEC2.IC4 = 1; }
-
-static void ic1_interrupt_disable(void) { IEC0.IC1 = 0; }
-static void ic2_interrupt_disable(void) { IEC0.IC2 = 0; }
-static void ic3_interrupt_disable(void) { IEC2.IC3 = 0; }
-static void ic4_interrupt_disable(void) { IEC2.IC4 = 0; }
-
-static void ic1_interrupt_clear(void) { IFS0.IC1 = 0; }
-static void ic2_interrupt_clear(void) { IFS0.IC2 = 0; }
-static void ic3_interrupt_clear(void) { IFS2.IC3 = 0; }
-static void ic4_interrupt_clear(void) { IFS2.IC4 = 0; }
-
-static void interrupt_enable(Channel const channel)
+static inline void interrupt_disable(Channel const channel)
 {
-    static InterruptControl const interrupt_enable_funcs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = ic1_interrupt_enable,
-        [CHANNEL_2] = ic2_interrupt_enable,
-        [CHANNEL_3] = ic3_interrupt_enable,
-        [CHANNEL_4] = ic4_interrupt_enable,
-    };
-    interrupt_enable_funcs[channel]();
+    struct ICRegisters const *const regs = &g_IC_REGS[channel];
+    *regs->p_iec &= ~(regs->interrupt_mask);
 }
 
-static void interrupt_disable(Channel const channel)
+static inline void interrupt_clear(Channel const channel)
 {
-    static InterruptControl const interrupt_disable_funcs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = ic1_interrupt_disable,
-        [CHANNEL_2] = ic2_interrupt_disable,
-        [CHANNEL_3] = ic3_interrupt_disable,
-        [CHANNEL_4] = ic4_interrupt_disable,
-    };
-    interrupt_disable_funcs[channel]();
-}
-
-static void interrupt_clear(Channel const channel)
-{
-    static InterruptControl const interrupt_clear_funcs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = ic1_interrupt_clear,
-        [CHANNEL_2] = ic2_interrupt_clear,
-        [CHANNEL_3] = ic3_interrupt_clear,
-        [CHANNEL_4] = ic4_interrupt_clear,
-    };
-    interrupt_clear_funcs[channel]();
+    struct ICRegisters const *const regs = &g_IC_REGS[channel];
+    *regs->p_ifs &= ~(regs->interrupt_mask);
 }
 
 /********************/
@@ -310,8 +261,8 @@ static void interrupt_clear(Channel const channel)
 void IC_reset(Channel const channel)
 {
     static struct ICConf {
-        struct ICxCON1Bits const con1bits;
-        struct ICxCON2Bits const con2bits;
+        struct ICCON1Bits const con1bits;
+        struct ICCON2Bits const con2bits;
         // clang-format off
     } const ic_default_conf = {
         .con1bits = {
@@ -323,9 +274,9 @@ void IC_reset(Channel const channel)
         },
     }; // clang-format on
 
-    struct ICxRegisters const regs = get_registers(channel);
-    *regs.con1bits_p = ic_default_conf.con1bits;
-    *regs.con2bits_p = ic_default_conf.con2bits;
+    struct ICRegisters const *const regs = &g_IC_REGS[channel];
+    *regs->p_con1bits = ic_default_conf.con1bits;
+    *regs->p_con2bits = ic_default_conf.con2bits;
     g_callbacks[channel] = default_callback;
 }
 
@@ -333,10 +284,10 @@ void IC_start(Channel const channel, Edge const edge, IC_Timer const timer)
 {
     /* NB: This function does not start ICxTMR. It must be started by the
      * trigger source given by SYNCSEL or by manually setting TRIGSTAT. */
-    struct ICxRegisters regs = get_registers(channel);
-    regs.con1bits_p->ICTSEL = (uint16_t)timer;
-    regs.con2bits_p->SYNCSEL = (uint16_t)ictsel2syncsel(timer);
-    regs.con1bits_p->ICM = (uint16_t)edge2icm(edge);
+    struct ICRegisters const *const regs = &g_IC_REGS[channel];
+    regs->p_con1bits->ICTSEL = (uint16_t)timer;
+    regs->p_con2bits->SYNCSEL = (uint16_t)ictsel2syncsel(timer);
+    regs->p_con1bits->ICM = (uint16_t)edge2icm(edge);
 }
 
 void IC_interrupt_enable(
