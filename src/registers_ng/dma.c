@@ -383,8 +383,11 @@ static void default_callback(Channel const channel)
 /* Public functions */
 /********************/
 
-void DMA_reset(Channel const channel)
+enum Status DMA_reset(Channel const channel)
 {
+    enum Status status = E_OK;
+    if ( (status = check_channel(channel)) ) { return status; }
+
     enum OperatingMode {
         DMA_OPERATING_MODE_CONTINUOUS = 0b00,
         DMA_OPERATING_MODE_ONE_SHOT = 0b01,
@@ -429,33 +432,44 @@ void DMA_reset(Channel const channel)
     interrupt_disable(channel);
     interrupt_clear(channel);
     g_callbacks[channel] = default_callback;
+    return status;
 }
 
-void DMA_setup(
+enum Status DMA_setup(
     Channel const channel,
     uint16_t const count,
     size_t const address,
     DMA_Source const source
-)
-{
+) {
+    enum Status status = E_OK;
+    if ( (status = check_channel(channel)) ) { return status; }
+
     struct DMARegisters const *const regs = &g_DMA_REGS[channel];
     *regs->p_pad = (uint16_t)get_pad(channel, source);
     regs->p_reqbits->IRQSEL = (uint16_t)get_irq(channel, source);
     *regs->p_cnt = count - 1; // DMAxCNT == 0 results in one transfer.
     *regs->p_stal = address;
     *regs->p_stah = 0;
+    return status;
 }
 
-void DMA_start(Channel const channel)
+enum Status DMA_start(Channel const channel)
 {
+    enum Status status = E_OK;
+    if ( (status = check_channel(channel)) ) { return status; }
+
     g_DMA_REGS[channel].p_conbits->CHEN = 1;
+    return E_OK;
 }
 
-void DMA_interrupt_enable(
+enum Status DMA_interrupt_enable(
     Channel const channel,
     InterruptCallback const callback
-)
-{
+) {
+    enum Status status = E_OK;
+    if ( (status = check_channel(channel)) ) { return status; }
+
     g_callbacks[channel] = callback;
     interrupt_enable(channel);
+    return status;
 }

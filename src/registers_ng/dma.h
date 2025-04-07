@@ -28,7 +28,7 @@ typedef enum DMA_Source {
  *
  * @param channel
  */
-void DMA_reset(Channel channel);
+enum Status DMA_reset(Channel channel);
 
 /**
  * @brief Configure DMA channel
@@ -45,7 +45,7 @@ void DMA_reset(Channel channel);
  * @param address
  * @param source
  */
-void DMA_setup(
+enum Status DMA_setup(
     Channel channel,
     uint16_t count,
     size_t address,
@@ -60,7 +60,7 @@ void DMA_setup(
  *
  * @param channel
  */
-void DMA_start(Channel channel);
+enum Status DMA_start(Channel channel);
 
 /**
  * @brief Enable interrupt on DMA channel
@@ -71,6 +71,6 @@ void DMA_start(Channel channel);
  * @param channel
  * @param callback
  */
-void DMA_interrupt_enable(Channel channel, InterruptCallback callback);
+enum Status DMA_interrupt_enable(Channel channel, InterruptCallback callback);
 
 #endif // DMA_H

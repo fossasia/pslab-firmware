@@ -24,11 +24,6 @@ typedef enum IC_TriggerStatus {
     IC_TRIGGER_RUN = 0b01,
 } IC_TriggerStatus;
 
-/**
- * @brief Function to call when an IC interrupt is generated
- */
-typedef void (*IC_InterruptCallback)(Channel channel);
-
 /*************/
 /* Functions */
 /*************/
@@ -38,7 +33,7 @@ typedef void (*IC_InterruptCallback)(Channel channel);
  *
  * @param channel
  */
-void IC_reset(Channel channel);
+enum Status IC_reset(Channel channel);
 
 /**
  * @brief Start input capture
@@ -59,7 +54,7 @@ void IC_reset(Channel channel);
  * @param edge
  * @param timer
  */
-void IC_start(Channel channel, Edge edge, IC_Timer timer);
+enum Status IC_start(Channel channel, Edge edge, IC_Timer timer);
 
 /**
  * @brief Enable Input Capture interrupt on channel
@@ -70,13 +65,13 @@ void IC_start(Channel channel, Edge edge, IC_Timer timer);
  * @param channel
  * @param callback
  */
-void IC_interrupt_enable(Channel channel, InterruptCallback callback);
+enum Status IC_interrupt_enable(Channel channel, InterruptCallback callback);
 
 /**
  * @brief Disable Input Capture interrupt on channel
  *
  * @param channel
  */
-void IC_interrupt_disable(Channel channel);
+enum Status IC_interrupt_disable(Channel channel);
 
 #endif /* IC_H */
