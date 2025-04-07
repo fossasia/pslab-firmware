@@ -297,7 +297,6 @@ enum Status LA_capture(
 ) {
     if (n_channels == 0) { return E_BAD_ARGUMENT; }
     if (n_channels > CHANNEL_NUMEL) { return E_BAD_ARGUMENT; }
-    if (edge == EDGE_NONE) { return E_BAD_ARGUMENT; }
     if (trigger >= CHANNEL_NUMEL) { return E_BAD_ARGUMENT; }
     capture(n_channels, events, edge, trigger);
     return E_OK;

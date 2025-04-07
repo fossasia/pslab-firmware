@@ -7,14 +7,6 @@
 #ifndef PSLAB_TYPES_H
 #define PSLAB_TYPES_H
 
-/**
- * @brief Sentinel value respresenting nothing
- *
- * @details
- * Zero is unsuitable as a sentinel value because it is almost always a valid
- * value. Therefore, -1 is used to respresent the lack of something.
- */
-enum None { NONE = -1 };
 
 /**
  * @brief Common channel definition for modules with four channels
@@ -27,7 +19,7 @@ enum None { NONE = -1 };
  * own channel definition.
  */
 typedef enum Channel {
-    CHANNEL_NONE = NONE,
+    CHANNEL_NONE = 0,
     CHANNEL_1,
     CHANNEL_2,
     CHANNEL_3,
@@ -35,11 +27,19 @@ typedef enum Channel {
     CHANNEL_NUMEL
 } Channel;
 
+static inline enum Status check_channel(Channel const channel)
+{
+    return (
+        channel == CHANNEL_NONE || channel >= CHANNEL_NUMEL
+        ? E_BAD_ARGUMENT
+        : E_OK
+    );
+}
+
 /**
  * @brief Edge type of a logic level change
  */
 typedef enum Edge {
-    EDGE_NONE = NONE,
     EDGE_ANY,
     EDGE_FALLING,
     EDGE_RISING,
