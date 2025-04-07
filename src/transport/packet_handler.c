@@ -36,6 +36,7 @@
 
 #include "../commands.h"
 #include "host.h"
+#include "types.h"
 
 #include "../helpers/light.h"
 #include "../registers/system/pin_manager.h"

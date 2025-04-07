@@ -7,6 +7,32 @@
 #ifndef PSLAB_TYPES_H
 #define PSLAB_TYPES_H
 
+/** Function return codes. */
+enum Status {
+    // No error.
+    E_OK,
+    // General error.
+    E_FAILED,
+    E_NOT_IMPLEMENTED,
+    // Errors related to resource acquisition.
+    E_RESOURCE_NOT_INITIALIZED,
+    E_RESOURCE_BUSY,
+    // Errors related to memory.
+    E_MEMORY_INSUFFICIENT,
+    // Errors related to user input.
+    E_BAD_COMMAND,
+    E_BAD_SIZE,
+    E_BAD_ARGSIZE,
+    E_BAD_ARGUMENT,
+    // Communication errors specific to UART bus.
+    E_UART_RX_FRAMING,
+    E_UART_RX_OVERRUN,
+    E_UART_RX_PARITY,
+    E_UART_RX_TIMEOUT,
+    E_UART_TX_TIMEOUT,
+    // Number of status codes.
+    STATUS_NUMEL
+};
 
 /**
  * @brief Common channel definition for modules with four channels

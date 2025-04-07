@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+    #include "types.h"
+
     /**
      * @brief Control the color of RGB LED
      *

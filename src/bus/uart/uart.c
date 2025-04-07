@@ -3,6 +3,8 @@
 
 #include <xc.h>
 
+#include "types.h"
+
 #include "uart.h"
 #include "../../helpers/delay.h"
 #include "../../commands.h"

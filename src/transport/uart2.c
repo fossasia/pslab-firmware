@@ -3,6 +3,8 @@
 #include <stdint.h>
 #include <stdlib.h>
 
+#include "types.h"
+
 #include "host.h"
 #include "packet_handler.h"
 #include "../bus/uart/uart.h"

@@ -1,4 +1,7 @@
 #include <xc.h>
+
+#include "types.h"
+
 #include "../bus/uart/uart.h"
 #include "../registers/system/interrupt_manager.h"
 #include "../registers/system/pin_manager.h"

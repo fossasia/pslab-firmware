@@ -9,34 +9,10 @@
 /* Types */
 /*********/
 
-/** @brief Channel selection.
- *  @details
- *      V5 hardware has four independent channels:
- *          0: PCS
- *          1: PV3
- *          2: PV2
- *          3: PV1
- *      V6 hardware has two pairs of paired channels:
- *          0: PCS & PVS2
- *          1: PVS1 & PVS3
- *      Paired channels share relative output levels, i.e. if PV1 outputs 5 V
- *      then PV3 outputs 3.3 V.
- */
-enum Channel {
-    PCS,
-    PV3,
-    PV2,
-    PV1,
-    NUM_V5_CHANNELS,
-    PVS2_PCS = 0,
-    PVS1_PVS3,
-    NUM_V6_CHANNELS,
-};
-
 /** @brief Output gain selection bit.
-*   @details
-*       The gain values are reversed between the MCP4822 (v6) and the
-*       MCP4728 (v5). Thanks, Microchip!
+*
+*   The gain values are reversed between the MCP4822 (v6) and the MCP4728 (v5).
+*   Thanks, Microchip!
 */
 enum Gain {
     #ifndef V5_HW
@@ -73,9 +49,9 @@ union MCP4822Command {
 #else // V5_HW
 
 /** @brief Output shutdown control bit.
- *  @details
- *      Also reversed compared to MCP4822. When not on, DAC output is pulled to
- *      ground via a 1K, 100K, or 500K resistor.
+ *
+ *  Also reversed compared to MCP4822. When not on, DAC output is pulled to
+ *  ground via a 1K, 100K, or 500K resistor.
  */
 enum Output {
     OUTPUT_ON,
@@ -119,11 +95,22 @@ static enum Status initialize(void)
 
 /**
  * @brief Convert a V5 pin number to the corresponding pin number for the V6.
- * @details See documentation for Channel.
+ *
+ * V5 hardware has four independent channels:
+ *     0: PCS
+ *     1: PV3
+ *     2: PV2
+ *     3: PV1
+ * V6 hardware has two pairs of paired channels:
+ *     0: PCS & PVS2
+ *     1: PVS1 & PVS3
+ * Paired channels share relative output levels, i.e. if PV1 outputs 5 V then
+ * PV3 outputs 3.3 V.
+ *
  * @param channel
- * @return enum Channel
+ * @return Channel
  */
-static enum Channel v5_to_v6_channel(enum Channel const channel)
+static Channel v5_to_v6_channel(Channel const channel)
 {
     return (channel + 1) % 2;
 }
@@ -150,7 +137,7 @@ enum Status POWER_SOURCE_SetPower(
     }
 
     input = *(struct Input **)args;
-    enum Channel const channel = v5_to_v6_channel(input->channel & 0x03);
+    Channel const channel = v5_to_v6_channel(input->channel & 0x03);
     uint16_t const setpoint = input->setpoint & 0xFFF;
 
     union MCP4822Command cmd = {{
@@ -195,7 +182,7 @@ enum Status POWER_SOURCE_SetPower(
     }
 
     input = *(struct Input **)args;
-    enum Channel const channel =  input->channel & 0x03;
+    Channel const channel =  input->channel & 0x03;
     uint16_t const setpoint = input->setpoint & 0xFFF;
 
     enum VRef {

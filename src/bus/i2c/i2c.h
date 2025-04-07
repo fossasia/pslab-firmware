@@ -6,6 +6,8 @@
 #include <stddef.h>
 #include <xc.h>
 
+#include "types.h"
+
 #include "../../commands.h"
 
 #define SLAVE_I2C_GENERIC_RETRY_MAX           100

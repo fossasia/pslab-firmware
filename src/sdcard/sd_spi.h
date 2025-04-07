@@ -25,6 +25,7 @@ please contact mla_licensing@microchip.com
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "types.h"
 
 /*****************************************************************************
   Function:

@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <time.h>
 
+#include "types.h"
+
 #include "../bus/i2c/i2c.h"
 #include "../commands.h"
 #include "../registers/system/pin_manager.h"

@@ -1,3 +1,5 @@
+#include "types.h"
+
 #include "i2c.h"
 #include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"

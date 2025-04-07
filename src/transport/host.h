@@ -3,6 +3,8 @@
 
 #include <stdint.h>
 
+#include "types.h"
+
 #include "../bus/uart/uart.h"
 
 #ifndef UART_PRIMARY

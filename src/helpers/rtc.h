@@ -4,6 +4,8 @@
 #include <time.h>
 #include <xc.h>
 
+#include "types.h"
+
 #include "../commands.h"
 
 #ifdef	__cplusplus
