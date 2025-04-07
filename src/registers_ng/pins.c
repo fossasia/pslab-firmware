@@ -36,5 +36,5 @@ uint8_t PINS_get_la_states(void)
         LA3,
         LA4,
     };
-    return (PORTB << (uint8_t)LA1) & 0xF;
+    return (PORTB >> (uint8_t)LA1) & 0xF;
 }
