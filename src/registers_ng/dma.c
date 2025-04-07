@@ -88,6 +88,8 @@ enum PeripheralIRQ {
     DMA_PERIPHERAL_IRQ_ADC1 = 0x0D
 };
 
+typedef void (*InterruptControl)(void);
+
 struct DMA0DMA1InterruptControlRegister {
     uint16_t :4;
     uint16_t DMA0 :1;
@@ -113,12 +115,18 @@ struct DMA3InterruptControlRegister {
 static struct DMAxRegisters get_registers(Channel channel);
 
 /**
- * @brief Enable or disable interrupt on a DMA channel
+ * @brief Enable interrupt on a DMA channel
  *
  * @param channel
- * @param ctrl
  */
-static void interrupt_enable(Channel channel, bool ctrl);
+static void interrupt_enable(Channel channel);
+
+/**
+ * @brief Disable interrupt on a DMA channel
+ *
+ * @param channel
+ */
+static void interrupt_disable(Channel channel);
 
 /**
  * @brief Clear interrupt flag on DMA channel
@@ -129,16 +137,16 @@ static void interrupt_clear(Channel channel);
 
 /**
  * @brief Get the Peripheral Address of a DMA source
- * @details
- *     Some PADs are associated with a specific DMA channel. For example,
- *     the buffer of Input Capture 1 (IC1BUF) is used by DMA0. This is
- *     software limitation and could be generalized.
+ *
+ * Some PADs are associated with a specific DMA channel. For example,
+ * the buffer of Input Capture 1 (IC1BUF) is used by DMA0. This is a
+ * software limitation and could be generalized.
  *
  * @param channel
  * @param source
  * @return uint16_t
  */
-static uint16_t get_pad(Channel channel, DMA_Source source);
+static uint16_t volatile *get_pad(Channel channel, DMA_Source source);
 
 /**
  * @brief Get the Peripheral Interrupt Request number of a DMA source
@@ -189,6 +197,14 @@ extern uint16_t volatile DMA0CNT;
 extern uint16_t volatile DMA1CNT;
 extern uint16_t volatile DMA2CNT;
 extern uint16_t volatile DMA3CNT;
+
+extern struct DMA0DMA1InterruptControlRegister volatile IEC0;
+extern struct DMA2InterruptControlRegister volatile IEC1;
+extern struct DMA3InterruptControlRegister volatile IEC2;
+
+extern struct DMA0DMA1InterruptControlRegister volatile IFS0;
+extern struct DMA2InterruptControlRegister volatile IFS1;
+extern struct DMA3InterruptControlRegister volatile IFS2;
 
 /*************/
 /* Constants */
@@ -295,72 +311,72 @@ static struct DMAxRegisters get_registers(Channel const channel)
     return regs[channel];
 }
 
-static void interrupt_enable(Channel const channel, bool const ctrl)
-{
-    extern struct DMA0DMA1InterruptControlRegister volatile IEC0;
-    extern struct DMA2InterruptControlRegister volatile IEC1;
-    extern struct DMA3InterruptControlRegister volatile IEC2;
+static void dma0_interrupt_enable(void) { IEC0.DMA0 = 1; }
+static void dma1_interrupt_enable(void) { IEC0.DMA1 = 1; }
+static void dma2_interrupt_enable(void) { IEC1.DMA2 = 1; }
+static void dma3_interrupt_enable(void) { IEC2.DMA3 = 1; }
 
-    switch (channel) {
-    case CHANNEL_1:
-        IEC0.DMA0 = ctrl;
-        break;
-    case CHANNEL_2:
-        IEC0.DMA1 = ctrl;
-        break;
-    case CHANNEL_3:
-        IEC1.DMA2 = ctrl;
-        break;
-    case CHANNEL_4:
-        IEC2.DMA3 = ctrl;
-        break;
-    default:
-        break;
-    }
+static void dma0_interrupt_disable(void) { IEC0.DMA0 = 0; }
+static void dma1_interrupt_disable(void) { IEC0.DMA1 = 0; }
+static void dma2_interrupt_disable(void) { IEC1.DMA2 = 0; }
+static void dma3_interrupt_disable(void) { IEC2.DMA3 = 0; }
+
+static void dma0_interrupt_clear(void) { IFS0.DMA0 = 0; }
+static void dma1_interrupt_clear(void) { IFS0.DMA0 = 0; }
+static void dma2_interrupt_clear(void) { IFS1.DMA2 = 0; }
+static void dma3_interrupt_clear(void) { IFS2.DMA3 = 0; }
+
+static void interrupt_enable(Channel const channel)
+{
+    static InterruptControl const interrupt_enable_funcs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = dma0_interrupt_enable,
+        [CHANNEL_2] = dma1_interrupt_enable,
+        [CHANNEL_3] = dma2_interrupt_enable,
+        [CHANNEL_4] = dma3_interrupt_enable,
+    };
+    interrupt_enable_funcs[channel]();
+}
+
+static void interrupt_disable(Channel const channel)
+{
+    static InterruptControl const interrupt_disable_funcs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = dma0_interrupt_disable,
+        [CHANNEL_2] = dma1_interrupt_disable,
+        [CHANNEL_3] = dma2_interrupt_disable,
+        [CHANNEL_4] = dma3_interrupt_disable,
+    };
+    interrupt_disable_funcs[channel]();
 }
 
 static void interrupt_clear(Channel const channel)
 {
-    extern struct DMA0DMA1InterruptControlRegister volatile IFS0;
-    extern struct DMA2InterruptControlRegister volatile IFS1;
-    extern struct DMA3InterruptControlRegister volatile IFS2;
-
-    switch (channel) {
-    case CHANNEL_1:
-        IFS0.DMA0 = 0;
-        break;
-    case CHANNEL_2:
-        IFS0.DMA1 = 0;
-        break;
-    case CHANNEL_3:
-        IFS1.DMA2 = 0;
-        break;
-    case CHANNEL_4:
-        IFS2.DMA3 = 0;
-        break;
-    default:
-        break;
-    }
+    static InterruptControl const interrupt_clear_funcs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = dma0_interrupt_clear,
+        [CHANNEL_2] = dma1_interrupt_clear,
+        [CHANNEL_3] = dma2_interrupt_clear,
+        [CHANNEL_4] = dma3_interrupt_clear,
+    };
+    interrupt_clear_funcs[channel]();
 }
 
-static uint16_t get_pad(Channel const channel, DMA_Source const source)
+static uint16_t volatile *get_pad(Channel const channel, DMA_Source const source)
 {
     // NOLINTNEXTLINE(readability-isolate-declaration)
-    extern uint16_t const volatile ADC1BUF0, ADC1BUF1, ADC1BUF2, ADC1BUF3;
-    uint16_t const adcbufs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = ADC1BUF0,
-        [CHANNEL_2] = ADC1BUF1,
-        [CHANNEL_3] = ADC1BUF2,
-        [CHANNEL_4] = ADC1BUF3,
+    extern uint16_t volatile ADC1BUF0, ADC1BUF1, ADC1BUF2, ADC1BUF3;
+    uint16_t volatile *const adcbufs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = &ADC1BUF0,
+        [CHANNEL_2] = &ADC1BUF1,
+        [CHANNEL_3] = &ADC1BUF2,
+        [CHANNEL_4] = &ADC1BUF3,
     };
 
     // NOLINTNEXTLINE(readability-isolate-declaration)
-    extern uint16_t const volatile IC1BUF, IC2BUF, IC3BUF, IC4BUF;
-    uint16_t const icbufs[CHANNEL_NUMEL] = {
-        [CHANNEL_1] = IC1BUF,
-        [CHANNEL_2] = IC2BUF,
-        [CHANNEL_3] = IC3BUF,
-        [CHANNEL_4] = IC4BUF,
+    extern uint16_t volatile IC1BUF, IC2BUF, IC3BUF, IC4BUF;
+    uint16_t volatile *const icbufs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = &IC1BUF,
+        [CHANNEL_2] = &IC2BUF,
+        [CHANNEL_3] = &IC3BUF,
+        [CHANNEL_4] = &IC4BUF,
     };
 
     switch (source) {
@@ -371,7 +387,7 @@ static uint16_t get_pad(Channel const channel, DMA_Source const source)
         return icbufs[channel];
 
     default:
-        return 0;
+        return NULL;
     }
 }
 
@@ -396,7 +412,7 @@ static enum PeripheralIRQ get_irq(Channel channel, DMA_Source source)
 
 static void default_callback(Channel const channel)
 {
-    interrupt_enable(channel, false);
+    interrupt_disable(channel);
 }
 
 /********************/
@@ -412,7 +428,7 @@ void DMA_reset(Channel const channel)
         DMA_OPERATING_MODE_ONE_SHOT_PINT_PONG = 0b11,
     };
 
-    struct DMAConf {
+    static struct DMAConf {
         struct DMAxCONBits const conbits;
         struct DMAxREQBits const reqbits;
         uint16_t const stal;
@@ -446,7 +462,7 @@ void DMA_reset(Channel const channel)
     *regs.p_stal = default_conf.stal;
     *regs.p_pad = default_conf.pad;
     *regs.p_cnt = default_conf.cnt;
-    interrupt_enable(channel, false);
+    interrupt_disable(channel);
     interrupt_clear(channel);
     g_callbacks[channel] = default_callback;
 }
@@ -459,7 +475,7 @@ void DMA_setup(
 )
 {
     struct DMAxRegisters const regs = get_registers(channel);
-    *regs.p_pad = get_pad(channel, source);
+    *regs.p_pad = (uint16_t)get_pad(channel, source);
     regs.p_reqbits->IRQSEL = (uint16_t)get_irq(channel, source);
     *regs.p_cnt = count - 1; // DMAxCNT == 0 results in one transfer.
     *regs.p_stal = address;
@@ -477,5 +493,5 @@ void DMA_interrupt_enable(
 )
 {
     g_callbacks[channel] = callback;
-    interrupt_enable(channel, true);
+    interrupt_enable(channel);
 }

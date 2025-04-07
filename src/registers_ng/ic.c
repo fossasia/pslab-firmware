@@ -30,8 +30,8 @@
 struct ICxCON1Bits {
     uint16_t ICM :3;
     uint16_t ICBNE :1;
-    uint16_t ICOV :1; // Read-only.
-    uint16_t ICI :2;  // Read-only.
+    uint16_t ICOV :1; // Read-only
+    uint16_t ICI :2; // Read-only
     uint16_t :3;
     uint16_t ICTSEL :3;
     uint16_t ICSIDL :1;
@@ -70,6 +70,8 @@ enum SyncSel {
     SYNCSEL_NONE = 0b00000,
     SYNCSEL_TMR1 = 0b01011,
 };
+
+typedef void (*InterruptControl)(void);
 
 struct IC1IC2InterruptControlRegister {
     uint16_t :1;
@@ -118,8 +120,8 @@ static void default_callback(Channel channel);
  */
 static struct ICxRegisters get_registers(Channel channel);
 
-static void interrupt_enable(Channel channel, bool ctrl);
-
+static void interrupt_enable(Channel channel);
+static void interrupt_disable(Channel channel);
 static void interrupt_clear(Channel channel);
 
 /***********/
@@ -135,6 +137,12 @@ extern struct ICxCON2Bits volatile IC1CON2bits;
 extern struct ICxCON2Bits volatile IC2CON2bits;
 extern struct ICxCON2Bits volatile IC3CON2bits;
 extern struct ICxCON2Bits volatile IC4CON2bits;
+
+extern struct IC1IC2InterruptControlRegister volatile IEC0;
+extern struct IC3IC4InterruptControlRegister volatile IEC2;
+
+extern struct IC1IC2InterruptControlRegister volatile IFS0;
+extern struct IC3IC4InterruptControlRegister volatile IFS2;
 
 /*************/
 /* Constants */
@@ -232,7 +240,7 @@ static enum SyncSel ictsel2syncsel(IC_Timer const timer)
 
 static void default_callback(Channel const channel)
 {
-    interrupt_enable(channel, false);
+    interrupt_disable(channel);
     interrupt_clear(channel);
 }
 
@@ -247,50 +255,52 @@ static struct ICxRegisters get_registers(Channel const channel)
     return regs[channel];
 }
 
-static void interrupt_enable(Channel const channel, bool const ctrl)
-{
-    extern struct IC1IC2InterruptControlRegister volatile IEC0;
-    extern struct IC3IC4InterruptControlRegister volatile IEC2;
+static void ic1_interrupt_enable(void) { IEC0.IC1 = 1; }
+static void ic2_interrupt_enable(void) { IEC0.IC2 = 1; }
+static void ic3_interrupt_enable(void) { IEC2.IC3 = 1; }
+static void ic4_interrupt_enable(void) { IEC2.IC4 = 1; }
 
-    switch (channel) {
-    case CHANNEL_1:
-        IEC0.IC1 = ctrl;
-        return;
-    case CHANNEL_2:
-        IEC0.IC2 = ctrl;
-        return;
-    case CHANNEL_3:
-        IEC2.IC3 = ctrl;
-        return;
-    case CHANNEL_4:
-        IEC2.IC4 = ctrl;
-        return;
-    default:
-        return;
-    }
+static void ic1_interrupt_disable(void) { IEC0.IC1 = 0; }
+static void ic2_interrupt_disable(void) { IEC0.IC2 = 0; }
+static void ic3_interrupt_disable(void) { IEC2.IC3 = 0; }
+static void ic4_interrupt_disable(void) { IEC2.IC4 = 0; }
+
+static void ic1_interrupt_clear(void) { IFS0.IC1 = 0; }
+static void ic2_interrupt_clear(void) { IFS0.IC2 = 0; }
+static void ic3_interrupt_clear(void) { IFS2.IC3 = 0; }
+static void ic4_interrupt_clear(void) { IFS2.IC4 = 0; }
+
+static void interrupt_enable(Channel const channel)
+{
+    static InterruptControl const interrupt_enable_funcs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = ic1_interrupt_enable,
+        [CHANNEL_2] = ic2_interrupt_enable,
+        [CHANNEL_3] = ic3_interrupt_enable,
+        [CHANNEL_4] = ic4_interrupt_enable,
+    };
+    interrupt_enable_funcs[channel]();
+}
+
+static void interrupt_disable(Channel const channel)
+{
+    static InterruptControl const interrupt_disable_funcs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = ic1_interrupt_disable,
+        [CHANNEL_2] = ic2_interrupt_disable,
+        [CHANNEL_3] = ic3_interrupt_disable,
+        [CHANNEL_4] = ic4_interrupt_disable,
+    };
+    interrupt_disable_funcs[channel]();
 }
 
 static void interrupt_clear(Channel const channel)
 {
-    extern struct IC1IC2InterruptControlRegister volatile IFS0;
-    extern struct IC3IC4InterruptControlRegister volatile IFS2;
-
-    switch (channel) {
-    case CHANNEL_1:
-        IFS0.IC1 = 0;
-        return;
-    case CHANNEL_2:
-        IFS0.IC2 = 0;
-        return;
-    case CHANNEL_3:
-        IFS2.IC3 = 0;
-        return;
-    case CHANNEL_4:
-        IFS2.IC4 = 0;
-        return;
-    default:
-        return;
-    }
+    static InterruptControl const interrupt_clear_funcs[CHANNEL_NUMEL] = {
+        [CHANNEL_1] = ic1_interrupt_clear,
+        [CHANNEL_2] = ic2_interrupt_clear,
+        [CHANNEL_3] = ic3_interrupt_clear,
+        [CHANNEL_4] = ic4_interrupt_clear,
+    };
+    interrupt_clear_funcs[channel]();
 }
 
 /********************/
@@ -335,10 +345,10 @@ void IC_interrupt_enable(
 )
 {
     g_callbacks[channel] = callback;
-    interrupt_enable(channel, true);
+    interrupt_enable(channel);
 }
 
 void IC_interrupt_disable(Channel const channel)
 {
-    interrupt_enable(channel, false);
+    interrupt_disable(channel);
 }
