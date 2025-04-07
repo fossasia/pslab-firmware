@@ -4,6 +4,8 @@
 #include <string.h>
 #include <xc.h>
 
+#include "types.h"
+
 #include "pin_manager.h"
 
 uint8_t PIN_MANAGER_DIGITAL_PINS[] = {

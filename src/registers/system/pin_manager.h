@@ -2,6 +2,9 @@
 #define _PIN_MANAGER_H
 
 #include <xc.h>
+
+#include "types.h"
+
 #include "../../states.h"
 #include "../../commands.h"
 

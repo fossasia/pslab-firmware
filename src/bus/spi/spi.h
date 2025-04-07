@@ -5,6 +5,8 @@
 #include <stdint.h>
 #include <xc.h>
 
+#include "types.h"
+
 #include "../../commands.h"
 
 /// @brief SPI chip select multiplexer.

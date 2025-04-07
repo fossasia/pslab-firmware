@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <stdbool.h>
 
+#include "types.h"
+
 #include "../bus/spi/spi.h"
 #include "../helpers/delay.h"
 

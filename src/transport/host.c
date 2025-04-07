@@ -1,5 +1,7 @@
 #include <stddef.h>
 
+#include "types.h"
+
 #include "../commands.h"
 #include "../bus/uart/uart.h"
 #include "host.h"

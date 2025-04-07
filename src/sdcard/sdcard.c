@@ -2,6 +2,8 @@
 #include <stdint.h>
 #include <string.h>
 
+#include "types.h"
+
 #include "../commands.h"
 #include "fatfs/ff.h"
 #include "fatfs/ffconf.h"

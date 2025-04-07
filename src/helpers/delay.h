@@ -11,6 +11,7 @@
  * FCY and import <libpic30.h>.
  */
 
+#include "types.h"
 #include "../registers/system/clock.h"
 
 #define FCY (_XTAL_FREQ / 2)

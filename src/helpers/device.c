@@ -3,6 +3,8 @@
 #include <stdlib.h>
 #include <string.h>
 
+#include "types.h"
+
 #include "../bus/uart/uart.h"
 #include "../commands.h"
 #include "../registers/system/pin_manager.h"

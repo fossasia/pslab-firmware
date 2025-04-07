@@ -1,5 +1,6 @@
 #include <stdint.h>
 
+#include "types.h"
 #include "../commands.h"
 
 enum Status UART2_read(

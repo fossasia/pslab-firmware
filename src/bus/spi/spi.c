@@ -2,6 +2,8 @@
 #include <stdlib.h>
 #include <xc.h>
 
+#include "types.h"
+
 #include "../../commands.h"
 #include "../../transport/packet_handler.h"
 

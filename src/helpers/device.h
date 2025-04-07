@@ -5,6 +5,8 @@
 extern "C" {
 #endif
 
+    #include "types.h"
+
     /**
      * @brief Get hardware version.
      * @return Hardware version string
