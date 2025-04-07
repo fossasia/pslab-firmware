@@ -14,6 +14,8 @@ void PINS_initialize(void)
         uint16_t IC4R :7;
     } volatile RPINR8bits;
 
+    // The LA pins (8-11 in the pin diagram) map to the values 42-45 in the
+    // remappable peripheral numbering scheme.
     enum LAPins {
         LA1 = 42,
         LA2,
@@ -30,6 +32,8 @@ void PINS_initialize(void)
 uint8_t PINS_get_la_states(void)
 {
     extern uint16_t const volatile PORTB;
+    // The LA pins (8-11 in the pin diagram) map to bits 10-13 in the PORTB
+    // register.
     enum PORTBPinNum {
         LA1 = 10,
         LA2,
