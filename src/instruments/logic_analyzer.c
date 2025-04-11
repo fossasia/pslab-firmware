@@ -116,6 +116,20 @@ static void cn_callback(Channel channel);
 static void cleanup_callback(Channel channel);
 
 /**
+ * @brief Set the up DMA and IC for active channels
+ *
+ * @param n_channels
+ * @param events
+ * @param edge
+ * @return enum Status
+ */
+static enum Status setup_channels(
+    uint8_t const n_channels,
+    uint16_t const events,
+    Edge const edge
+);
+
+/**
  * @brief Capture logic level changes on on LA1-4
  *
  * @param n_channels
@@ -234,6 +248,36 @@ static void reset(void)
     g_n_channels = 0;
 }
 
+static enum Status setup_channels(
+    uint8_t const n_channels,
+    uint16_t const events,
+    Edge const edge
+) {
+    enum Status status;
+
+    for (Channel i = CHANNEL_1; i <= n_channels; ++i) {
+        uint16_t *address = g_buffer + i * events;
+        status = DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC);
+        if (status) { return status; }
+
+        /* DMA interrupt is enabled here, but the DMA transfer itself is
+         * started in trigger callback. */
+        status = DMA_interrupt_enable(i, cleanup_callback);
+        if (status) { return status; }
+
+        /* IC is started here. IC will now begin copying the value of ICxTMR to
+         * ICxBUF whenever an event occurs. Until the trigger event starts the
+         * clock source, ICxTMR will be held at zero. This is not a problem,
+         * because although zeros will be copied to ICxBUF, they won't be
+         * copied to the buffer until DMA is started by the trigger callback.
+         */
+        status = IC_start(i, edge, timer2ictsel(g_TIMER));
+        if (status) { return status; }
+    }
+
+    return E_OK;
+}
+
 static enum Status capture(
     uint8_t const n_channels,
     uint16_t const events,
@@ -255,26 +299,11 @@ static enum Status capture(
     status = TMR_set_period(g_TIMER, 1);
     if (status) { goto error; }
 
-    for (Channel i = CHANNEL_1; i <= n_channels; ++i) {
-        uint16_t *address = g_buffer + i * events;
-        status = DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC);
-        if (status) { goto error; }
+    // Set up DMA and IC.
+    status = setup_channels(n_channels, events, edge);
+    if (status) { goto error; }
 
-        /* DMA interrupt is enabled here, but the DMA transfer itself is
-         * started in trigger callback. */
-        status = DMA_interrupt_enable(i, cleanup_callback);
-        if (status) { goto error; }
-
-        /* IC is started here. IC will now begin copying the value of ICxTMR to
-         * ICxBUF whenever an event occurs. Until the trigger event starts the
-         * clock source, ICxTMR will be held at zero. This is not a problem,
-         * because although zeros will be copied to ICxBUF, they won't be
-         * copied to the buffer until DMA is started by the trigger callback.
-         */
-        status = IC_start(i, edge, timer2ictsel(g_TIMER));
-        if (status) { goto error; }
-    }
-
+    // Enable interrupt.
     status = configure_trigger(edge, trigger_pin);
     if (status) { goto error; }
 
