@@ -46,7 +46,7 @@ struct DMAREQBits {
 };
 
 /**
- * @brief Bit-mask for interrupt enable and clear flags in IECx and IFSx.
+ * @brief Bit-masks for interrupt enable and clear flags in IECx and IFSx.
  */
 enum InterruptMask {
     DMA0_INTERRUPT_MASK = 1 << 4,
@@ -137,7 +137,7 @@ static void interrupt_clear(Channel channel);
  * @param source
  * @return uint16_t
  */
-static uint16_t volatile *get_pad(Channel channel, DMA_Source source);
+static uint16_t volatile const *get_pad(Channel channel, DMA_Source source);
 
 /**
  * @brief Get the Peripheral Interrupt Request number of a DMA source
@@ -266,11 +266,10 @@ static InterruptCallback g_callbacks[CHANNEL_NUMEL] = {
 /**
  * @brief DMA interrupt
  *
- * @details
- *     The interrupt occurs when all DMA transers have finished, i.e. once
- *     DMAxCNT reaches zero. At this point, it is often necessary to do
- *     some cleanup. The actual cleanup is handled by a callback function,
- *     since what needs to be cleaned up depends on what the DMA was used for.
+ * The interrupt occurs when all DMA transers have finished, i.e. once DMAxCNT
+ * reaches zero. At this point, it is often necessary to do some cleanup. The
+ * actual cleanup is handled by a callback function, since what needs to be
+ * cleaned up depends on what the DMA was used for.
  */
 
 #ifndef LINTING
@@ -323,11 +322,21 @@ static inline void interrupt_clear(Channel const channel)
     *reg->p_ifs &= ~(reg->interrupt_mask);
 }
 
-static uint16_t volatile *get_pad(Channel const channel, DMA_Source const source)
-{
+/**
+ * @brief Get peripheral address
+ *
+ * When using DMA to transfer data to/from a hardware mapped register, the
+ * address of said register must be written to the DMA channels PAD register.
+ *
+ * @param channel
+ */
+static uint16_t volatile const *get_pad(
+    Channel const channel,
+    DMA_Source const source
+) {
     // NOLINTNEXTLINE(readability-isolate-declaration)
-    extern uint16_t volatile ADC1BUF0, ADC1BUF1, ADC1BUF2, ADC1BUF3;
-    uint16_t volatile *const adcbufs[CHANNEL_NUMEL] = {
+    extern uint16_t volatile const ADC1BUF0, ADC1BUF1, ADC1BUF2, ADC1BUF3;
+    static uint16_t volatile const *const adcbufs[CHANNEL_NUMEL] = {
         [CHANNEL_1] = &ADC1BUF0,
         [CHANNEL_2] = &ADC1BUF1,
         [CHANNEL_3] = &ADC1BUF2,
@@ -335,8 +344,8 @@ static uint16_t volatile *get_pad(Channel const channel, DMA_Source const source
     };
 
     // NOLINTNEXTLINE(readability-isolate-declaration)
-    extern uint16_t volatile IC1BUF, IC2BUF, IC3BUF, IC4BUF;
-    uint16_t volatile *const icbufs[CHANNEL_NUMEL] = {
+    extern uint16_t volatile const IC1BUF, IC2BUF, IC3BUF, IC4BUF;
+    static uint16_t volatile const *const icbufs[CHANNEL_NUMEL] = {
         [CHANNEL_1] = &IC1BUF,
         [CHANNEL_2] = &IC2BUF,
         [CHANNEL_3] = &IC3BUF,
@@ -355,9 +364,21 @@ static uint16_t volatile *get_pad(Channel const channel, DMA_Source const source
     }
 }
 
+/**
+ * @brief Get interrupt request source
+ *
+ * DMA transactions are initiated by interrupt requests. For example, when
+ * copying samples from the ADC, the DMA copies the data from the address
+ * in its PAD register whenever the ADC finishes a conversion and issues an
+ * interrupt request.
+ *
+ * @param channel
+ * @param source
+ * @return enum PeripheralIRQ
+ */
 static enum PeripheralIRQ get_irq(Channel channel, DMA_Source source)
 {
-    enum PeripheralIRQ const ic_irqs[CHANNEL_NUMEL] = {
+    static enum PeripheralIRQ const ic_irqs[CHANNEL_NUMEL] = {
         [CHANNEL_1] = DMA_PERIPHERAL_IRQ_IC1,
         [CHANNEL_2] = DMA_PERIPHERAL_IRQ_IC2,
         [CHANNEL_3] = DMA_PERIPHERAL_IRQ_IC3,
@@ -386,7 +407,7 @@ static void default_callback(Channel const channel)
 enum Status DMA_reset(Channel const channel)
 {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     enum OperatingMode {
         DMA_OPERATING_MODE_CONTINUOUS = 0b00,
@@ -442,7 +463,7 @@ enum Status DMA_setup(
     DMA_Source const source
 ) {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     struct DMARegisters const *const regs = &g_DMA_REGS[channel];
     *regs->p_pad = (uint16_t)get_pad(channel, source);
@@ -456,7 +477,7 @@ enum Status DMA_setup(
 enum Status DMA_start(Channel const channel)
 {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     g_DMA_REGS[channel].p_conbits->CHEN = 1;
     return E_OK;
@@ -467,7 +488,7 @@ enum Status DMA_interrupt_enable(
     InterruptCallback const callback
 ) {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     g_callbacks[channel] = callback;
     interrupt_enable(channel);

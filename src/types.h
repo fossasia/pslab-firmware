@@ -7,6 +7,13 @@
 #ifndef PSLAB_TYPES_H
 #define PSLAB_TYPES_H
 
+#define TRY(x) do {       \
+    status = (x);         \
+    if (status != E_OK) { \
+        goto error;       \
+    }                     \
+} while(0)
+
 /** Function return codes. */
 enum Status {
     // No error.
@@ -37,7 +44,6 @@ enum Status {
 /**
  * @brief Common channel definition for modules with four channels
  *
- * @details
  * Most of the PSLab's instruments and underlying hardware resources have four
  * channels. It is convenient for these to use a common channel definition.
  *
@@ -53,7 +59,14 @@ typedef enum Channel {
     CHANNEL_NUMEL
 } Channel;
 
-static inline enum Status check_channel(Channel const channel)
+/**
+ * @brief Check that channel is a value between 1-4.
+ *
+ *
+ * @param channel
+ * @return enum Status
+ */
+static inline enum Status CHANNEL_check(Channel const channel)
 {
     return (
         channel == CHANNEL_NONE || channel >= CHANNEL_NUMEL
@@ -74,11 +87,12 @@ typedef enum Edge {
 
 /**
  * @brief Callback function for interrupt service routines
- * @details
+ *
  * The callback must disable its associated interrupt when complete.
  *
  * @param channel
  */
-typedef void (*InterruptCallback)(Channel channel);
+typedef void (*volatile InterruptCallback)(Channel channel);
+
 
 #endif // PSLAB_TYPES_H
