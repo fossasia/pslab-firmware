@@ -139,7 +139,9 @@ static inline void set_prescaler(
 enum Status TMR_reset(TMR_Timer const tmr)
 {
     enum Status status = E_OK;
-    TRY(check_timer(tmr));
+
+    status = check_timer(tmr);
+    if (status) { return status; }
 
     struct TMRConf {
         struct TMRCONbits conbits;
@@ -163,9 +165,6 @@ enum Status TMR_reset(TMR_Timer const tmr)
         *regs->p_tmrhld = tmr_conf_default.tmrhld;
     }
 
-    return status;
-
-error:
     return status;
 }
 
@@ -201,23 +200,22 @@ enum Status TMR_set_prescaler(
     enum TMR_Prescaler const tckps
 ) {
     enum Status status = E_OK;
-    TRY(check_timer(tmr));
-    TRY(tckps < TMR_N_PRESCALERS ? E_OK : E_BAD_ARGUMENT);
-    set_prescaler(tmr, tckps);
-    return status;
+    status = check_timer(tmr);
+    if (status) { return status; }
 
-error:
+    if (tckps >= TMR_N_PRESCALERS) { return E_BAD_ARGUMENT; }
+
+    set_prescaler(tmr, tckps);
     return status;
 }
 
 enum Status TMR_set_period(TMR_Timer const tmr, uint16_t const pr)
 {
     enum Status status = E_OK;
-    TRY(check_timer(tmr));
-    set_period(tmr, pr);
-    return status;
+    status = check_timer(tmr);
+    if (status) { return status; }
 
-error:
+    set_period(tmr, pr);
     return status;
 }
 
@@ -225,10 +223,9 @@ error:
 enum Status TMR_start(TMR_Timer const tmr)
 {
     enum Status status = E_OK;
-    TRY(check_timer(tmr));
-    g_TMR_REGS[tmr].p_conbits->TON = 1;
-    return status;
+    status = check_timer(tmr);
+    if (status) { return status; }
 
-error:
+    g_TMR_REGS[tmr].p_conbits->TON = 1;
     return status;
 }

@@ -7,13 +7,6 @@
 #ifndef PSLAB_TYPES_H
 #define PSLAB_TYPES_H
 
-#define TRY(x) do {       \
-    status = (x);         \
-    if (status != E_OK) { \
-        goto error;       \
-    }                     \
-} while(0)
-
 /** Function return codes. */
 enum Status {
     // No error.

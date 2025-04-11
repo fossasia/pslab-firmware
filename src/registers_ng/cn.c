@@ -186,7 +186,7 @@ enum Status CN_pin_enable(Channel const channel)
 enum Status CN_pin_disable(Channel const channel)
 {
     if (!CHANNEL_check(channel)) { return E_BAD_ARGUMENT; }
-    pin_disable(~g_CHANNEL_PIN_MAP[channel]);
+    pin_disable(g_CHANNEL_PIN_MAP[channel]);
     return E_OK;
 }
 

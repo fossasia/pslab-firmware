@@ -234,14 +234,6 @@ static void reset(void)
     g_n_channels = 0;
 }
 
-static enum Status setup_buffer(uint16_t const n_items)
-{
-    g_buffer = malloc(n_items * sizeof(*g_buffer));
-    if (!g_buffer) { return E_MEMORY_INSUFFICIENT; }
-    g_buffer_n_items = n_items;
-    return E_OK;
-}
-
 static enum Status capture(
     uint8_t const n_channels,
     uint16_t const events,
@@ -251,28 +243,41 @@ static enum Status capture(
     if (g_buffer) { return E_RESOURCE_BUSY; }
 
     enum Status status = E_OK;
-    TRY(setup_buffer(n_channels * events));
+
+    uint16_t const n_items = n_channels * events;
+    g_buffer = malloc(n_items * sizeof(*g_buffer));
+    if (!g_buffer) { return E_MEMORY_INSUFFICIENT; }
+
+    g_buffer_n_items = n_items;
     g_n_channels = n_channels;
 
     // Set timer period to one to send sync signal immediately on timer start.
-    TRY(TMR_set_period(g_TIMER, 1));
+    status = TMR_set_period(g_TIMER, 1);
+    if (status) { goto error; }
 
     for (Channel i = CHANNEL_1; i < n_channels; ++i) {
         uint16_t *address = g_buffer + i * events;
-        TRY(DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC));
+        status = DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC);
+        if (status) { goto error; }
+
         /* DMA interrupt is enabled here, but the DMA transfer itself is
          * started in trigger callback. */
-        TRY(DMA_interrupt_enable(i, cleanup_callback));
+        status = DMA_interrupt_enable(i, cleanup_callback);
+        if (status) { goto error; }
+
         /* IC is started here. IC will now begin copying the value of ICxTMR to
          * ICxBUF whenever an event occurs. Until the trigger event starts the
          * clock source, ICxTMR will be held at zero. This is not a problem,
          * because although zeros will be copied to ICxBUF, they won't be
          * copied to the buffer until DMA is started by the trigger callback.
          */
-        TRY(IC_start(i, edge, timer2ictsel(g_TIMER)));
+        status = IC_start(i, edge, timer2ictsel(g_TIMER));
+        if (status) { goto error; }
     }
 
-    TRY(configure_trigger(edge, trigger_pin));
+    status = configure_trigger(edge, trigger_pin);
+    if (status) { goto error; }
+
     return status;
 
 error:
@@ -293,11 +298,16 @@ static enum Status configure_trigger(Edge const edge, Channel const trigger_pin)
     if (edge == EDGE_ANY) {
         /* Input capture cannot interrupt on both falling and rising edge, only
          * one or the other. Must use Change Notification instead. */
-        TRY(CN_pin_enable(trigger_pin));
-        TRY(CN_interrupt_enable(cn_callback));
+        status = CN_pin_enable(trigger_pin);
+        if (status) { goto error; }
+
+        status = CN_interrupt_enable(cn_callback);
+        if (status) { goto error; }
     }
 
-    TRY(IC_interrupt_enable(trigger_pin, ic_callback));
+    status = IC_interrupt_enable(trigger_pin, ic_callback);
+    if (status) { goto error; }
+
     return status;
 
 error:
