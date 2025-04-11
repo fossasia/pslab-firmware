@@ -263,7 +263,7 @@ static inline void interrupt_clear(Channel const channel)
 enum Status IC_reset(Channel const channel)
 {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     static struct ICConf {
         struct ICCON1Bits const con1bits;
@@ -294,7 +294,7 @@ enum Status IC_start(
     /* NB: This function does not start ICxTMR. It must be started by the
      * trigger source given by SYNCSEL or by manually setting TRIGSTAT. */
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     struct ICRegisters const *const regs = &g_IC_REGS[channel];
     regs->p_con1bits->ICTSEL = (uint16_t)timer;
@@ -308,7 +308,7 @@ enum Status IC_interrupt_enable(
     InterruptCallback const callback
 ) {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     g_callbacks[channel] = callback;
     interrupt_enable(channel);
@@ -318,7 +318,7 @@ enum Status IC_interrupt_enable(
 enum Status IC_interrupt_disable(Channel const channel)
 {
     enum Status status = E_OK;
-    if ( (status = check_channel(channel)) ) { return status; }
+    if ( (status = CHANNEL_check(channel)) ) { return status; }
 
     interrupt_disable(channel);
     return status;

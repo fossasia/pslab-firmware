@@ -141,7 +141,7 @@ static enum Status capture(
  * @param edge
  * @param trigger_pin
  */
-static void configure_trigger(Edge edge, Channel trigger_pin);
+static enum Status configure_trigger(Edge edge, Channel trigger_pin);
 
 /**
  * @brief Convert TMR to corresponding IC clock source
@@ -170,8 +170,6 @@ static TMR_Timer const g_TIMER = TMR_TIMER_5;
 
 static void trigger(void)
 {
-    // Set timer period to a small value to assert sync when timer starts.
-    TMR_set_period(g_TIMER, 1);
     TMR_start(g_TIMER);
     // ICs start approximately now.
     g_initial_states = PINS_get_la_states();
@@ -185,13 +183,13 @@ static void trigger(void)
     /* Unroll loop; saving even a single clock cycle between DMA channel
      * starts is meaningful. */
     switch (g_n_channels) {
-    case 4: // NOLINT(readability-magic-numbers)
+    case CHANNEL_4:
         DMA_start(CHANNEL_4);
-    case 3: // NOLINT(readability-magic-numbers)
+    case CHANNEL_3:
         DMA_start(CHANNEL_3);
-    case 2:
+    case CHANNEL_2:
         DMA_start(CHANNEL_2);
-    case 1:
+    case CHANNEL_1:
         DMA_start(CHANNEL_1);
     default:
         break;
@@ -203,14 +201,14 @@ static void trigger(void)
 
 static void ic_callback(Channel const channel)
 {
-    IC_interrupt_disable(channel);
     trigger();
+    IC_interrupt_disable(channel);
 }
 
 static void cn_callback(__attribute__((unused)) Channel const channel)
 {
-    CN_reset();
     trigger();
+    CN_reset();
 }
 
 static void cleanup_callback(Channel const channel)
@@ -225,54 +223,85 @@ static void cleanup_callback(Channel const channel)
     }
 }
 
+static void reset(void)
+{
+    for (int i = CHANNEL_1; i <= g_n_channels; ++i) {
+        cleanup_callback(i);
+    }
+    free(g_buffer);
+    g_buffer = NULL;
+    g_buffer_n_items = 0;
+    g_n_channels = 0;
+}
+
+static enum Status setup_buffer(uint16_t const n_items)
+{
+    g_buffer = malloc(n_items * sizeof(*g_buffer));
+    if (!g_buffer) { return E_MEMORY_INSUFFICIENT; }
+    g_buffer_n_items = n_items;
+    return E_OK;
+}
+
 static enum Status capture(
     uint8_t const n_channels,
     uint16_t const events,
     Edge const edge,
     Channel const trigger_pin
-)
-{
+) {
     if (g_buffer) { return E_RESOURCE_BUSY; }
-    g_buffer = malloc(n_channels * events * sizeof(*g_buffer));
-    if (!g_buffer) { return E_MEMORY_INSUFFICIENT; }
-    g_buffer_n_items = n_channels * events;
+
+    enum Status status = E_OK;
+    TRY(setup_buffer(n_channels * events));
     g_n_channels = n_channels;
 
-    for (uint8_t i = 0; i < n_channels; ++i) {
+    // Set timer period to one to send sync signal immediately on timer start.
+    TRY(TMR_set_period(g_TIMER, 1));
+
+    for (Channel i = CHANNEL_1; i < n_channels; ++i) {
         uint16_t *address = g_buffer + i * events;
-        DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC);
+        TRY(DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC));
         /* DMA interrupt is enabled here, but the DMA transfer itself is
          * started in trigger callback. */
-        DMA_interrupt_enable(i, cleanup_callback);
+        TRY(DMA_interrupt_enable(i, cleanup_callback));
         /* IC is started here. IC will now begin copying the value of ICxTMR to
          * ICxBUF whenever an event occurs. Until the trigger event starts the
          * clock source, ICxTMR will be held at zero. This is not a problem,
          * because although zeros will be copied to ICxBUF, they won't be
          * copied to the buffer until DMA is started by the trigger callback.
          */
-        IC_start(i, edge, timer2ictsel(g_TIMER));
+        TRY(IC_start(i, edge, timer2ictsel(g_TIMER)));
     }
 
-    configure_trigger(edge, trigger_pin);
-    return E_OK;
+    TRY(configure_trigger(edge, trigger_pin));
+    return status;
+
+error:
+    reset();
+    return status;
 }
 
-static void configure_trigger(Edge const edge, Channel const trigger_pin)
+static enum Status configure_trigger(Edge const edge, Channel const trigger_pin)
 {
+    enum Status status = E_OK;
+
     if (trigger_pin == CHANNEL_NONE) {
         // Start immediately.
         trigger();
-        return;
+        return status;
     }
 
     if (edge == EDGE_ANY) {
         /* Input capture cannot interrupt on both falling and rising edge, only
          * one or the other. Must use Change Notification instead. */
-        CN_interrupt_enable(trigger_pin, cn_callback);
-        return;
+        TRY(CN_pin_enable(trigger_pin));
+        TRY(CN_interrupt_enable(cn_callback));
     }
 
-    IC_interrupt_enable(trigger_pin, ic_callback);
+    TRY(IC_interrupt_enable(trigger_pin, ic_callback));
+    return status;
+
+error:
+    return status;
 }
 
 static IC_Timer timer2ictsel(TMR_Timer const timer)
@@ -295,11 +324,11 @@ enum Status LA_capture(
     Edge const edge,
     Channel const trigger
 ) {
-    if (n_channels == 0) { return E_BAD_ARGUMENT; }
-    if (n_channels > CHANNEL_NUMEL) { return E_BAD_ARGUMENT; }
-    if (trigger >= CHANNEL_NUMEL) { return E_BAD_ARGUMENT; }
+    enum Status status = E_OK;
+    if ( (status = CHANNEL_check(n_channels)) ) { return E_BAD_ARGUMENT; }
+    if ( (status = CHANNEL_check(trigger)) ) { return E_BAD_ARGUMENT; }
     capture(n_channels, events, edge, trigger);
-    return E_OK;
+    return status;
 }
 
 enum Status LA_fetch(uint16_t **buffer, uint16_t *n_items)
