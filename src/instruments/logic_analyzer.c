@@ -255,7 +255,7 @@ static enum Status capture(
     status = TMR_set_period(g_TIMER, 1);
     if (status) { goto error; }
 
-    for (Channel i = CHANNEL_1; i < n_channels; ++i) {
+    for (Channel i = CHANNEL_1; i <= n_channels; ++i) {
         uint16_t *address = g_buffer + i * events;
         status = DMA_setup(i, events, (size_t)address, DMA_SOURCE_IC);
         if (status) { goto error; }
