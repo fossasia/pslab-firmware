@@ -41,7 +41,7 @@ enum Status CN_pin_disable(Channel pin);
 /**
  * @brief Call @c callback when a logic level change occurs on a configured pin
  *
- * CN provides a single callback for all enabled pins. There is no indication
+ * CN provides a single interrupt for all enabled pins. There is no indication
  * of which pin triggered the interrupt. The callback's @c channel argument
  * should therefore not be used.
  *
