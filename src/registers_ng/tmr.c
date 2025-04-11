@@ -11,13 +11,16 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#include "types.h"
+#include "../helpers/delay.h"
+
 #include "tmr.h"
 
 /*********/
 /* Types */
 /*********/
 
-struct TMRxCONbits {
+struct TMRCONbits {
     uint16_t :1;
     uint16_t TCS :1;
     uint16_t TSYNC :1; // Only in TMR1
@@ -30,8 +33,8 @@ struct TMRxCONbits {
     uint16_t TON :1;
 };
 
-struct TMRxRegisters {
-    struct TMRxCONbits volatile *const p_conbits;
+struct TMRRegisters {
+    struct TMRCONbits volatile *const p_conbits;
     uint16_t volatile *const p_pr;
     uint16_t volatile *const p_tmr;
     uint16_t volatile *const p_tmrhld;
@@ -41,23 +44,15 @@ struct TMRxRegisters {
 /* Static Prototypes */
 /*********************/
 
-/**
- * @brief Get an aggregate of TMR register pointers.
- *
- * @param timer
- * @return struct TMRxRegisters
- */
-static struct TMRxRegisters get_registers(TMR_Timer timer);
-
 /***********/
 /* Externs */
 /***********/
 
-extern struct TMRxCONbits volatile T1CONbits;
-extern struct TMRxCONbits volatile T2CONbits;
-extern struct TMRxCONbits volatile T3CONbits;
-extern struct TMRxCONbits volatile T4CONbits;
-extern struct TMRxCONbits volatile T5CONbits;
+extern struct TMRCONbits volatile T1CONbits;
+extern struct TMRCONbits volatile T2CONbits;
+extern struct TMRCONbits volatile T3CONbits;
+extern struct TMRCONbits volatile T4CONbits;
+extern struct TMRCONbits volatile T5CONbits;
 
 extern uint16_t volatile PR1;
 extern uint16_t volatile PR2;
@@ -78,61 +73,76 @@ extern uint16_t volatile TMR5HLD;
 /* Constants */
 /*************/
 
-static struct TMRxRegisters const g_TMR1_REGS = {
-    .p_conbits = &T1CONbits,
-    .p_pr = &PR1,
-    .p_tmr = &TMR1,
-    .p_tmrhld = NULL,
-};
-static struct TMRxRegisters const g_TMR2_REGS = {
-    .p_conbits = &T2CONbits,
-    .p_pr = &PR2,
-    .p_tmr = &TMR2,
-    .p_tmrhld = NULL,
-};
-static struct TMRxRegisters const g_TMR3_REGS = {
-    .p_conbits = &T3CONbits,
-    .p_pr = &PR3,
-    .p_tmr = &TMR3,
-    .p_tmrhld = &TMR3HLD,
-};
-static struct TMRxRegisters const g_TMR4_REGS = {
-    .p_conbits = &T4CONbits,
-    .p_pr = &PR4,
-    .p_tmr = &TMR4,
-    .p_tmrhld = NULL,
-};
-static struct TMRxRegisters const g_TMR5_REGS = {
-    .p_conbits = &T5CONbits,
-    .p_pr = &PR5,
-    .p_tmr = &TMR5,
-    .p_tmrhld = &TMR5HLD,
+static struct TMRRegisters const g_TMR_REGS[TMR_N_TIMERS] = {
+    [TMR_TIMER_1] = {
+        .p_conbits = &T1CONbits,
+        .p_pr = &PR1,
+        .p_tmr = &TMR1,
+        .p_tmrhld = NULL,
+    },
+    [TMR_TIMER_2] = {
+        .p_conbits = &T2CONbits,
+        .p_pr = &PR2,
+        .p_tmr = &TMR2,
+        .p_tmrhld = NULL,
+    },
+    [TMR_TIMER_3] = {
+        .p_conbits = &T3CONbits,
+        .p_pr = &PR3,
+        .p_tmr = &TMR3,
+        .p_tmrhld = &TMR3HLD,
+    },
+    [TMR_TIMER_4] = {
+        .p_conbits = &T4CONbits,
+        .p_pr = &PR4,
+        .p_tmr = &TMR4,
+        .p_tmrhld = NULL,
+    },
+    [TMR_TIMER_5] = {
+        .p_conbits = &T5CONbits,
+        .p_pr = &PR5,
+        .p_tmr = &TMR5,
+        .p_tmrhld = &TMR5HLD,
+    }
 };
 
 /********************/
 /* Static Functions */
 /********************/
 
-static struct TMRxRegisters get_registers(TMR_Timer const timer)
+static inline enum Status check_timer(TMR_Timer const tmr)
 {
-    struct TMRxRegisters const regs[TMR_TIMER_NUMEL] = {
-        [TMR_TIMER_1] = g_TMR1_REGS,
-        [TMR_TIMER_2] = g_TMR2_REGS,
-        [TMR_TIMER_3] = g_TMR3_REGS,
-        [TMR_TIMER_4] = g_TMR4_REGS,
-        [TMR_TIMER_5] = g_TMR5_REGS,
-    };
-    return regs[timer];
+    return (
+        tmr == TMR_TIMER_NONE || tmr >= TMR_N_TIMERS
+        ? E_BAD_ARGUMENT
+        : E_OK
+    );
 }
+
+static inline void set_period(TMR_Timer const timer, uint16_t const period)
+{
+    *g_TMR_REGS[timer].p_pr = period;
+}
+
+static inline void set_prescaler(
+    TMR_Timer const timer,
+    enum TMR_Prescaler const prescaler
+) {
+    g_TMR_REGS[timer].p_conbits->TCKPS = prescaler;
+}
+
 
 /********************/
 /* Public Functions */
 /********************/
 
-void TMR_reset(TMR_Timer const timer)
+enum Status TMR_reset(TMR_Timer const tmr)
 {
+    enum Status status = E_OK;
+    TRY(check_timer(tmr));
+
     struct TMRConf {
-        struct TMRxCONbits conbits;
+        struct TMRCONbits conbits;
         uint16_t pr;
         uint16_t tmr;
         uint16_t tmrhld;
@@ -144,22 +154,81 @@ void TMR_reset(TMR_Timer const timer)
         .tmr = 0,
         .tmrhld = 0,
     };
-    struct TMRxRegisters regs = get_registers(timer);
-    *regs.p_conbits = tmr_conf_default.conbits;
-    *regs.p_pr = tmr_conf_default.pr;
-    *regs.p_tmr = tmr_conf_default.tmr;
+    struct TMRRegisters const *const regs = &g_TMR_REGS[tmr];
+    *regs->p_conbits = tmr_conf_default.conbits;
+    *regs->p_pr = tmr_conf_default.pr;
+    *regs->p_tmr = tmr_conf_default.tmr;
 
-    if (regs.p_tmrhld) { // p_tmrhld is NULL for TMR{1,2,4}.
-        *regs.p_tmrhld = tmr_conf_default.tmrhld;
+    if (regs->p_tmrhld) { // p_tmrhld is NULL for TMR{1,2,4}.
+        *regs->p_tmrhld = tmr_conf_default.tmrhld;
     }
+
+    return status;
+
+error:
+    return status;
 }
 
-void TMR_start(TMR_Timer const timer)
-{
-    get_registers(timer).p_conbits->TON = 1;
+enum Status TMR_get_period_prescaler(
+    uint32_t const ns,
+    uint16_t *const pr,
+    enum TMR_Prescaler *const tckps
+) {
+    enum { _1E9 = 1000000000UL };
+    uint32_t const ns_max = (
+        UINT16_MAX * TMR_prescaler_vals[TMR_PRESCALER_MAX] * _1E9 / FCY - 1
+    );
+    if (ns > ns_max) { return E_BAD_ARGUMENT; }
+
+    for (enum TMR_Prescaler i = TMR_TCKPS_1; i < TMR_N_PRESCALERS; ++i) {
+        // Every prescaler divides FCY; effective_clock is not truncated.
+        uint64_t const effective_clock = FCY / TMR_prescaler_vals[i];
+        // Round to nearest integer period value.
+        uint64_t const tmp = (effective_clock * ns + _1E9 / 2) / _1E9;
+        if (tmp > UINT16_MAX) { continue; }
+
+        *pr = tmp;
+        *tckps = i;
+        return E_OK;
+    }
+
+    // This should be unreachable.
+    return E_FAILED;
 }
 
-void TMR_set_period(TMR_Timer const timer, uint16_t const period)
+enum Status TMR_set_prescaler(
+    TMR_Timer const tmr,
+    enum TMR_Prescaler const tckps
+) {
+    enum Status status = E_OK;
+    TRY(check_timer(tmr));
+    TRY(tckps < TMR_N_PRESCALERS ? E_OK : E_BAD_ARGUMENT);
+    set_prescaler(tmr, tckps);
+    return status;
+
+error:
+    return status;
+}
+
+enum Status TMR_set_period(TMR_Timer const tmr, uint16_t const pr)
 {
-    *get_registers(timer).p_pr = period;
+    enum Status status = E_OK;
+    TRY(check_timer(tmr));
+    set_period(tmr, pr);
+    return status;
+
+error:
+    return status;
+}
+
+
+enum Status TMR_start(TMR_Timer const tmr)
+{
+    enum Status status = E_OK;
+    TRY(check_timer(tmr));
+    g_TMR_REGS[tmr].p_conbits->TON = 1;
+    return status;
+
+error:
+    return status;
 }
