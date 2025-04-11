@@ -5,45 +5,52 @@
  *
  * CN generates an interrupt when the state on an input pin changes.
  *
+ * CN is supported for the logic analyzer input pins (LA1-4).
+ *
  * For hardware specifics, refer to Microchip document DS70000598,
  * "I/O Ports".
  */
+
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
 
+#include "hardware.h"
 #include "types.h"
 
 #include "cn.h"
 
-/*********/
-/* Types */
-/*********/
+/**********/
+/* Macros */
+/**********/
 
-/**
- * @brief Aggregate of configuration values
- */
-struct TriggerConf {
-    Channel pin;
-    InterruptCallback callback;
-};
-
-struct CNInterruptControlRegister {
-    uint16_t :3;
-    uint16_t CN :1;
-    uint16_t :12;
-};
+#define PINS_REG CNENB
+#define INTERRUPT_CTRL_REG IEC1
+#define INTERRUPT_FLAG_REG IFS1
+#define CTRL_BIT IEC1_BITS_CNIE
+#define FLAG_BIT IFS1_BITS_CNIF
 
 /*********************/
 /* Static Prototypes */
 /*********************/
 
 /**
- * @brief Enable or disable CN interrupt
+ * @brief Check whether CN is in use
  *
- * @param ctrl
+ * @return true
+ * @return false
  */
-static void interrupt_enable(bool ctrl);
+static inline bool is_busy(void);
+
+/**
+ * @brief Enable CN interrupt
+ */
+static void interrupt_enable(void);
+
+/**
+ * @brief Disable CN interrupt
+ */
+static void interrupt_disable(void);
 
 /**
  * @brief Clear CN interrupt flag
@@ -51,8 +58,22 @@ static void interrupt_enable(bool ctrl);
 static void interrupt_clear(void);
 
 /**
+ * @brief Enable CN on pin
+ *
+ * @param pin
+ */
+static void pin_enable(enum CNENB_Bits pin);
+
+/**
+ * @brief Disable CN on pin
+ *
+ * @param pin
+ */
+static void pin_disable(enum CNENB_Bits pin);
+
+/**
  * @brief Default interrupt callback
- * @details
+ *
  * Disables the CN interrupt.
  *
  * @param channel
@@ -60,34 +81,22 @@ static void interrupt_clear(void);
  */
 static void default_callback(Channel channel);
 
-/***********/
-/* Externs */
-/***********/
+/*************/
+/* Constants */
+/*************/
 
-extern union {
-    struct {
-        uint16_t :10;
-        uint16_t all :4;
-        uint16_t :2;
-    };
-    struct {
-        uint16_t :10;
-        uint16_t la1 :1;
-        uint16_t la2 :1;
-        uint16_t la3 :1;
-        uint16_t la4 :1;
-        uint16_t :2;
-    };
-} volatile CNENB;
+static enum CNENB_Bits const g_CHANNEL_PIN_MAP[CHANNEL_NUMEL] = {
+    [CHANNEL_1] = CNENB_BITS_LA1,
+    [CHANNEL_2] = CNENB_BITS_LA2,
+    [CHANNEL_3] = CNENB_BITS_LA3,
+    [CHANNEL_4] = CNENB_BITS_LA4,
+};
 
 /***********/
 /* Globals */
 /***********/
 
-static struct TriggerConf g_conf = {
-    .callback = default_callback,
-    .pin = CHANNEL_NONE,
-};
+static InterruptCallback g_callback = default_callback;
 
 /**************/
 /* Interrupts */
@@ -95,16 +104,20 @@ static struct TriggerConf g_conf = {
 
 /**
  * @brief Input Change Notification (CN) interrupt
- * @details
- * Interrupt occurs when the logic level on the configured trigger pin changes.
+ *
+ * Interrupt occurs when the logic level on an enabled pin changes.
+ *
+ * Hardware only supports a single interrupt for all enabled pins.
  */
 
 #ifndef LINTING
 
 void __attribute__((__interrupt__, no_auto_psv)) _CNInterrupt(void)
 {
-    g_conf.callback(CHANNEL_NONE);
     interrupt_clear();
+    // Any of the enabled pins may have triggered the interrupt. The hardware
+    // provides no way to tell which one.
+    g_callback(CHANNEL_NONE);
 }
 
 #endif // LINTING
@@ -113,57 +126,83 @@ void __attribute__((__interrupt__, no_auto_psv)) _CNInterrupt(void)
 /* Static Functions */
 /********************/
 
-static void interrupt_enable(bool const ctrl)
-{
-    extern struct CNInterruptControlRegister volatile IEC1;
-    IEC1.CN = ctrl;
+static inline bool is_busy(void) {
+    return g_callback != default_callback;
 }
 
-static void interrupt_clear(void)
+static inline void interrupt_enable(void)
 {
-    extern struct CNInterruptControlRegister volatile IFS1;
-    IFS1.CN = 0;
+    INTERRUPT_CTRL_REG |= CTRL_BIT;
+}
+
+static inline void interrupt_disable(void)
+{
+    INTERRUPT_CTRL_REG &= ~CTRL_BIT;
+}
+
+static inline void interrupt_clear(void)
+{
+    INTERRUPT_FLAG_REG &= ~FLAG_BIT;
+}
+
+static inline void pin_enable(enum CNENB_Bits const pin)
+{
+    PINS_REG |= pin;
+}
+
+static inline void pin_disable(enum CNENB_Bits const pin)
+{
+    PINS_REG &= ~pin;
 }
 
 static void default_callback(__attribute__((unused)) Channel const channel)
 {
-    interrupt_enable(false);
+    interrupt_disable();
 }
 
 /********************/
 /* Public Functions */
 /********************/
 
-void CN_reset(void)
+enum Status CN_reset(void)
 {
-    interrupt_enable(false);
+    interrupt_disable();
     interrupt_clear();
-    g_conf.callback = default_callback;
-    g_conf.pin = CHANNEL_NONE;
+    uint16_t const valid_pins = (
+        CNENB_BITS_LA1 | CNENB_BITS_LA2 | CNENB_BITS_LA3 | CNENB_BITS_LA4
+    );
+    PINS_REG &= ~valid_pins;
+    g_callback = default_callback;
+    return E_OK;
 }
 
-void CN_interrupt_enable(Channel const pin, InterruptCallback const callback)
+enum Status CN_pin_enable(Channel const channel)
 {
-    g_conf.pin = pin;
-    g_conf.callback = callback;
+    if (!CHANNEL_check(channel)) { return E_BAD_ARGUMENT; }
+    pin_enable(g_CHANNEL_PIN_MAP[channel]);
+    return E_OK;
+}
 
-    switch (pin) {
-    case CHANNEL_1:
-        CNENB.la1 = 1;
-        break;
-    case CHANNEL_2:
-        CNENB.la2 = 1;
-        break;
-    case CHANNEL_3:
-        CNENB.la3 = 1;
-        break;
-    case CHANNEL_4:
-        CNENB.la4 = 1;
-        break;
-    default: // No trigger pin == start immediately.
-        callback(CHANNEL_NONE);
-        return;
-    }
+enum Status CN_pin_disable(Channel const channel)
+{
+    if (!CHANNEL_check(channel)) { return E_BAD_ARGUMENT; }
+    pin_disable(~g_CHANNEL_PIN_MAP[channel]);
+    return E_OK;
+}
 
-    interrupt_enable(true);
+enum Status CN_interrupt_enable(InterruptCallback const callback)
+{
+    if (is_busy()) { return E_RESOURCE_BUSY; }
+
+    g_callback = callback;
+    interrupt_enable();
+    return E_OK;
+}
+
+enum Status CN_interrupt_disable(void)
+{
+    interrupt_disable();
+    interrupt_clear();
+    g_callback = default_callback;
+    return E_OK;
 }
