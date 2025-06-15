@@ -7,7 +7,7 @@
 /**********/
 /* Macros */
 /**********/
-#define UART_READ_TIMEOUT (FCY / 10UL)  // 100 ms
+#define UART_READ_TIMEOUT (FCY / 2UL)  // 500 ms
 
 /**************/
 /* Interrupts */
