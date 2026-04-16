@@ -4,16 +4,25 @@
 
 #include "../bus/uart/uart.h"
 #include "../commands.h"
-#include "fatfs/ff.h"
-#include "fatfs/ffconf.h"
 #include "../helpers/debug.h"
 #include "../registers/system/watchdog.h"
+#include "fatfs/ff.h"
+#include "fatfs/ffconf.h"
+#include "sd_spi.h"
 
 #define SFN_MAX 8
 #define SFN_SUFFIX_LEN 4 // Period + at most three chars.
 #define BUF_MAX FF_MIN_SS
+#define SDCARD_DRIVE "0:"
 
-static void get_filename(TCHAR* const fn_buf, UINT const size) {
+static TCHAR s_sector_buf[BUF_MAX];
+_Static_assert(
+    sizeof(s_sector_buf) == 512,
+    "SD sector buffer must be 512 bytes"
+);
+
+static void get_filename(TCHAR *const fn_buf, UINT const size)
+{
     for (UINT i = 0; i < size; ++i) {
         if (!(fn_buf[i] = UART1_Read())) {
             // Received null-terminator.
@@ -24,15 +33,20 @@ static void get_filename(TCHAR* const fn_buf, UINT const size) {
     // manual check for null-termination.
 }
 
-response_t SDCARD_write_file(void) {
+response_t SDCARD_write_file(void)
+{
     // +1 is null-terminator.
     size_t const filename_size = SFN_MAX + SFN_SUFFIX_LEN + 1;
     TCHAR filename[filename_size];
     get_filename(filename, filename_size);
     BYTE const mode = UART1_Read();
 
+    if (!SD_SPI_IsMediaPresent()) {
+        UART1_Write(FR_NOT_READY);
+        return DO_NOT_BOTHER;
+    }
     FATFS drive;
-    DEBUG_write_u8(f_mount(&drive, "0:", 1));
+    DEBUG_write_u8(f_mount(&drive, SDCARD_DRIVE, 1));
 
     FIL file;
     // Host must wait for f_open before sending data.
@@ -41,38 +55,39 @@ response_t SDCARD_write_file(void) {
     FSIZE_t data_size = UART1_read_u32();
     FSIZE_t bytes_written = 0;
 
-    for (
-        FSIZE_t block_size, remaining = data_size;
-        block_size = remaining > BUF_MAX ? BUF_MAX : remaining,
-        remaining;
-        remaining -= block_size
-    ) {
-        TCHAR buffer[block_size];
+    for (FSIZE_t block_size, remaining = data_size;
+         block_size = remaining > BUF_MAX ? BUF_MAX : remaining, remaining;
+         remaining -= block_size) {
 
         for (UINT i = 0; i < block_size; ++i) {
-            buffer[i] = UART1_Read();
+            s_sector_buf[i] = UART1_Read();
         }
 
         WATCHDOG_TimerClear();
         UINT written = 0;
         // Host must wait for f_write before sending more data.
-        UART1_Write(f_write(&file, buffer, (UINT)block_size, &written));
+        UART1_Write(f_write(&file, s_sector_buf, (UINT)block_size, &written));
         bytes_written += written;
     }
 
     UART1_write_u32(bytes_written);
     DEBUG_write_u8(f_close(&file));
-    DEBUG_write_u8(f_mount(0, "0:", 0));
+    DEBUG_write_u8(f_mount(0, SDCARD_DRIVE, 0));
 
     return DO_NOT_BOTHER;
 }
 
-response_t SDCARD_read_file(void) {
+response_t SDCARD_read_file(void)
+{
     TCHAR filename[SFN_MAX + SFN_SUFFIX_LEN + 1]; // +1 is null-terminator.
     get_filename(filename, sizeof filename);
 
+    if (!SD_SPI_IsMediaPresent()) {
+        UART1_Write(FR_NOT_READY);
+        return DO_NOT_BOTHER;
+    }
     FATFS drive;
-    DEBUG_write_u8(f_mount(&drive, "0:", 1));
+    DEBUG_write_u8(f_mount(&drive, SDCARD_DRIVE, 1));
 
     FIL file;
     DEBUG_write_u8(f_open(&file, filename, FA_READ));
@@ -82,36 +97,37 @@ response_t SDCARD_read_file(void) {
     UART1_write_u32(info.fsize);
     FSIZE_t bytes_read = 0;
 
-    for (
-        FSIZE_t block_size, remaining = info.fsize;
-        block_size = remaining > BUF_MAX ? BUF_MAX : remaining,
-        remaining;
-        remaining -= block_size
-    ) {
+    for (FSIZE_t block_size, remaining = info.fsize;
+         block_size = remaining > BUF_MAX ? BUF_MAX : remaining, remaining;
+         remaining -= block_size) {
         WATCHDOG_TimerClear();
         UINT read = 0;
-        TCHAR buffer[block_size];
-        f_read(&file, &buffer, (UINT)block_size, &read);
+        f_read(&file, s_sector_buf, (UINT)block_size, &read);
         bytes_read += read;
 
         for (UINT i = 0; i < block_size; ++i) {
-            UART1_Write(buffer[i]);
+            UART1_Write(s_sector_buf[i]);
         }
     }
 
     UART1_write_u32(bytes_read);
     DEBUG_write_u8(f_close(&file));
-    DEBUG_write_u8(f_mount(0, "0:", 0));
+    DEBUG_write_u8(f_mount(0, SDCARD_DRIVE, 0));
 
     return DO_NOT_BOTHER;
 }
 
-response_t SDCARD_get_file_info(void) {
+response_t SDCARD_get_file_info(void)
+{
     TCHAR filename[SFN_MAX + SFN_SUFFIX_LEN + 1]; // +1 is null-terminator.
     get_filename(filename, sizeof filename);
 
+    if (!SD_SPI_IsMediaPresent()) {
+        UART1_Write(FR_NOT_READY);
+        return DO_NOT_BOTHER;
+    }
     FATFS drive;
-    DEBUG_write_u8(f_mount(&drive, "0:", 1));
+    DEBUG_write_u8(f_mount(&drive, SDCARD_DRIVE, 1));
 
     FILINFO info = {0, 0, 0, 0, {0}};
     DEBUG_write_u8(f_stat(filename, &info));
@@ -121,7 +137,7 @@ response_t SDCARD_get_file_info(void) {
     UART1_WriteInt(info.ftime);
     UART1_Write(info.fattrib);
 
-    DEBUG_write_u8(f_mount(0, "0:", 0));
+    DEBUG_write_u8(f_mount(0, SDCARD_DRIVE, 0));
 
     return SUCCESS;
 }
