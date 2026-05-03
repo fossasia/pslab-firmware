@@ -12,6 +12,7 @@
 
 #define SFN_MAX 8
 #define SFN_SUFFIX_LEN 4 // Period + at most three chars.
+#define FILENAME_SIZE (SFN_MAX + SFN_SUFFIX_LEN + 1)
 #define BUF_MAX FF_MIN_SS
 #define SDCARD_DRIVE "0:"
 
@@ -33,17 +34,13 @@ static void get_filename(TCHAR *const fn_buf, UINT const size)
     // manual check for null-termination.
 }
 
-response_t SDCARD_write_file(void)
-{
-    // +1 is null-terminator.
-    size_t const filename_size = SFN_MAX + SFN_SUFFIX_LEN + 1;
-    TCHAR filename[filename_size];
-    get_filename(filename, filename_size);
+response_t SDCARD_write_file(void) {
+    TCHAR filename[FILENAME_SIZE];
+    get_filename(filename, FILENAME_SIZE);
     BYTE const mode = UART1_Read();
 
     if (!SD_SPI_IsMediaPresent()) {
-        UART1_Write(FR_NOT_READY);
-        return DO_NOT_BOTHER;
+        return FR_NOT_READY;
     }
     FATFS drive;
     DEBUG_write_u8(f_mount(&drive, SDCARD_DRIVE, 1));
@@ -102,11 +99,15 @@ response_t SDCARD_read_file(void)
          remaining -= block_size) {
         WATCHDOG_TimerClear();
         UINT read = 0;
-        f_read(&file, s_sector_buf, (UINT)block_size, &read);
+        FRESULT read_result = f_read(&file, s_sector_buf, (UINT)block_size, &read);
         bytes_read += read;
 
-        for (UINT i = 0; i < block_size; ++i) {
+        for (UINT i = 0; i < read; ++i) {
             UART1_Write(s_sector_buf[i]);
+        }
+
+        if (read_result != FR_OK || read < block_size) {
+            break;
         }
     }
 
@@ -123,8 +124,7 @@ response_t SDCARD_get_file_info(void)
     get_filename(filename, sizeof filename);
 
     if (!SD_SPI_IsMediaPresent()) {
-        UART1_Write(FR_NOT_READY);
-        return DO_NOT_BOTHER;
+        return FR_NOT_READY;
     }
     FATFS drive;
     DEBUG_write_u8(f_mount(&drive, SDCARD_DRIVE, 1));
