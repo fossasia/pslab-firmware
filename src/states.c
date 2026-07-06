@@ -38,7 +38,7 @@ state_t RunCommand(void) {
 
 /**
  * @brief Run in standalone mode until serial traffic is detected.
- * @return STATE_STANDALONE or STATE_RUNCOMMAND if serial traffic is detected.
+ * @return STATE_RUNCOMMAND if serial traffic is detected, otherwise STATE_STANDALONE.
  */
 state_t Standalone(void) {
     if (UART_IsRxReady(U1SELECT)) {

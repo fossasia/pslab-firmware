@@ -158,7 +158,7 @@ static bool read_config_file(void) {
         return false;
     }
 
-    TCHAR buf[STANDALONE_MAGIC_LEN] = {0};
+    uint8_t buf[STANDALONE_MAGIC_LEN] = {0};
     UINT bytes_read = 0;
     if (f_read(&file, buf, STANDALONE_MAGIC_LEN, &bytes_read) != FR_OK
         || bytes_read != STANDALONE_MAGIC_LEN) {
