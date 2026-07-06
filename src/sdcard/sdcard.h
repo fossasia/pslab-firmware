@@ -97,4 +97,15 @@ response_t SDCARD_read_file(void);
  */
 response_t SDCARD_get_file_info(void);
 
+/**
+ * @brief Check if SD-card is present and can be mounted.
+ * 
+ * @details Checks if the SD-card can be mounted and if the configuration file is present and valid.
+ *          If the configuration file is not present or invalid, or if the SD-card is not mounted, the function returns FAILED.
+ *          The configuration file is expected to be named "PSLAB.CFG" and contain a magic header of 5 bytes with a null terminator.
+ * 
+ * @return SUCCESS
+ */
+response_t SDCARD_standalone_check(void);
+
 #endif // _SDCARD_H
