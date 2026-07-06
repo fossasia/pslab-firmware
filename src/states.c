@@ -43,8 +43,9 @@ state_t RunCommand(void) {
 state_t Standalone(void) {
     if (UART_IsRxReady(U1SELECT)) {
         return STATE_RUNCOMMAND;
-    }
-
+    } 
+    
+    WATCHDOG_TimerClear();
     return STATE_STANDALONE;
 }
 

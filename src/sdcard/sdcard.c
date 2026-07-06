@@ -163,26 +163,7 @@ static bool read_config_file(void) {
     }
     f_close(&file);
 
-    return true;
-}
-
-response_t SDCARD_standalone_check(void) {
-    if (!SD_SPI_IsMediaPresent()) {
-        return FAILED;
-    }
-
-    FATFS drive;
-    if (f_mount(&drive, SDCARD_DRIVE, 1) != FR_OK) {
-        return FAILED;
-    }
-    s_mounted = true;
-
-    if (!read_config_file()) {
-        SDCARD_standalone_unmount();
-        return FAILED;
-    }
-    
-    return SUCCESS;
+    return (buf[0] == 'P' && buf[1] == 'S' && buf[2] == 'L' && buf[3] == 'A' && buf[4] == 'B');
 }
 
 void SDCARD_standalone_unmount(void) {
@@ -190,4 +171,21 @@ void SDCARD_standalone_unmount(void) {
         f_mount(0, SDCARD_DRIVE, 0);
         s_mounted = false;
     }
+}
+
+response_t SDCARD_standalone_check(void) {
+    if (!SD_SPI_IsMediaPresent()) {
+        return FAILED;
+    }
+
+    static FATFS drive;
+    if (f_mount(&drive, SDCARD_DRIVE, 1) != FR_OK) {
+        s_mounted = false;
+        return FAILED;
+    }
+    s_mounted = true;
+
+    bool ok = read_config_file();
+    SDCARD_standalone_unmount();
+    return ok ? SUCCESS : FAILED;
 }

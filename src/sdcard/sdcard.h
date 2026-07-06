@@ -98,6 +98,11 @@ response_t SDCARD_read_file(void);
 response_t SDCARD_get_file_info(void);
 
 /**
+ * @brief Unmount SD-card after standalone configuration checks.
+ */
+void SDCARD_standalone_unmount(void);
+
+/**
  * @brief Check if SD-card is present and can be mounted.
  * 
  * @details Checks if the SD-card can be mounted and if the configuration file is present and valid.
