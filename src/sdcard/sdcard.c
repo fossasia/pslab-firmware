@@ -154,7 +154,7 @@ static bool read_config_file(void) {
         return false;
     }
 
-    TCHAR buf[6] = {0}; // Config file should have a magic header of 5 bytes
+    TCHAR buf[6] = {0}; // 5-byte magic + null terminator
     UINT bytes_read = 0;
     if (f_read(&file, buf, sizeof buf - 1, &bytes_read) != FR_OK
         || bytes_read != sizeof buf - 1) {
@@ -163,7 +163,8 @@ static bool read_config_file(void) {
     }
     f_close(&file);
 
-    return true;
+    // Magic header must be exactly "PSLAB".
+    return (buf[0] == 'P' && buf[1] == 'S' && buf[2] == 'L' && buf[3] == 'A' && buf[4] == 'B');
 }
 
 response_t SDCARD_standalone_check(void) {
