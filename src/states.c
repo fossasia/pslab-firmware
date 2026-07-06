@@ -36,9 +36,23 @@ state_t RunCommand(void) {
     return STATE_STANDBY;
 }
 
+/**
+ * @brief Run in standalone mode until serial traffic is detected.
+ * @return STATE_STANDALONE or STATE_RUNCOMMAND if serial traffic is detected.
+ */
+state_t Standalone(void) {
+    if (UART_IsRxReady(U1SELECT)) {
+        return STATE_RUNCOMMAND;
+    } 
+    
+    WATCHDOG_TimerClear();
+    return STATE_STANDALONE;
+}
+
 state_func_t* const state_table[NUM_STATES] = {
     Standby,
     RunCommand,
+    Standalone,
 };
 
 state_t STATES_RunState(state_t current_state) {

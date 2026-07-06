@@ -16,6 +16,7 @@ extern "C" {
     typedef enum {
         STATE_STANDBY,
         STATE_RUNCOMMAND,
+        STATE_STANDALONE,
         NUM_STATES
     } state_t;
 

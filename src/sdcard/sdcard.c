@@ -15,7 +15,9 @@
 #define FILENAME_SIZE (SFN_MAX + SFN_SUFFIX_LEN + 1)
 #define BUF_MAX FF_MIN_SS
 #define SDCARD_DRIVE "0:"
+#define CONFIG_FILENAME "PSLAB.CFG"
 
+static bool s_mounted = false;
 static TCHAR s_sector_buf[BUF_MAX];
 _Static_assert(
     sizeof(s_sector_buf) == 512,
@@ -140,4 +142,50 @@ response_t SDCARD_get_file_info(void)
     DEBUG_write_u8(f_mount(0, SDCARD_DRIVE, 0));
 
     return SUCCESS;
+}
+
+/**
+ * @brief Read the configuration file from the SD card.
+ * @return true if the config file was read successfully, false otherwise or if the config structure is invalid.
+ */
+static bool read_config_file(void) {
+    FIL file;
+    if (f_open(&file, CONFIG_FILENAME, FA_READ) != FR_OK) {
+        return false;
+    }
+
+    TCHAR buf[6] = {0}; // Config file should have a magic header of 5 bytes
+    UINT bytes_read = 0;
+    if (f_read(&file, buf, sizeof buf - 1, &bytes_read) != FR_OK
+        || bytes_read != sizeof buf - 1) {
+        f_close(&file);
+        return false;
+    }
+    f_close(&file);
+
+    return (buf[0] == 'P' && buf[1] == 'S' && buf[2] == 'L' && buf[3] == 'A' && buf[4] == 'B');
+}
+
+void SDCARD_standalone_unmount(void) {
+    if (s_mounted) {
+        f_mount(0, SDCARD_DRIVE, 0);
+        s_mounted = false;
+    }
+}
+
+response_t SDCARD_standalone_check(void) {
+    if (!SD_SPI_IsMediaPresent()) {
+        return FAILED;
+    }
+
+    static FATFS drive;
+    if (f_mount(&drive, SDCARD_DRIVE, 1) != FR_OK) {
+        s_mounted = false;
+        return FAILED;
+    }
+    s_mounted = true;
+
+    bool ok = read_config_file();
+    SDCARD_standalone_unmount();
+    return ok ? SUCCESS : FAILED;
 }
