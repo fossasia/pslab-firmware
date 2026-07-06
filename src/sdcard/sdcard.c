@@ -17,6 +17,7 @@
 #define BUF_MAX FF_MIN_SS
 #define SDCARD_DRIVE "0:"
 #define CONFIG_FILENAME "PSLAB.CFG"
+#define STANDALONE_MAGIC_LEN 5
 
 static bool s_mounted = false;
 static FATFS s_standalone_drive;
@@ -156,10 +157,10 @@ static bool read_config_file(void) {
         return false;
     }
 
-    TCHAR buf[6] = {0}; // 5-byte magic + null terminator
+    TCHAR buf[STANDALONE_MAGIC_LEN + 1] = {0}; // Magic + null terminator.
     UINT bytes_read = 0;
-    if (f_read(&file, buf, sizeof buf - 1, &bytes_read) != FR_OK
-        || bytes_read != sizeof buf - 1) {
+    if (f_read(&file, buf, STANDALONE_MAGIC_LEN, &bytes_read) != FR_OK
+        || bytes_read != STANDALONE_MAGIC_LEN) {
         f_close(&file);
         return false;
     }

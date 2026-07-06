@@ -108,6 +108,10 @@ response_t SDCARD_get_file_info(void);
  * @return SUCCESS or FAILED
  */
 response_t SDCARD_standalone_check(void);
+
+/**
+ * @brief Unmount standalone SD-card volume if mounted.
+ */
 void SDCARD_standalone_unmount(void);
 
 #endif // _SDCARD_H
