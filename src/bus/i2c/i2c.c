@@ -2,7 +2,7 @@
 #include "../../bus/uart/uart.h"
 #include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"
-
+#include "../../registers/system/watchdog.h"
 /**
   I2C Driver Queue Status Type
 
@@ -779,16 +779,22 @@ response_t I2C_CommandReadBulk(void) {
 }
 
 response_t I2C_CommandWriteBulk(void) {
-
     uint8_t device = UART1_Read();
     uint8_t count = UART1_Read();
+
+    static uint8_t usb_buffer[255]; 
+    
+    for (uint8_t i = 0; i < count; i++) {
+        usb_buffer[i] = UART1_Read();
+        WATCHDOG_TimerClear(); 
+    }
 
     I2C_StartSignal();
     I2C_Transmit(device << 1);
 
-    uint8_t i;
-    for (i = 0; i < count; i++) {
-        I2C_Transmit(UART1_Read());
+    for (uint8_t i = 0; i < count; i++) {
+        I2C_Transmit(usb_buffer[i]);
+        WATCHDOG_TimerClear(); 
     }
 
     I2C_StopSignal();
