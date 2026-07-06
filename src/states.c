@@ -45,6 +45,7 @@ state_t Standalone(void) {
         return STATE_RUNCOMMAND;
     }
 
+    WATCHDOG_TimerClear();
     return STATE_STANDALONE;
 }
 

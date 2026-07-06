@@ -9,6 +9,7 @@
 #include "fatfs/ff.h"
 #include "fatfs/ffconf.h"
 #include "sd_spi.h"
+#include "sdcard.h"
 
 #define SFN_MAX 8
 #define SFN_SUFFIX_LEN 4 // Period + at most three chars.
@@ -18,6 +19,7 @@
 #define CONFIG_FILENAME "PSLAB.CFG"
 
 static bool s_mounted = false;
+static FATFS s_standalone_drive;
 static TCHAR s_sector_buf[BUF_MAX];
 _Static_assert(
     sizeof(s_sector_buf) == 512,
@@ -172,8 +174,7 @@ response_t SDCARD_standalone_check(void) {
         return FAILED;
     }
 
-    FATFS drive;
-    if (f_mount(&drive, SDCARD_DRIVE, 1) != FR_OK) {
+    if (f_mount(&s_standalone_drive, SDCARD_DRIVE, 1) != FR_OK) {
         return FAILED;
     }
     s_mounted = true;
