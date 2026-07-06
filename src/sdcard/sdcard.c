@@ -19,6 +19,7 @@
 #define CONFIG_FILENAME "PSLAB.CFG"
 #define STANDALONE_MAGIC_LEN 5
 
+// Standalone-mode mount state and volume object.
 static bool s_mounted = false;
 static FATFS s_standalone_drive;
 static TCHAR s_sector_buf[BUF_MAX];
@@ -190,7 +191,7 @@ response_t SDCARD_standalone_check(void) {
 
 void SDCARD_standalone_unmount(void) {
     if (s_mounted) {
-        f_mount(0, SDCARD_DRIVE, 0);
+        f_mount(NULL, SDCARD_DRIVE, 0);
         s_mounted = false;
     }
 }
