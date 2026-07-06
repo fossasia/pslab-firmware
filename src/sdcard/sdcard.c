@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <string.h>
 
 #include "../bus/uart/uart.h"
 #include "../commands.h"
@@ -167,8 +168,7 @@ static bool read_config_file(void) {
     }
     f_close(&file);
 
-    // Magic header must be exactly "PSLAB".
-    return (buf[0] == 'P' && buf[1] == 'S' && buf[2] == 'L' && buf[3] == 'A' && buf[4] == 'B');
+    return memcmp(buf, "PSLAB", STANDALONE_MAGIC_LEN) == 0;
 }
 
 response_t SDCARD_standalone_check(void) {
