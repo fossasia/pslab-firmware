@@ -157,7 +157,7 @@ static bool read_config_file(void) {
         return false;
     }
 
-    TCHAR buf[STANDALONE_MAGIC_LEN + 1] = {0}; // Magic + null terminator.
+    TCHAR buf[STANDALONE_MAGIC_LEN] = {0};
     UINT bytes_read = 0;
     if (f_read(&file, buf, STANDALONE_MAGIC_LEN, &bytes_read) != FR_OK
         || bytes_read != STANDALONE_MAGIC_LEN) {
@@ -184,7 +184,7 @@ response_t SDCARD_standalone_check(void) {
         SDCARD_standalone_unmount();
         return FAILED;
     }
-    
+
     return SUCCESS;
 }
 
