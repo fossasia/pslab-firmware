@@ -782,10 +782,10 @@ response_t I2C_CommandWriteBulk(void) {
     uint8_t device = UART1_Read();
     uint8_t count = UART1_Read();
 
-    static uint8_t usb_buffer[255]; 
+    static uint8_t payload[255]; 
     
     for (uint8_t i = 0; i < count; i++) {
-        usb_buffer[i] = UART1_Read();
+        payload[i] = UART1_Read();
         WATCHDOG_TimerClear(); 
     }
 
@@ -793,7 +793,7 @@ response_t I2C_CommandWriteBulk(void) {
     I2C_Transmit(device << 1);
 
     for (uint8_t i = 0; i < count; i++) {
-        I2C_Transmit(usb_buffer[i]);
+        I2C_Transmit(payload[i]);
         WATCHDOG_TimerClear(); 
     }
 
