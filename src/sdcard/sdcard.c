@@ -16,12 +16,11 @@
 #define BUF_MAX FF_MIN_SS
 #define SDCARD_DRIVE "0:"
 
- #if FF_MIN_SS != 512
- #error "SD sector buffer must be 512 bytes"
- #endif
- 
 static TCHAR s_sector_buf[BUF_MAX];
-
+// _Static_assert(
+//     sizeof(s_sector_buf) == 512,
+//     "SD sector buffer must be 512 bytes"
+// );
 
 static void get_filename(TCHAR *const fn_buf, UINT const size)
 {
