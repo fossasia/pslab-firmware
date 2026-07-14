@@ -2,7 +2,6 @@
 #include "../../bus/uart/uart.h"
 #include "../../helpers/delay.h"
 #include "../../registers/system/pin_manager.h"
-
 /**
   I2C Driver Queue Status Type
 
@@ -779,16 +778,20 @@ response_t I2C_CommandReadBulk(void) {
 }
 
 response_t I2C_CommandWriteBulk(void) {
-
     uint8_t device = UART1_Read();
     uint8_t count = UART1_Read();
+
+    static uint8_t payload[255]; 
+    
+    for (uint8_t i = 0; i < count; i++) {
+        payload[i] = UART1_Read();
+    }
 
     I2C_StartSignal();
     I2C_Transmit(device << 1);
 
-    uint8_t i;
-    for (i = 0; i < count; i++) {
-        I2C_Transmit(UART1_Read());
+    for (uint8_t i = 0; i < count; i++) {
+        I2C_Transmit(payload[i]);
     }
 
     I2C_StopSignal();

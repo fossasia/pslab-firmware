@@ -28,7 +28,6 @@ jobs:
           - name: Download project files
             uses: actions/checkout@v4
             with:
-              ref: ${{ matrix.branch }}
               path: ${{ matrix.branch }}
 
           - name: Cache Compilers
