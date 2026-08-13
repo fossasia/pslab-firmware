@@ -12,7 +12,7 @@ jobs:
     steps:
     - run: sudo apt install pcregrep
 
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Parse changelog
       id: parse-changelog
@@ -28,7 +28,7 @@ jobs:
         echo 'EOF' >> $GITHUB_OUTPUT
 
     - name: Set release body
-      uses: softprops/action-gh-release@v2
+      uses: softprops/action-gh-release@v3
       with:
         draft: true
         body: ${{ steps.parse-changelog.outputs.match }}
@@ -43,7 +43,7 @@ jobs:
 
     steps:
       - name: download
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
 
       - name: zip
         run: |
@@ -52,7 +52,7 @@ jobs:
           zip -rj pslab-firmware_v6_esp01.zip pslab-firmware_v6_esp01/pslab-firmware.hex
 
       - name: attach
-        uses: softprops/action-gh-release@v2
+        uses: softprops/action-gh-release@v3
         with:
           draft: true
           files: pslab-firmware*
