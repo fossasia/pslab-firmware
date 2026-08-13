@@ -20,12 +20,11 @@ buses, via which external devices can be connected and controlled.
 The PSLab is a fully open device, and FOSSASIA provides a complete hardware
 and software stack under open source licenses:
 
-- [Hardware](https://github.com/fossasia/pslab-hardware)
-- [Bootloader](https://github.com/fossasia/pslab-bootloader)
-- [Firmware](https://github.com/fossasia/pslab-firmware)
-- [Python library](https://github.com/fossasia/pslab-python)
-- [Graphical desktop application](https://github.com/fossasia/pslab-desktop)
-- [Android app](https://github.com/fossasia/pslab-android)
+- Hardware: https://github.com/fossasia/pslab-hardware
+- Bootloader: https://github.com/fossasia/pslab-bootloader
+- Firmware: https://github.com/fossasia/pslab-firmware
+- Python library: https://github.com/fossasia/pslab-python
+- PSLab app: https://github.com/fossasia/pslab-app
 
 ### Buy
 
