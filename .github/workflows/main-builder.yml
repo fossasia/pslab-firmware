@@ -26,13 +26,13 @@ jobs:
       runs-on: ubuntu-latest
       steps:
           - name: Download project files
-            uses: actions/checkout@v4
+            uses: actions/checkout@v7
             with:
               path: ${{ matrix.branch }}
 
           - name: Cache Compilers
             id: cache-compiler
-            uses: actions/cache@v3
+            uses: actions/cache@v6
             with:
               path: ~/.cache/mplab-xc
               key: xc16-v2.10-cache
@@ -94,7 +94,7 @@ jobs:
               ./combine_hex.sh  
           
           - name: Publish build files
-            uses: actions/upload-artifact@v4
+            uses: actions/upload-artifact@v7
             with:
               name: pslab-firmware_${{ matrix.target}}
               path: pslab-bootloader/build/combined.hex
